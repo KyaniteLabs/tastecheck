@@ -164,6 +164,14 @@ h2{font-family:var(--disp);font-weight:700;font-size:clamp(2.1rem,1.4rem + 3vw,3
 .ts .sw.c{background:linear-gradient(135deg,#efe7d8,#8c2f24)}
 .ts h3{font:600 1rem var(--body);margin-bottom:.2rem}.ts p{color:var(--muted);font-size:.86rem}
 .ts:nth-child(2){margin-left:2rem}
+#why .twosw{width:78px;flex:none;display:flex;flex-direction:column;gap:4px}
+#why .twosw .sw{width:100%;height:26px;border-radius:6px}
+#why .wfm{width:78px;flex:none;display:grid;gap:4px;padding:6px;border:1px solid var(--line);border-radius:8px}
+#why .wfm .h{height:8px;width:55%;margin:0 auto;background:var(--muted);border-radius:2px;opacity:.6}
+#why .wfm .r{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+#why .wfm .r span{height:18px;background:var(--line);border-radius:3px}
+#why .cpico{width:78px;height:56px;flex:none;display:grid;place-items:center;border:1px solid var(--line);border-radius:8px;font-family:var(--disp);font-size:1.7rem;color:var(--copper)}
+#why .ts p s{color:var(--muted)}
 
 /* INTERVIEW transcript (replaces generic 3-step; shows the actual product) */
 .chat{margin-top:2.5rem;display:flex;flex-direction:column;gap:1rem;max-width:60ch}
@@ -273,12 +281,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
   <div class="problem">
     <div>
       <div class="mark"><s></s>the problem</div>
-      <h2>There are two AI slops. We refuse both.</h2>
-      <p class="slede">Ask for a site, you get the purple gradient. Ask for “not AI,” you get the cream-and-serif. Both are the average — one season apart.</p>
+      <h2>There isn’t one AI slop. There are three.</h2>
+      <p class="slede">It’s not just the look — the skeleton repeats, and so does the copy. We refuse all three planes.</p>
     </div>
     <div class="twoslop">
-      <div class="ts"><div class="sw p"></div><div><h3>Purple gradient</h3><p>Indigo→violet · Inter · 3 cards · 2023–25</p></div></div>
-      <div class="ts"><div class="sw c"></div><div><h3>Editorial serif</h3><p>Fraunces · cream · brick-red · 2026</p></div></div>
+      <div class="ts"><div class="twosw" aria-hidden="true"><div class="sw p"></div><div class="sw c"></div></div><div><h3>The look</h3><p>Purple gradient or editorial serif — same average, one season apart.</p></div></div>
+      <div class="ts"><div class="wf wfm" aria-hidden="true"><div class="h"></div><div class="r"><span></span><span></span><span></span></div></div><div><h3>The structure</h3><p>Centered hero, 3 cards, equal grid — same bones under any skin.</p></div></div>
+      <div class="ts"><div class="cpico" aria-hidden="true">“…”</div><div><h3>The copy</h3><p><s>delve</s> · <s>in today’s fast-paced world</s> · <s>it’s not just X, it’s Y</s></p></div></div>
     </div>
   </div>
 </div></section>

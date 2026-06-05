@@ -125,6 +125,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 @media(max-width:560px){.tc-bar{font-size:.74rem}}
 </style>
 <style>a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}</style>
+<style id="tc-slop">#why .slops{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2rem}@media(max-width:760px){#why .slops{grid-template-columns:1fr}}#why .sw{height:44px;border-radius:6px;margin:0 0 .45rem}.wf{display:grid;gap:5px;padding:9px;border:1px solid var(--tc-line);border-radius:8px;margin-bottom:.9rem}.wf .h{height:11px;width:55%;margin:0 auto;background:var(--tc-muted);border-radius:2px;opacity:.65}.wf .r{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.wf .r span{height:22px;background:var(--tc-line);border-radius:3px}.slopx{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.9rem}.slopx s{border:1px solid var(--tc-line);border-radius:4px;padding:.18em .5em;color:var(--tc-muted);font-size:.8rem;text-decoration-thickness:1px}</style>
 </head>
 <body>
 <div class="tc-bar"><a class="tc-home" href="../../">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="../copper/" aria-current="page">Copper</a><a href="../swiss/">Swiss</a><a href="../maximal/">Maximal</a><a href="../concrete/">Concrete</a><a href="../clay/">Clay</a><a href="../">Gallery</a></nav><div class="tc-pal" role="group" aria-label="Color palette"><span class="tc-lbl">Palette</span><button type="button" data-pal="a" aria-pressed="true" aria-label="Copper palette" title="Copper" style="background:#e08a3a"></button><button type="button" data-pal="b" aria-pressed="false" aria-label="Amber palette" title="Amber" style="background:#f4b740"></button><button type="button" data-pal="c" aria-pressed="false" aria-label="Cobalt palette" title="Cobalt" style="background:#5b9dff"></button><button type="button" data-pal="d" aria-pressed="false" aria-label="Magenta palette" title="Magenta" style="background:#ff5d9e"></button></div></div>
@@ -148,11 +149,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 
 <section id="why"><div class="wrap rv">
   <div class="mark"><span class="hr"></span>the problem</div>
-  <h2>There are two AI slops. We refuse both.</h2>
-  <p class="slede">Ask for a site, you get the purple gradient. Ask for “not AI,” you get the cream-and-serif. Both are the average — one season apart.</p>
+  <h2>There isn’t one AI slop. There are three.</h2>
+  <p class="slede">It’s not just the look — the skeleton repeats, and so does the copy. tastecheck refuses all three planes.</p>
   <div class="slops">
-    <div class="slop big"><div class="sw p"></div><h3>The purple gradient</h3><p>Indigo→violet, Inter, centered hero, three emoji cards, pill buttons. 2023–2025.</p></div>
-    <div class="slop"><div class="sw c"></div><h3>The editorial serif</h3><p>Fraunces, cream paper, brick-red accent, oversized italics. The 2026 default.</p></div>
+    <div class="slop"><div class="sw p"></div><div class="sw c"></div><h3>The look</h3><p>Purple gradient or editorial serif — the same average, one season apart.</p></div>
+    <div class="slop"><div class="wf" aria-hidden="true"><div class="h"></div><div class="r"><span></span><span></span><span></span></div></div><h3>The structure</h3><p>Centered hero, three cards, equal grid — the same bones under any skin.</p></div>
+    <div class="slop"><div class="slopx" aria-hidden="true"><s>“delve”</s><s>“in today’s fast-paced world”</s><s>“it’s not just X, it’s Y”</s></div><h3>The copy</h3><p>The ChatGPT accent — buzzwords, hedging, one tired rhythm. We strip it.</p></div>
   </div>
 </div></section>
 
