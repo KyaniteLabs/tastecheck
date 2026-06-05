@@ -9,11 +9,11 @@ two things no prompt does: it **grills you into a real design system *before* it
 code**, then applies fourteen checkable craft skills so the output has a point of view
 instead of a purple gradient.
 
-![Same prompt, same model, tastecheck on — a purple-gradient AI default beside a committed editorial design](docs/hero/before-after.png)
+![tastecheck — the same landing-page content rendered as five committed design systems: Copper, Swiss, Maximal, Concrete and Clay](docs/hero/five-systems.png)
 
-*Both panels are **real browser renders**, not mockups. The "after" is built only from
-tokens the skills generated and contrast-verified — see
-[demos/example-build](demos/example-build/) for the full pipeline and proof.*
+*Five **real browser renders** — the exact same words and structure in every one, only the
+design system differs. That's the whole pitch: a committed design system beats the AI
+average. Open the [live gallery →](https://kyanitelabs.github.io/tastecheck/samples/)*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-14-success.svg)](#whats-inside)
