@@ -91,6 +91,16 @@ Detailed fixes in `references/audit.md`. The order is by user impact:
 - **3.3.8 Accessible Authentication** — don't require a cognitive test (e.g. solving a
   puzzle, retyping) with no alternative; allow paste/password managers.
 
+## Run the built-in audit (measure, don't eyeball)
+This skill ships a zero-dependency auditor: **`assets/audit.js`**. Paste it into the
+browser devtools Console on the page (or inject it in a Playwright/Puppeteer run) and it
+prints the *measurable* failures the eye misses — contrast ratios, sub-24px tap targets,
+missing alt/labels/names, heading-order jumps, zoom lock, missing landmarks, and
+outline:none-without-focus-visible. Re-run with `a11yAudit()`. Fix the ✗ fails, then do
+the manual checks below (the auditor can't judge keyboard flow, alt quality, or whether
+ARIA makes sense). *Lesson learned: a 2.92:1 label and 20px nav links looked fine and
+were caught only by measuring.*
+
 ## Tooling (use, but don't trust blindly)
 - Automated (axe DevTools, Lighthouse, WAVE, Pa11y) catches ~30–40% of issues — run it,
   fix what it finds, but it **cannot** judge keyboard flow, focus order, alt-text

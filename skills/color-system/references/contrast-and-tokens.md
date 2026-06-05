@@ -67,7 +67,7 @@ varied surfaces shifts the result and can break contrast):
 ## Light/dark sharing
 
 Reuse the same hues across themes; in dark mode raise L and lower C for accents (see
-the `dark-mode` skill) and remap semantic tokens. The palette stays one source of truth.
+the `theming` skill) and remap semantic tokens. The palette stays one source of truth.
 
 ## Self-check
 - [ ] Every shipped text/bg pair measured: body ≥4.5:1, large/UI ≥3:1.

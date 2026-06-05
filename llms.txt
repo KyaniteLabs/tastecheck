@@ -18,7 +18,7 @@ Skills auto-trigger when a request matches them; Claude Code also gets slash com
 - [deslop-ui](skills/deslop-ui/SKILL.md): remove the named AI visual tells; commit to a direction
 - [web-typography](skills/web-typography/SKILL.md): type scale, measure, rhythm, fonts, fluid clamp, web-font CLS, WCAG text
 - [color-system](skills/color-system/SKILL.md): OKLCH palettes, ramps, semantic tokens, verified contrast
-- [dark-mode](skills/dark-mode/SKILL.md): surfaces, elevation-by-lightness, contrast, toggle
+- [theming](skills/theming/SKILL.md): surfaces, elevation-by-lightness, contrast, toggle
 - [responsive-layout](skills/responsive-layout/SKILL.md): mobile-first, intrinsic patterns, container queries
 - [component-states](skills/component-states/SKILL.md): full interactive state matrix + ARIA
 - [form-ux](skills/form-ux/SKILL.md): labels, validation, input types, accessible forms

@@ -1,7 +1,7 @@
 # Web integration & accessibility for charts
 
 Read when building the actual chart component. Tufte makes it honest; this makes it
-*shippable on the web* — on-brand, dark-mode-ready, responsive, and usable by everyone.
+*shippable on the web* — on-brand, theming-ready, responsive, and usable by everyone.
 This is the part the pure-Tufte plugin doesn't cover.
 
 ## Use the design system
@@ -10,9 +10,9 @@ This is the part the pure-Tufte plugin doesn't cover.
 - **Contrast:** each series ≥3:1 against the background AND distinguishable from adjacent
   series; axis/label text ≥4.5:1 (it's text). Verify — don't assume.
 - **Tokens for everything:** `--series-1..n`, `--axis`, `--grid`, `--chart-bg`. One source
-  of truth so the chart re-themes and dark-modes for free.
+  of truth so the chart re-themes for free.
 
-## Dark mode (pairs with the dark-mode skill)
+## Dark mode (pairs with the theming skill)
 - Re-check every contrast on the dark surface; axis lines and labels that passed on white
   often fail on dark.
 - Desaturate/raise lightness of series colors for dark (OKLCH +L, −C), like any accent.
@@ -46,7 +46,7 @@ This is the part the pure-Tufte plugin doesn't cover.
 - You rarely need a heavy charting lib for honest charts — hand-authored SVG (or a thin
   helper) gives full control of ink and a11y. If using a lib (Recharts, Chart.js,
   visx, Observable Plot), still apply this skill: strip its default gridlines/legends,
-  feed it token colors, add the table fallback, and check dark-mode + contrast.
+  feed it token colors, add the table fallback, and check theming + contrast.
 - Canvas charts must add an off-canvas table/`aria` equivalent (canvas is invisible to AT).
 
 ## The visually-hidden table pattern
