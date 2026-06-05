@@ -12,7 +12,7 @@ description: >-
   "make a color system", "these colors clash / look muddy", "generate a ramp",
   "is this contrast accessible", "semantic color tokens", or "create theme
   variables". Gives a generation method, real OKLCH values, and contrast targets
-  — not vibes. Pair with dark-mode and deslop-ui.
+  — not vibes. Pair with theming and deslop-ui.
 ---
 
 # Color System
@@ -119,5 +119,5 @@ ramp for any hue and emit hex fallbacks.
 - Emit **semantic tokens** components reference (`--color-primary`), not raw ramp stops
   scattered through markup.
 - Always run the contrast check on the actual pairs and report the numbers.
-- Pair with `dark-mode` (the dark palette reuses these hues with +L/−C) and `deslop-ui`
+- Pair with `theming` (the dark palette reuses these hues with +L/−C) and `deslop-ui`
   (commit to one dominant color — avoid the timid even palette).

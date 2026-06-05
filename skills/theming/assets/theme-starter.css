@@ -1,0 +1,73 @@
+/* ============================================================================
+   theming — one semantic-token source → light (baseline) + dark + high-contrast.
+   prefers-color-scheme default · persistent toggle (data-theme) wins · forced-colors.
+   Palette from color-system; pairs with web-typography, a11y-pass, cognitive-a11y.
+   ========================================================================== */
+
+:root{
+  color-scheme: light;
+  /* LIGHT = baseline. Off-white, not #fff glare; ink softened, not #000. */
+  --bg:        #faf7f0;
+  --surface-1: #ffffff;
+  --surface-2: #fbf9f4;
+  --text:      #1a1714;
+  --text-muted:#5b5650;
+  --border:    #e4ded3;
+  --accent:    oklch(0.54 0.16 250);   /* deeper for light-bg contrast */
+  --accent-ink:#ffffff;
+  --focus:     var(--accent);
+  --shadow-float: 0 10px 30px rgb(0 0 0 / .12);
+}
+
+/* DARK via OS preference (tuned, not inverted) */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:        #121212;                                   /* never #000 */
+    --surface-1: color-mix(in oklab, #fff 6%,  var(--bg));  /* elevation = lighter */
+    --surface-2: color-mix(in oklab, #fff 9%,  var(--bg));
+    --text:      #ececec;                                   /* never #fff */
+    --text-muted:#a0a0a6;
+    --border:    color-mix(in oklab, #fff 14%, var(--bg));
+    --accent:    oklch(0.72 0.12 250);                      /* +L, −C for dark */
+    --shadow-float: 0 8px 30px rgb(0 0 0 / .5);
+  }
+}
+/* DARK via explicit toggle (wins over OS) */
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#121212; --surface-1:color-mix(in oklab,#fff 6%,var(--bg));
+  --surface-2:color-mix(in oklab,#fff 9%,var(--bg));
+  --text:#ececec; --text-muted:#a0a0a6; --border:color-mix(in oklab,#fff 14%,var(--bg));
+  --accent:oklch(0.72 0.12 250); --shadow-float:0 8px 30px rgb(0 0 0 / .5);
+}
+
+/* HIGH-CONTRAST — opt-in max-contrast mapping of the same tokens */
+@media (prefers-contrast: more){
+  :root{ --bg:#fff; --surface-1:#fff; --surface-2:#fff; --text:#000; --text-muted:#1a1a1a; --border:#000; }
+  :root[data-theme="dark"], :root:not([data-theme="light"]){
+    --bg:#000; --surface-1:#000; --surface-2:#0a0a0a; --text:#fff; --text-muted:#e6e6e6; --border:#fff; }
+}
+
+/* FORCED-COLORS (Windows High Contrast) — don't fight the OS; survive bg removal */
+@media (forced-colors: active){
+  .btn, .card, .input{ border:1px solid ButtonText; }
+  :focus-visible{ outline:2px solid Highlight; outline-offset:2px; }
+}
+
+body{ background:var(--bg); color:var(--text); }
+.card{ background:var(--surface-1); border:1px solid var(--border); }
+.muted{ color:var(--text-muted); }
+a{ color:var(--accent); }
+:focus-visible{ outline:2px solid var(--focus); outline-offset:3px; }
+
+/* dim media on dark so images don't blind */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) img:not([data-no-dim]),
+  :root:not([data-theme="light"]) video{ filter:brightness(.88) contrast(1.04); }
+}
+
+/* Toggle (in a <script>):
+   const r=document.documentElement; const s=localStorage.getItem('theme'); if(s) r.dataset.theme=s;
+   function toggleTheme(){ const n=(r.dataset.theme==='dark')?'light':'dark'; r.dataset.theme=n; localStorage.setItem('theme',n); }
+*/

@@ -65,7 +65,7 @@ skill builds from. Taste is the only moat against AI slop; this operationalizes 
 **Get the foundations right**
 - **web-typography** — type scale, measure, rhythm, fluid `clamp()`, web-font loading/CLS, WCAG text.
 - **color-system** — OKLCH palettes that are cohesive *and* pass contrast.
-- **dark-mode** — surfaces, elevation-by-lightness, desaturated accents, real toggle.
+- **theming** — surfaces, elevation-by-lightness, desaturated accents, real toggle.
 
 **Build the structure & behavior**
 - **responsive-layout** — mobile-first, intrinsic Grid/Flex, container queries; survives any width.
@@ -107,7 +107,7 @@ Claude-only skill packs.
 ## How it all fits together
 
 > **design-system-interview** (decide taste) → **color-system · web-typography ·
-> dark-mode** (foundations) → **responsive-layout** (structure) → **component-states ·
+> theming** (foundations) → **responsive-layout** (structure) → **component-states ·
 > form-ux · empty-states** (behavior) → **micro-motion** (polish) → **a11y-pass**
 > (verify) — with **deslop-ui** auditing the result against *your committed spec*, not
 > the average.

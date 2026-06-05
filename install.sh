@@ -6,7 +6,7 @@ set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_SRC="$REPO/skills"
-SKILLS=(design-system-interview deslop-ui web-typography color-system dark-mode \
+SKILLS=(design-system-interview deslop-ui web-typography color-system theming \
         responsive-layout component-states form-ux empty-states micro-motion \
         a11y-pass data-viz \
         cognitive-a11y humanize-copy)
@@ -47,4 +47,4 @@ fi
 
 echo
 echo "Done. Skills auto-load when your request matches them (e.g. \"fix this dark mode\")."
-echo "Verify: ls ~/.claude/skills/ | grep -E 'dark-mode|web-typography'  (or your agent's home)"
+echo "Verify: ls ~/.claude/skills/ | grep -E 'theming|web-typography'  (or your agent's home)"

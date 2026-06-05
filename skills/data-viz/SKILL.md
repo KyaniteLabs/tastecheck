@@ -16,7 +16,7 @@ description: >-
   accessible". Gives genre-selection, the chartjunk taxonomy, the lie-factor check,
   and web/token/a11y integration — checkable, not vibes. Grounded in Edward Tufte's
   *Visual Display of Quantitative Information* and the gnurio/tufte-vdqi-plugin;
-  pairs with color-system, dark-mode, a11y-pass. For deep Tufte assessment or
+  pairs with color-system, theming, a11y-pass. For deep Tufte assessment or
   Python chart rendering, hand off to the installed assess-graphical-excellence /
   render-tufte-chart skills.
 ---
@@ -26,7 +26,7 @@ description: >-
 Most charts are decoration wrapped around a few numbers. This skill makes the
 opposite: visualizations where **ink maps to data**, the genre fits the data shape,
 the proportions don't lie, the labels are direct, and the result lives correctly
-inside your design system — responsive, dark-mode-ready, and accessible. Every rule
+inside your design system — responsive, theming-ready, and accessible. Every rule
 here is checkable.
 
 It is the **web/design-system member of a Tufte toolkit.** For deep critique of an
@@ -46,7 +46,7 @@ This skill is for *building the chart into a web UI, on-brand and accessible.*
    length/position, never area/volume; check the lie factor ≈ 1.
 5. **Direct-label, range-frame** — labels at the data, not a legend; axes span the
    data range.
-6. **Integrate** — series colors from `color-system` tokens; works in `dark-mode`;
+6. **Integrate** — series colors from `color-system` tokens; works in `theming`;
    responsive; no fixed px that overflow.
 7. **Accessibility pass** — text/table equivalent, not color-alone, contrast, focusable
    data for interactive charts.
@@ -89,6 +89,21 @@ Tufte move (table, small multiples, sparkline, range frame).
   accessible data table (visually-hidden or toggle) for screen readers. A chart is
   not done until a non-sighted user can get the numbers.
 
+## Premium restraint (honest ≠ plain)
+Tufte *removes* chartjunk; it does not *add* craft — so a "correct" chart can come out
+bare and unstyled, which is its own failure. **Minimal in ink, rich in craft.** A premium
+chart is restrained AND considered:
+- **Inherits the design system.** A chart on a copper-dark site should look copper-dark-
+  premium, not generic-Tufte-on-white. Pull type, spacing, accent, and surface from the
+  project's tokens (web-typography, color-system, theming) — never a default sans on #fff.
+- **Typography does the work.** The number is the hero — set it large and confident in the
+  display face; labels small, quiet, in the muted token. Tabular figures. Real hierarchy.
+- **Generous, intentional spacing** and alignment; one refined accent, not a rainbow.
+- **A whisper of craft** — a hairline baseline, a single end-dot, a subtle grain or motion
+  on load — never ornament that competes with data.
+- The check: does it look *considered*, like a designer made it — or *unstyled*, like a
+  library default? If the latter, it's not done.
+
 ## Quick-start
 
 A minimal honest line chart + an inline sparkline + the table-first pattern (real,
@@ -115,7 +130,7 @@ SVG line:
   supertables), and the default-challenge rule. Read when choosing a genre or
   diagnosing a bad chart.
 - `references/web-and-a11y.md` — making it real on the web: token/`color-system`
-  integration, dark-mode, responsive SVG, and the accessibility contract for charts
+  integration, theming, responsive SVG, and the accessibility contract for charts
   (text alternative, data table, not-color-alone, contrast, keyboard for interactive).
   Read when building the actual component.
 - `references/decision-records.md` — meta-patterns + ADR rules for novel cases.
@@ -135,7 +150,7 @@ SVG line:
 
 - State the genre choice and why ("12 numbers → table, not a pie"; "8 series → small
   multiples, not spaghetti"). Report the lie factor if proportions are dramatic.
-- Pull series colors from `color-system`; verify dark-mode + contrast; add the data
+- Pull series colors from `color-system`; verify theming + contrast; add the data
   table. For heavy assessment or Python SVGs, defer to `assess-graphical-excellence`/
   `render-tufte-chart`.
 
