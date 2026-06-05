@@ -126,11 +126,29 @@ Then the **commitment check** (the positive half — see `references/design-dire
 10. Is there one dominant color and one real accent — not five timid pastels?
 11. Does typography have real size/weight contrast (3×+ / 800-vs-300)?
 
+## Three planes of slop (don't stop at the surface)
+
+Slop lives on three planes — fixing one leaves the others:
+1. **Surface/visual** — palette, type, shape, effects (the Tell Catalog above).
+2. **Structural** — the layout *skeleton* and rhythm. You can fix every pill button and
+   still ship the generic SaaS skeleton (centered hero → 3-step → uniform card grid).
+   This is the deepest layer and the one most AI pages never escape — see
+   `references/structural-tells.md`. **Audit every page structurally, not just its parts.**
+3. **Verbal** — the copy/voice (the ChatGPT accent). Hand to the **`humanize-copy`** skill.
+
+And slop **moves**: each anti-slop choice becomes next year's default. `structural-tells.md`
+carries a *dated* list of the current "tasteful-default" attractors (cream-Fraunces;
+dark-neon-SaaS) to avoid by reflex. Rule: **subtraction moves the average; only commitment
+escapes it** — pair every prohibition with a committed direction from `design-system-interview`.
+
 ## Reference files
 
 - `references/anti-patterns.md` — the full catalog with before/after code snippets
   and the reasoning behind each tell. Read when reviewing real code or when you need
   the copy-paste fix.
+- `references/structural-tells.md` — the **structural** plane: the SaaS-template skeleton,
+  centered/symmetric layouts, uniform card grids, metronomic rhythm, and the dated
+  current-attractor list. Read when reviewing a whole page, not just components.
 - `references/design-direction.md` — the *positive* half: how to commit to an
   aesthetic, the "name the vibe / steal taste from references / state the choice
   before coding" method, and the distilled anti-slop direction prompt. Read when
