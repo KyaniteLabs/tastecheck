@@ -91,11 +91,27 @@ footer .grid{padding-block:2rem}
 footer .c1{grid-column:1/7;font-weight:800}.footer i{color:var(--red-ink)}
 footer .c2{grid-column:9/13;font-family:var(--mono);font-size:.78rem;color:var(--muted);text-align:right}
 .cmd{grid-column:1/13;font-family:var(--mono);font-size:.92rem;background:var(--ink);color:var(--paper);padding:1.1rem 1.3rem;margin-top:1.2rem;overflow-x:auto}
-.cmd .c{color:var(--red)}
+.cmd .c{color:var(--paper);font-weight:700}
 .rv{opacity:0;transform:translateY(10px)} .rv.in{opacity:1;transform:none;transition:opacity .5s ease,transform .5s ease}
 @media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}*{transition-duration:.01ms!important}}
-</style></head>
+</style><style id="tc-nav">
+:root{--tc-bg:var(--paper);--tc-ink:var(--ink);--tc-line:var(--line);--tc-muted:var(--muted);--tc-accent:var(--red)}
+.tc-bar{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem 1.2rem;justify-content:space-between;background:var(--tc-bg);color:var(--tc-ink);border-bottom:1px solid var(--tc-line);padding:.55rem clamp(1rem,3vw,2rem);font:600 .8rem system-ui,-apple-system,sans-serif}
+.tc-bar a{color:var(--tc-muted);text-decoration:none;display:inline-flex;align-items:center;min-height:24px;padding-block:.15rem}
+.tc-bar a:hover{color:var(--tc-ink)}
+.tc-home{color:var(--tc-ink)!important;font-weight:700}
+.tc-grp{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .8rem}
+.tc-grp .tc-lbl{color:var(--tc-muted);font-weight:600;opacity:.8}
+.tc-samples a[aria-current=page]{color:var(--tc-ink);font-weight:700;text-decoration:underline;text-decoration-color:var(--tc-accent);text-underline-offset:3px;text-decoration-thickness:2px}
+.tc-pal{display:flex;align-items:center;gap:.4rem}
+.tc-pal .tc-lbl{color:var(--tc-muted)}
+.tc-pal button{width:26px;height:26px;border-radius:50%;border:1px solid var(--tc-line);cursor:pointer;padding:0}
+.tc-pal button[aria-pressed=true]{outline:2px solid var(--tc-ink);outline-offset:2px}
+@media(max-width:560px){.tc-bar{font-size:.74rem}}
+</style>
+</head>
 <body>
+<div class="tc-bar"><a class="tc-home" href="../../">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="../copper/">Copper</a><a href="../swiss/" aria-current="page">Swiss</a><a href="../maximal/">Maximal</a><a href="../concrete/">Concrete</a><a href="../clay/">Clay</a><a href="../">Gallery</a></nav><div class="tc-pal" role="group" aria-label="Color palette"><span class="tc-lbl">Palette</span><button type="button" data-pal="a" aria-pressed="true" aria-label="Vermilion palette" title="Vermilion" style="background:#e8482b"></button><button type="button" data-pal="b" aria-pressed="false" aria-label="Cobalt palette" title="Cobalt" style="background:#3257e0"></button><button type="button" data-pal="c" aria-pressed="false" aria-label="Forest palette" title="Forest" style="background:#2f8f5b"></button><button type="button" data-pal="d" aria-pressed="false" aria-label="Ink palette" title="Ink" style="background:#1a1a1a"></button></div></div>
 <a class="skip" href="#main">Skip to content</a>
 <header><div class="grid">
   <span class="brand">taste<i>check</i></span>
@@ -165,4 +181,5 @@ document.querySelector('.menu-btn')?.addEventListener('click',function(){const n
  var io=new IntersectionObserver(function(es){es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}})},{threshold:0,rootMargin:'0px 0px -8% 0px'});
  els.forEach(e=>io.observe(e)); setTimeout(()=>els.forEach(e=>e.classList.add('in')),1500);})();
 </script>
+<script>(function(){var P={"a": {"--red": "#e8482b", "--red-ink": "#c5331b"}, "b": {"--red": "#3257e0", "--red-ink": "#1f4fd0"}, "c": {"--red": "#2f8f5b", "--red-ink": "#1f6e44"}, "d": {"--red": "#262626", "--red-ink": "#1a1a1a"}};var r=document.documentElement;document.querySelectorAll(".tc-pal button").forEach(function(b){b.addEventListener("click",function(){var p=P[b.dataset.pal];if(!p)return;Object.keys(p).forEach(function(k){r.style.setProperty(k,p[k])});document.querySelectorAll(".tc-pal button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false")});});});})();</script>
 </body></html>

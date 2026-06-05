@@ -108,8 +108,24 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 .js .rv.in{opacity:1;transform:none;transition:opacity .55s cubic-bezier(.16,1,.3,1),transform .55s cubic-bezier(.16,1,.3,1)}
 @media(prefers-reduced-motion:reduce){.js .rv{opacity:1;transform:none}.hero .bg{animation:none!important}*{transition-duration:.01ms!important}}
 @media(prefers-reduced-motion:no-preference){.hero .bg{animation:drift 26s ease-in-out infinite alternate}@keyframes drift{from{transform:scale(1.04)}to{transform:scale(1.1) translate(-1.5%,-1.5%)}}}
-</style></head>
+</style><style id="tc-nav">
+:root{--tc-bg:var(--bg);--tc-ink:var(--ink);--tc-line:var(--line);--tc-muted:var(--muted);--tc-accent:var(--copper)}
+.tc-bar{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem 1.2rem;justify-content:space-between;background:var(--tc-bg);color:var(--tc-ink);border-bottom:1px solid var(--tc-line);padding:.55rem clamp(1rem,3vw,2rem);font:600 .8rem system-ui,-apple-system,sans-serif}
+.tc-bar a{color:var(--tc-muted);text-decoration:none;display:inline-flex;align-items:center;min-height:24px;padding-block:.15rem}
+.tc-bar a:hover{color:var(--tc-ink)}
+.tc-home{color:var(--tc-ink)!important;font-weight:700}
+.tc-grp{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .8rem}
+.tc-grp .tc-lbl{color:var(--tc-muted);font-weight:600;opacity:.8}
+.tc-samples a[aria-current=page]{color:var(--tc-ink);font-weight:700;text-decoration:underline;text-decoration-color:var(--tc-accent);text-underline-offset:3px;text-decoration-thickness:2px}
+.tc-pal{display:flex;align-items:center;gap:.4rem}
+.tc-pal .tc-lbl{color:var(--tc-muted)}
+.tc-pal button{width:26px;height:26px;border-radius:50%;border:1px solid var(--tc-line);cursor:pointer;padding:0}
+.tc-pal button[aria-pressed=true]{outline:2px solid var(--tc-ink);outline-offset:2px}
+@media(max-width:560px){.tc-bar{font-size:.74rem}}
+</style>
+</head>
 <body>
+<div class="tc-bar"><a class="tc-home" href="../../">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="../copper/" aria-current="page">Copper</a><a href="../swiss/">Swiss</a><a href="../maximal/">Maximal</a><a href="../concrete/">Concrete</a><a href="../clay/">Clay</a><a href="../">Gallery</a></nav><div class="tc-pal" role="group" aria-label="Color palette"><span class="tc-lbl">Palette</span><button type="button" data-pal="a" aria-pressed="true" aria-label="Copper palette" title="Copper" style="background:#e08a3a"></button><button type="button" data-pal="b" aria-pressed="false" aria-label="Amber palette" title="Amber" style="background:#f4b740"></button><button type="button" data-pal="c" aria-pressed="false" aria-label="Cobalt palette" title="Cobalt" style="background:#5b9dff"></button><button type="button" data-pal="d" aria-pressed="false" aria-label="Magenta palette" title="Magenta" style="background:#ff5d9e"></button></div></div>
 <a class="skip" href="#main">Skip to content</a>
 <header><div class="wrap nav">
   <span class="brand">taste<i>check</i></span>
@@ -187,4 +203,5 @@ document.querySelector('summary')?.addEventListener('click',function(){var s=thi
  var io=new IntersectionObserver(function(es){es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}})},{threshold:0,rootMargin:'0px 0px -8% 0px'});
  els.forEach(e=>io.observe(e));setTimeout(()=>els.forEach(e=>e.classList.add('in')),1500);})();
 </script>
+<script>(function(){var P={"a": {"--copper": "#e08a3a", "--copper-deep": "#6e3a14", "--on-copper": "#1a0f05", "--verd": "#1fae8f"}, "b": {"--copper": "#f4b740", "--copper-deep": "#7a5512", "--on-copper": "#1a1305", "--verd": "#2ad4c0"}, "c": {"--copper": "#5b9dff", "--copper-deep": "#21407a", "--on-copper": "#07142e", "--verd": "#ff9a6b"}, "d": {"--copper": "#ff5d9e", "--copper-deep": "#7a2348", "--on-copper": "#2a0814", "--verd": "#46d3a0"}};var r=document.documentElement;document.querySelectorAll(".tc-pal button").forEach(function(b){b.addEventListener("click",function(){var p=P[b.dataset.pal];if(!p)return;Object.keys(p).forEach(function(k){r.style.setProperty(k,p[k])});document.querySelectorAll(".tc-pal button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false")});});});})();</script>
 </body></html>
