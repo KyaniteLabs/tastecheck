@@ -1,0 +1,82 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>states</title><style>
+/* ============================================================================
+   component-states — full state matrix for common controls.
+   Pair with form-ux, color-system, micro-motion, a11y-pass.
+   ========================================================================== */
+
+:root {
+  --color-primary: #2563eb;
+  --color-focus:   #1d4ed8;
+  --color-error:   #cf222e;
+  --surface-2:     #eef0f4;
+}
+
+/* ---- Button: default/hover/focus-visible/active/disabled/loading ---- */
+.btn {
+  --btn-bg: var(--color-primary);
+  background: var(--btn-bg); color: #fff;
+  border: 1px solid transparent; border-radius: 8px;
+  padding: .6em 1.1em; cursor: pointer;
+  transition: background-color 150ms ease, transform 120ms ease;
+}
+.btn:hover  { background: color-mix(in oklab, var(--btn-bg) 88%, black); }
+.btn:active { transform: scale(.97); }
+.btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.btn:disabled, .btn[aria-disabled="true"] {
+  opacity: .5; cursor: not-allowed; filter: grayscale(.2);
+}
+.btn[data-loading="true"] { color: transparent; pointer-events: none; position: relative; }
+.btn[data-loading="true"]::after {
+  content: ""; position: absolute; inset: 0; margin: auto;
+  width: 1em; height: 1em; border: 2px solid #fff; border-right-color: transparent;
+  border-radius: 50%; animation: spin .6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---- Link: keep a non-color cue (underline) ---- */
+a { color: var(--color-primary); text-decoration: underline; text-underline-offset: .15em; }
+a:hover { text-decoration-thickness: .12em; }
+a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; border-radius: 2px; }
+
+/* ---- Text input: default/focus/disabled/error ---- */
+.input { border: 1px solid #c7ccd6; border-radius: 6px; padding: .5em .7em; background: #fff; }
+.input:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 1px; border-color: var(--color-focus); }
+.input:disabled { background: #f3f4f6; color: #9aa0ab; cursor: not-allowed; }
+.input[aria-invalid="true"] { border-color: var(--color-error); }
+.input[aria-invalid="true"]:focus-visible { outline-color: var(--color-error); }
+
+/* ---- Tab / nav: selected via aria-current, not color alone ---- */
+.tab { padding: .5em .9em; border: 0; background: none; cursor: pointer; border-bottom: 2px solid transparent; }
+.tab:hover, .tab:focus-visible { background: var(--surface-2); }
+.tab:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
+.tab[aria-selected="true"], .nav-link[aria-current="page"] {
+  border-bottom-color: var(--color-primary); font-weight: 600;   /* shape + weight, not just color */
+}
+
+/* ---- Menu item: hover and keyboard focus share the highlight ---- */
+.menu-item { padding: .5em .8em; cursor: pointer; }
+.menu-item:hover, .menu-item:focus-visible { background: var(--surface-2); outline: none; }
+.menu-item[aria-disabled="true"] { opacity: .5; pointer-events: none; }
+
+/* ---- Toggle: communicate state by position, not only color ---- */
+.switch { --on: var(--color-primary); width: 2.6em; height: 1.5em; border-radius: 999px;
+          background: #c7ccd6; position: relative; cursor: pointer; transition: background 150ms ease; }
+.switch[aria-checked="true"] { background: var(--on); }
+.switch::after { content: ""; position: absolute; top: .15em; left: .15em; width: 1.2em; height: 1.2em;
+                 background: #fff; border-radius: 50%; transition: transform 150ms ease; }
+.switch[aria-checked="true"]::after { transform: translateX(1.1em); }
+.switch:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:active { transform: none; }
+  .btn[data-loading="true"]::after { animation-duration: 1.2s; }
+  .switch, .switch::after { transition: none; }
+}
+body{font-family:system-ui;padding:2rem;display:flex;flex-direction:column;gap:1rem;align-items:flex-start}.row{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}</style></head><body>
+<h1>component-states demo</h1>
+<div class=row><button class=btn>Default</button><button class=btn disabled>Disabled</button><button class=btn data-loading=true>Loading</button></div>
+<div class=row><a href="#">A link</a></div>
+<div class=row><input class=input placeholder="text input"><input class=input aria-invalid=true value="error state"></div>
+<div class=row><button class=tab aria-selected=true>Selected tab</button><button class=tab>Tab</button></div>
+<div class=row><div class=switch aria-checked=false role=switch tabindex=0></div><div class=switch aria-checked=true role=switch tabindex=0></div></div>
+</body></html>
