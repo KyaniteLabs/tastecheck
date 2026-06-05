@@ -1,19 +1,24 @@
-# frontend-skills
+# tastecheck
 
-> Ten model-agnostic frontend craft skills for AI coding agents — typography, color
-> (OKLCH), dark mode, responsive layout, component states, forms, empty/loading/error
-> states, motion, and WCAG 2.2 accessibility. Each is a Markdown SKILL.md an agent
-> loads when relevant: named anti-patterns, real values, before/after, self-check.
+> Eleven frontend craft skills for AI coding agents that stop AI from building the same
+> generic site. The headline skill grills you into a committed design system BEFORE any
+> code; the rest (typography, color/OKLCH, dark mode, layout, states, forms, motion,
+> a11y, deslop) apply checkable craft so the output has a point of view. Works with any
+> agent (Claude Code, Codex, Gemini, Cursor, Kilocode, Kimi). Plain Markdown, no runtime.
 
-Skills are plain Markdown (SKILL.md + references/ + assets/). They work with any AI
-coding agent that can read files (Claude Code, Codex, Gemini CLI, Cursor, Kilocode,
-Kimi). No SDK or runtime. Install via install.sh (symlinks into each agent's skills dir).
+Install via install.sh (symlinks each skill into every detected agent's skills/ dir).
+Skills auto-trigger when a request matches them; Claude Code also gets slash commands.
+
+## Start here
+- [README](README.md): the problem (every AI site looks the same), the fix, and install
+- [Verification report](docs/VERIFICATION.md): every skill rendered in a real browser before release
 
 ## Skills
+- [design-system-interview](skills/design-system-interview/SKILL.md): grills you into a committed design system + tokens before building (the headline)
+- [deslop-ui](skills/deslop-ui/SKILL.md): remove the named AI visual tells; commit to a direction
 - [web-typography](skills/web-typography/SKILL.md): type scale, measure, rhythm, fonts, fluid clamp, web-font CLS, WCAG text
-- [deslop-ui](skills/deslop-ui/SKILL.md): remove AI visual tells; commit to a real direction
+- [color-system](skills/color-system/SKILL.md): OKLCH palettes, ramps, semantic tokens, verified contrast
 - [dark-mode](skills/dark-mode/SKILL.md): surfaces, elevation-by-lightness, contrast, toggle
-- [color-system](skills/color-system/SKILL.md): OKLCH palettes, ramps, semantic tokens, contrast
 - [responsive-layout](skills/responsive-layout/SKILL.md): mobile-first, intrinsic patterns, container queries
 - [component-states](skills/component-states/SKILL.md): full interactive state matrix + ARIA
 - [form-ux](skills/form-ux/SKILL.md): labels, validation, input types, accessible forms
@@ -21,10 +26,6 @@ Kimi). No SDK or runtime. Install via install.sh (symlinks into each agent's ski
 - [micro-motion](skills/micro-motion/SKILL.md): performant tasteful animation + reduced-motion
 - [a11y-pass](skills/a11y-pass/SKILL.md): runnable WCAG 2.2 AA fix pass
 
-## Start here
-- [README](README.md): what this is, why, and how to install
-- [Verification report](docs/VERIFICATION.md): how every skill was tested end-to-end before release
-
 ## Optional
-- [demos](demos/): standalone HTML pages applying the skills' CSS
-- [commands](commands/): Claude Code slash-command wrappers (/typography, /deslop, …)
+- [demos](demos/): standalone HTML pages applying the skills' CSS, incl. the before/after gallery
+- [commands](commands/): Claude Code slash-command wrappers (/designsystem, /deslop, …)

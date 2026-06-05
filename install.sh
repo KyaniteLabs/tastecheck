@@ -6,8 +6,8 @@ set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_SRC="$REPO/skills"
-SKILLS=(web-typography deslop-ui dark-mode color-system responsive-layout \
-        component-states form-ux empty-states micro-motion a11y-pass)
+SKILLS=(design-system-interview web-typography deslop-ui dark-mode color-system \
+        responsive-layout component-states form-ux empty-states micro-motion a11y-pass)
 
 # Agent homes that use a ~/<home>/skills/ convention
 HOMES=(.claude .codex .gemini .cursor .kilocode .kimi)
@@ -39,7 +39,7 @@ if [ -d "$HOME/.claude" ]; then
   if [[ "${ans:-n}" =~ ^[Yy]$ ]]; then
     mkdir -p "$HOME/.claude/commands"
     cp "$REPO/commands/"*.md "$HOME/.claude/commands/"
-    echo "  copied: /typography /deslop /darkmode /colorsystem /responsive /states /formux /emptystates /motion /a11y"
+    echo "  copied: /designsystem /typography /deslop /colorsystem /darkmode /responsive /states /formux /emptystates /motion /a11y"
   fi
 fi
 
