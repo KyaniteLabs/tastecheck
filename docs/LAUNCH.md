@@ -2,7 +2,7 @@
 
 Draft copy for launch. Written to read human (ran against the humanize-copy kill-list:
 no buzzwords, varied sentence length, a real stance, concrete specifics). Edit the
-@handle, links, and any numbers before posting. Attach `docs/hero/before-after.png` as
+@handle, links, and any numbers before posting. Attach `docs/hero/five-systems.png` as
 the lead image everywhere.
 
 The one rule: **lead with the picture and the enemy, not the feature list.** People share
@@ -19,7 +19,7 @@ the before/after image; the repo link rides along.
 > Not because it's wrong — because it's the average of the web.
 >
 > So I built the thing that stops it. Same prompt, same model, one skill on 👇
-> [attach docs/hero/before-after.png]
+> [attach docs/hero/five-systems.png]
 
 **Tweet 2**
 > The trick isn't cleaning up after the AI. It's refusing to let it guess.
@@ -29,7 +29,7 @@ the before/after image; the repo link rides along.
 > "Pick a side: warm or cool. The middle is where generic lives."
 
 **Tweet 3**
-> Then 10 more skills do the craft, and every rule is checkable, not vibes:
+> Then 13 more skills do the craft, and every rule is checkable, not vibes:
 > · pill button (9999px) → 6px
 > · indigo→violet → one committed hue
 > · #000 dark mode → #121212 + elevation by lightness
@@ -63,20 +63,20 @@ the before/after image; the repo link rides along.
 > actually apologized last year for making indigo the demo default and seeding half of it.)
 >
 > I got tired of redesigning the same generated page, so I made tastecheck. It's a set of
-> ~11 skills for AI coding agents. The part I think is actually new: the headline skill
+> 14 skills for AI coding agents. The part I think is actually new: the headline skill
 > doesn't fix the output afterward — it interviews you *before* the build and forces the
 > decisions the model would otherwise average away (reference instead of adjectives, one
 > dominant color instead of five pastels, a real type pairing instead of Inter). It writes
 > a DESIGN-SYSTEM.md + tokens, and the other skills build from that.
 >
-> The other ten are plain craft, each written to be checkable rather than "make it pop":
+> The other thirteen are plain craft, each written to be checkable rather than "make it pop":
 > OKLCH color with real contrast math, dark mode by surface-lightness, WCAG 2.2 fixes,
 > responsive layout with container queries, the full component state matrix, etc.
 >
 > Two things I did differently from most skill repos: (1) it's provider-agnostic — installs
 > into Claude Code, Codex, Gemini, Cursor, Kilocode, Kimi, since they're just Markdown; and
 > (2) I rendered every skill's CSS in a real Chromium browser and reviewed it before
-> shipping (0 console errors across 17 views), because an untested "anti-slop" pack would be
+> shipping (0 console errors and 0 contrast fails across the homepage and all five live samples), because an untested "anti-slop" pack would be
 > pretty funny. Verification notes and screenshots are in the repo.
 >
 > MIT, no account, no SaaS: https://github.com/KyaniteLabs/tastecheck
@@ -106,7 +106,7 @@ the before/after image; the repo link rides along.
 > mode that isn't pure black, WCAG 2.2 fixes, container-query layouts, every component
 > state, accessible forms, tasteful motion.
 >
-> [before/after image]
+> [five-systems montage image]
 >
 > It works with any agent (not just Claude — it's plain Markdown), it's MIT, and I rendered
 > every skill in a real browser before release so it's not the usual untested "make it pop"
@@ -117,7 +117,7 @@ the before/after image; the repo link rides along.
 ---
 
 ## Notes for posting
-- **Image first.** The before/after PNG is the asset. On X it's the whole tweet; on Reddit
+- **Image first.** The five-systems montage PNG is the asset (plus the live gallery). On X it's the whole tweet; on Reddit
   it goes in the body; on HN it lives in the repo README (HN is text).
 - **HN timing:** weekday morning US Eastern; reply fast to the first comments.
 - **Don't cross-post the same minute** — stagger by a few hours; let X/Reddit traction

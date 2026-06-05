@@ -1,29 +1,42 @@
-# Frontend Skills — Verification Report
+# Verification Report
 
-Date: 2026-06-04. All gates passed before publishing.
+All gates re-run before publishing. Everything below was executed, not asserted.
 
-## A. Structural (python structural.py)
-- 13 skills: frontmatter name == dir; description present; every referenced
-  `references/*.md` exists; decision-records present.
-- Result: 0 FAIL, 0 WARN, 39 checks OK.
+## A. Structural (14 skills)
+- 14/14 skills: frontmatter `name` == dir; description present; every referenced
+  `references/*.md` and `assets/*` exists; `decision-records.md` present.
+- 0 broken references · 100% canonical↔repo file parity.
+- 84/84 symlinks resolve across 6 agent homes (.claude/.codex/.gemini/.cursor/.kilocode/.kimi).
+- Result: 0 FAIL.
 
 ## B. Executable assets
-- color-system OKLCH ramp generator (JS): 10 stops, all valid `oklch()`. PASS.
-- color-system OKLCH ramp generator (Python): 10 stops, all valid. PASS.
+- color-system OKLCH ramp (md/JS): valid `oklch()` stops. PASS.
+- data-viz `chart-starter.html`: renders; KPI clamp computes to 46px (no fallback) after
+  fixing two unspaced `clamp()` values. PASS.
+- `a11y-pass/assets/audit.js`: run against a deliberately broken page — caught all 11
+  planted violations (contrast, tap targets, missing labels/names). The auditor works.
 - llms.txt template: H1 + blockquote + H2 + ## Optional + md-link items. PASS.
 
-## C. CSS validity (Playwright/Chromium, 17 views)
-- 0 console errors across all demos at 390/768/1280 + dark.
-- 0 horizontal overflows (responsive demo clean at all widths).
+## C. Rendered in Chromium (Playwright)
+Homepage + compare gallery + all five samples (Copper, Swiss, Maximal, Concrete, Clay):
+- 0 console errors · 0 horizontal overflow at 360 (mobile) and 1280 (desktop).
+- 0 failures from `a11y-pass` audit; 0 sub-AA text pairs from an independent precise
+  contrast probe (text measured against its real nearest background).
+- No 404s on the live homepage (fonts/images/assets resolve).
 
-## D. Visual review (screenshots, human-reviewed)
-- foundations light+dark: measure capped, elevation-by-lightness, contrast OK.
-- component-states: full state matrix renders (default/disabled/loading/error/selected/toggle).
-- responsive @390: single-column stack, no overflow.
-- deslop before/after: tells vs fixes clearly distinct.
+## D. Palettes
+Every sample ships multiple live color palettes. Each palette was applied and re-audited:
+- copper (4), swiss (4), maximal (3), concrete (4), clay (3) — **0 contrast fails in any
+  palette**, on top of the default.
 
-## E. Operator paths
-- Canonical in ~/.agents/skills; symlinks resolve in 6 agent homes; 13 slash
-  commands reference correct skills; INDEX.md + UNIVERSAL.md registered.
+## E. Independent review
+A 3-model panel (Kimi, MiniMax, z.ai-GLM — different families, via Pushing Dispatch) reviewed
+the samples adversarially. After rebuilds, all five are rated "committed design" and confirmed
+to use five distinct layout grammars (not recolors) — no two share a section's grammar.
+
+## F. Operator paths
+- Cross-sample nav + main-site link resolve relatively (work locally and on GitHub Pages).
+- Canonical in `~/.agents/skills`; slash commands reference correct skills.
+- Site live on GitHub Pages: https://kyanitelabs.github.io/tastecheck/ (gallery at /samples/).
 
 VERDICT: SHIP.
