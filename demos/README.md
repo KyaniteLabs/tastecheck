@@ -10,6 +10,7 @@ verification; rendered screenshots live in [`../docs/screenshots/`](../docs/scre
 | `02-states.html` | component-states full matrix: default/disabled/loading button, link, input + error, selected tab, toggles. |
 | `03-responsive.html` | responsive-layout intrinsic patterns: auto-fit grid + sidebar (resize the window — no breakpoints needed). |
 | `04-motion-forms-empty.html` | micro-motion skeleton shimmer, empty-states empty screen, form-ux labeled field with inline error. |
+| `example-build/` | **the real before/after** — full skill pipeline + proof (see its README) |
 | `05-deslop.html` | deslop-ui before/after: pill+purple+emoji+shadow-2xl vs 8px+committed hue+flat. |
 
 Every demo renders with **zero console errors** at 390 / 768 / 1280px and in dark mode.

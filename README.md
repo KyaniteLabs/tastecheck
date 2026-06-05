@@ -11,6 +11,10 @@ a purple gradient.
 
 ![Same prompt, same model, tastecheck on — a purple-gradient AI default beside a committed editorial design](docs/hero/before-after.png)
 
+*Both panels are **real browser renders**, not mockups. The "after" is built only from
+tokens the skills generated and contrast-verified — see
+[demos/example-build](demos/example-build/) for the full pipeline and proof.*
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-11-success.svg)](#whats-inside)
 [![Any agent](https://img.shields.io/badge/works%20with-any%20AI%20coding%20agent-black.svg)](#works-with-any-agent)

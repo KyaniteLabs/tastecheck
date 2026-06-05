@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prep — after (built from the skills' tokens)</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+/* All values below are SEMANTIC tokens from tokens.css — nothing hand-picked. */
+*{box-sizing:border-box}
+html{font-size:100%}
+body{margin:0;background:var(--paper);color:var(--text);
+  font-family:var(--font-body);font-size:var(--step-0);line-height:1.55;
+  -webkit-font-smoothing:antialiased;font-synthesis:none}
+.wrap{max-width:78rem;margin:0 auto;padding:clamp(1.5rem,1rem+3vw,3.5rem)}
+
+/* top rule / masthead (a11y: real header/nav landmarks) */
+.masthead{display:flex;justify-content:space-between;align-items:baseline;
+  border-bottom:1px solid var(--text);padding-bottom:1rem}
+.brand{font-family:var(--font-display);font-weight:700;font-size:var(--step-1);letter-spacing:-.01em}
+.masthead nav{display:flex;gap:1.5rem;font-size:var(--step--1);
+  text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted)}
+.masthead nav a{color:inherit;text-decoration:none}
+.masthead nav a:hover{color:var(--text)}
+
+/* HERO — asymmetric split (responsive-layout), NOT centered */
+.hero{display:grid;grid-template-columns:1.35fr 1fr;gap:clamp(2rem,1rem+4vw,5rem);
+  align-items:end;padding:clamp(3rem,2rem+5vw,7rem) 0 clamp(2rem,1rem+3vw,4rem)}
+@media (max-width:760px){.hero{grid-template-columns:1fr;align-items:start}}
+.kicker{font-family:ui-monospace,Menlo,monospace;font-size:var(--step--1);
+  letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin:0 0 1.25rem}
+h1{font-family:var(--font-display);font-weight:700;font-size:var(--step-5);
+  line-height:1.02;letter-spacing:-.025em;text-wrap:balance;margin:0;max-width:14ch}
+h1 em{font-style:italic;color:var(--accent)}
+.hero-aside p{font-size:var(--step-1);line-height:1.45;color:var(--text-muted);
+  text-wrap:pretty;max-width:34ch;margin:0 0 1.75rem}
+.actions{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+
+/* button — component-states: default/hover/active/focus-visible, sharp 2px, flat */
+.btn{font-family:var(--font-body);font-size:var(--step-0);font-weight:600;
+  background:var(--accent-fill);color:var(--paper);border:1px solid var(--accent-fill);
+  border-radius:2px;padding:.7em 1.4em;cursor:pointer;
+  transition:background-color 160ms cubic-bezier(.16,1,.3,1),transform 120ms ease}
+.btn:hover{background:var(--accent-800)}
+.btn:active{transform:translateY(1px)}
+.btn:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--text);}
+.btn-ghost:hover{background:var(--text);color:var(--paper)}
+
+/* SIGNATURE — oversized serif index numerals (the committed motif) */
+.index{display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+  border-top:1px solid var(--text);margin-top:clamp(2rem,1rem+3vw,4rem)}
+.item{padding:1.75rem 1.5rem 1.75rem 0;border-right:1px solid var(--rule)}
+.item:last-child{border-right:0}
+@media (max-width:760px){.index{grid-template-columns:1fr}
+  .item{border-right:0;border-bottom:1px solid var(--rule);padding-right:0}}
+.num{font-family:var(--font-display);font-weight:700;font-size:var(--step-4);
+  line-height:.9;color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.item h3{font-family:var(--font-display);font-weight:700;font-size:var(--step-1);
+  margin:.9rem 0 .4rem;letter-spacing:-.01em}
+.item p{margin:0;color:var(--text-muted);max-width:34ch;text-wrap:pretty}
+
+/* stat strip — tabular numerals, hairline rule. Grid w/ generous gap so labels never collide. */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.5rem,1rem+3vw,4rem);
+  border-top:1px solid var(--text);margin-top:clamp(2rem,1rem+3vw,4rem);padding-top:1.5rem}
+@media (max-width:560px){.stats{grid-template-columns:1fr;gap:1.25rem}}
+.stat{min-width:0}
+.stat .n{font-family:var(--font-display);font-weight:700;font-size:var(--step-3);
+  color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
+.stat .l{font-size:var(--step--1);text-transform:uppercase;letter-spacing:.08em;
+  color:var(--text-muted);margin-top:.6rem;display:block}
+
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <span class="brand">Prep<span style="color:var(--accent)">.</span></span>
+    <nav aria-label="Primary">
+      <a href="#">Product</a><a href="#">Kitchens</a><a href="#">Pricing</a><a href="#">Log in</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="kicker">Field Notes — No. 04</p>
+        <h1>Run the kitchen, <em>not</em> the spreadsheet.</h1>
+      </div>
+      <div class="hero-aside">
+        <p>Inventory, prep lists, and orders in one place — built for the Friday-night rush, not the demo.</p>
+        <div class="actions">
+          <button class="btn">Start free trial</button>
+          <button class="btn btn-ghost">Watch the 2-min tour</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="index" aria-label="How it works">
+      <article class="item"><div class="num">01</div><h3>Count once</h3>
+        <p>Scan or tap what's on the shelf. Prep counts roll over from last night automatically.</p></article>
+      <article class="item"><div class="num">02</div><h3>Prep with the line</h3>
+        <p>Today's par levels, split by station, on every screen in the kitchen.</p></article>
+      <article class="item"><div class="num">03</div><h3>Order before you run out</h3>
+        <p>Suppliers, lead times, and budgets in view — so the 86 list stays short.</p></article>
+    </section>
+
+    <section class="stats" aria-label="Results">
+      <div class="stat"><div class="n">2,400</div><div class="l">kitchens running it</div></div>
+      <div class="stat"><div class="n">31%</div><div class="l">less food waste</div></div>
+      <div class="stat"><div class="n">6&nbsp;min</div><div class="l">to set up</div></div>
+    </section>
+  </main>
+</div>
+</body>
+</html>

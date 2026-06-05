@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prep — before (raw AI default, no skills)</title>
+<style>
+/* This is the unguided AI default: purple gradient, Inter, centered hero, 3 emoji cards,
+   pill button, shadow-2xl. Hand-typed to represent the typical no-skills output. */
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:#fff;color:#0f172a}
+.wrap{max-width:1100px;margin:0 auto;padding:64px 24px}
+.hero{background:linear-gradient(135deg,#6366f1 0%,#a855f7 100%);border-radius:24px;
+  padding:72px 32px;text-align:center;color:#fff;box-shadow:0 25px 50px -12px rgba(99,102,241,.5)}
+.hero h1{font-size:44px;font-weight:800;margin:0 0 16px}
+.hero p{font-size:18px;opacity:.92;margin:0 auto 28px;max-width:600px}
+.cta{border:0;border-radius:9999px;background:#fff;color:#6366f1;font-weight:600;
+  font-size:16px;padding:14px 32px;cursor:pointer}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+.card{background:#fff;border-radius:16px;box-shadow:0 20px 25px -5px rgba(0,0,0,.1);
+  padding:32px;text-align:center}
+.card .emoji{font-size:40px;display:block;margin-bottom:16px}
+.card h3{font-size:20px;font-weight:700;margin:0 0 8px}
+.card p{color:#64748b;margin:0;font-size:15px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <h1>🚀 Supercharge your kitchen workflow</h1>
+    <p>The all-in-one platform to streamline inventory, prep, and ordering — everything you need in one place.</p>
+    <button class="cta">Get Started</button>
+  </div>
+  <div class="cards">
+    <div class="card"><span class="emoji">⚡</span><h3>Lightning Fast</h3><p>Built for speed and efficiency.</p></div>
+    <div class="card"><span class="emoji">🔒</span><h3>Secure</h3><p>Your data is safe with us.</p></div>
+    <div class="card"><span class="emoji">✨</span><h3>Simple</h3><p>Easy to use, no training needed.</p></div>
+  </div>
+</div>
+</body>
+</html>
