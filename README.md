@@ -6,7 +6,7 @@ designing — it's returning the statistical average of the web.
 
 **tastecheck is the fix.** It's a set of skills for AI coding agents that does two things
 no prompt does: it **grills you into a real design system *before* it writes any code**,
-then applies eleven checkable craft skills so the output has a point of view instead of
+then applies twelve checkable craft skills so the output has a point of view instead of
 a purple gradient.
 
 ![Same prompt, same model, tastecheck on — a purple-gradient AI default beside a committed editorial design](docs/hero/before-after.png)
@@ -16,7 +16,7 @@ tokens the skills generated and contrast-verified — see
 [demos/example-build](demos/example-build/) for the full pipeline and proof.*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-11-success.svg)](#whats-inside)
+[![Skills](https://img.shields.io/badge/skills-12-success.svg)](#whats-inside)
 [![Any agent](https://img.shields.io/badge/works%20with-any%20AI%20coding%20agent-black.svg)](#works-with-any-agent)
 [![Verified](https://img.shields.io/badge/verified-rendered%20in%20a%20real%20browser-brightgreen.svg)](docs/VERIFICATION.md)
 
