@@ -1,15 +1,13 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Meridian — measurement for research teams</title>
+<title>tastecheck — Swiss / Atelier sample</title>
 <style>
 @font-face{font-family:"Hanken";src:url("fonts/hanken-400.woff2") format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"Hanken";src:url("fonts/hanken-600.woff2") format("woff2");font-weight:600;font-display:swap}
 @font-face{font-family:"Hanken";src:url("fonts/hanken-800.woff2") format("woff2");font-weight:800;font-display:swap}
 :root{
-  /* Swiss / Atelier — bone-white (not glare), softened ink, ONE vermilion signal, cool true neutrals */
   --paper:#f7f6f2; --ink:#15171a; --muted:#5f6469; --line:#d7d6cf; --line-strong:#15171a;
-  --red:#e8482b;            /* the single signal — used sparingly */
-  --red-ink:#c5331b;        /* deeper red that passes for text on bone */
+  --red:#e8482b; --red-ink:#c5331b;
   --font:"Hanken",-apple-system,system-ui,sans-serif; --mono:ui-monospace,Menlo,monospace;
 }
 *{box-sizing:border-box;margin:0}
@@ -18,33 +16,28 @@ body{background:var(--paper) url("paper.png");color:var(--ink);font-family:var(-
 a{color:inherit}
 :focus-visible{outline:2px solid var(--red);outline-offset:2px}
 .skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;z-index:99;background:var(--ink);color:var(--paper);padding:.6em 1em}
-/* exposed modular grid — the signature + the "texture" */
 .grid{max-width:1200px;margin:0 auto;padding-inline:24px;display:grid;grid-template-columns:repeat(12,1fr);column-gap:24px;position:relative}
 .grid::before{content:"";position:absolute;inset:0 24px;pointer-events:none;z-index:0;
   background:repeating-linear-gradient(to right, transparent 0, transparent calc((100% - 11*24px)/12), var(--line) calc((100% - 11*24px)/12), var(--line) calc((100% - 11*24px)/12 + 1px), transparent calc((100% - 11*24px)/12 + 1px), transparent calc((100% - 11*24px)/12 + 24px));
   opacity:.5}
 .grid > *{position:relative;z-index:1}
-
-/* nav */
 header{border-bottom:1px solid var(--line-strong)}
 header .grid{padding-block:18px;align-items:baseline}
 .brand{grid-column:1/4;font-weight:800;font-size:1.3rem;letter-spacing:-.02em}
-.brand i{color:var(--red);font-style:normal}
-nav{grid-column:7/13;display:flex;gap:0;justify-content:flex-end;align-items:center}
+.brand i{color:var(--red-ink);font-style:normal}
+nav{grid-column:6/13;display:flex;gap:0;justify-content:flex-end;align-items:center}
 nav a{display:flex;align-items:center;min-height:44px;padding:0 16px;text-decoration:none;color:var(--muted);font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
 nav a[aria-current=page]{color:var(--ink);box-shadow:inset 0 -2px 0 var(--red)}
 nav a:hover{color:var(--ink)}
 .menu-btn{display:none}
 @media(max-width:720px){nav{display:none}nav.open{display:flex;grid-column:1/13;flex-direction:column;align-items:flex-start;border-top:1px solid var(--line)}
   .menu-btn{display:flex;grid-column:11/13;justify-self:end;min-height:44px;align-items:center;background:none;border:0;font:600 .8rem/1 var(--font);text-transform:uppercase;letter-spacing:.08em;cursor:pointer}}
-
-/* hero — asymmetric within the grid; huge weight contrast; index marker */
 .hero{padding-block:clamp(3.5rem,2rem + 6vw,7rem)}
-.tag{grid-column:1/4;font-family:var(--mono);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding-top:.5rem;border-top:2px solid var(--line-strong)}
+.tag{grid-column:1/5;font-family:var(--mono);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding-top:.5rem;border-top:2px solid var(--line-strong)}
 .tag b{color:var(--red-ink);font-weight:600}
-h1{grid-column:1/10;font-weight:800;font-size:clamp(2.6rem,1.4rem + 6vw,6rem);line-height:.98;letter-spacing:-.035em;margin:.2em 0 0}
+h1{grid-column:1/11;font-weight:800;font-size:clamp(2.6rem,1.4rem + 6vw,6rem);line-height:.98;letter-spacing:-.035em;margin:.2em 0 0}
 h1 .r{color:var(--red)}
-.hero .lede{grid-column:1/7;color:var(--muted);font-size:clamp(1.05rem,1rem+.4vw,1.3rem);margin-top:1.6rem;max-width:40ch}
+.hero .lede{grid-column:1/8;color:var(--muted);font-size:clamp(1.05rem,1rem + .4vw,1.3rem);margin-top:1.6rem;max-width:44ch}
 .hero .meta{grid-column:9/13;margin-top:1.6rem;border-top:1px solid var(--line);padding-top:.8rem;font-family:var(--mono);font-size:.78rem;color:var(--muted);line-height:1.9}
 .hero .meta b{color:var(--ink);font-weight:600}
 .actions{grid-column:1/13;margin-top:2.4rem;display:flex;gap:0;border-top:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong)}
@@ -53,15 +46,6 @@ h1 .r{color:var(--red)}
 .btn-primary:hover{background:#a52810}
 .btn-ghost{color:var(--ink);border-left:1px solid var(--line-strong)}
 .btn-ghost:hover{background:var(--ink);color:var(--paper)}
-
-/* stat strip — tabular, hairline, flush to grid */
-.stats{padding-block:0 clamp(3rem,2rem + 4vw,5rem)}
-.stat{grid-column:span 3;border-top:2px solid var(--line-strong);padding-top:1rem}
-@media(max-width:720px){.stat{grid-column:span 6}}
-.stat .n{font-weight:800;font-size:clamp(1.8rem,1.2rem + 2vw,2.6rem);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-.stat .l{font-family:var(--mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:.4rem}
-
-/* features — Swiss list with oversized index numerals + hairline rules (NOT cards) */
 section{padding-block:clamp(3rem,2rem + 4vw,6rem)}
 .sec-h{grid-column:1/13;border-top:2px solid var(--line-strong);padding-top:1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:baseline}
 .sec-h h2{font-weight:800;font-size:clamp(1.6rem,1.2rem + 1.6vw,2.4rem);letter-spacing:-.02em}
@@ -70,88 +54,92 @@ section{padding-block:clamp(3rem,2rem + 4vw,6rem)}
 .feat .num{grid-column:1/2;font-weight:800;font-size:clamp(2rem,1.4rem + 2vw,3rem);color:var(--red);font-variant-numeric:tabular-nums;line-height:.9;letter-spacing:-.03em}
 .feat h3{grid-column:2/6;font-weight:600;font-size:1.25rem;letter-spacing:-.01em}
 .feat p{grid-column:6/12;color:var(--muted);max-width:48ch}
-@media(max-width:720px){.feat{grid-template-columns:1fr}.feat .num,.feat h3,.feat p{grid-column:1/-1}.feat h3{margin-top:.3rem}.feat p{margin-top:.5rem}}
-
-/* data block — honest Swiss chart (range-frame, tabular), demonstrates data-viz on-system */
-.data .panel{grid-column:1/8}
-@media(max-width:720px){.data .panel{grid-column:1/13}}
-.data figcaption{font-weight:600;margin-bottom:1rem}
-.data svg text{font-family:var(--font);fill:var(--muted);font-size:.72rem}
-.data .side{grid-column:9/13;font-family:var(--mono);font-size:.8rem;color:var(--muted);line-height:1.9;border-top:1px solid var(--line);padding-top:.8rem}
-@media(max-width:720px){.data .side{grid-column:1/13;margin-top:1.5rem}}
-.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-
-/* footer */
+.feat .q{grid-column:6/12;color:var(--ink);font-weight:600;font-style:italic;margin-top:.5rem}
+@media(max-width:720px){.feat{grid-template-columns:1fr}.feat .num,.feat h3,.feat p,.feat .q{grid-column:1/-1}.feat h3{margin-top:.3rem}.feat p{margin-top:.5rem}}
+/* two-slops, swiss style */
+.slop{grid-column:span 6;border-top:2px solid var(--line-strong);padding-top:1rem}
+@media(max-width:720px){.slop{grid-column:1/13}}
+.slop .x{font-weight:800;color:var(--red-ink);font-size:1.1rem}
+.slop h3{font-weight:600;font-size:1.15rem;margin:.3rem 0 .2rem}
+.slop p{color:var(--muted);font-size:.92rem}
+.slop .sw{height:8px;margin-top:.9rem}
+.slop .sw.p{background:linear-gradient(90deg,#6366f1,#a855f7)}
+.slop .sw.c{background:linear-gradient(90deg,#efe7d8,#8c2f24)}
+/* skills index — dense Swiss numbered list */
+.skl{grid-column:1/13;display:grid;grid-template-columns:subgrid;border-bottom:1px solid var(--line);padding-block:.85rem;align-items:baseline}
+.skl .n{grid-column:1/2;font-family:var(--mono);font-size:.85rem;color:var(--red-ink);font-variant-numeric:tabular-nums}
+.skl h3{grid-column:2/5;font-weight:600;font-size:1rem;letter-spacing:-.01em}
+.skl p{grid-column:5/12;color:var(--muted);font-size:.92rem}
+@media(max-width:720px){.skl{grid-template-columns:1fr}.skl .n,.skl h3,.skl p{grid-column:1/-1}.skl p{margin-top:.15rem}}
 footer{border-top:2px solid var(--line-strong)}
 footer .grid{padding-block:2rem}
-footer .c1{grid-column:1/7;font-weight:800}
+footer .c1{grid-column:1/7;font-weight:800}.footer i{color:var(--red-ink)}
 footer .c2{grid-column:9/13;font-family:var(--mono);font-size:.78rem;color:var(--muted);text-align:right}
-
+.cmd{grid-column:1/13;font-family:var(--mono);font-size:.92rem;background:var(--ink);color:var(--paper);padding:1.1rem 1.3rem;margin-top:1.2rem;overflow-x:auto}
+.cmd .c{color:var(--red)}
 .rv{opacity:0;transform:translateY(10px)} .rv.in{opacity:1;transform:none;transition:opacity .5s ease,transform .5s ease}
 @media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}*{transition-duration:.01ms!important}}
 </style></head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header><div class="grid">
-  <span class="brand">Meridian<i>.</i></span>
+  <span class="brand">taste<i>check</i></span>
   <button class="menu-btn" aria-expanded="false" aria-controls="nav">Menu</button>
-  <nav id="nav" aria-label="Primary"><a href="#" aria-current="page">Product</a><a href="#method">Method</a><a href="#data">Data</a><a href="#start">Start</a></nav>
+  <nav id="nav" aria-label="Primary"><a href="#why">Problem</a><a href="#how">How</a><a href="#skills">Skills</a><a href="#install" aria-current="page">Install</a></nav>
 </div></header>
 
 <main id="main">
 <section class="hero"><div class="grid">
-  <p class="tag"><b>01</b> &nbsp;/ &nbsp;measurement system</p>
-  <h1>Measure what your research <span class="r">actually</span> moved.</h1>
-  <p class="lede">Meridian turns messy study data into defensible numbers — instruments, not dashboards. Built for teams who have to be right.</p>
-  <div class="meta">Trusted by<br><b>140 labs</b><br>across <b>22 fields</b><br>since <b>2021</b></div>
+  <p class="tag"><b>01</b> &nbsp;/ &nbsp;design intelligence for AI agents</p>
+  <h1>Make it <span class="r">yours</span>, not the average.</h1>
+  <p class="lede">Every AI builds the same site. tastecheck interviews you into a real design system first — then 14 skills make sure your agent ships taste, not slop.</p>
+  <div class="meta">Works with<br><b>Claude Code</b><br><b>Codex · Gemini</b><br><b>Cursor</b> · MIT</div>
   <div class="actions">
-    <button class="btn btn-primary">Start a study →</button>
-    <button class="btn btn-ghost">Read the method</button>
+    <button class="btn btn-primary">Run a taste check →</button>
+    <button class="btn btn-ghost">See the skills</button>
   </div>
 </div></section>
 
-<section class="stats"><div class="grid">
-  <div class="stat"><div class="n">99.98%</div><div class="l">uptime</div></div>
-  <div class="stat"><div class="n">12&nbsp;ms</div><div class="l">query median</div></div>
-  <div class="stat"><div class="n">0</div><div class="l">data leaves your lab</div></div>
-  <div class="stat"><div class="n">SOC&nbsp;2</div><div class="l">audited</div></div>
+<section id="why"><div class="grid">
+  <div class="sec-h"><h2>There are two AI slops.</h2><span class="k">/ we refuse both</span></div>
+  <div class="slop"><div class="x">✕ Slop v1</div><h3>The purple gradient</h3><p>Indigo→violet, Inter, centered hero, three emoji cards, pill buttons. 2023–2025.</p><div class="sw p"></div></div>
+  <div class="slop"><div class="x">✕ Slop v2</div><h3>The editorial serif</h3><p>Fraunces, cream paper, brick-red accent, oversized italics. The 2026 default.</p><div class="sw c"></div></div>
 </div></section>
 
-<section id="method"><div class="grid">
-  <div class="sec-h"><h2>The method</h2><span class="k">/ how it works</span></div>
-  <article class="feat rv"><div class="num">01</div><h3>Instrument the study</h3><p>Define measures once. Meridian enforces them across every run, so a number means the same thing on day one and day three hundred.</p></article>
-  <article class="feat rv"><div class="num">02</div><h3>Record, don't estimate</h3><p>Every figure traces to a source event. No silent rounding, no truncated axes — the result is the result.</p></article>
-  <article class="feat rv"><div class="num">03</div><h3>Defend the finding</h3><p>Export a figure and its provenance together. Reviewers see the same evidence you did.</p></article>
+<section id="how"><div class="grid">
+  <div class="sec-h"><h2>It interviews you first.</h2><span class="k">/ how it works</span></div>
+  <article class="feat rv"><div class="num">01</div><h3>It grills you</h3><p>Function first, then references — it finds the pattern across what you love.</p><div class="q">“‘Modern’ is a non-answer — name one you’d resemble.”</div></article>
+  <article class="feat rv"><div class="num">02</div><h3>It commits</h3><p>OKLCH palette with verified contrast, a real type pairing, structure, motion — as tokens.</p><div class="q">“One dominant color, not five. And not indigo→violet.”</div></article>
+  <article class="feat rv"><div class="num">03</div><h3>It builds &amp; checks</h3><p>The skills apply the system, then audit the result against your spec — not the average.</p><div class="q">“That wine-red is the new tell. For your energy, push here.”</div></article>
 </div></section>
 
-<section id="data"><div class="grid data">
-  <figure class="panel rv">
-    <figcaption>Replication rate climbed to 91% after instrumenting measures.</figcaption>
-    <svg viewBox="0 0 560 220" role="img" aria-label="Replication rate rose from 62% in 2021 to 91% in 2026.">
-      <line x1="44" y1="184" x2="540" y2="184" stroke="var(--line-strong)"/>
-      <line x1="44" y1="28" x2="44" y2="184" stroke="var(--line-strong)"/>
-      <text x="38" y="32" text-anchor="end">91</text><text x="38" y="188" text-anchor="end">62</text>
-      <text x="44" y="204">2021</text><text x="540" y="204" text-anchor="end">2026</text>
-      <polyline fill="none" stroke="var(--red)" stroke-width="2.5" points="44,168 144,150 244,130 344,96 444,70 540,40"/>
-      <circle cx="540" cy="40" r="4" fill="var(--red)"/>
-    </svg>
-    <table class="visually-hidden"><caption>Replication rate</caption><tr><th>2021</th><td>62%</td></tr><tr><th>2026</th><td>91%</td></tr></table>
-  </figure>
-  <div class="side">Replication rate<br><b style="color:var(--ink)">62% → 91%</b><br><br>Median study size<br><b style="color:var(--ink)">1,240</b><br><br>Measures enforced<br><b style="color:var(--ink)">8,900</b></div>
+<section id="skills"><div class="grid">
+  <div class="sec-h"><h2>Fourteen skills.</h2><span class="k">/ each checkable, not vibes</span></div>
+  <div class="skl rv"><div class="n">00</div><h3>design-system-interview</h3><p>Grills you into a committed design system + tokens before any code.</p></div>
+  <div class="skl rv"><div class="n">01</div><h3>deslop-ui</h3><p>Strip the AI tells — visual and structural — and commit to a direction.</p></div>
+  <div class="skl rv"><div class="n">02</div><h3>humanize-copy</h3><p>Remove the ChatGPT accent from writing.</p></div>
+  <div class="skl rv"><div class="n">03</div><h3>web-typography</h3><p>Type scale, measure, rhythm, font loading.</p></div>
+  <div class="skl rv"><div class="n">04</div><h3>color-system</h3><p>OKLCH palettes that pass contrast.</p></div>
+  <div class="skl rv"><div class="n">05</div><h3>theming</h3><p>Light + dark + high-contrast from one token set.</p></div>
+  <div class="skl rv"><div class="n">06</div><h3>responsive-layout</h3><p>Survives any width — intrinsic, container queries.</p></div>
+  <div class="skl rv"><div class="n">07</div><h3>component-states</h3><p>Every interactive state + matching ARIA.</p></div>
+  <div class="skl rv"><div class="n">08</div><h3>form-ux</h3><p>Forms people actually finish.</p></div>
+  <div class="skl rv"><div class="n">09</div><h3>empty-states</h3><p>Empty / loading / error, handled.</p></div>
+  <div class="skl rv"><div class="n">10</div><h3>micro-motion</h3><p>Animation that feels expensive, not annoying.</p></div>
+  <div class="skl rv"><div class="n">11</div><h3>a11y-pass</h3><p>Runnable WCAG 2.2 AA audit.</p></div>
+  <div class="skl rv"><div class="n">12</div><h3>cognitive-a11y</h3><p>ADHD · autism · dyslexia · neurodivergence.</p></div>
+  <div class="skl rv"><div class="n">13</div><h3>data-viz</h3><p>Honest, Tufte-grade charts.</p></div>
 </div></section>
 
-<section id="start"><div class="grid">
-  <div class="sec-h"><h2>Start measuring.</h2><span class="k">/ get set up in a day</span></div>
-  <div class="actions" style="grid-column:1/13;margin-top:0">
-    <button class="btn btn-primary">Create a workspace →</button>
-    <button class="btn btn-ghost">Talk to research eng</button>
-  </div>
+<section id="install"><div class="grid">
+  <div class="sec-h"><h2>One command. Then just build.</h2><span class="k">/ install</span></div>
+  <div class="cmd"><span class="c">$</span> git clone https://github.com/KyaniteLabs/tastecheck<br><span class="c">$</span> ./tastecheck/install.sh</div>
 </div></section>
 </main>
 
 <footer><div class="grid">
-  <span class="c1">Meridian<i style="color:var(--red)">.</i></span>
-  <span class="c2">measurement for research teams<br>a tastecheck sample · Swiss / Atelier</span>
+  <span class="c1">taste<i style="color:var(--red-ink)">check</i></span>
+  <span class="c2">taste is the only moat · MIT<br>sample · Swiss / Atelier</span>
 </div></footer>
 
 <script>
