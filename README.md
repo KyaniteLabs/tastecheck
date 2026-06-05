@@ -1,4 +1,4 @@
-# tastecheck
+# TasteCheck
 
 **Every AI builds the same website.** Purple gradient, Inter font, centered hero, three
 identical feature cards, pill buttons, glassmorphism. You've seen it a thousand times
