@@ -5,7 +5,7 @@
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="author" content="Kyanite Labs">
 <meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#e7e4dc">
+<meta name="theme-color" content="#0c0c0c">
 <link rel="canonical" href="https://kyanitelabs.github.io/tastecheck/samples/concrete/">
 <meta property="og:type" content="website"><meta property="og:site_name" content="tastecheck">
 <meta property="og:title" content="tastecheck — Concrete / Brutalist design-system sample">
@@ -22,7 +22,8 @@
 @font-face{font-family:"Mono";src:url("fonts/space-mono-400.woff2") format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"Mono";src:url("fonts/space-mono-700.woff2") format("woff2");font-weight:700;font-display:swap}
 :root{
-  --concrete:#e7e4dc; --ink:#0a0a0a; --paper:#f6f4ee; --muted:#56524a; --line:#0a0a0a;
+  /* dark blueprint brutalism: ink ground, light "concrete" text/rules, hazard works on dark */
+  --concrete:#0c0c0c; --ink:#e7e4dc; --paper:#0a0a0a; --muted:#9c968b; --line:#46433c;
   --hazard:#ff4d00;
   --disp:"Grotesk",system-ui,sans-serif; --mono:"Mono",ui-monospace,Menlo,monospace;
 }
@@ -31,14 +32,14 @@ html{scroll-behavior:smooth}
 body{background:var(--concrete);color:var(--ink);font-family:var(--mono);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit}
 :focus-visible{outline:3px solid var(--ink);outline-offset:2px}
-.install :focus-visible{outline-color:var(--hazard)}
+.install :focus-visible{outline-color:var(--paper)}
 .skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;z-index:99;background:var(--ink);color:var(--paper);padding:.6em 1em}
 .wrap{max-width:1120px;margin:0 auto;padding-inline:clamp(1.1rem,1rem + 2.5vw,2.5rem)}
 .lbl{font:700 .72rem var(--mono);letter-spacing:.14em;text-transform:uppercase}
 /* header: heavy ruled bar */
 header{position:sticky;top:0;z-index:40;background:var(--concrete);border-bottom:3px solid var(--ink)}
 .nav{display:flex;justify-content:space-between;align-items:center;min-height:60px}
-.brand{font:700 1.35rem var(--disp);letter-spacing:-.02em}.brand i{font-style:normal}
+.brand{font:700 1.35rem var(--disp);letter-spacing:-.02em}.brand i{font-style:normal;color:var(--hazard)}
 .nav details{position:relative}.nav summary{list-style:none;cursor:pointer;min-height:44px;display:flex;align-items:center;font:700 .74rem var(--mono);text-transform:uppercase;letter-spacing:.1em}
 .nav summary::-webkit-details-marker{display:none}.menu{display:flex;gap:.2rem}
 .menu a{display:flex;align-items:center;min-height:44px;padding:0 12px;text-decoration:none;font:700 .72rem var(--mono);text-transform:uppercase;letter-spacing:.08em}.menu a:hover{background:var(--ink);color:var(--paper)}
@@ -49,17 +50,17 @@ header{position:sticky;top:0;z-index:40;background:var(--concrete);border-bottom
 .hero .wrap{padding-block:clamp(3rem,2rem + 6vw,6rem)}
 .tag{display:inline-block;border:2px solid var(--ink);padding:.35em .7em;margin-bottom:1.5rem}
 h1{font:700 clamp(2.8rem,1.4rem + 7vw,6.2rem) var(--disp);line-height:.92;letter-spacing:-.035em;max-width:16ch}
-h1 .hz{background:var(--hazard);color:var(--ink);padding:0 .08em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+h1 .hz{background:var(--hazard);color:var(--paper);padding:0 .08em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .lede{font-size:clamp(1rem,.95rem + .4vw,1.2rem);max-width:54ch;margin-top:1.6rem}
 .actions{display:flex;gap:0;flex-wrap:wrap;margin-top:2rem;border:3px solid var(--ink);width:fit-content;max-width:100%}
 .btn{font:700 .82rem var(--mono);text-transform:uppercase;letter-spacing:.08em;cursor:pointer;border:0;padding:1.05em 1.6em;min-height:48px;background:var(--concrete);color:var(--ink)}
-.btn-primary{background:var(--hazard);color:var(--ink);border-right:3px solid var(--ink)}
+.btn-primary{background:var(--hazard);color:var(--paper);border-right:3px solid var(--ink)}
 .btn-primary:hover{background:var(--ink);color:var(--paper)}
 .btn-ghost:hover{background:var(--ink);color:var(--paper)}
 .trust{margin-top:1.5rem;font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.trust b{color:var(--ink)}
 section{padding-block:clamp(2.8rem,2rem + 4vw,5rem)}
 .sechead{display:flex;align-items:baseline;gap:1rem;border-bottom:3px solid var(--ink);padding-bottom:.8rem;margin-bottom:2rem}
-.sechead .fig{font:700 .72rem var(--mono);text-transform:uppercase;letter-spacing:.12em;background:var(--hazard);color:var(--ink);padding:.2em .5em}
+.sechead .fig{font:700 .72rem var(--mono);text-transform:uppercase;letter-spacing:.12em;background:var(--hazard);color:var(--paper);padding:.2em .5em}
 h2{font:700 clamp(1.8rem,1.3rem + 2.4vw,3rem) var(--disp);line-height:1;letter-spacing:-.02em}
 .slede{max-width:60ch;font-size:.95rem;color:var(--muted)}
 /* two slops — two heavy bordered specimen boxes (varied widths) */
@@ -87,10 +88,10 @@ h2{font:700 clamp(1.8rem,1.3rem + 2.4vw,3rem) var(--disp);line-height:1;letter-s
 @media(max-width:680px){.trow{grid-template-columns:3rem 1fr}.trow .ds{grid-column:2}}
 /* install — inverted block */
 .install{background:var(--ink);color:var(--paper)}
-.install .sechead{border-bottom-color:var(--paper)}.install .fig{background:var(--hazard);color:var(--ink)}
-.cmd{font:400 clamp(.82rem,.7rem + .5vw,1rem) var(--mono);border:2px solid var(--paper);padding:1.1rem 1.3rem;margin-top:1.2rem;overflow-x:auto}.cmd .c{color:var(--hazard)}
+.install .sechead{border-bottom-color:var(--paper)}.install .fig{background:var(--hazard);color:var(--paper)}
+.cmd{font:400 clamp(.82rem,.7rem + .5vw,1rem) var(--mono);border:2px solid var(--paper);padding:1.1rem 1.3rem;margin-top:1.2rem;overflow-x:auto}.cmd .c{color:var(--paper);font-weight:700}
 footer{border-top:3px solid var(--ink);padding-block:2rem;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em}
-footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}footer b{font-family:var(--disp)}footer b i{font-style:normal}
+footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}footer b{font-family:var(--disp)}footer b i{font-style:normal;color:var(--hazard)}
 /* reveal — hard, fast; gated behind .js so content shows without JS */
 .js .rv{opacity:0;transform:translateY(10px)}
 .js .rv.in{opacity:1;transform:none;transition:opacity .14s linear,transform .14s linear}

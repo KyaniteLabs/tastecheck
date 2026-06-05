@@ -24,12 +24,14 @@ monospace + exposed scaffolding. Must not be: cute, soft, decorative, gradient-y
   **Body + labels:** **Space Mono** (400/700) — true monospace; embrace its rhythm.
   Extreme size contrast; set the display huge and tight, body in mono at a steady measure.
 
-## Color (color-system) — ACHROMATIC by intent
-- Ground **concrete** `#e7e4dc`; ink **`#0a0a0a`**; paper-white `#f6f4ee` for inverted text.
-- Single functional accent **hazard `#ff4d00`** — used ONLY for interactive/CTA and one
-  rule, never decoration. Everything else is black / concrete / white.
-- Inversion (black block + paper text) is the primary "color." Verify every pair ≥ 4.5:1
-  (trivial here — it's near-pure black/white).
+## Color (color-system) — ACHROMATIC by intent (dark blueprint)
+- Ground **ink** `#0c0c0c`; light "concrete" text + rules `#e7e4dc`; muted `#9c968b`.
+  Inverted blocks (e.g. the install band) flip to a **light concrete panel with dark text**.
+- Single functional accent **hazard `#ff4d00`** — on the dark ground it clears AA as text
+  (~5.5:1), so it carries the wordmark, the Fig. tags and the hero stamp; on any light
+  inverted block it is **fills-only with dark text** (hazard-on-light fails as text).
+- Inversion (light block + dark text on a black page) is the second "color." Verify every
+  pair ≥ 4.5:1 — measured, not assumed.
 
 ## Shape & density
 - **Zero radius. Hard 90° corners.** Thick rules (2–3px black). Boxes share edges (no gaps
