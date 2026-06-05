@@ -122,3 +122,12 @@ users still get a (motionless) fade and never a broken layout.
   rule; no scroll-jacking; total page-load motion < ~800ms.
 - Pairs with `empty-states` (loading/skeleton), `deslop-ui` (one signature moment,
   not blob animations), `form-ux` (validation feedback motion).
+
+## Self-check
+
+- [ ] Animate only `transform`/`opacity` (compositor) — nothing animates layout props
+- [ ] Durations/easings are tokens; entrances ~150–250ms ease-out (custom curve, not linear)
+- [ ] `prefers-reduced-motion` path tested (motion off or cross-fade) — content never depends on it
+- [ ] Under the ~30% rule; one signature moment, not blob soup
+- [ ] No scroll-jacking; total page-load motion < ~800ms; nothing flashes > 3×/s
+- [ ] Stated the tokens used and what to look at
