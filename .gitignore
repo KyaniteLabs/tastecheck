@@ -1,5 +1,4 @@
+.scratch/
 .DS_Store
 node_modules/
 *.log
-.vscode/
-.idea/

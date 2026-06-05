@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>tastecheck — type + motif specimen</title>
+<style>
+@font-face{font-family:"Redaction0";src:url("fonts/redaction-0-700.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Redaction0";src:url("fonts/redaction-0-400.woff2") format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"Redaction35";src:url("fonts/redaction-35-700.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Redaction70";src:url("fonts/redaction-70-700.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Redaction70";src:url("fonts/redaction-70-400.woff2") format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"Archivo";src:url("fonts/archivo-400.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Archivo";src:url("fonts/archivo-600.woff2") format("woff2");font-weight:600;font-display:swap}
+:root{
+  --bg:oklch(0.16 0.02 280);        /* near-black, faint cool cast (clay) */
+  --bg2:oklch(0.21 0.03 280);
+  --ink:oklch(0.96 0.01 90);        /* warm off-white */
+  --muted:oklch(0.72 0.02 90);
+  --signal:oklch(0.78 0.20 150);    /* electric jade — high chroma */
+  --signal2:oklch(0.72 0.19 300);   /* iridescent violet partner */
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Archivo",system-ui,sans-serif;position:relative;overflow-x:hidden}
+#field{position:fixed;inset:0;z-index:0;opacity:.55}
+.wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:56px 40px 72px}
+.kick{font-family:ui-monospace,Menlo,monospace;font-size:.78rem;letter-spacing:.28em;text-transform:uppercase;color:var(--signal)}
+.h-hero{font-family:"Redaction70",Georgia,serif;font-weight:700;font-size:clamp(3rem,1.5rem+7vw,7rem);line-height:.94;letter-spacing:-.02em;margin:.4em 0 .1em}
+.h-hero em{font-style:italic;color:var(--signal);font-weight:400}
+.row{border-top:1px solid color-mix(in oklab,var(--ink) 18%,transparent);padding:26px 0;display:grid;grid-template-columns:90px 1fr;gap:24px;align-items:baseline}
+.row .lab{font-family:ui-monospace,monospace;font-size:.72rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.g0{font-family:"Redaction0",serif;font-weight:700;font-size:2.4rem;line-height:1}
+.g35{font-family:"Redaction35",serif;font-weight:700;font-size:2.4rem;line-height:1}
+.g70{font-family:"Redaction70",serif;font-weight:700;font-size:2.4rem;line-height:1}
+.body{font-family:"Archivo";max-width:62ch;color:var(--muted);line-height:1.6;font-size:1.05rem}
+.sig{display:inline-block;font-family:"Redaction70",serif;font-weight:700;font-size:clamp(4rem,2rem+8vw,9rem);line-height:.8;
+  background:linear-gradient(92deg,var(--signal),var(--signal2));-webkit-background-clip:text;background-clip:text;color:transparent;
+  font-variant-numeric:tabular-nums}
+.note{color:var(--muted);font-size:.95rem;margin-top:6px}
+</style></head>
+<body>
+<canvas id="field"></canvas>
+<div class="wrap">
+  <div class="kick">tastecheck · type + structural motif · dark</div>
+  <h1 class="h-hero">Make it<br>yours, <em>not</em> the<br>average.</h1>
+
+  <div class="row"><div class="lab">Grade&nbsp;0</div><div><div class="g0">Redaction — clean, legible</div><div class="note">body / UI / small sizes</div></div></div>
+  <div class="row"><div class="lab">Grade&nbsp;35</div><div><div class="g35">Redaction — eroding</div><div class="note">subheads / mid display</div></div></div>
+  <div class="row"><div class="lab">Grade&nbsp;70</div><div><div class="g70">Redaction — corroded</div><div class="note">hero only — material, alive</div></div></div>
+
+  <div class="row"><div class="lab">Body</div><div><p class="body">Archivo at reading size. The corrosion is built into the font family — six grades of decay, not a filter — so the texture is honest, like glaze on dark clay. High-chroma signal color earns its place on near-black; one jade, one iridescent violet partner.</p></div></div>
+
+  <div class="row"><div class="lab">Signature</div><div><span class="sig">01</span><div class="note">oversized corroded numerals + iridescent edge — the recurring motif</div></div></div>
+</div>
+<script>
+// Real computed Voronoi (nearest-seed), iridescent cell edges. No stock image.
+const c=document.getElementById('field'),x=c.getContext('2d');
+function draw(){
+  const W=c.width=innerWidth, H=c.height=innerHeight;
+  const N=46, seeds=[];
+  // deterministic-ish scatter (no Math.random dependency for repeatability across renders)
+  let s=12345; const rnd=()=>{s=(s*1103515245+12345)&0x7fffffff;return s/0x7fffffff;};
+  for(let i=0;i<N;i++) seeds.push([rnd()*W, rnd()*H]);
+  const img=x.createImageData(W,H), d=img.data;
+  // assign each pixel to nearest seed; edge = where 1st and 2nd nearest are close (cell boundary)
+  for(let py=0;py<H;py+=2){for(let px=0;px<W;px+=2){
+    let b1=1e12,b2=1e12,bi=0;
+    for(let i=0;i<N;i++){const dx=px-seeds[i][0],dy=py-seeds[i][1],dd=dx*dx+dy*dy;
+      if(dd<b1){b2=b1;b1=dd;bi=i;}else if(dd<b2){b2=dd;}}
+    const edge=Math.sqrt(b2)-Math.sqrt(b1);     // small near borders
+    const isEdge=edge<2.2;
+    const hue=(bi*47)%360;                        // per-cell hue -> iridescence
+    let r,g,bl,a;
+    if(isEdge){ // iridescent edge stroke (jade->violet sweep by hue)
+      const t=(Math.sin(hue*0.0349)+1)/2;
+      r=80+120*t; g=200-80*t; bl=150+90*t; a=170;
+    }else{ // faint cell fill, slightly tinted by hue (basalt facets)
+      const v=22+ (bi%5)*5; r=v; g=v+6; bl=v+14; a=255;
+    }
+    for(let oy=0;oy<2;oy++)for(let ox=0;ox<2;ox++){
+      const idx=4*((py+oy)*W+(px+ox)); d[idx]=r;d[idx+1]=g;d[idx+2]=bl;d[idx+3]=a;}
+  }}
+  x.putImageData(img,0,0);
+  window.__fieldDrawn=true;
+}
+draw();
+</script>
+</body></html>

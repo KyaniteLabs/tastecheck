@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>tastecheck — stop shipping the average</title>
+<style>
+@font-face{font-family:"Red0";src:url("fonts/redaction-0-700.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Red0";src:url("fonts/redaction-0-400.woff2") format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"Red35";src:url("fonts/redaction-35-700.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Archivo";src:url("fonts/archivo-400.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Archivo";src:url("fonts/archivo-600.woff2") format("woff2");font-weight:600;font-display:swap}
+:root{
+  --bg:#0f0d0b; --s1:#1a1611; --s2:#241e16; --s3:#2e261b; --line:#3a3024;
+  --ink:#f5efe6; --muted:#c3b6a4; /* warm, tinted toward copper, passes AA */
+  --copper:#f0a259; --copper-deep:#7a4518; --on-copper:#1a0e03;
+  --verd:#33d6ac;           /* verdigris reaction */
+  --disp:"Red0",Georgia,serif; --body:"Archivo",system-ui,-apple-system,sans-serif; --mono:ui-monospace,Menlo,monospace;
+  --rc:5px; --rcell:14px;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased;font-synthesis:none;overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--copper);outline-offset:3px;border-radius:3px}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(1.25rem,1rem + 3vw,3rem)}
+.skip{position:absolute;left:-999px}.skip:focus{left:16px;top:16px;z-index:99;background:var(--copper);color:var(--on-copper);padding:.6em 1em;border-radius:5px}
+
+/* NAV — real mobile (disclosure), tap targets >=44px */
+header.nav{position:sticky;top:0;z-index:40;background:rgba(15,13,11,.74);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;justify-content:space-between;align-items:center;min-height:60px}
+.brand{font-family:var(--disp);font-weight:700;font-size:1.5rem;letter-spacing:-.01em}
+.brand b{color:var(--copper)}
+.nav details{position:relative}
+.nav summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:.5rem;min-height:44px;padding-inline:.4rem;color:var(--muted);font:600 .9rem var(--body)}
+.nav summary::-webkit-details-marker{display:none}
+.nav .menu{display:flex;gap:.4rem}
+.nav .menu a{display:flex;align-items:center;min-height:44px;padding:0 .9rem;text-decoration:none;color:var(--muted);font:600 .82rem var(--body);border-radius:6px}
+.nav .menu a:hover{color:var(--ink);background:rgba(245,239,230,.05)}
+@media(max-width:680px){
+  .nav .menu{position:absolute;right:0;top:48px;flex-direction:column;background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:.4rem;min-width:170px}
+  .nav details:not([open]) .menu{display:none}
+}
+@media(min-width:681px){.nav summary{display:none}}
+
+/* HERO — asymmetric, living texture, column-rule motif, index marker (no mono eyebrow tell) */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero .bg{position:absolute;inset:-4% ;z-index:0;background:url("img/basalt-copper.png") center/cover no-repeat;will-change:transform}
+.hero .scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(105deg, var(--bg) 12%, rgba(15,13,11,.72) 48%, rgba(15,13,11,.30) 100%)}
+.hero .wrap{position:relative;z-index:2;padding-block:clamp(4rem,2rem + 9vw,8rem);display:grid;grid-template-columns:auto 1fr;gap:clamp(1rem,.5rem + 2vw,2.2rem)}
+.rule{width:2px;background:linear-gradient(var(--copper),transparent);border-radius:2px}
+.hcol{max-width:min(100%,42rem)}
+.idx{font-family:var(--mono);font-size:.8rem;color:var(--copper);margin-bottom:1.1rem;display:flex;gap:.6rem;align-items:center}
+.idx s{width:1.6rem;height:1px;background:var(--copper);display:inline-block;text-decoration:none}
+h1{font-family:var(--disp);font-weight:700;font-size:clamp(3rem,1.6rem + 6vw,6rem);line-height:.94;letter-spacing:-.03em;margin-bottom:1.3rem;max-width:16ch}
+h1 .j{color:var(--copper)} h1 em{font-style:italic;font-weight:400}
+.lede{font-size:clamp(1.12rem,1rem + .55vw,1.45rem);color:var(--ink);opacity:.92;max-width:42ch;margin-bottom:1.9rem;text-wrap:pretty}
+.actions{display:flex;gap:.9rem;flex-wrap:wrap;align-items:center}
+.btn{font:600 1.02rem var(--body);cursor:pointer;border-radius:var(--rc);padding:.8em 1.5em;border:1px solid transparent;min-height:48px;transition:transform .12s ease,background-color .16s ease,border-color .16s ease}
+.btn-primary{background:var(--copper);color:var(--on-copper)}
+.btn-primary:hover{background:#f6b06e}
+.btn-primary:active{transform:translateY(1px)}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--ink)}
+.trust{margin-top:1.6rem;color:var(--muted);font-size:.92rem}.trust b{color:var(--ink);font-weight:600}
+@media(max-width:560px){.hero .wrap{grid-template-columns:1fr}.rule{display:none}}
+
+/* reveal-on-scroll (alive) */
+.js .rv{opacity:0;transform:translateY(18px)}
+.rv.in{opacity:1;transform:none;transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
+
+section{padding-block:clamp(3.5rem,2rem + 6vw,6.5rem)}
+.mark{font-family:var(--mono);font-size:.8rem;color:var(--copper);display:flex;gap:.6rem;align-items:center;margin-bottom:1rem}
+.mark s{width:1.6rem;height:1px;background:var(--copper);display:inline-block}
+h2{font-family:var(--disp);font-weight:700;font-size:clamp(2.1rem,1.4rem + 3vw,3.4rem);line-height:1.03;letter-spacing:-.02em;max-width:18ch}
+.slede{color:var(--muted);max-width:54ch;margin-top:1rem;font-size:1.12rem;text-wrap:pretty}
+
+/* PROBLEM — syncopated, not two equal cards: a statement + offset swatches */
+.problem{display:grid;grid-template-columns:1.3fr .7fr;gap:clamp(1.5rem,1rem + 3vw,3.5rem);align-items:end}
+@media(max-width:760px){.problem{grid-template-columns:1fr}}
+.twoslop{display:flex;flex-direction:column;gap:1rem}
+.ts{display:flex;gap:1rem;align-items:center;border:1px solid var(--line);border-radius:var(--rcell);padding:1rem;background:var(--s1)}
+.ts .sw{width:78px;height:56px;border-radius:8px;flex:none}
+.ts .sw.p{background:linear-gradient(135deg,#6366f1,#a855f7)}
+.ts .sw.c{background:linear-gradient(135deg,#efe7d8,#8c2f24)}
+.ts h3{font:600 1rem var(--body);margin-bottom:.2rem}.ts p{color:var(--muted);font-size:.86rem}
+.ts:nth-child(2){margin-left:2rem}
+
+/* INTERVIEW transcript (replaces generic 3-step; shows the actual product) */
+.chat{margin-top:2.5rem;display:flex;flex-direction:column;gap:1rem;max-width:60ch}
+.bubble{padding:.85rem 1.1rem;border-radius:14px;max-width:80%;font-size:1.02rem;line-height:1.5}
+.bubble.ai{background:var(--s2);border:1px solid var(--line);border-bottom-left-radius:3px;align-self:flex-start;font-family:var(--disp);font-style:italic}
+.bubble.you{background:var(--copper-deep);color:#ffe6cf;border-bottom-right-radius:3px;align-self:flex-end}
+.chat .out{font-family:var(--mono);font-size:.85rem;color:var(--verd);align-self:flex-start;margin-top:.2rem}
+
+/* SKILLS — irregular tessellated bento (varied spans = syncopation), real live demos */
+.bento{margin-top:3rem;display:grid;grid-template-columns:repeat(6,1fr);gap:1rem;grid-auto-flow:dense}
+@media(max-width:900px){.bento{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:560px){.bento{grid-template-columns:repeat(2,1fr)}}
+.cell{background:var(--s1);border:1px solid var(--line);border-radius:var(--rcell);padding:1.2rem;display:flex;flex-direction:column;gap:.8rem;grid-column:span 2;min-height:11rem;transition:border-color .18s ease,transform .18s ease}
+.cell:hover{border-color:var(--copper-deep);transform:translateY(-2px)}
+.cell.w3{grid-column:span 3}.cell.w4{grid-column:span 4}.cell.tall{grid-row:span 2}
+@media(max-width:560px){.cell,.cell.w3,.cell.w4{grid-column:span 2}.cell.tall{grid-row:auto}}
+.cell .lab{display:flex;align-items:baseline;gap:.55rem}
+.cell .lab .n{font:600 .8rem var(--mono);color:var(--copper)}
+.cell .lab h3{font-family:var(--disp);font-weight:700;font-size:1.12rem;letter-spacing:-.01em}
+.cell .cap{color:var(--muted);font-size:.88rem;margin-top:auto}
+.stage{background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:1rem;display:flex;flex-direction:column;gap:.7rem;justify-content:center;flex:1;min-height:5.5rem}
+
+/* live demo bits */
+.dbtn{font:600 .85rem var(--body);border:1px solid transparent;border-radius:5px;padding:.55em .95em;cursor:pointer;min-height:38px;background:var(--copper);color:var(--on-copper);transition:background-color .15s,transform .1s,outline .1s;align-self:flex-start}
+.dbtn:hover{background:#f6b06e}.dbtn:active{transform:translateY(1px)}
+.dbtn[disabled]{background:#2c251b;color:#7d7363;cursor:not-allowed;border-color:var(--line)}
+.dbtn.loading{color:transparent;position:relative;pointer-events:none}
+.dbtn.loading::after{content:"";position:absolute;inset:0;margin:auto;width:1em;height:1em;border:2px solid var(--on-copper);border-right-color:transparent;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.note{font:600 .78rem var(--mono);color:var(--muted)}
+.ramp{display:flex;height:36px;border-radius:7px;overflow:hidden;border:1px solid var(--line)}.ramp i{flex:1}
+.aa{display:inline-flex;gap:.4rem;align-items:center;font:600 .78rem var(--mono);color:var(--verd);border:1px solid var(--copper-deep);border-radius:5px;padding:.25em .55em}
+.fld label{font:600 .8rem var(--body);display:block;margin-bottom:.3rem}
+.fld input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:.55em .7em;color:var(--ink);font:.9rem var(--body);min-height:40px}
+.fld input:focus-visible{border-color:var(--copper)}
+.fld.err input{border-color:#ff7a7d}.fld.ok input{border-color:var(--verd)}
+.fld .msg{font:.78rem var(--body);margin-top:.3rem;min-height:1.1em}
+.fld.err .msg{color:#ff9a9c}.fld.ok .msg{color:var(--verd)}
+.spec b{font-family:var(--disp);font-weight:700;display:block;line-height:.95}
+.sk{height:.7rem;border-radius:4px;background:linear-gradient(90deg,#241e16 25%,#2e261b 37%,#241e16 63%);background-size:400% 100%;animation:sh 1.4s linear infinite}
+@keyframes sh{from{background-position:100% 0}to{background-position:0 0}}
+.mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(2.6rem,1fr));gap:.4rem}.mini i{height:2rem;background:var(--bg);border:1px solid var(--line);border-radius:6px}
+.mochip{align-self:flex-start;background:var(--copper-deep);color:#ffe6cf;font:600 .85rem var(--body);padding:.5em 1em;border-radius:999px;transition:transform .18s cubic-bezier(.16,1,.3,1)}
+.mochip:hover{transform:translateY(-4px) scale(1.05)}
+.dm{display:flex;gap:.5rem}.dm i{flex:1;border-radius:8px;height:3rem;display:flex;align-items:center;justify-content:center;font:600 .78rem var(--body);border:1px solid var(--line)}
+.dm .l{background:#f5efe6;color:#1a1611}.dm .d{background:#1a1611;color:#f5efe6}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}.ba .x{padding:.55rem;font:600 .76rem var(--body);text-align:center}
+.ba .bad{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;border-radius:999px}
+.ba .good{background:var(--copper);color:var(--on-copper);border-radius:5px}
+.ba small{display:block;font:600 .78rem var(--mono);color:var(--muted);margin-top:.3rem;text-align:center}
+
+/* INSTALL */
+.install{background:var(--s1);border-block:1px solid var(--line)}
+.install .box{font-family:var(--mono);font-size:clamp(.82rem,.7rem + .5vw,1rem);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:1.2rem 1.4rem;margin-top:1.4rem;overflow-x:auto}.install .box .c{color:var(--copper)}
+footer{border-top:1px solid var(--line);padding-block:2.4rem;color:var(--muted);font-size:.92rem}
+footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}footer b{color:var(--ink);font-family:var(--disp)}
+
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}.hero .bg{animation:none!important}}
+@media(prefers-reduced-motion:no-preference){
+ .hero .bg{animation:drift 26s ease-in-out infinite alternate}
+ @keyframes drift{from{transform:scale(1.04) translate(0,0)}to{transform:scale(1.10) translate(-1.5%, -1.5%)}}
+}
+</style></head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav"><div class="wrap">
+  <span class="brand">taste<b>check</b></span>
+  <details><summary aria-label="Menu">Menu ▾</summary>
+    <div class="menu"><a href="#why">Problem</a><a href="#how">How</a><a href="#skills">Skills</a><a href="#install">Install</a></div>
+  </details>
+</div></header>
+<main id="main">
+
+<section class="hero"><div class="bg" aria-hidden="true"></div><div class="scrim" aria-hidden="true"></div><div class="wrap">
+  <div class="rule" aria-hidden="true"></div>
+  <div class="hcol">
+    <div class="idx"><s></s>design intelligence · for any AI agent</div>
+    <h1>Make it <span class="j">yours</span>, <em>not</em> the average.</h1>
+    <p class="lede">Every AI builds the same site. tastecheck interviews you into a real design system first — then twelve skills make sure your agent ships taste, not slop.</p>
+    <div class="actions">
+      <button class="btn btn-primary">Run a taste check →</button>
+      <button class="btn btn-ghost">See every skill</button>
+    </div>
+    <p class="trust">Works with <b>Claude Code</b> · <b>Codex</b> · <b>Gemini</b> · <b>Cursor</b> · MIT</p>
+  </div>
+</div></section>
+
+<section id="why"><div class="wrap rv">
+  <div class="problem">
+    <div>
+      <div class="mark"><s></s>the problem</div>
+      <h2>There are two AI slops. We refuse both.</h2>
+      <p class="slede">Ask for a site, you get the purple gradient. Ask for “not AI,” you get the cream-and-serif. Both are the average — one season apart.</p>
+    </div>
+    <div class="twoslop">
+      <div class="ts"><div class="sw p"></div><div><h3>Purple gradient</h3><p>Indigo→violet · Inter · 3 cards · 2023–25</p></div></div>
+      <div class="ts"><div class="sw c"></div><div><h3>Editorial serif</h3><p>Fraunces · cream · brick-red · 2026</p></div></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="how"><div class="wrap rv">
+  <div class="mark"><s></s>how it works</div>
+  <h2>A friend who interviews you before a line of code.</h2>
+  <p class="slede">No menus. It surfaces every decision you didn’t know you had — even if you’ve never heard “focus state.”</p>
+  <div class="chat">
+    <div class="bubble ai">Name one thing you’d be proud to resemble.</div>
+    <div class="bubble you">basalt columns, glazed ceramic, syncopation</div>
+    <div class="bubble ai">Good — that’s cellular, material, rhythmic. One dominant color, not five?</div>
+    <div class="bubble you">something high-intensity. a jewel tone.</div>
+    <div class="out">→ committed: copper × verdigris · Redaction · dark · tessellated</div>
+  </div>
+</div></section>
+
+<section id="skills"><div class="wrap rv">
+  <div class="mark"><s></s>every skill, live</div>
+  <h2>Not a feature list. Each cell is the skill, working.</h2>
+  <p class="slede">This whole page was built by them. Hover, type, toggle — they’re real.</p>
+  <div class="bento">
+
+    <div class="cell w3 tall"><div class="lab"><span class="n">00</span><h3>design-system-interview</h3></div>
+      <div class="stage" style="gap:.5rem">
+        <div class="bubble ai" style="max-width:100%;font-size:.95rem">“‘Modern’ is a non-answer — name one you’d resemble.”</div>
+        <div class="bubble you" style="max-width:100%;font-size:.9rem">basalt + glaze</div>
+        <div class="out">→ tokens committed</div>
+      </div><p class="cap">Grills you into a system + tokens before any code.</p></div>
+
+    <div class="cell w3"><div class="lab"><span class="n">01</span><h3>color-system</h3></div>
+      <div class="stage"><div class="ramp"><i style="background:#2a1606"></i><i style="background:#7a4518"></i><i style="background:#b06b2a"></i><i style="background:#f0a259"></i><i style="background:#f6c08a"></i><i style="background:#33d6ac"></i></div>
+        <div class="row"><span class="note">OKLCH · copper × verdigris</span><span class="aa">AA 5.4:1 ✓</span></div></div>
+      <p class="cap">Perceptual ramps that pass contrast — math, not vibes.</p></div>
+
+    <div class="cell"><div class="lab"><span class="n">02</span><h3>web-typography</h3></div>
+      <div class="stage spec"><b style="font-size:2.4rem">Aa</b><span class="note">Redaction · perfect fourth · 66ch</span></div>
+      <p class="cap">Scale, measure, rhythm — fluid &amp; legible.</p></div>
+
+    <div class="cell"><div class="lab"><span class="n">03</span><h3>component-states</h3></div>
+      <div class="stage"><button class="dbtn" data-cyc>Default</button><span class="note">click → cycles real states</span></div>
+      <p class="cap">Hover, focus, active, disabled, loading — real.</p></div>
+
+    <div class="cell w3"><div class="lab"><span class="n">04</span><h3>form-ux</h3></div>
+      <div class="stage"><div class="fld" data-fld><label for="de">Email</label><input id="de" type="email" placeholder="name@example.com"><div class="msg" data-msg>Type, then click away — it validates on blur.</div></div></div>
+      <p class="cap">Labels, validate-on-blur, specific inline errors.</p></div>
+
+    <div class="cell"><div class="lab"><span class="n">05</span><h3>empty-states</h3></div>
+      <div class="stage" data-empty><div class="sk" style="width:70%"></div><div class="sk" style="width:90%"></div><button class="dbtn" data-load style="margin-top:.4rem">Load</button></div>
+      <p class="cap">Loading · empty · error — handled.</p></div>
+
+    <div class="cell"><div class="lab"><span class="n">06</span><h3>dark-mode</h3></div>
+      <div class="stage"><div class="dm"><i class="l">Light</i><i class="d">Dark</i></div><span class="note">#0f0d0b · elevation by lightness</span></div>
+      <p class="cap">Dark that isn’t pure black; contrast re-checked.</p></div>
+
+    <div class="cell"><div class="lab"><span class="n">07</span><h3>micro-motion</h3></div>
+      <div class="stage"><span class="mochip">Hover me ↗</span><span class="note">transform · 180ms · reduced-motion safe</span></div>
+      <p class="cap">Animation that feels expensive.</p></div>
+
+    <div class="cell"><div class="lab"><span class="n">08</span><h3>responsive-layout</h3></div>
+      <div class="stage"><div class="mini"><i></i><i></i><i></i><i></i><i></i></div><span class="note">intrinsic · container queries</span></div>
+      <p class="cap">Survives any width — it just flows.</p></div>
+
+    <div class="cell"><div class="lab"><span class="n">09</span><h3>a11y-pass</h3></div>
+      <div class="stage"><button class="dbtn" style="background:transparent;color:var(--ink);border-color:var(--line)">Tab to me</button><span class="aa">WCAG 2.2 AA ✓</span></div>
+      <p class="cap">Keyboard, focus, contrast — fixed, not bolted on.</p></div>
+
+    <div class="cell w4"><div class="lab"><span class="n">10</span><h3>deslop-ui</h3></div>
+      <div class="stage"><div class="ba"><div><div class="x bad">Get started</div><small>✕ pill · purple</small></div><div><div class="x good">Get started</div><small>✓ 5px · copper</small></div></div></div>
+      <p class="cap">Strips the named AI tells; commits to a direction.</p></div>
+
+    <div class="cell w2"><div class="lab"><span class="n">+</span><h3>any agent</h3></div>
+      <div class="stage" style="font:600 .9rem var(--body);color:var(--muted)">Claude · Codex · Gemini · Cursor · Kimi<br><span class="note" style="margin-top:.5rem;display:block">plain markdown · no runtime</span></div>
+      <p class="cap">Install once; works everywhere.</p></div>
+
+  </div>
+</div></section>
+
+<section class="install" id="install"><div class="wrap rv">
+  <div class="mark"><s></s>install</div>
+  <h2>One command. Then just build.</h2>
+  <p class="slede">They auto-trigger when your request matches, on every agent you have.</p>
+  <div class="box"><span class="c">$</span> git clone https://github.com/KyaniteLabs/tastecheck<br><span class="c">$</span> ./tastecheck/install.sh</div>
+</div></section>
+</main>
+<footer><div class="wrap"><span><b>tastecheck</b> — taste is the only moat. MIT © Kyanite Labs.</span><span>github.com/KyaniteLabs/tastecheck</span></div></footer>
+
+<script>
+/* reveal on scroll (alive, reduced-motion aware) */
+document.documentElement.classList.add('js');
+(function(){
+ var rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ var els=[].slice.call(document.querySelectorAll('.rv'));
+ if(rm||!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});}
+ else{var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}})},{threshold:0,rootMargin:'0px 0px -8% 0px'});els.forEach(function(e){io.observe(e)});
+   setTimeout(function(){els.forEach(function(e){e.classList.add('in')});},1500);}
+})();
+/* component-states: cycle real states */
+document.querySelectorAll('[data-cyc]').forEach(function(b){
+ var st=['Default','Disabled','Loading'],i=0;
+ b.addEventListener('click',function(){i=(i+1)%st.length;b.disabled=false;b.classList.remove('loading');
+   if(st[i]==='Disabled'){b.disabled=true;b.textContent='Disabled';}
+   else if(st[i]==='Loading'){b.classList.add('loading');b.textContent='Loading';setTimeout(function(){b.classList.remove('loading');b.textContent='Default';i=0;},1400);}
+   else b.textContent='Default';});
+});
+/* form-ux: real validate on blur */
+document.querySelectorAll('[data-fld]').forEach(function(f){
+ var inp=f.querySelector('input'),msg=f.querySelector('[data-msg]');
+ inp.addEventListener('blur',function(){
+   if(!inp.value){f.className='fld';msg.textContent='Type, then click away — it validates on blur.';return;}
+   if(inp.checkValidity()){f.className='fld ok';msg.textContent='Looks good.';}
+   else{f.className='fld err';msg.textContent='Enter a valid email like name@example.com';}
+ });
+ inp.addEventListener('input',function(){if(f.classList.contains('err')&&inp.checkValidity()){f.className='fld ok';msg.textContent='Looks good.';}});
+});
+/* empty-states: load -> content */
+document.querySelectorAll('[data-load]').forEach(function(b){
+ b.addEventListener('click',function(){var st=b.closest('[data-empty]');b.textContent='Loading…';b.classList.add('loading');
+   setTimeout(function(){st.innerHTML='<div style="font:600 .9rem var(--body);color:var(--ink)">3 projects</div><div class="note">loaded · try empty &amp; error too</div>';},1100);});
+});
+</script>
+
+<script data-palette-switcher>
+(function(){
+ var P={copper:['#f0a259','#7a4518','#1a0e03','basalt-copper.png'],
+        jade:['#13b083','#0a6c50','#04241a','basalt-glaze.png'],
+        cobalt:['#5b91ff','#1e3a8a','#ffffff','basalt-cobalt.png'],
+        magenta:['#ef5aa3','#7a1f4d','#ffffff','basalt-magenta.png'],
+        amber:['#f3b53a','#6e4d08','#1a1205','basalt-amber.png']};
+ function set(n){var c=P[n]||P.copper,r=document.documentElement.style;
+   r.setProperty('--copper',c[0]);r.setProperty('--copper-deep',c[1]);r.setProperty('--on-copper',c[2]);
+   var s=document.getElementById('palbg')||(function(){var e=document.createElement('style');e.id='palbg';document.head.appendChild(e);return e;})();
+   s.textContent='.hero .bg{background-image:url("img/'+c[3]+'")!important}';
+   document.querySelectorAll('[data-pal]').forEach(function(b){b.setAttribute('aria-current',b.dataset.pal===n?'true':'false');});}
+ window.addEventListener('DOMContentLoaded',function(){
+   var bar=document.createElement('div');bar.setAttribute('aria-label','Palette');
+   bar.style.cssText='position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:99;display:flex;gap:4px;background:rgba(15,13,11,.88);backdrop-filter:blur(8px);border:1px solid #3a3024;border-radius:999px;padding:5px';
+   Object.keys(P).forEach(function(n){var b=document.createElement('button');b.dataset.pal=n;b.textContent=n;
+     b.style.cssText='font:600 .78rem ui-monospace,monospace;border:0;border-radius:999px;padding:.5em .9em;min-height:32px;cursor:pointer;background:transparent;color:#c3b6a4';
+     b.onclick=function(){set(n)};bar.appendChild(b);});
+   var st=document.createElement('style');st.textContent='[data-pal][aria-current="true"]{background:var(--copper)!important;color:var(--on-copper)!important}';document.head.appendChild(st);
+   document.body.appendChild(bar);
+   var p=new URLSearchParams(location.search).get('p')||'copper';set(p);});
+})();
+</script>
+</body></html>
