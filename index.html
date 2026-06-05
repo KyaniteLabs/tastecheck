@@ -1,12 +1,84 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>tastecheck — stop shipping the average</title>
+<title>tastecheck — stop AI shipping the same generic website | anti-slop skills for AI coding agents</title>
+<meta name="description" content="tastecheck is an open-source set of 14 craft skills for AI coding agents (Claude Code, Codex, Gemini, Cursor) that stops them building the same generic 'AI slop' website. It interviews you into a real design system first, then applies checkable typography, OKLCH color, accessibility and anti-slop rules. MIT.">
+<meta name="keywords" content="AI slop, AI website design, AI coding agent skills, Claude Code skills, design system, design-system-interview, deslop, web typography, OKLCH color, WCAG accessibility, anti-slop, AI landing page, Codex, Gemini CLI, Cursor, frontend design">
+<meta name="author" content="Kyanite Labs">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0f0d0b">
+<link rel="canonical" href="https://kyanitelabs.github.io/tastecheck/">
+<link rel="sitemap" type="application/xml" href="https://kyanitelabs.github.io/tastecheck/sitemap.xml">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="tastecheck">
+<meta property="og:title" content="tastecheck — stop AI shipping the same generic website">
+<meta property="og:description" content="14 anti-slop craft skills for AI coding agents. It grills you into a real design system before writing code, then ships taste — not a purple gradient. Works with any agent. MIT.">
+<meta property="og:url" content="https://kyanitelabs.github.io/tastecheck/">
+<meta property="og:image" content="https://kyanitelabs.github.io/tastecheck/docs/hero/before-after.png">
+<meta property="og:image:width" content="2640">
+<meta property="og:image:height" content="1562">
+<meta property="og:image:alt" content="The same prompt and model rendered twice: a generic purple-gradient AI default beside a committed editorial design built by tastecheck.">
+<meta property="og:locale" content="en_US">
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="tastecheck — stop AI shipping the same generic website">
+<meta name="twitter:description" content="14 anti-slop craft skills for AI coding agents. Grills you into a real design system before writing code, then ships taste — not a purple gradient.">
+<meta name="twitter:image" content="https://kyanitelabs.github.io/tastecheck/docs/hero/before-after.png">
+<meta name="twitter:image:alt" content="A generic purple-gradient AI default beside a committed editorial design built by tastecheck.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://kyanitelabs.github.io/tastecheck/#website",
+      "url": "https://kyanitelabs.github.io/tastecheck/",
+      "name": "tastecheck",
+      "description": "Anti-slop craft skills for AI coding agents.",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://kyanitelabs.github.io/tastecheck/#app",
+      "name": "tastecheck",
+      "applicationCategory": "DeveloperApplication",
+      "applicationSubCategory": "AI coding-agent skills",
+      "operatingSystem": "Claude Code, Codex, Gemini CLI, Cursor, Kilocode, Kimi",
+      "description": "An open-source set of 14 frontend craft skills for AI coding agents that stops them building the same generic 'AI slop' website. The headline skill interviews you into a committed design system before any code; the rest apply checkable typography, OKLCH color, theming, responsive layout, component states, forms, motion, accessibility and de-slopping.",
+      "url": "https://kyanitelabs.github.io/tastecheck/",
+      "codeRepository": "https://github.com/KyaniteLabs/tastecheck",
+      "license": "https://opensource.org/licenses/MIT",
+      "softwareVersion": "1.0",
+      "keywords": "AI slop, design system, AI coding agent, Claude Code, deslop, web typography, OKLCH, WCAG accessibility",
+      "author": { "@type": "Organization", "name": "Kyanite Labs", "url": "https://github.com/KyaniteLabs" },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://kyanitelabs.github.io/tastecheck/#faq",
+      "mainEntity": [
+        { "@type": "Question", "name": "What is tastecheck?",
+          "acceptedAnswer": { "@type": "Answer", "text": "tastecheck is a free, open-source (MIT) set of 14 craft skills for AI coding agents. Its headline skill interviews you into a committed design system before any code is written, then the other skills apply checkable rules for typography, color, accessibility and removing AI 'slop' tells, so the output has a point of view instead of the generic average." } },
+        { "@type": "Question", "name": "Why do AI-generated websites all look the same?",
+          "acceptedAnswer": { "@type": "Answer", "text": "With no design direction, a language model fills every blank with the most probable token: a purple/indigo gradient, the Inter font, a centered hero, three identical feature cards, pill buttons and glassmorphism. It is returning the statistical average of the web rather than designing. tastecheck fixes this by removing the blanks — making the real design decisions before the model gets to guess." } },
+        { "@type": "Question", "name": "Which AI coding agents does tastecheck work with?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The skills are plain Markdown with no SDK or runtime, so they work with any agent that reads a skills directory: Claude Code, Codex, Gemini CLI, Cursor, Kilocode and Kimi. You can also point any other agent at a SKILL.md directly." } },
+        { "@type": "Question", "name": "How is tastecheck different from other AI design tools?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Most tools clean up after the model generates a page. tastecheck works before the build: it grills you into a committed design system first. Its rules are checkable (a value, a count, a yes/no) rather than vibes, and every skill was rendered and verified in a real browser. The same content rendered through it produces five visibly different design systems, not five recolors of one template." } },
+        { "@type": "Question", "name": "Is tastecheck free?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. tastecheck is free and open-source under the MIT license. Clone the repository and run install.sh." } }
+      ]
+    }
+  ]
+}
+</script>
 <style>
-@font-face{font-family:"Red0";src:url("fonts/redaction-0-700.woff2") format("woff2");font-weight:700;font-display:block}
-@font-face{font-family:"Red0";src:url("fonts/redaction-0-400.woff2") format("woff2");font-weight:400;font-display:block}
-@font-face{font-family:"Red35";src:url("fonts/redaction-35-700.woff2") format("woff2");font-weight:700;font-display:block}
-@font-face{font-family:"Archivo";src:url("fonts/archivo-400.woff2") format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:"Archivo";src:url("fonts/archivo-600.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Red0";src:url("site/fonts/redaction-0-700.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Red0";src:url("site/fonts/redaction-0-400.woff2") format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"Red35";src:url("site/fonts/redaction-35-700.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Archivo";src:url("site/fonts/archivo-400.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Archivo";src:url("site/fonts/archivo-600.woff2") format("woff2");font-weight:600;font-display:swap}
 :root{
   --bg:#0f0d0b; --s1:#1a1611; --s2:#241e16; --s3:#2e261b; --line:#3a3024;
   --ink:#f5efe6; --muted:#c3b6a4; /* warm, tinted toward copper, passes AA */
@@ -42,7 +114,7 @@ header.nav{position:sticky;top:0;z-index:40;background:rgba(15,13,11,.74);backdr
 
 /* HERO — asymmetric, living texture, column-rule motif, index marker (no mono eyebrow tell) */
 .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
-.hero .bg{position:absolute;inset:-4% ;z-index:0;background:url("img/basalt-copper.png") center/cover no-repeat;will-change:transform}
+.hero .bg{position:absolute;inset:-4% ;z-index:0;background:url("site/img/basalt-copper.png") center/cover no-repeat;will-change:transform}
 .hero .scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(105deg, var(--bg) 12%, rgba(15,13,11,.72) 48%, rgba(15,13,11,.30) 100%)}
 .hero .wrap{position:relative;z-index:2;padding-block:clamp(4rem,2rem + 9vw,8rem);display:grid;grid-template-columns:auto 1fr;gap:clamp(1rem,.5rem + 2vw,2.2rem)}
 .rule{width:2px;background:linear-gradient(var(--copper),transparent);border-radius:2px}
@@ -312,7 +384,7 @@ document.querySelectorAll('[data-load]').forEach(function(b){
  function set(n){var c=P[n]||P.copper,r=document.documentElement.style;
    r.setProperty('--copper',c[0]);r.setProperty('--copper-deep',c[1]);r.setProperty('--on-copper',c[2]);
    var s=document.getElementById('palbg')||(function(){var e=document.createElement('style');e.id='palbg';document.head.appendChild(e);return e;})();
-   s.textContent='.hero .bg{background-image:url("img/'+c[3]+'")!important}';
+   s.textContent='.hero .bg{background-image:url("site/img/'+c[3]+'")!important}';
    document.querySelectorAll('[data-pal]').forEach(function(b){b.setAttribute('aria-current',b.dataset.pal===n?'true':'false');});}
  window.addEventListener('DOMContentLoaded',function(){
    var bar=document.createElement('div');bar.setAttribute('aria-label','Palette');

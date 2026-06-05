@@ -1,13 +1,13 @@
 # tastecheck
 
 **Every AI builds the same website.** Purple gradient, Inter font, centered hero, three
-identical feature cards. You've seen it a thousand times because the model isn't
-designing — it's returning the statistical average of the web.
+identical feature cards, pill buttons, glassmorphism. You've seen it a thousand times
+because the model isn't designing — it's returning the statistical average of the web.
 
-**tastecheck is the fix.** It's a set of skills for AI coding agents that does two things
-no prompt does: it **grills you into a real design system *before* it writes any code**,
-then applies fourteen checkable craft skills so the output has a point of view instead of
-a purple gradient.
+**tastecheck is the fix.** It's a set of **14 craft skills for AI coding agents** that does
+two things no prompt does: it **grills you into a real design system *before* it writes any
+code**, then applies fourteen checkable craft skills so the output has a point of view
+instead of a purple gradient.
 
 ![Same prompt, same model, tastecheck on — a purple-gradient AI default beside a committed editorial design](docs/hero/before-after.png)
 
@@ -27,7 +27,19 @@ git clone https://github.com/KyaniteLabs/tastecheck
 # stops and runs a taste check first.
 ```
 
+**Live:** the [five-design-system gallery](https://kyanitelabs.github.io/tastecheck/samples/) ·
+the [landing page](https://kyanitelabs.github.io/tastecheck/)
+
 ---
+
+## What is tastecheck?
+
+tastecheck is a free, open-source (MIT) **pack of 14 frontend craft skills for AI coding
+agents** — Claude Code, Codex, Gemini CLI, Cursor, Kilocode, Kimi. The headline skill
+*interviews you into a committed design system before any code is written*; the rest apply
+checkable rules for typography, color, theming, layout, component states, forms, motion,
+accessibility, and removing AI "slop" tells. The result: the same brief produces a design
+with a point of view, not the generic average.
 
 ## Why every AI site looks the same
 
@@ -54,18 +66,39 @@ genuinely don't care, it **decides boldly and tells you** — never resolves to 
 average. The output is a committed `DESIGN-SYSTEM.md` + design tokens that every other
 skill builds from. Taste is the only moat against AI slop; this operationalizes it.
 
+## Proof: five design systems, one identical content set
+
+The strongest evidence the interview works: take the **exact same words and structure** and
+run them through five different committed systems. You don't get five recolors — you get five
+**different layout grammars**. Every page passes the same a11y audit (0 contrast fails,
+keyboard-navigable, reduced-motion safe, content visible without JS).
+
+**[▶ Open the live gallery](https://kyanitelabs.github.io/tastecheck/samples/)** · source in [`samples/`](samples/)
+
+| System | Territory | Signature structure | Type |
+|---|---|---|---|
+| [Copper](samples/copper/) | dark, warm, geological | irregular tessellated bento + structural basalt columns | Redaction + Archivo |
+| [Swiss](samples/swiss/) | light, austere, exact | exposed 12-column subgrid the content sits on | Hanken Grotesk |
+| [Maximal](samples/maximal/) | loud, kinetic | display word bleeding into a magenta block; sticker-wall collage | Bricolage Grotesque |
+| [Concrete](samples/concrete/) | raw, mechanical, monochrome | ruled spec-sheet + dense ledger table; achromatic + one hazard accent | Space Grotesk + Space Mono |
+| [Clay](samples/clay/) | warm, soft, humanist | alternating zig-zag soft-card flow with organic "pebble" shapes | Mulish |
+
+Each was built through the same pipeline (interview → `DESIGN-SYSTEM.md` → skills → render →
+audit) and reviewed by independent models from different families before shipping.
+
 ## What's inside
 
 **The headline**
 - **design-system-interview** — grills you into a committed design system before building; emits tokens the rest consume.
 
 **Remove the tells**
-- **deslop-ui** — the named AI giveaways (purple gradient, pill CTAs, Inter, 3-card hero, glassmorphism, emoji headers) and the exact fix for each.
+- **deslop-ui** — the named AI giveaways (purple gradient, pill CTAs, Inter, 3-card hero, glassmorphism, emoji headers) and the exact fix for each — visual *and* structural.
+- **humanize-copy** — strip the ChatGPT accent from writing (the "delve / it's not just X, it's Y" tells) with a checkable kill-list.
 
 **Get the foundations right**
 - **web-typography** — type scale, measure, rhythm, fluid `clamp()`, web-font loading/CLS, WCAG text.
 - **color-system** — OKLCH palettes that are cohesive *and* pass contrast.
-- **theming** — surfaces, elevation-by-lightness, desaturated accents, real toggle.
+- **theming** — light + dark + high-contrast from one token source; elevation by lightness, not shadow.
 
 **Build the structure & behavior**
 - **responsive-layout** — mobile-first, intrinsic Grid/Flex, container queries; survives any width.
@@ -75,7 +108,9 @@ skill builds from. Taste is the only moat against AI slop; this operationalizes 
 
 **Polish & verify**
 - **micro-motion** — animation that feels expensive: transform/opacity, 150–300ms, reduced-motion.
-- **a11y-pass** — a runnable WCAG 2.2 AA fix pass.
+- **data-viz** — honest, Tufte-grade charts (data-ink, no chartjunk, lie-factor check) that also theme and pass a11y.
+- **a11y-pass** — a runnable WCAG 2.2 AA fix pass with a paste-able auditor.
+- **cognitive-a11y** — the layer WCAG barely touches: ADHD, autism, dyslexia and neurodivergent readability (plain language, structure, predictability).
 
 Each skill is a folder: `SKILL.md` (decision order, non-negotiables, quick-start,
 self-check) + `references/` (deep guidance + a `decision-records.md` explaining *why*) +
@@ -90,12 +125,12 @@ before/after and a self-check the agent runs on its own output:
 - *Pill buttons:* `border-radius: 9999px` on a text CTA is a tell → 6–10px.
 - *Dark mode:* never `#000`; base `#121212`, each elevation step **lighter**, not shadowed.
 - *Color:* build ramps in **OKLCH** so contrast is predictable across hues.
-- *Motion:* animate only `transform`/`opacity`; respect `prefers-reduced-motion`.
+- *Type:* every `clamp()` needs spaces around `+`/`−` or the browser silently drops it — verified by **measuring the rendered size**, not eyeballing.
 
-And we ate our own cooking: every skill was **rendered in a real Chromium browser** —
-zero console errors across 17 views at mobile/tablet/desktop + dark mode — and reviewed
-visually before release. The receipts are in [docs/VERIFICATION.md](docs/VERIFICATION.md)
-and the rendered [demos/](demos/).
+And we ate our own cooking: every skill and sample was **rendered in a real Chromium
+browser** — zero console errors, zero contrast fails, no overflow at mobile/desktop — and
+reviewed visually before release. The receipts are in
+[docs/VERIFICATION.md](docs/VERIFICATION.md) and the rendered [demos/](demos/).
 
 ## Works with any agent
 
@@ -106,11 +141,11 @@ Claude-only skill packs.
 
 ## How it all fits together
 
-> **design-system-interview** (decide taste) → **color-system · web-typography ·
-> theming** (foundations) → **responsive-layout** (structure) → **component-states ·
-> form-ux · empty-states** (behavior) → **micro-motion** (polish) → **a11y-pass**
-> (verify) — with **deslop-ui** auditing the result against *your committed spec*, not
-> the average.
+> **design-system-interview** (decide taste) → **color-system · web-typography · theming**
+> (foundations) → **responsive-layout** (structure) → **component-states · form-ux ·
+> empty-states** (behavior) → **micro-motion · data-viz** (polish) → **a11y-pass ·
+> cognitive-a11y** (verify) — with **deslop-ui** and **humanize-copy** auditing the result
+> against *your committed spec*, not the average.
 
 ## Install
 
@@ -121,8 +156,34 @@ git clone https://github.com/KyaniteLabs/tastecheck
 
 The skills then **auto-trigger** when your request matches ("make a landing page", "fix
 this dark mode", "the headings wrap badly"). In Claude Code you also get slash commands:
-`/designsystem`, `/deslop`, `/typography`, `/colorsystem`, `/darkmode`, `/responsive`,
-`/states`, `/formux`, `/emptystates`, `/motion`, `/a11y`.
+`/designsystem`, `/deslop`, `/humanize`, `/typography`, `/colorsystem`, `/theming`,
+`/responsive`, `/states`, `/formux`, `/emptystates`, `/motion`, `/dataviz`, `/a11y`,
+`/cognitive`.
+
+## FAQ
+
+**What is tastecheck?**
+A free, open-source (MIT) pack of 14 craft skills for AI coding agents. It interviews you
+into a committed design system before any code, then applies checkable rules for typography,
+color, accessibility and removing AI "slop" tells — so output has a point of view instead of
+the generic average.
+
+**Why do AI-generated websites all look the same?**
+With no design direction a model fills every blank with the most probable token: a purple/
+indigo gradient, Inter, a centered hero, three identical cards, pill buttons, glassmorphism.
+It's returning the average of the web, not designing. tastecheck removes the blanks first.
+
+**Which AI coding agents does it work with?**
+Any agent that reads a `skills/` directory: Claude Code, Codex, Gemini CLI, Cursor, Kilocode,
+Kimi — and you can point any other agent at a `SKILL.md` directly. Plain Markdown, no runtime.
+
+**How is it different from other AI design tools?**
+Most clean up *after* generation. tastecheck works *before* the build, its rules are
+checkable rather than vibes, and every skill and sample was rendered and verified in a real
+browser. Same content through it = five visibly different design systems, not five recolors.
+
+**Is it free?**
+Yes — MIT licensed. Clone the repo and run `install.sh`.
 
 ## License
 

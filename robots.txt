@@ -1,0 +1,15 @@
+# tastecheck — https://github.com/KyaniteLabs/tastecheck
+User-agent: *
+Allow: /
+
+# AI / GEO crawlers explicitly welcome
+User-agent: GPTBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+
+Sitemap: https://kyanitelabs.github.io/tastecheck/sitemap.xml
