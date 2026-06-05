@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meridian — measurement for research teams</title>
+<style>
+@font-face{font-family:"Hanken";src:url("fonts/hanken-400.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Hanken";src:url("fonts/hanken-600.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Hanken";src:url("fonts/hanken-800.woff2") format("woff2");font-weight:800;font-display:swap}
+:root{
+  /* Swiss / Atelier — bone-white (not glare), softened ink, ONE vermilion signal, cool true neutrals */
+  --paper:#f7f6f2; --ink:#15171a; --muted:#5f6469; --line:#d7d6cf; --line-strong:#15171a;
+  --red:#e8482b;            /* the single signal — used sparingly */
+  --red-ink:#c5331b;        /* deeper red that passes for text on bone */
+  --font:"Hanken",-apple-system,system-ui,sans-serif; --mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper) url("paper.png");color:var(--ink);font-family:var(--font);line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;z-index:99;background:var(--ink);color:var(--paper);padding:.6em 1em}
+/* exposed modular grid — the signature + the "texture" */
+.grid{max-width:1200px;margin:0 auto;padding-inline:24px;display:grid;grid-template-columns:repeat(12,1fr);column-gap:24px;position:relative}
+.grid::before{content:"";position:absolute;inset:0 24px;pointer-events:none;z-index:0;
+  background:repeating-linear-gradient(to right, transparent 0, transparent calc((100% - 11*24px)/12), var(--line) calc((100% - 11*24px)/12), var(--line) calc((100% - 11*24px)/12 + 1px), transparent calc((100% - 11*24px)/12 + 1px), transparent calc((100% - 11*24px)/12 + 24px));
+  opacity:.5}
+.grid > *{position:relative;z-index:1}
+
+/* nav */
+header{border-bottom:1px solid var(--line-strong)}
+header .grid{padding-block:18px;align-items:baseline}
+.brand{grid-column:1/4;font-weight:800;font-size:1.3rem;letter-spacing:-.02em}
+.brand i{color:var(--red);font-style:normal}
+nav{grid-column:7/13;display:flex;gap:0;justify-content:flex-end;align-items:center}
+nav a{display:flex;align-items:center;min-height:44px;padding:0 16px;text-decoration:none;color:var(--muted);font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+nav a[aria-current=page]{color:var(--ink);box-shadow:inset 0 -2px 0 var(--red)}
+nav a:hover{color:var(--ink)}
+.menu-btn{display:none}
+@media(max-width:720px){nav{display:none}nav.open{display:flex;grid-column:1/13;flex-direction:column;align-items:flex-start;border-top:1px solid var(--line)}
+  .menu-btn{display:flex;grid-column:11/13;justify-self:end;min-height:44px;align-items:center;background:none;border:0;font:600 .8rem/1 var(--font);text-transform:uppercase;letter-spacing:.08em;cursor:pointer}}
+
+/* hero — asymmetric within the grid; huge weight contrast; index marker */
+.hero{padding-block:clamp(3.5rem,2rem + 6vw,7rem)}
+.tag{grid-column:1/4;font-family:var(--mono);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding-top:.5rem;border-top:2px solid var(--line-strong)}
+.tag b{color:var(--red-ink);font-weight:600}
+h1{grid-column:1/10;font-weight:800;font-size:clamp(2.6rem,1.4rem + 6vw,6rem);line-height:.98;letter-spacing:-.035em;margin:.2em 0 0}
+h1 .r{color:var(--red)}
+.hero .lede{grid-column:1/7;color:var(--muted);font-size:clamp(1.05rem,1rem+.4vw,1.3rem);margin-top:1.6rem;max-width:40ch}
+.hero .meta{grid-column:9/13;margin-top:1.6rem;border-top:1px solid var(--line);padding-top:.8rem;font-family:var(--mono);font-size:.78rem;color:var(--muted);line-height:1.9}
+.hero .meta b{color:var(--ink);font-weight:600}
+.actions{grid-column:1/13;margin-top:2.4rem;display:flex;gap:0;border-top:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong)}
+.btn{font:600 .95rem var(--font);min-height:56px;padding:0 28px;display:flex;align-items:center;border:0;cursor:pointer;background:none}
+.btn-primary{background:var(--red-ink);color:#fff}
+.btn-primary:hover{background:#a52810}
+.btn-ghost{color:var(--ink);border-left:1px solid var(--line-strong)}
+.btn-ghost:hover{background:var(--ink);color:var(--paper)}
+
+/* stat strip — tabular, hairline, flush to grid */
+.stats{padding-block:0 clamp(3rem,2rem + 4vw,5rem)}
+.stat{grid-column:span 3;border-top:2px solid var(--line-strong);padding-top:1rem}
+@media(max-width:720px){.stat{grid-column:span 6}}
+.stat .n{font-weight:800;font-size:clamp(1.8rem,1.2rem + 2vw,2.6rem);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.stat .l{font-family:var(--mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:.4rem}
+
+/* features — Swiss list with oversized index numerals + hairline rules (NOT cards) */
+section{padding-block:clamp(3rem,2rem + 4vw,6rem)}
+.sec-h{grid-column:1/13;border-top:2px solid var(--line-strong);padding-top:1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:baseline}
+.sec-h h2{font-weight:800;font-size:clamp(1.6rem,1.2rem + 1.6vw,2.4rem);letter-spacing:-.02em}
+.sec-h .k{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--red-ink)}
+.feat{grid-column:1/13;display:grid;grid-template-columns:subgrid;border-bottom:1px solid var(--line);padding-block:1.6rem;align-items:start}
+.feat .num{grid-column:1/2;font-weight:800;font-size:clamp(2rem,1.4rem + 2vw,3rem);color:var(--red);font-variant-numeric:tabular-nums;line-height:.9;letter-spacing:-.03em}
+.feat h3{grid-column:2/6;font-weight:600;font-size:1.25rem;letter-spacing:-.01em}
+.feat p{grid-column:6/12;color:var(--muted);max-width:48ch}
+@media(max-width:720px){.feat{grid-template-columns:1fr}.feat .num,.feat h3,.feat p{grid-column:1/-1}.feat h3{margin-top:.3rem}.feat p{margin-top:.5rem}}
+
+/* data block — honest Swiss chart (range-frame, tabular), demonstrates data-viz on-system */
+.data .panel{grid-column:1/8}
+@media(max-width:720px){.data .panel{grid-column:1/13}}
+.data figcaption{font-weight:600;margin-bottom:1rem}
+.data svg text{font-family:var(--font);fill:var(--muted);font-size:.72rem}
+.data .side{grid-column:9/13;font-family:var(--mono);font-size:.8rem;color:var(--muted);line-height:1.9;border-top:1px solid var(--line);padding-top:.8rem}
+@media(max-width:720px){.data .side{grid-column:1/13;margin-top:1.5rem}}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* footer */
+footer{border-top:2px solid var(--line-strong)}
+footer .grid{padding-block:2rem}
+footer .c1{grid-column:1/7;font-weight:800}
+footer .c2{grid-column:9/13;font-family:var(--mono);font-size:.78rem;color:var(--muted);text-align:right}
+
+.rv{opacity:0;transform:translateY(10px)} .rv.in{opacity:1;transform:none;transition:opacity .5s ease,transform .5s ease}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}*{transition-duration:.01ms!important}}
+</style></head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header><div class="grid">
+  <span class="brand">Meridian<i>.</i></span>
+  <button class="menu-btn" aria-expanded="false" aria-controls="nav">Menu</button>
+  <nav id="nav" aria-label="Primary"><a href="#" aria-current="page">Product</a><a href="#method">Method</a><a href="#data">Data</a><a href="#start">Start</a></nav>
+</div></header>
+
+<main id="main">
+<section class="hero"><div class="grid">
+  <p class="tag"><b>01</b> &nbsp;/ &nbsp;measurement system</p>
+  <h1>Measure what your research <span class="r">actually</span> moved.</h1>
+  <p class="lede">Meridian turns messy study data into defensible numbers — instruments, not dashboards. Built for teams who have to be right.</p>
+  <div class="meta">Trusted by<br><b>140 labs</b><br>across <b>22 fields</b><br>since <b>2021</b></div>
+  <div class="actions">
+    <button class="btn btn-primary">Start a study →</button>
+    <button class="btn btn-ghost">Read the method</button>
+  </div>
+</div></section>
+
+<section class="stats"><div class="grid">
+  <div class="stat"><div class="n">99.98%</div><div class="l">uptime</div></div>
+  <div class="stat"><div class="n">12&nbsp;ms</div><div class="l">query median</div></div>
+  <div class="stat"><div class="n">0</div><div class="l">data leaves your lab</div></div>
+  <div class="stat"><div class="n">SOC&nbsp;2</div><div class="l">audited</div></div>
+</div></section>
+
+<section id="method"><div class="grid">
+  <div class="sec-h"><h2>The method</h2><span class="k">/ how it works</span></div>
+  <article class="feat rv"><div class="num">01</div><h3>Instrument the study</h3><p>Define measures once. Meridian enforces them across every run, so a number means the same thing on day one and day three hundred.</p></article>
+  <article class="feat rv"><div class="num">02</div><h3>Record, don't estimate</h3><p>Every figure traces to a source event. No silent rounding, no truncated axes — the result is the result.</p></article>
+  <article class="feat rv"><div class="num">03</div><h3>Defend the finding</h3><p>Export a figure and its provenance together. Reviewers see the same evidence you did.</p></article>
+</div></section>
+
+<section id="data"><div class="grid data">
+  <figure class="panel rv">
+    <figcaption>Replication rate climbed to 91% after instrumenting measures.</figcaption>
+    <svg viewBox="0 0 560 220" role="img" aria-label="Replication rate rose from 62% in 2021 to 91% in 2026.">
+      <line x1="44" y1="184" x2="540" y2="184" stroke="var(--line-strong)"/>
+      <line x1="44" y1="28" x2="44" y2="184" stroke="var(--line-strong)"/>
+      <text x="38" y="32" text-anchor="end">91</text><text x="38" y="188" text-anchor="end">62</text>
+      <text x="44" y="204">2021</text><text x="540" y="204" text-anchor="end">2026</text>
+      <polyline fill="none" stroke="var(--red)" stroke-width="2.5" points="44,168 144,150 244,130 344,96 444,70 540,40"/>
+      <circle cx="540" cy="40" r="4" fill="var(--red)"/>
+    </svg>
+    <table class="visually-hidden"><caption>Replication rate</caption><tr><th>2021</th><td>62%</td></tr><tr><th>2026</th><td>91%</td></tr></table>
+  </figure>
+  <div class="side">Replication rate<br><b style="color:var(--ink)">62% → 91%</b><br><br>Median study size<br><b style="color:var(--ink)">1,240</b><br><br>Measures enforced<br><b style="color:var(--ink)">8,900</b></div>
+</div></section>
+
+<section id="start"><div class="grid">
+  <div class="sec-h"><h2>Start measuring.</h2><span class="k">/ get set up in a day</span></div>
+  <div class="actions" style="grid-column:1/13;margin-top:0">
+    <button class="btn btn-primary">Create a workspace →</button>
+    <button class="btn btn-ghost">Talk to research eng</button>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="grid">
+  <span class="c1">Meridian<i style="color:var(--red)">.</i></span>
+  <span class="c2">measurement for research teams<br>a tastecheck sample · Swiss / Atelier</span>
+</div></footer>
+
+<script>
+document.documentElement.classList.add('js');
+document.querySelector('.menu-btn')?.addEventListener('click',function(){const n=document.getElementById('nav');const o=n.classList.toggle('open');this.setAttribute('aria-expanded',o)});
+(function(){var rm=matchMedia('(prefers-reduced-motion: reduce)').matches;var els=[].slice.call(document.querySelectorAll('.rv'));
+ if(rm||!('IntersectionObserver'in window)){els.forEach(e=>e.classList.add('in'));return;}
+ var io=new IntersectionObserver(function(es){es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}})},{threshold:0,rootMargin:'0px 0px -8% 0px'});
+ els.forEach(e=>io.observe(e)); setTimeout(()=>els.forEach(e=>e.classList.add('in')),1500);})();
+</script>
+</body></html>
