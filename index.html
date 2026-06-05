@@ -131,6 +131,16 @@ h1 .j{color:var(--copper)} h1 em{font-style:italic;font-weight:400}
 .btn-primary:active{transform:translateY(1px)}
 .btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
 .btn-ghost:hover{border-color:var(--ink)}
+a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+h1 .not{text-decoration:underline;text-decoration-color:var(--verd);text-decoration-thickness:3px;text-underline-offset:6px}
+.hzb{font:600 .82rem var(--body);color:var(--muted)}
+.hzg{font:600 .92rem var(--body);color:var(--ink)}
+.tldr{align-self:flex-start;background:var(--copper);color:var(--on-copper);font:700 .72rem var(--mono);letter-spacing:.06em;padding:.35em .7em;border-radius:5px}
+.chart{width:100%;height:auto}
+.chart .axis{stroke:var(--line);stroke-width:1}
+.chart .ln{fill:none;stroke:var(--copper);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.chart .end{fill:var(--verd)}
+.chart text{fill:var(--ink);font:700 13px var(--disp)}
 .trust{margin-top:1.6rem;color:var(--muted);font-size:.92rem}.trust b{color:var(--ink);font-weight:600}
 @media(max-width:560px){.hero .wrap{grid-template-columns:1fr}.rule{display:none}}
 
@@ -248,13 +258,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
   <div class="rule" aria-hidden="true"></div>
   <div class="hcol">
     <div class="idx"><s></s>design intelligence · for any AI agent</div>
-    <h1>Make it <span class="j">yours</span>, <em>not</em> the average.</h1>
-    <p class="lede">Every AI builds the same site. tastecheck interviews you into a real design system first — then twelve skills make sure your agent ships taste, not slop.</p>
+    <h1>Make it <span class="j">yours</span>, <span class="not">not</span> the average.</h1>
+    <p class="lede">Every AI builds the same site. tastecheck interviews you into a real design system first — then fourteen skills make sure your agent ships taste, not slop.</p>
     <div class="actions">
-      <button class="btn btn-primary">Run a taste check →</button>
-      <button class="btn btn-ghost">See every skill</button>
+      <a class="btn btn-primary" href="https://github.com/KyaniteLabs/tastecheck">Run a taste check →</a>
+      <a class="btn btn-ghost" href="#skills">See every skill</a>
     </div>
     <p class="trust">Works with <b>Claude Code</b> · <b>Codex</b> · <b>Gemini</b> · <b>Cursor</b> · MIT</p>
+    <p class="trust">Same content, five committed design systems → <a href="samples/" style="color:var(--copper);font-weight:600;text-decoration:underline;text-underline-offset:3px;display:inline-block;padding-block:.35rem">see the gallery</a></p>
   </div>
 </div></section>
 
@@ -319,9 +330,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
       <div class="stage" data-empty><div class="sk" style="width:70%"></div><div class="sk" style="width:90%"></div><button class="dbtn" data-load style="margin-top:.4rem">Load</button></div>
       <p class="cap">Loading · empty · error — handled.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">06</span><h3>dark-mode</h3></div>
-      <div class="stage"><div class="dm"><i class="l">Light</i><i class="d">Dark</i></div><span class="note">#0f0d0b · elevation by lightness</span></div>
-      <p class="cap">Dark that isn’t pure black; contrast re-checked.</p></div>
+    <div class="cell"><div class="lab"><span class="n">06</span><h3>theming</h3></div>
+      <div class="stage"><div class="dm"><i class="l">Light</i><i class="d">Dark</i></div><span class="note">light + dark + high-contrast · one token source</span></div>
+      <p class="cap">Light, dark &amp; high-contrast from one set; elevation by lightness.</p></div>
 
     <div class="cell"><div class="lab"><span class="n">07</span><h3>micro-motion</h3></div>
       <div class="stage"><span class="mochip">Hover me ↗</span><span class="note">transform · 180ms · reduced-motion safe</span></div>
@@ -338,6 +349,29 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
     <div class="cell w4"><div class="lab"><span class="n">10</span><h3>deslop-ui</h3></div>
       <div class="stage"><div class="ba"><div><div class="x bad">Get started</div><small>✕ pill · purple</small></div><div><div class="x good">Get started</div><small>✓ 5px · copper</small></div></div></div>
       <p class="cap">Strips the named AI tells; commits to a direction.</p></div>
+
+    <div class="cell w3"><div class="lab"><span class="n">11</span><h3>humanize-copy</h3></div>
+      <div class="stage" style="gap:.45rem">
+        <div class="hzb"><s>“In today’s fast-paced landscape we leverage synergies to delve…”</s></div>
+        <div class="hzg">“Deploy logs in plain English — what shipped, what broke, what fixed it.”</div>
+      </div><p class="cap">Strips the ChatGPT accent — a checkable kill-list.</p></div>
+
+    <div class="cell w3"><div class="lab"><span class="n">12</span><h3>data-viz</h3></div>
+      <div class="stage">
+        <figure style="margin:0;width:100%">
+          <svg class="chart" viewBox="0 0 300 84" role="img" aria-label="Quarterly revenue rising 31% to $4.2M in Q2 2026">
+            <line class="axis" x1="6" y1="74" x2="294" y2="74"/>
+            <polyline class="ln" points="10,62 58,55 106,47 154,41 202,24 250,31 290,12"/>
+            <circle class="end" cx="290" cy="12" r="4"/>
+            <text x="284" y="26" text-anchor="end">$4.2M</text>
+          </svg>
+          <figcaption class="note" style="margin-top:.4rem">Revenue +31% · honest axis · direct label, no legend</figcaption>
+        </figure>
+      </div><p class="cap">Tufte-grade charts: data-ink, no chartjunk, real table fallback.</p></div>
+
+    <div class="cell"><div class="lab"><span class="n">13</span><h3>cognitive-a11y</h3></div>
+      <div class="stage"><span class="tldr">TL;DR</span><span class="note">plain language · one idea per line · predictable layout</span></div>
+      <p class="cap">Readable for ADHD, autism &amp; dyslexia — beyond WCAG.</p></div>
 
     <div class="cell w2"><div class="lab"><span class="n">+</span><h3>any agent</h3></div>
       <div class="stage" style="font:600 .9rem var(--body);color:var(--muted)">Claude · Codex · Gemini · Cursor · Kimi<br><span class="note" style="margin-top:.5rem;display:block">plain markdown · no runtime</span></div>

@@ -112,6 +112,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 .tc-pal button[aria-pressed=true]{outline:2px solid var(--tc-ink);outline-offset:2px}
 @media(max-width:560px){.tc-bar{font-size:.74rem}}
 </style>
+<style>a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}</style>
 </head>
 <body>
 <div class="tc-bar"><a class="tc-home" href="../../">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="../copper/">Copper</a><a href="../swiss/">Swiss</a><a href="../maximal/">Maximal</a><a href="../concrete/" aria-current="page">Concrete</a><a href="../clay/">Clay</a><a href="../">Gallery</a></nav><div class="tc-pal" role="group" aria-label="Color palette"><span class="tc-lbl">Palette</span><button type="button" data-pal="a" aria-pressed="true" aria-label="Hazard palette" title="Hazard" style="background:#ff4d00"></button><button type="button" data-pal="b" aria-pressed="false" aria-label="Acid palette" title="Acid" style="background:#b8ff2e"></button><button type="button" data-pal="c" aria-pressed="false" aria-label="Cyan palette" title="Cyan" style="background:#33d6ff"></button><button type="button" data-pal="d" aria-pressed="false" aria-label="Magenta palette" title="Magenta" style="background:#ff3d8b"></button></div></div>
@@ -126,7 +127,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
   <span class="tag lbl">[00] design intelligence for AI agents</span>
   <h1>Make it <span class="hz">yours</span>, not the average.</h1>
   <p class="lede">Every AI builds the same site. tastecheck interviews you into a real design system first — then 14 skills make sure your agent ships taste, not slop.</p>
-  <div class="actions"><button class="btn btn-primary">Run a taste check →</button><button class="btn btn-ghost">See the skills</button></div>
+  <div class="actions"><a class="btn btn-primary" href="https://github.com/KyaniteLabs/tastecheck">Run a taste check →</a><a class="btn btn-ghost" href="#skills">See the skills</a></div>
   <p class="trust">Works with <b>Claude Code</b> · <b>Codex</b> · <b>Gemini</b> · <b>Cursor</b> · MIT</p>
 </div></section>
 

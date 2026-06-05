@@ -145,6 +145,7 @@ footer b{font-family:var(--disp);color:var(--text)}footer b i{color:var(--magent
 .tc-pal button[aria-pressed=true]{outline:2px solid var(--tc-ink);outline-offset:2px}
 @media(max-width:560px){.tc-bar{font-size:.74rem}}
 </style>
+<style>a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}</style>
 </head>
 <body>
 <div class="tc-bar"><a class="tc-home" href="../../">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="../copper/">Copper</a><a href="../swiss/">Swiss</a><a href="../maximal/" aria-current="page">Maximal</a><a href="../concrete/">Concrete</a><a href="../clay/">Clay</a><a href="../">Gallery</a></nav><div class="tc-pal" role="group" aria-label="Color palette"><span class="tc-lbl">Palette</span><button type="button" data-pal="a" aria-pressed="true" aria-label="Pop palette" title="Pop" style="background:#ff3d8b"></button><button type="button" data-pal="b" aria-pressed="false" aria-label="Dusk palette" title="Dusk" style="background:#ff6a4d"></button><button type="button" data-pal="c" aria-pressed="false" aria-label="Volt palette" title="Volt" style="background:#caff43"></button></div></div>
@@ -164,8 +165,8 @@ footer b{font-family:var(--disp);color:var(--text)}footer b i{color:var(--magent
     <h1>Make it <span class="m">yours</span>, not the <span class="y">average</span>.</h1>
     <p class="lede">Every AI builds the same site. tastecheck interviews you into a real design system first — then 14 skills make sure your agent ships taste, not slop.</p>
     <div class="actions">
-      <button class="btn btn-primary">Run a taste check →</button>
-      <button class="btn btn-ghost">See the skills</button>
+      <a class="btn btn-primary" href="https://github.com/KyaniteLabs/tastecheck">Run a taste check →</a>
+      <a class="btn btn-ghost" href="#skills">See the skills</a>
     </div>
     <p class="trust">Works with <b>Claude Code</b> · <b>Codex</b> · <b>Gemini</b> · <b>Cursor</b> · MIT</p>
   </div>
