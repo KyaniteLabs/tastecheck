@@ -70,22 +70,22 @@ h2{font:700 clamp(1.8rem,1.3rem + 2.4vw,3rem) var(--disp);line-height:1;letter-s
 .sw{height:64px;border:2px solid var(--ink);margin-bottom:1.1rem}
 .sw.p{background:linear-gradient(135deg,#6366f1,#a855f7)}.sw.c{background:linear-gradient(135deg,#efe7d8,#8c2f24)}
 .slop h3{font:700 1.05rem var(--disp);margin-bottom:.3rem}.slop p{font-size:.86rem;color:var(--muted)}
-/* how — LEDGER rows (ruled spec-sheet, not cards) */
-.ledger{border-top:3px solid var(--ink);border-bottom:3px solid var(--ink)}
-.lrow{display:grid;grid-template-columns:6rem 1fr;gap:1.4rem;padding:1.6rem .2rem;border-top:1px solid var(--ink)}
-.ledger .lrow:first-child{border-top:0}
-.lrow .ix{font:700 2.8rem var(--disp);line-height:.85;font-variant-numeric:tabular-nums}
+/* how — hazard-edged console BLOCKS (not ruled rows; distinct from Swiss) */
+.ledger{display:grid;gap:1.1rem;margin-top:1rem}
+.lrow{display:grid;grid-template-columns:6rem 1fr;gap:1.4rem;padding:1.5rem 1.6rem;border:2px solid var(--line);border-left:5px solid var(--hazard);align-items:start}
+.lrow .ix{font:700 2.8rem var(--disp);line-height:.85;font-variant-numeric:tabular-nums;color:var(--hazard)}
 .lrow h3{font:700 1.25rem var(--disp);margin-bottom:.35rem}.lrow p{font-size:.9rem;color:var(--muted);max-width:60ch}
-.lrow .q{margin-top:.7rem;padding-left:.8rem;border-left:3px solid var(--ink);font-size:.86rem}
-/* skills — dense ledger TABLE (index | name | desc) */
-.tbl{border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);margin-top:1.5rem}
-.trow{display:grid;grid-template-columns:3.4rem 15rem 1fr;gap:1rem;padding:.85rem .2rem;border-top:1px solid var(--ink);align-items:baseline}
-.tbl .trow:first-child{border-top:0}
-.trow:hover{background:var(--ink);color:var(--paper)}
-.trow .ix{font:700 1rem var(--mono);font-variant-numeric:tabular-nums}
-.trow .nm{font:700 1rem var(--disp)}
-.trow .ds{font-size:.84rem;color:var(--muted)}.trow:hover .ds{color:var(--paper)}
-@media(max-width:680px){.trow{grid-template-columns:3rem 1fr}.trow .ds{grid-column:2}}
+.lrow .q{margin-top:.7rem;padding-left:.8rem;border-left:3px solid var(--line);font-size:.86rem}
+/* skills — TWO-COLUMN mono index (not a single full-width table; distinct from Swiss) */
+.tbl{display:grid;grid-template-columns:1fr 1fr;border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);margin-top:1.5rem}
+.trow{display:grid;grid-template-columns:2.6rem 1fr;column-gap:.7rem;padding:.85rem 1.1rem;border-top:1px solid var(--line)}
+.tbl .trow:nth-child(1),.tbl .trow:nth-child(2){border-top:0}
+.trow:nth-child(odd){border-right:1px solid var(--line)}
+.trow .ix{grid-column:1;grid-row:1;font:700 1rem var(--mono);font-variant-numeric:tabular-nums;color:var(--hazard)}
+.trow .nm{grid-column:2;grid-row:1;font:700 1rem var(--disp)}
+.trow .ds{grid-column:2;grid-row:2;font-size:.82rem;color:var(--muted)}
+.trow:hover{background:var(--ink);color:var(--paper)}.trow:hover .ds{color:var(--paper)}.trow:hover .ix{color:var(--paper)}
+@media(max-width:680px){.tbl{grid-template-columns:1fr}.trow:nth-child(odd){border-right:0}.tbl .trow:nth-child(2){border-top:1px solid var(--line)}}
 /* install — inverted block */
 .install{background:var(--ink);color:var(--paper)}
 .install .sechead{border-bottom-color:var(--paper)}.install .fig{background:var(--hazard);color:var(--paper)}
