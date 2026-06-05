@@ -129,8 +129,24 @@ footer b{font-family:var(--disp);color:var(--text)}footer b i{color:var(--magent
 @media(prefers-reduced-motion:reduce){.js .rv{opacity:1;transform:none}.blob{filter:none}*{transition-duration:.01ms!important;animation:none!important}}
 @media(prefers-reduced-motion:no-preference){.blob.a{animation:float 14s ease-in-out infinite alternate}.blob.b{animation:float 10s ease-in-out infinite alternate-reverse}}
 @keyframes float{to{transform:translate(-4%,5%) scale(1.06)}}
-</style></head>
+</style><style id="tc-nav">
+:root{--tc-bg:var(--bg);--tc-ink:var(--text);--tc-line:#2c2438;--tc-muted:var(--muted);--tc-accent:var(--magenta)}
+.tc-bar{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem 1.2rem;justify-content:space-between;background:var(--tc-bg);color:var(--tc-ink);border-bottom:1px solid var(--tc-line);padding:.55rem clamp(1rem,3vw,2rem);font:600 .8rem system-ui,-apple-system,sans-serif}
+.tc-bar a{color:var(--tc-muted);text-decoration:none;display:inline-flex;align-items:center;min-height:24px;padding-block:.15rem}
+.tc-bar a:hover{color:var(--tc-ink)}
+.tc-home{color:var(--tc-ink)!important;font-weight:700}
+.tc-grp{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .8rem}
+.tc-grp .tc-lbl{color:var(--tc-muted);font-weight:600;opacity:.8}
+.tc-samples a[aria-current=page]{color:var(--tc-ink);font-weight:700;text-decoration:underline;text-decoration-color:var(--tc-accent);text-underline-offset:3px;text-decoration-thickness:2px}
+.tc-pal{display:flex;align-items:center;gap:.4rem}
+.tc-pal .tc-lbl{color:var(--tc-muted)}
+.tc-pal button{width:26px;height:26px;border-radius:50%;border:1px solid var(--tc-line);cursor:pointer;padding:0}
+.tc-pal button[aria-pressed=true]{outline:2px solid var(--tc-ink);outline-offset:2px}
+@media(max-width:560px){.tc-bar{font-size:.74rem}}
+</style>
+</head>
 <body>
+<div class="tc-bar"><a class="tc-home" href="../../">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="../copper/">Copper</a><a href="../swiss/">Swiss</a><a href="../maximal/" aria-current="page">Maximal</a><a href="../concrete/">Concrete</a><a href="../clay/">Clay</a><a href="../">Gallery</a></nav><div class="tc-pal" role="group" aria-label="Color palette"><span class="tc-lbl">Palette</span><button type="button" data-pal="a" aria-pressed="true" aria-label="Pop palette" title="Pop" style="background:#ff3d8b"></button><button type="button" data-pal="b" aria-pressed="false" aria-label="Dusk palette" title="Dusk" style="background:#ff6a4d"></button><button type="button" data-pal="c" aria-pressed="false" aria-label="Volt palette" title="Volt" style="background:#caff43"></button></div></div>
 <a class="skip" href="#main">Skip to content</a>
 <header><div class="wrap nav">
   <span class="brand">taste<i>check</i></span>
@@ -216,4 +232,5 @@ document.querySelector('summary')?.addEventListener('click',function(){var s=thi
  var io=new IntersectionObserver(function(es){es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}})},{threshold:0,rootMargin:'0px 0px -8% 0px'});
  els.forEach(e=>io.observe(e)); setTimeout(()=>els.forEach(e=>e.classList.add('in')),1500);})();
 </script>
+<script>(function(){var P={"a": {"--magenta": "#ff3d8b", "--yellow": "#ffd23e", "--cobalt": "#2b5cff", "--cobalt-lite": "#7da0ff", "--mint": "#2dd4a8"}, "b": {"--magenta": "#ff6a4d", "--yellow": "#ffc23e", "--cobalt": "#6a3df0", "--cobalt-lite": "#b49bff", "--mint": "#36d0b0"}, "c": {"--magenta": "#ff2d7a", "--yellow": "#caff43", "--cobalt": "#1f5cff", "--cobalt-lite": "#86b0ff", "--mint": "#2ad4d4"}};var r=document.documentElement;document.querySelectorAll(".tc-pal button").forEach(function(b){b.addEventListener("click",function(){var p=P[b.dataset.pal];if(!p)return;Object.keys(p).forEach(function(k){r.style.setProperty(k,p[k])});document.querySelectorAll(".tc-pal button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false")});});});})();</script>
 </body></html>
