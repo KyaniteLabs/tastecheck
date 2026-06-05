@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>tastecheck — three design systems, one content</title>
+<style>
+:root{
+  --bg:#0c0c0d; --s1:#151517; --line:#2a2a2e; --ink:#f4f3f1; --muted:#a3a2a0;
+  --copper:#f0a259; --swiss:#e8482b; --maximal:#ff4d96;
+  --sans:system-ui,-apple-system,"Segoe UI",sans-serif; --mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}:focus-visible{outline:2px solid var(--copper);outline-offset:3px;border-radius:4px}
+.skip{position:absolute;left:-999px}.skip:focus{left:16px;top:16px;z-index:9;background:var(--copper);color:#1a0e03;padding:.6em 1em;border-radius:6px}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(1.25rem,1rem + 3vw,3rem)}
+header{padding-block:clamp(3.5rem,2rem + 6vw,6rem);border-bottom:1px solid var(--line)}
+.kicker{font-family:var(--mono);font-size:.82rem;color:var(--muted);letter-spacing:.04em;margin-bottom:1.1rem}
+.kicker b{color:var(--copper);font-weight:600}
+h1{font-size:clamp(2.4rem,1.6rem + 3.4vw,4rem);line-height:1.02;letter-spacing:-.025em;max-width:18ch;font-weight:680}
+h1 em{font-style:normal;color:var(--copper)}
+.lede{color:var(--muted);max-width:58ch;margin-top:1.3rem;font-size:clamp(1.05rem,1rem + .4vw,1.25rem)}
+.note{margin-top:1.6rem;font-size:.95rem;color:var(--muted);border-left:2px solid var(--line);padding-left:1rem;max-width:60ch}
+main{padding-block:clamp(3rem,2rem + 4vw,5rem)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(20rem,100%),1fr));gap:1.4rem}
+.card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--s1);text-decoration:none;transition:border-color .18s,transform .18s}
+.card:hover{transform:translateY(-3px)}
+.card.copper:hover{border-color:var(--copper)} .card.swiss:hover{border-color:var(--swiss)} .card.maximal:hover{border-color:var(--maximal)}
+.swatch{height:120px;display:flex;align-items:flex-end;padding:1rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.06em}
+.swatch.copper{background:radial-gradient(120% 140% at 80% 10%,#3a2415,#0f0d0b);color:#f0a259}
+.swatch.swiss{background:#f7f6f2;color:#c5331b}
+.swatch.maximal{background:linear-gradient(120deg,#14101a 40%,#ff4d96);color:#ffd23e}
+.body{padding:1.4rem;display:flex;flex-direction:column;gap:.5rem;flex:1}
+.name{font-size:1.4rem;font-weight:660;letter-spacing:-.01em}
+.name .dot{display:inline-block;width:.7rem;height:.7rem;border-radius:50%;margin-right:.55rem;vertical-align:middle}
+.copper .dot{background:var(--copper)} .swiss .dot{background:var(--swiss)} .maximal .dot{background:var(--maximal)}
+.desc{color:var(--muted);font-size:.95rem}
+.meta{margin-top:auto;padding-top:.9rem;border-top:1px solid var(--line);font-family:var(--mono);font-size:.78rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:.3rem .9rem}
+.open{margin-top:.7rem;font-weight:600;font-size:.95rem;color:var(--ink)}
+.card.copper .open{color:var(--copper)} .card.swiss .open{color:#f0a259} .card.maximal .open{color:var(--maximal)}
+footer{border-top:1px solid var(--line);padding-block:2.4rem;color:var(--muted);font-size:.9rem}
+footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+footer b{color:var(--ink)} footer b i{color:var(--copper);font-style:normal}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header><div class="wrap">
+  <p class="kicker"><b>tastecheck</b> · samples · same content, three design systems</p>
+  <h1>One page. Three <em>committed</em> design systems.</h1>
+  <p class="lede">Every sample below ships the <strong>exact same words and structure</strong>. The only variable is the design system — so the difference you see is taste, not content.</p>
+  <p class="note">This is the whole point of the interview: a real design system makes identical content read as three distinct products. Each one passes the same a11y audit (0 contrast fails, keyboard-navigable, reduced-motion safe) — opinionated <em>and</em> accessible aren't a tradeoff.</p>
+</div></header>
+
+<main id="main"><div class="wrap">
+  <div class="grid">
+    <a class="card copper" href="copper/index.html">
+      <div class="swatch copper" aria-hidden="true">#0f0d0b · #f0a259</div>
+      <div class="body">
+        <div class="name"><span class="dot" aria-hidden="true"></span>Copper / Editorial</div>
+        <p class="desc">Dark, warm, geological. A corroded-metal headline serif over basalt texture — premium restraint, single dominant accent.</p>
+        <div class="meta"><span>Redaction</span><span>Archivo</span><span>OKLCH copper</span><span>basalt texture</span></div>
+        <span class="open">Open sample →</span>
+      </div>
+    </a>
+    <a class="card swiss" href="swiss/index.html">
+      <div class="swatch swiss" aria-hidden="true">#f7f6f2 · #e8482b</div>
+      <div class="body">
+        <div class="name"><span class="dot" aria-hidden="true"></span>Atelier / Swiss</div>
+        <p class="desc">Light, gridded, exact. Exposed 12-column grid, oversized vermilion index numerals, International-Typographic discipline.</p>
+        <div class="meta"><span>Hanken Grotesk</span><span>12-col grid</span><span>vermilion</span><span>off-white paper</span></div>
+        <span class="open">Open sample →</span>
+      </div>
+    </a>
+    <a class="card maximal" href="maximal/index.html">
+      <div class="swatch maximal" aria-hidden="true">#14101a · #ff4d96</div>
+      <div class="body">
+        <div class="name"><span class="dot" aria-hidden="true"></span>Riot / Maximal</div>
+        <p class="desc">Loud, color-blocked, kinetic. Magenta/yellow/cobalt/jade blocks with dark ink, big display numerals — energy with a measured contrast map.</p>
+        <div class="meta"><span>Bricolage Grotesque</span><span>color blocks</span><span>4 accents</span><span>dark ink on bright</span></div>
+        <span class="open">Open sample →</span>
+      </div>
+    </a>
+  </div>
+</div></main>
+
+<footer><div class="wrap"><b>taste<i>check</i></b><span>taste is the only moat · MIT · github.com/KyaniteLabs/tastecheck</span></div></footer>
+</body></html>

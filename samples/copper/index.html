@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>tastecheck — Copper / Editorial sample</title>
+<style>
+@font-face{font-family:"Red0";src:url("fonts/redaction-0-700.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Red0";src:url("fonts/redaction-0-400.woff2") format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"Red35";src:url("fonts/redaction-35-700.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Archivo";src:url("fonts/archivo-400.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Archivo";src:url("fonts/archivo-600.woff2") format("woff2");font-weight:600;font-display:swap}
+:root{
+  --bg:#0f0d0b; --s1:#1a1611; --s2:#241e16; --line:#3a3024;
+  --ink:#f5efe6; --muted:#c3b6a4; --copper:#f0a259; --copper-deep:#7a4518; --on-copper:#1a0e03; --verd:#33d6ac;
+  --disp:"Red0",Georgia,serif; --body:"Archivo",system-ui,sans-serif; --mono:ui-monospace,Menlo,monospace; --rc:5px;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}:focus-visible{outline:2px solid var(--copper);outline-offset:3px;border-radius:3px}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(1.25rem,1rem + 3vw,3rem)}
+.skip{position:absolute;left:-999px}.skip:focus{left:16px;top:16px;z-index:99;background:var(--copper);color:var(--on-copper);padding:.6em 1em;border-radius:5px}
+header{position:sticky;top:0;z-index:40;background:rgba(15,13,11,.74);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{display:flex;justify-content:space-between;align-items:center;min-height:60px}
+.brand{font-family:var(--disp);font-weight:700;font-size:1.5rem}.brand i{color:var(--copper);font-style:normal}
+.nav details{position:relative}.nav summary{list-style:none;cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--muted);font:600 .9rem var(--body)}
+.nav summary::-webkit-details-marker{display:none}.menu{display:flex;gap:.3rem}
+.menu a{display:flex;align-items:center;min-height:44px;padding:0 14px;text-decoration:none;color:var(--muted);font:600 .82rem var(--body)}.menu a:hover{color:var(--ink)}
+@media(max-width:680px){.menu{position:absolute;right:0;top:50px;flex-direction:column;background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:.4rem;min-width:170px}.nav details:not([open]) .menu{display:none}}
+@media(min-width:681px){.nav summary{display:none}}
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero .bg{position:absolute;inset:-4%;z-index:0;background:url("basalt.png") center/cover no-repeat}
+.hero .scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(105deg,var(--bg) 12%,rgba(15,13,11,.72) 48%,rgba(15,13,11,.3) 100%)}
+.hero .wrap{position:relative;z-index:2;padding-block:clamp(4rem,2rem + 9vw,8rem);display:grid;grid-template-columns:auto 1fr;gap:clamp(1rem,.5rem + 2vw,2.2rem)}
+.rule{width:2px;background:linear-gradient(var(--copper),transparent);border-radius:2px}
+.idx{font-family:var(--mono);font-size:.8rem;color:var(--copper);margin-bottom:1.1rem;display:flex;gap:.6rem;align-items:center}.idx s{width:1.6rem;height:1px;background:var(--copper)}
+h1{font-family:var(--disp);font-weight:700;font-size:clamp(3rem,1.6rem + 6vw,6rem);line-height:.94;letter-spacing:-.03em;margin-bottom:1.3rem;max-width:16ch}
+h1 .j{color:var(--copper)} h1 em{font-style:italic;font-weight:400}
+.lede{font-size:clamp(1.12rem,1rem + .55vw,1.45rem);opacity:.92;max-width:42ch;margin-bottom:1.9rem}
+.actions{display:flex;gap:.9rem;flex-wrap:wrap}
+.btn{font:600 1.02rem var(--body);cursor:pointer;border-radius:var(--rc);padding:.8em 1.5em;border:1px solid transparent;min-height:48px;transition:transform .12s,background-color .16s,border-color .16s}
+.btn-primary{background:var(--copper);color:var(--on-copper)}.btn-primary:hover{background:#f6b06e}.btn-primary:active{transform:translateY(1px)}
+.btn-ghost{background:var(--s1);color:var(--ink);border-color:var(--line)}.btn-ghost:hover{border-color:var(--ink)}
+.trust{margin-top:1.6rem;color:var(--muted);font-size:.92rem}.trust b{color:var(--ink);font-weight:600}
+@media(max-width:560px){.hero .wrap{grid-template-columns:1fr}.rule{display:none}}
+section{padding-block:clamp(3.5rem,2rem + 6vw,6.5rem)}
+.mark{font-family:var(--mono);font-size:.8rem;color:var(--copper);display:flex;gap:.6rem;align-items:center;margin-bottom:1rem}.mark s{width:1.6rem;height:1px;background:var(--copper)}
+h2{font-family:var(--disp);font-weight:700;font-size:clamp(2.1rem,1.4rem + 3vw,3.4rem);line-height:1.03;letter-spacing:-.02em;max-width:18ch}
+.slede{color:var(--muted);max-width:54ch;margin-top:1rem;font-size:1.12rem}
+.slops{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;margin-top:2.5rem}@media(max-width:680px){.slops{grid-template-columns:1fr}}
+.slop{border:1px solid var(--line);border-radius:14px;padding:1.4rem;background:var(--s1)}
+.sw{height:72px;border-radius:8px;margin-bottom:1.1rem}.sw.p{background:linear-gradient(135deg,#6366f1,#a855f7)}.sw.c{background:linear-gradient(135deg,#efe7d8,#8c2f24)}
+.slop h3{font-family:var(--disp);font-weight:700;font-size:1.2rem;margin-bottom:.3rem}.slop p{color:var(--muted);font-size:.93rem}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:3rem;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}@media(max-width:760px){.steps{grid-template-columns:1fr}}
+.step{background:var(--bg);padding:2rem 1.6rem}
+.num{font-family:"Red35",var(--disp);font-weight:700;font-size:3.2rem;line-height:.8;color:var(--copper);font-variant-numeric:tabular-nums}
+.step h3{font-family:var(--disp);font-weight:700;font-size:1.4rem;margin:.9rem 0 .5rem}.step p{color:var(--muted)}
+.step .q{font-family:var(--disp);font-style:italic;color:var(--ink);margin-top:.9rem;border-left:2px solid var(--copper);padding-left:.8rem}
+.skills-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(15rem,100%),1fr));gap:10px;margin-top:3rem}
+.sk{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:1.2rem;transition:border-color .16s,transform .16s}.sk:hover{border-color:var(--copper-deep);transform:translateY(-2px)}
+.sk .n{font:600 .8rem var(--mono);color:var(--copper)}.sk h3{font-family:var(--disp);font-weight:700;font-size:1.12rem;margin:.35rem 0 .25rem}.sk p{color:var(--muted);font-size:.88rem}
+.install{background:var(--s1);border-block:1px solid var(--line)}
+.cmd{font-family:var(--mono);font-size:clamp(.85rem,.7rem + .5vw,1rem);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:1.2rem 1.4rem;margin-top:1.4rem;overflow-x:auto}.cmd .c{color:var(--copper)}
+footer{border-top:1px solid var(--line);padding-block:2.4rem;color:var(--muted);font-size:.92rem}
+footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}footer b{color:var(--ink);font-family:var(--disp)}footer b i{color:var(--copper);font-style:normal}
+.rv{opacity:0;transform:translateY(16px)}.rv.in{opacity:1;transform:none;transition:opacity .55s cubic-bezier(.16,1,.3,1),transform .55s cubic-bezier(.16,1,.3,1)}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}.hero .bg{animation:none!important}*{transition-duration:.01ms!important}}
+@media(prefers-reduced-motion:no-preference){.hero .bg{animation:drift 26s ease-in-out infinite alternate}@keyframes drift{from{transform:scale(1.04)}to{transform:scale(1.1) translate(-1.5%,-1.5%)}}}
+</style></head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header><div class="wrap nav">
+  <span class="brand">taste<i>check</i></span>
+  <details><summary aria-label="Menu">Menu ▾</summary><div class="menu"><a href="#why">Problem</a><a href="#how">How</a><a href="#skills">Skills</a><a href="#install">Install</a></div></details>
+</div></header>
+
+<main id="main">
+<section class="hero"><div class="bg" aria-hidden="true"></div><div class="scrim" aria-hidden="true"></div><div class="wrap">
+  <div class="rule" aria-hidden="true"></div>
+  <div>
+    <div class="idx"><s></s>design intelligence for AI agents</div>
+    <h1>Make it <span class="j">yours</span>, <em>not</em> the average.</h1>
+    <p class="lede">Every AI builds the same site. tastecheck interviews you into a real design system first — then 14 skills make sure your agent ships taste, not slop.</p>
+    <div class="actions"><button class="btn btn-primary">Run a taste check →</button><button class="btn btn-ghost">See the skills</button></div>
+    <p class="trust">Works with <b>Claude Code</b> · <b>Codex</b> · <b>Gemini</b> · <b>Cursor</b> · MIT</p>
+  </div>
+</div></section>
+
+<section id="why"><div class="wrap rv">
+  <div class="mark"><s></s>the problem</div>
+  <h2>There are two AI slops. We refuse both.</h2>
+  <p class="slede">Ask for a site, you get the purple gradient. Ask for “not AI,” you get the cream-and-serif. Both are the average — one season apart.</p>
+  <div class="slops">
+    <div class="slop"><div class="sw p"></div><h3>The purple gradient</h3><p>Indigo→violet, Inter, centered hero, three emoji cards, pill buttons. 2023–2025.</p></div>
+    <div class="slop"><div class="sw c"></div><h3>The editorial serif</h3><p>Fraunces, cream paper, brick-red accent, oversized italics. The 2026 default.</p></div>
+  </div>
+</div></section>
+
+<section id="how"><div class="wrap rv">
+  <div class="mark"><s></s>how it works</div>
+  <h2>It interviews you first.</h2>
+  <p class="slede">No menus. It surfaces every decision you didn’t know you had.</p>
+  <div class="steps">
+    <div class="step"><div class="num">01</div><h3>It grills you</h3><p>Function first, then references — it finds the pattern across what you love.</p><div class="q">“‘Modern’ is a non-answer — name one you’d resemble.”</div></div>
+    <div class="step"><div class="num">02</div><h3>It commits</h3><p>OKLCH palette with verified contrast, real type, structure, motion — as tokens.</p><div class="q">“One dominant color, not five. And not indigo→violet.”</div></div>
+    <div class="step"><div class="num">03</div><h3>It builds &amp; checks</h3><p>The skills apply the system, then audit the result against your spec.</p><div class="q">“That wine-red is the new tell. For your energy, push here.”</div></div>
+  </div>
+</div></section>
+
+<section id="skills"><div class="wrap rv">
+  <div class="mark"><s></s>what's inside</div>
+  <h2>Fourteen skills. Zero vibes.</h2>
+  <div class="skills-g">
+    <div class="sk"><div class="n">00</div><h3>design-system-interview</h3><p>Grills you into a committed system + tokens before code.</p></div>
+    <div class="sk"><div class="n">01</div><h3>deslop-ui</h3><p>Strip the AI tells — visual and structural.</p></div>
+    <div class="sk"><div class="n">02</div><h3>humanize-copy</h3><p>Remove the ChatGPT accent from writing.</p></div>
+    <div class="sk"><div class="n">03</div><h3>web-typography</h3><p>Scale, measure, rhythm, font loading.</p></div>
+    <div class="sk"><div class="n">04</div><h3>color-system</h3><p>OKLCH palettes that pass contrast.</p></div>
+    <div class="sk"><div class="n">05</div><h3>theming</h3><p>Light + dark + high-contrast from one token set.</p></div>
+    <div class="sk"><div class="n">06</div><h3>responsive-layout</h3><p>Survives any width.</p></div>
+    <div class="sk"><div class="n">07</div><h3>component-states</h3><p>Every interactive state + ARIA.</p></div>
+    <div class="sk"><div class="n">08</div><h3>form-ux</h3><p>Forms people actually finish.</p></div>
+    <div class="sk"><div class="n">09</div><h3>empty-states</h3><p>Empty / loading / error, handled.</p></div>
+    <div class="sk"><div class="n">10</div><h3>micro-motion</h3><p>Animation that feels expensive.</p></div>
+    <div class="sk"><div class="n">11</div><h3>a11y-pass</h3><p>Runnable WCAG 2.2 AA audit.</p></div>
+    <div class="sk"><div class="n">12</div><h3>cognitive-a11y</h3><p>ADHD · autism · dyslexia · neurodivergence.</p></div>
+    <div class="sk"><div class="n">13</div><h3>data-viz</h3><p>Honest, Tufte-grade charts.</p></div>
+  </div>
+</div></section>
+
+<section class="install" id="install"><div class="wrap rv">
+  <div class="mark"><s></s>install</div>
+  <h2>One command. Then just build.</h2>
+  <div class="cmd"><span class="c">$</span> git clone https://github.com/KyaniteLabs/tastecheck<br><span class="c">$</span> ./tastecheck/install.sh</div>
+</div></section>
+</main>
+
+<footer><div class="wrap"><b>taste<i>check</i></b><span>taste is the only moat · MIT &nbsp;·&nbsp; sample · Copper / Editorial</span></div></footer>
+
+<script>
+document.documentElement.classList.add('js');
+document.querySelector('summary')?.addEventListener('click',function(){var s=this;setTimeout(function(){s.setAttribute('aria-expanded',s.closest('details').open)},0)});
+(function(){var rm=matchMedia('(prefers-reduced-motion: reduce)').matches;var els=[].slice.call(document.querySelectorAll('.rv'));
+ if(rm||!('IntersectionObserver'in window)){els.forEach(e=>e.classList.add('in'));return;}
+ var io=new IntersectionObserver(function(es){es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}})},{threshold:0,rootMargin:'0px 0px -8% 0px'});
+ els.forEach(e=>io.observe(e));setTimeout(()=>els.forEach(e=>e.classList.add('in')),1500);})();
+</script>
+</body></html>
