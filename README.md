@@ -9,7 +9,7 @@ two things no prompt does: it **grills you into a real design system *before* it
 code**, then applies fourteen checkable craft skills so the output has a point of view
 instead of a purple gradient.
 
-![tastecheck — the same landing-page content rendered as five committed design systems: Copper, Swiss, Maximal, Concrete and Clay](docs/hero/five-systems.png)
+![tastecheck — the same landing-page content rendered as five committed design systems: Copper, Swiss, Maximal, Concrete and Clay](docs/hero/five-systems.png?v=2)
 
 *Five **real browser renders** — the exact same words and structure in every one, only the
 design system differs. That's the whole pitch: a committed design system beats the AI
