@@ -1,30 +1,42 @@
 # tastecheck
 
-> Eleven frontend craft skills for AI coding agents that stop AI from building the same
-> generic site. The headline skill grills you into a committed design system BEFORE any
-> code; the rest (typography, color/OKLCH, dark mode, layout, states, forms, motion,
-> a11y, deslop) apply checkable craft so the output has a point of view. Works with any
-> agent (Claude Code, Codex, Gemini, Cursor, Kilocode, Kimi). Plain Markdown, no runtime.
+> Fourteen frontend craft skills for AI coding agents that stop AI from building the same
+> generic "AI slop" website. The headline skill grills you into a committed design system
+> BEFORE any code; the rest (typography, color/OKLCH, theming, layout, states, forms,
+> motion, data-viz, a11y, cognitive-a11y, deslop, humanize-copy) apply checkable craft so
+> the output has a point of view. Works with any agent (Claude Code, Codex, Gemini, Cursor,
+> Kilocode, Kimi). Plain Markdown, no runtime. MIT.
 
 Install via install.sh (symlinks each skill into every detected agent's skills/ dir).
 Skills auto-trigger when a request matches them; Claude Code also gets slash commands.
 
 ## Start here
-- [README](README.md): the problem (every AI site looks the same), the fix, and install
+- [README](README.md): the problem (every AI site looks the same), the fix, the samples, install
+- [Live gallery](https://kyanitelabs.github.io/tastecheck/samples/): five design systems, one identical content set
 - [Verification report](docs/VERIFICATION.md): every skill rendered in a real browser before release
 
 ## Skills
 - [design-system-interview](skills/design-system-interview/SKILL.md): grills you into a committed design system + tokens before building (the headline)
-- [deslop-ui](skills/deslop-ui/SKILL.md): remove the named AI visual tells; commit to a direction
+- [deslop-ui](skills/deslop-ui/SKILL.md): remove the named AI visual + structural tells; commit to a direction
+- [humanize-copy](skills/humanize-copy/SKILL.md): strip the ChatGPT accent from writing with a checkable kill-list
 - [web-typography](skills/web-typography/SKILL.md): type scale, measure, rhythm, fonts, fluid clamp, web-font CLS, WCAG text
 - [color-system](skills/color-system/SKILL.md): OKLCH palettes, ramps, semantic tokens, verified contrast
-- [theming](skills/theming/SKILL.md): surfaces, elevation-by-lightness, contrast, toggle
+- [theming](skills/theming/SKILL.md): light + dark + high-contrast from one token source; elevation by lightness
 - [responsive-layout](skills/responsive-layout/SKILL.md): mobile-first, intrinsic patterns, container queries
 - [component-states](skills/component-states/SKILL.md): full interactive state matrix + ARIA
 - [form-ux](skills/form-ux/SKILL.md): labels, validation, input types, accessible forms
 - [empty-states](skills/empty-states/SKILL.md): empty/loading/error screens with recovery
 - [micro-motion](skills/micro-motion/SKILL.md): performant tasteful animation + reduced-motion
-- [a11y-pass](skills/a11y-pass/SKILL.md): runnable WCAG 2.2 AA fix pass
+- [data-viz](skills/data-viz/SKILL.md): honest, Tufte-grade charts that theme and pass a11y
+- [a11y-pass](skills/a11y-pass/SKILL.md): runnable WCAG 2.2 AA fix pass with a paste-able auditor
+- [cognitive-a11y](skills/cognitive-a11y/SKILL.md): ADHD / autism / dyslexia / neurodivergent readability
+
+## Samples (same content, five committed design systems)
+- [Copper / Editorial](samples/copper/index.html): dark, warm, tessellated bento + basalt columns
+- [Swiss / Atelier](samples/swiss/index.html): light, exposed 12-column subgrid, one vermilion signal
+- [Maximal / Riot](samples/maximal/index.html): loud color-block sticker collage, display word in a block
+- [Concrete / Brutalist](samples/concrete/index.html): monochrome ruled spec-sheet / ledger table
+- [Clay / Soft humanist](samples/clay/index.html): warm alternating zig-zag flow with pebble shapes
 
 ## Optional
 - [demos](demos/): standalone HTML pages applying the skills' CSS, incl. the before/after gallery
