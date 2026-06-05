@@ -1,0 +1,52 @@
+/* ============================================================================
+   responsive-layout — intrinsic patterns. Mostly breakpoint-free. Mobile-first.
+   Pair with web-typography, component-states, deslop-ui.
+   ========================================================================== */
+
+/* Fluid container: never wider than viewport, capped, centered */
+.container { width: min(100% - 2rem, 72rem); margin-inline: auto; }
+
+/* Auto-fit card grid — wraps with NO media queries */
+.grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  gap: 1.5rem;
+}
+
+/* Sidebar + content; collapses to one column intrinsically */
+.with-sidebar { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+.with-sidebar > .sidebar { flex: 1 1 16rem; }
+.with-sidebar > .content { flex: 999 1 60%; min-width: 0; }
+
+/* Switcher: N columns above ~40rem, 1 below — no query */
+.switcher { display: flex; flex-wrap: wrap; gap: 1rem; }
+.switcher > * { flex-grow: 1; flex-basis: calc((40rem - 100%) * 999); min-width: 0; }
+
+/* Stack: vertical rhythm between flow children */
+.stack > * + * { margin-block-start: var(--stack-gap, 1rem); }
+
+/* Cluster: wrapping group, even gaps (tags, button rows) */
+.cluster { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+
+/* Media never overflows; reserve space to avoid CLS */
+img, video, svg { max-width: 100%; height: auto; }
+.media-16x9 { aspect-ratio: 16 / 9; object-fit: cover; width: 100%; }
+
+/* Full-height that respects mobile browser chrome */
+.full-height { min-height: 100svh; }   /* not 100vh */
+
+/* Container-query component: card goes horizontal when its slot is wide */
+.card-wrap { container-type: inline-size; }
+.card { display: grid; gap: 1rem; }
+@container (min-width: 28rem) {
+  .card { grid-template-columns: 8rem 1fr; align-items: start; }
+}
+
+/* A breakpoint ONLY where content needs a shape change (mobile-first) */
+.page { display: grid; gap: 1.5rem; }
+@media (min-width: 48em) {
+  .page { grid-template-columns: 2fr 1fr; }
+}
+
+/* Debug helper: uncomment to find overflow source
+* { outline: 1px solid red; } */

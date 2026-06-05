@@ -1,0 +1,68 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>motion-forms-empty</title><style>
+/* ============================================================================
+   micro-motion — tokens + ready patterns. Transform/opacity only. Reduced-motion
+   contract included. Pair with empty-states (skeletons) and deslop-ui.
+   ========================================================================== */
+
+:root {
+  --dur-fast: 150ms;
+  --dur-base: 220ms;
+  --dur-slow: 320ms;
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);    /* entrances */
+  --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);     /* exits */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);    /* moves */
+}
+
+/* Press feedback */
+.btn { transition: transform var(--dur-fast) var(--ease-out),
+                   background-color var(--dur-fast) var(--ease-out); }
+.btn:active { transform: scale(0.97); }
+
+/* Popover/menu: scale+fade from its origin */
+.popover { transform-origin: top center; opacity: 0; transform: scale(0.96);
+           transition: opacity var(--dur-base) var(--ease-out),
+                       transform var(--dur-base) var(--ease-out); }
+.popover[data-open] { opacity: 1; transform: scale(1); }
+
+/* Scroll/load reveal — movement gated behind no-preference */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal { opacity: 0; transform: translateY(12px);
+            transition: opacity var(--dur-base) var(--ease-out),
+                        transform var(--dur-base) var(--ease-out); }
+  .reveal.in { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; }   /* no movement; just shown */
+}
+
+/* Staggered hero load */
+@media (prefers-reduced-motion: no-preference) {
+  .stagger > * { opacity: 0; transform: translateY(10px);
+                 animation: rise var(--dur-base) var(--ease-out) forwards; }
+  .stagger > *:nth-child(1){ animation-delay: 0ms; }
+  .stagger > *:nth-child(2){ animation-delay: 60ms; }
+  .stagger > *:nth-child(3){ animation-delay: 120ms; }
+  .stagger > *:nth-child(4){ animation-delay: 180ms; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+}
+
+/* Skeleton shimmer (the one place linear is correct) */
+.skeleton { background: linear-gradient(90deg,
+              var(--surface-1,#eee) 25%, var(--surface-2,#f5f5f5) 37%, var(--surface-1,#eee) 63%);
+            background-size: 400% 100%; animation: shimmer 1.4s linear infinite; }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
+@media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }
+
+/* Global safety net */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important; scroll-behavior: auto !important;
+  }
+}
+:root{--surface-1:#eee;--surface-2:#f5f5f5}body{font-family:system-ui;padding:2rem;display:grid;gap:1.5rem}.field{display:grid;gap:.25rem;max-width:24rem}label{font-weight:600}.input{padding:.5em .7em;border:1px solid #c7ccd6;border-radius:6px}.error{color:#cf222e}.skeleton{height:1rem;border-radius:4px}.empty{border:1px dashed #c7ccd6;padding:2rem;text-align:center;border-radius:8px}</style></head><body>
+<h1>motion / empty-states / form-ux demo</h1>
+<div><h2>Loading skeleton</h2><div class=skeleton style="width:60%"></div><div class=skeleton style="width:90%;margin-top:.5rem"></div></div>
+<div class=empty><h2>No projects yet</h2><p>Create your first project to start.</p><button class=btn style="padding:.6em 1.1em;border-radius:8px;border:0;background:#2563eb;color:#fff">New project</button></div>
+<form class=field><label for=email>Email *</label><input class=input id=email type=email aria-invalid=true aria-describedby=err><p class=error id=err>Enter a valid email like name@example.com</p></form>
+</body></html>

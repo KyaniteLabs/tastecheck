@@ -1,0 +1,30 @@
+# frontend-skills
+
+> Ten model-agnostic frontend craft skills for AI coding agents — typography, color
+> (OKLCH), dark mode, responsive layout, component states, forms, empty/loading/error
+> states, motion, and WCAG 2.2 accessibility. Each is a Markdown SKILL.md an agent
+> loads when relevant: named anti-patterns, real values, before/after, self-check.
+
+Skills are plain Markdown (SKILL.md + references/ + assets/). They work with any AI
+coding agent that can read files (Claude Code, Codex, Gemini CLI, Cursor, Kilocode,
+Kimi). No SDK or runtime. Install via install.sh (symlinks into each agent's skills dir).
+
+## Skills
+- [web-typography](skills/web-typography/SKILL.md): type scale, measure, rhythm, fonts, fluid clamp, web-font CLS, WCAG text
+- [deslop-ui](skills/deslop-ui/SKILL.md): remove AI visual tells; commit to a real direction
+- [dark-mode](skills/dark-mode/SKILL.md): surfaces, elevation-by-lightness, contrast, toggle
+- [color-system](skills/color-system/SKILL.md): OKLCH palettes, ramps, semantic tokens, contrast
+- [responsive-layout](skills/responsive-layout/SKILL.md): mobile-first, intrinsic patterns, container queries
+- [component-states](skills/component-states/SKILL.md): full interactive state matrix + ARIA
+- [form-ux](skills/form-ux/SKILL.md): labels, validation, input types, accessible forms
+- [empty-states](skills/empty-states/SKILL.md): empty/loading/error screens with recovery
+- [micro-motion](skills/micro-motion/SKILL.md): performant tasteful animation + reduced-motion
+- [a11y-pass](skills/a11y-pass/SKILL.md): runnable WCAG 2.2 AA fix pass
+
+## Start here
+- [README](README.md): what this is, why, and how to install
+- [Verification report](docs/VERIFICATION.md): how every skill was tested end-to-end before release
+
+## Optional
+- [demos](demos/): standalone HTML pages applying the skills' CSS
+- [commands](commands/): Claude Code slash-command wrappers (/typography, /deslop, …)
