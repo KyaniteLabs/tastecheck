@@ -187,3 +187,12 @@ Keep this file in context; pull a reference in when the task calls for it.
 - After non-trivial changes, do the **accessibility pass** (`references/accessibility.md`)
   before declaring done. Verify contrast and that the layout survives 200% zoom and
   the text-spacing overrides.
+
+## Self-check
+
+- [ ] Body text ≥ 1rem (16px); measure capped ~66ch; line-height unitless (~1.5 body, tighter headings)
+- [ ] Type scale is a real ratio (not arbitrary px); headings get negative letter-spacing
+- [ ] Every `clamp()`/`calc()` has **spaces around `+`/`−`** (`1rem + 3vw`) — and you **measured the computed size**, not eyeballed it
+- [ ] Web fonts: woff2, `font-display: swap`/`optional`, preloaded, metric-matched fallback → no CLS
+- [ ] Contrast ≥ 4.5:1 (3:1 large); survives 200% zoom and the text-spacing override
+- [ ] Explained the decision, not just the code

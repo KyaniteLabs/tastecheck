@@ -121,3 +121,12 @@ ramp for any hue and emit hex fallbacks.
 - Always run the contrast check on the actual pairs and report the numbers.
 - Pair with `theming` (the dark palette reuses these hues with +L/−C) and `deslop-ui`
   (commit to one dominant color — avoid the timid even palette).
+
+## Self-check
+
+- [ ] One dominant hue stated; accents intentional — not an even, timid, five-color spread
+- [ ] Ramp built in OKLCH with chroma taper at the light/dark ends; P3 with sRGB fallback
+- [ ] Semantic tokens (`--color-primary`…) referenced by components — not raw ramp stops in markup
+- [ ] Every text pair **measured** ≥ 4.5:1 (3:1 large/UI), and the numbers reported
+- [ ] Meaning never by color alone; palette is color-blind safe
+- [ ] Not the indigo→violet (or wine-red) default — committed to a real direction
