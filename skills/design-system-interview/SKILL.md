@@ -53,7 +53,7 @@ constraint. Your job here is to extract or supply those refusals.
 6. **Emit the artifact.** Produce `DESIGN-SYSTEM.md` + a token block, then hand off to
    `color-system`, `web-typography`, etc. to implement.
 
-## The interview (the 7 forcing questions)
+## The interview (the forcing questions)
 
 Ask these in order. Each has the **anti-slop framing** and **concrete forks** to offer.
 Keep it to ~6–7; this is a sprint, not a survey.
@@ -77,11 +77,17 @@ Keep it to ~6–7; this is a sprint, not a survey.
 6. **Density & shape.** Spacious or dense? Sharp corners (0–4px), soft (8–12px), or
    round (16px+)? Flat or layered/shadowed? These set the whole feel and are usually
    skipped. Land on numbers.
-7. **One signature move.** "What's the one memorable thing — a bold type treatment, an
-   unexpected color, a distinctive grid, one orchestrated load animation?" Designed
-   work has exactly one. Pick it.
+7. **Structure & rhythm (do NOT skip — this is where pages escape slop).** Symmetric
+   centered, or asymmetric/offset? Is there a spatial motif from the references (grid,
+   tessellation/bento, columns, collage)? Metronomic sections or syncopated (varied
+   width/density/treatment)? A committed palette on the generic SaaS skeleton is still
+   slop. Land on a composition + motif + rhythm. (→ `references/structure-and-rhythm.md`,
+   then `responsive-layout`; audited by `deslop-ui` → `structural-tells.md`.)
+8. **One signature move.** "What's the one memorable thing — a bold type treatment, an
+   unexpected color, a distinctive grid/structure, one orchestrated load animation?"
+   Designed work has exactly one. Pick it.
 
-(Optional 8th for products: motion level — restrained / lively / none — feeding
+(Optional 9th for products: motion level — restrained / lively / none — feeding
 `micro-motion`.)
 
 ## Anti-slop guardrails (enforce during the interview)
@@ -117,6 +123,9 @@ committed spec (not the average).
 - `references/interview-bank.md` — the full question bank with recommended defaults,
   the "they said 'modern', now what" counters, and how to decide boldly when the user
   abstains. Read this to run the interview well.
+- `references/structure-and-rhythm.md` — committing **layout structure** (composition,
+  spatial motif, rhythm, signature), not just tokens. The half that actually escapes
+  the template. Read this every time — it's the most-skipped, highest-impact part.
 - `references/tokens.md` — the design-token architecture (primitive/semantic tiers,
   naming, what to emit), so the output plugs into the other skills. Read when writing
   the artifact.

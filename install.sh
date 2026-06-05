@@ -8,7 +8,8 @@ REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_SRC="$REPO/skills"
 SKILLS=(design-system-interview deslop-ui web-typography color-system dark-mode \
         responsive-layout component-states form-ux empty-states micro-motion \
-        a11y-pass data-viz)
+        a11y-pass data-viz \
+        cognitive-a11y humanize-copy)
 
 # Agent homes that use a ~/<home>/skills/ convention
 HOMES=(.claude .codex .gemini .cursor .kilocode .kimi)
