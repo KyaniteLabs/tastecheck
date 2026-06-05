@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>tastecheck — three design systems, one content</title>
+<title>tastecheck — five design systems, one content</title>
 <style>
 :root{
   --bg:#0c0c0d; --s1:#151517; --line:#2a2a2e; --ink:#f4f3f1; --muted:#a3a2a0;
-  --copper:#f0a259; --swiss:#e8482b; --maximal:#ff4d96;
+  --copper:#e08a3a; --swiss:#e8482b; --maximal:#ff3d8b; --concrete:#ff4d00; --clay:#d2774a;
   --sans:system-ui,-apple-system,"Segoe UI",sans-serif; --mono:ui-monospace,Menlo,monospace;
 }
 *{box-sizing:border-box;margin:0}
@@ -17,25 +17,27 @@ header{padding-block:clamp(3.5rem,2rem + 6vw,6rem);border-bottom:1px solid var(-
 .kicker b{color:var(--copper);font-weight:600}
 h1{font-size:clamp(2.4rem,1.6rem + 3.4vw,4rem);line-height:1.02;letter-spacing:-.025em;max-width:18ch;font-weight:680}
 h1 em{font-style:normal;color:var(--copper)}
-.lede{color:var(--muted);max-width:58ch;margin-top:1.3rem;font-size:clamp(1.05rem,1rem + .4vw,1.25rem)}
-.note{margin-top:1.6rem;font-size:.95rem;color:var(--muted);border-left:2px solid var(--line);padding-left:1rem;max-width:60ch}
+.lede{color:var(--muted);max-width:60ch;margin-top:1.3rem;font-size:clamp(1.05rem,1rem + .4vw,1.25rem)}
+.note{margin-top:1.6rem;font-size:.95rem;color:var(--muted);border-left:2px solid var(--line);padding-left:1rem;max-width:64ch}
 main{padding-block:clamp(3rem,2rem + 4vw,5rem)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(20rem,100%),1fr));gap:1.4rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(19rem,100%),1fr));gap:1.4rem}
 .card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--s1);text-decoration:none;transition:border-color .18s,transform .18s}
 .card:hover{transform:translateY(-3px)}
-.card.copper:hover{border-color:var(--copper)} .card.swiss:hover{border-color:var(--swiss)} .card.maximal:hover{border-color:var(--maximal)}
-.swatch{height:120px;display:flex;align-items:flex-end;padding:1rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.06em}
-.swatch.copper{background:radial-gradient(120% 140% at 80% 10%,#3a2415,#0f0d0b);color:#f0a259}
+.card.copper:hover{border-color:var(--copper)} .card.swiss:hover{border-color:var(--swiss)} .card.maximal:hover{border-color:var(--maximal)} .card.concrete:hover{border-color:var(--concrete)} .card.clay:hover{border-color:var(--clay)}
+.swatch{height:118px;display:flex;align-items:flex-end;padding:1rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.06em}
+.swatch.copper{background:radial-gradient(120% 140% at 80% 10%,#3a2415,#0b0d12);color:#e08a3a}
 .swatch.swiss{background:#f7f6f2;color:#c5331b}
-.swatch.maximal{background:linear-gradient(120deg,#14101a 40%,#ff4d96);color:#ffd23e}
+.swatch.maximal{background:linear-gradient(120deg,#14101a 40%,#ff3d8b);color:#ffd23e}
+.swatch.concrete{background:#e7e4dc;color:#0a0a0a;border-bottom:3px solid #0a0a0a}
+.swatch.clay{background:#faf6f0;color:#b5532f}
 .body{padding:1.4rem;display:flex;flex-direction:column;gap:.5rem;flex:1}
-.name{font-size:1.4rem;font-weight:660;letter-spacing:-.01em}
+.name{font-size:1.35rem;font-weight:660;letter-spacing:-.01em}
 .name .dot{display:inline-block;width:.7rem;height:.7rem;border-radius:50%;margin-right:.55rem;vertical-align:middle}
-.copper .dot{background:var(--copper)} .swiss .dot{background:var(--swiss)} .maximal .dot{background:var(--maximal)}
-.desc{color:var(--muted);font-size:.95rem}
-.meta{margin-top:auto;padding-top:.9rem;border-top:1px solid var(--line);font-family:var(--mono);font-size:.78rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:.3rem .9rem}
+.copper .dot{background:var(--copper)} .swiss .dot{background:var(--swiss)} .maximal .dot{background:var(--maximal)} .concrete .dot{background:var(--concrete);border-radius:0} .clay .dot{background:var(--clay)}
+.desc{color:var(--muted);font-size:.94rem}
+.meta{margin-top:auto;padding-top:.9rem;border-top:1px solid var(--line);font-family:var(--mono);font-size:.76rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:.3rem .9rem}
 .open{margin-top:.7rem;font-weight:600;font-size:.95rem;color:var(--ink)}
-.card.copper .open{color:var(--copper)} .card.swiss .open{color:#f0a259} .card.maximal .open{color:var(--maximal)}
+.card.copper .open{color:var(--copper)} .card.swiss .open{color:#f0a259} .card.maximal .open{color:var(--maximal)} .card.concrete .open{color:var(--concrete)} .card.clay .open{color:var(--clay)}
 footer{border-top:1px solid var(--line);padding-block:2.4rem;color:var(--muted);font-size:.9rem}
 footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 footer b{color:var(--ink)} footer b i{color:var(--copper);font-style:normal}
@@ -44,20 +46,20 @@ footer b{color:var(--ink)} footer b i{color:var(--copper);font-style:normal}
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header><div class="wrap">
-  <p class="kicker"><b>tastecheck</b> · samples · same content, three design systems</p>
-  <h1>One page. Three <em>committed</em> design systems.</h1>
+  <p class="kicker"><b>tastecheck</b> · samples · same content, five design systems</p>
+  <h1>One page. Five <em>committed</em> design systems.</h1>
   <p class="lede">Every sample below ships the <strong>exact same words and structure</strong>. The only variable is the design system — so the difference you see is taste, not content.</p>
-  <p class="note">This is the whole point of the interview: a real design system makes identical content read as three distinct products. Each one passes the same a11y audit (0 contrast fails, keyboard-navigable, reduced-motion safe) — opinionated <em>and</em> accessible aren't a tradeoff.</p>
+  <p class="note">That's the whole point of the interview: a real design system makes identical content read as five distinct products — with five different layout grammars, not five recolors. Each one passes the same a11y audit (0 contrast fails, keyboard-navigable, reduced-motion safe) — opinionated <em>and</em> accessible aren't a tradeoff.</p>
 </div></header>
 
 <main id="main"><div class="wrap">
   <div class="grid">
     <a class="card copper" href="copper/index.html">
-      <div class="swatch copper" aria-hidden="true">#0f0d0b · #f0a259</div>
+      <div class="swatch copper" aria-hidden="true">#0b0d12 · #e08a3a · #1fae8f</div>
       <div class="body">
         <div class="name"><span class="dot" aria-hidden="true"></span>Copper / Editorial</div>
-        <p class="desc">Dark, warm, geological. A corroded-metal headline serif over basalt texture — premium restraint, single dominant accent.</p>
-        <div class="meta"><span>Redaction</span><span>Archivo</span><span>OKLCH copper</span><span>basalt texture</span></div>
+        <p class="desc">Dark, warm, geological. Corroded-metal display serif over basalt with structural column rules — a copper/verdigris chemistry palette and an irregular tessellated bento.</p>
+        <div class="meta"><span>Redaction</span><span>Archivo</span><span>tessellated bento</span><span>basalt + columns</span></div>
         <span class="open">Open sample →</span>
       </div>
     </a>
@@ -65,17 +67,35 @@ footer b{color:var(--ink)} footer b i{color:var(--copper);font-style:normal}
       <div class="swatch swiss" aria-hidden="true">#f7f6f2 · #e8482b</div>
       <div class="body">
         <div class="name"><span class="dot" aria-hidden="true"></span>Atelier / Swiss</div>
-        <p class="desc">Light, gridded, exact. Exposed 12-column grid, oversized vermilion index numerals, International-Typographic discipline.</p>
-        <div class="meta"><span>Hanken Grotesk</span><span>12-col grid</span><span>vermilion</span><span>off-white paper</span></div>
+        <p class="desc">Light, gridded, exact. An exposed 12-column subgrid the content visibly sits on, oversized vermilion index numerals, International-Typographic discipline.</p>
+        <div class="meta"><span>Hanken Grotesk</span><span>12-col subgrid</span><span>vermilion</span><span>off-white paper</span></div>
         <span class="open">Open sample →</span>
       </div>
     </a>
     <a class="card maximal" href="maximal/index.html">
-      <div class="swatch maximal" aria-hidden="true">#14101a · #ff4d96</div>
+      <div class="swatch maximal" aria-hidden="true">#14101a · #ff3d8b · #ffd23e</div>
       <div class="body">
         <div class="name"><span class="dot" aria-hidden="true"></span>Riot / Maximal</div>
-        <p class="desc">Loud, color-blocked, kinetic. Magenta/yellow/cobalt/jade blocks with dark ink, big display numerals — energy with a measured contrast map.</p>
-        <div class="meta"><span>Bricolage Grotesque</span><span>color blocks</span><span>4 accents</span><span>dark ink on bright</span></div>
+        <p class="desc">Loud, color-blocked, kinetic. A display word that bleeds into a magenta block, rotated sticker-wall collage, multi-accent on dark with a measured contrast map.</p>
+        <div class="meta"><span>Bricolage Grotesque</span><span>sticker collage</span><span>4 accents</span><span>dark ink on bright</span></div>
+        <span class="open">Open sample →</span>
+      </div>
+    </a>
+    <a class="card concrete" href="concrete/index.html">
+      <div class="swatch concrete" aria-hidden="true">#e7e4dc · #0a0a0a · #ff4d00</div>
+      <div class="body">
+        <div class="name"><span class="dot" aria-hidden="true"></span>Concrete / Brutalist</div>
+        <p class="desc">Raw, mechanical, monochrome. A ruled spec-sheet — heavy rules, oversized mono index numerals, a dense ledger table for the skills. The only achromatic system; one hazard accent.</p>
+        <div class="meta"><span>Space Grotesk</span><span>Space Mono</span><span>ledger table</span><span>achromatic + hazard</span></div>
+        <span class="open">Open sample →</span>
+      </div>
+    </a>
+    <a class="card clay" href="clay/index.html">
+      <div class="swatch clay" aria-hidden="true">#faf6f0 · #4f6f4a · #b5532f</div>
+      <div class="body">
+        <div class="name"><span class="dot" aria-hidden="true"></span>Clay / Soft humanist</div>
+        <p class="desc">Warm, gentle, spacious. Soft rounded panels in an alternating zig-zag flow with organic “clay pebble” shapes — sage + terracotta, calm reading rhythm. Not a serif in sight.</p>
+        <div class="meta"><span>Mulish</span><span>alternating flow</span><span>sage + terracotta</span><span>soft / pill shapes</span></div>
         <span class="open">Open sample →</span>
       </div>
     </a>
