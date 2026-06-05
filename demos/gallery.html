@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>tastecheck — before / after</title>
+<style>
+  :root{ --ink:#16130f; --paper:#fbf7f0; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:1200px;margin:0 auto;padding:48px 32px 64px}
+  .masthead{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;
+    border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:6px}
+  .masthead h1{font-family:Georgia,"Times New Roman",serif;font-weight:800;
+    font-size:clamp(2rem,1.2rem+3vw,3.4rem);letter-spacing:-.02em;margin:0}
+  .masthead .tag{font-size:.95rem;color:#6b6155;font-weight:600}
+  .sub{font-size:1.05rem;color:#5b5345;margin:14px 0 34px;max-width:60ch}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:34px}
+  @media(max-width:760px){.pair{grid-template-columns:1fr}}
+  .panel{border:1px solid #e4ddd0;border-radius:14px;overflow:hidden;background:#fff}
+  .panel .label{display:flex;align-items:center;gap:8px;padding:10px 14px;font-weight:700;
+    font-size:.82rem;letter-spacing:.04em;text-transform:uppercase}
+  .before .label{background:#fbeaea;color:#a01b1b}
+  .after  .label{background:#e8f3ee;color:#0d6b53}
+  .stage{padding:26px;min-height:230px;display:flex;flex-direction:column;justify-content:center}
+
+  /* ---------- BEFORE: the AI slop defaults ---------- */
+  .slop-hero{background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:16px;
+    padding:30px;text-align:center;color:#fff;box-shadow:0 25px 50px -12px rgba(99,102,241,.5)}
+  .slop-hero h3{font-family:Inter,system-ui,sans-serif;font-weight:700;margin:.2rem 0;font-size:1.4rem}
+  .slop-hero p{opacity:.9;margin:.3rem 0 1rem;font-size:.95rem}
+  .slop-btn{border:0;border-radius:9999px;background:#fff;color:#6366f1;font-weight:600;
+    padding:.7em 1.5em;font-family:Inter,sans-serif}
+  .slop-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+  .slop-card{background:#fff;border-radius:14px;box-shadow:0 20px 25px -5px rgba(0,0,0,.12);
+    padding:14px;text-align:center;font-family:Inter,sans-serif;font-size:.8rem;color:#475569}
+  .slop-card .emoji{font-size:1.4rem;display:block;margin-bottom:6px}
+
+  /* ---------- AFTER: committed direction (warm editorial, oxblood) ---------- */
+  .ed{--accent:#8c2f24;--line:#e0d7c6}
+  .ed-kicker{font-family:ui-monospace,Menlo,monospace;font-size:.72rem;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+  .ed h3{font-family:Georgia,serif;font-weight:800;font-size:2rem;line-height:1.05;
+    letter-spacing:-.02em;margin:0 0 .4rem;max-width:18ch}
+  .ed p{color:#5b5345;margin:.2rem 0 1.1rem;max-width:42ch;line-height:1.5}
+  .ed-btn{border:0;border-radius:6px;background:var(--accent);color:#fdf6ee;font-weight:600;
+    padding:.65em 1.2em;font-family:Georgia,serif;letter-spacing:.01em}
+  .ed-row{display:flex;gap:28px;border-top:1px solid var(--line);margin-top:20px;padding-top:14px}
+  .ed-stat .n{font-family:Georgia,serif;font-size:2rem;font-weight:800;color:var(--accent);line-height:1;
+    font-variant-numeric:tabular-nums}
+  .ed-stat .l{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:#8a7d6a;margin-top:4px}
+
+  .foot{border-top:2px solid var(--ink);margin-top:18px;padding-top:16px;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:.9rem;color:#5b5345}
+  .foot code{background:#efe7d8;padding:.2em .5em;border-radius:5px;font-size:.85rem}
+  .pill{display:inline-block;background:var(--ink);color:var(--paper);font-weight:700;
+    padding:.25em .7em;border-radius:6px;font-size:.78rem;letter-spacing:.03em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead">
+    <h1>tastecheck</h1>
+    <span class="tag">same prompt · same model · one skill on</span>
+  </div>
+  <p class="sub">Ask any AI to “build a SaaS landing page.” It hands you the statistical average of the web: purple gradient, Inter, centered hero, three identical cards. <strong>tastecheck</strong> grills you into a real design system first — then the same model builds something with a point of view.</p>
+
+  <div class="pair">
+    <div class="panel before">
+      <div class="label">✕ Before — raw AI default</div>
+      <div class="stage">
+        <div class="slop-hero">
+          <h3>🚀 Supercharge your workflow</h3>
+          <p>The all-in-one platform to streamline everything.</p>
+          <button class="slop-btn">Get Started</button>
+          <div class="slop-cards">
+            <div class="slop-card"><span class="emoji">⚡</span>Fast</div>
+            <div class="slop-card"><span class="emoji">🔒</span>Secure</div>
+            <div class="slop-card"><span class="emoji">✨</span>Simple</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel after">
+      <div class="label">✓ After — committed direction</div>
+      <div class="stage ed">
+        <div class="ed-kicker">Field Notes · Issue 04</div>
+        <h3>Run the kitchen, not the spreadsheet.</h3>
+        <p>Inventory, prep, and orders in one place — built for the Friday-night rush, not the demo.</p>
+        <button class="ed-btn">Start free trial →</button>
+        <div class="ed-row">
+          <div class="ed-stat"><div class="n">2,400</div><div class="l">kitchens</div></div>
+          <div class="ed-stat"><div class="n">31%</div><div class="l">less waste</div></div>
+          <div class="ed-stat"><div class="n">6 min</div><div class="l">to set up</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span><span class="pill">THE TELLS, KILLED</span> &nbsp; pill button → 6px · indigo→violet → oxblood · Inter → Georgia editorial · 3 emoji cards → real numbers · shadow-2xl → flat + rule</span>
+    <span>install once · works with Claude Code, Codex, Gemini, Cursor · <code>github.com/KyaniteLabs/tastecheck</code></span>
+  </div>
+</div>
+</body>
+</html>
