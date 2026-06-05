@@ -111,6 +111,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 .tc-pal button[aria-pressed=true]{outline:2px solid var(--tc-ink);outline-offset:2px}
 @media(max-width:560px){.tc-bar{font-size:.74rem}}
 </style>
+<style>a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}</style>
 </head>
 <body>
 <div class="tc-bar"><a class="tc-home" href="../../">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="../copper/">Copper</a><a href="../swiss/">Swiss</a><a href="../maximal/">Maximal</a><a href="../concrete/">Concrete</a><a href="../clay/" aria-current="page">Clay</a><a href="../">Gallery</a></nav><div class="tc-pal" role="group" aria-label="Color palette"><span class="tc-lbl">Palette</span><button type="button" data-pal="a" aria-pressed="true" aria-label="Sage palette" title="Sage" style="background:#4f6f4a"></button><button type="button" data-pal="b" aria-pressed="false" aria-label="Slate palette" title="Slate" style="background:#3f6a86"></button><button type="button" data-pal="c" aria-pressed="false" aria-label="Plum palette" title="Plum" style="background:#6a4a78"></button></div></div>
@@ -126,7 +127,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
     <span class="kicker">design intelligence for AI agents</span>
     <h1>Make it yours, not the <span class="a">average</span>.</h1>
     <p class="lede">Every AI builds the same site. tastecheck interviews you into a real design system first — then 14 skills make sure your agent ships taste, not slop.</p>
-    <div class="actions"><button class="btn btn-primary">Run a taste check →</button><button class="btn btn-ghost">See the skills</button></div>
+    <div class="actions"><a class="btn btn-primary" href="https://github.com/KyaniteLabs/tastecheck">Run a taste check →</a><a class="btn btn-ghost" href="#skills">See the skills</a></div>
     <p class="trust">Works with <b>Claude Code</b> · <b>Codex</b> · <b>Gemini</b> · <b>Cursor</b> · MIT</p>
   </div>
   <div class="pebble-hero" aria-hidden="true"></div>
