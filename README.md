@@ -4,9 +4,9 @@
 identical feature cards, pill buttons, glassmorphism. You've seen it a thousand times
 because the model isn't designing — it's returning the statistical average of the web.
 
-**tastecheck is the fix.** It's a set of **14 craft skills for AI coding agents** that does
+**tastecheck is the fix.** It's a set of **15 craft skills for AI coding agents** that does
 two things no prompt does: it **grills you into a real design system *before* it writes any
-code**, then applies fourteen checkable craft skills so the output has a point of view
+code**, then applies fifteen checkable craft skills so the output has a point of view
 instead of a purple gradient.
 
 ![tastecheck — one landing-page pitch rendered as five committed design systems: Copper, Swiss, Maximal, Concrete and Clay](docs/hero/five-systems.png)
@@ -16,7 +16,7 @@ five committed design systems. That's the whole pitch: a committed design system
 average. Open the [live gallery →](https://kyanitelabs.github.io/tastecheck/samples/)*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-14-success.svg)](#whats-inside)
+[![Skills](https://img.shields.io/badge/skills-15-success.svg)](#whats-inside)
 [![Portable Markdown](https://img.shields.io/badge/plain%20markdown-portable-black.svg)](#portable-markdown)
 [![Verified](https://img.shields.io/badge/verified-npm%20test-brightgreen.svg)](docs/VERIFICATION.md)
 
@@ -33,7 +33,7 @@ the [landing page](https://kyanitelabs.github.io/tastecheck/)
 
 ## What is tastecheck?
 
-tastecheck is a free, open-source (MIT) **pack of 14 frontend craft skills for AI coding
+tastecheck is a free, open-source (MIT) **pack of 15 frontend craft skills for AI coding
 agents** — Claude Code, Codex, Gemini CLI, Cursor, Kilocode, Kimi. The headline skill
 *interviews you into a committed design system before any code is written*; the rest apply
 checkable rules for typography, color, theming, layout, component states, forms, motion,
@@ -90,6 +90,7 @@ audit) and reviewed by independent models from different families before shippin
 
 **The headline**
 - **design-system-interview** — grills you into a committed design system before building; emits tokens the rest consume.
+- **improve-existing-website** — audits a current site, infers the intended system, asks only the questions that change the fix, then makes the partial reality true.
 
 **Remove the tells**
 - **deslop-ui** — the named AI giveaways (purple gradient, pill CTAs, Inter, 3-card hero, glassmorphism, emoji headers) and the exact fix for each — visual *and* structural.
@@ -142,7 +143,7 @@ loading depends on each agent's skill support; otherwise point the agent at the 
 
 ## How it all fits together
 
-> **design-system-interview** (decide taste) → **color-system · web-typography · theming**
+> **design-system-interview / improve-existing-website** (decide or infer taste) → **color-system · web-typography · theming**
 > (foundations) → **responsive-layout** (structure) → **component-states · form-ux ·
 > empty-states** (behavior) → **micro-motion · data-viz** (polish) → **a11y-pass ·
 > cognitive-a11y** (verify) — with **deslop-ui** and **humanize-copy** auditing the result
@@ -166,7 +167,7 @@ also get slash commands:
 ## FAQ
 
 **What is tastecheck?**
-A free, open-source (MIT) pack of 14 craft skills for AI coding agents. It interviews you
+A free, open-source (MIT) pack of 15 craft skills for AI coding agents. It interviews you
 into a committed design system before any code, then applies checkable rules for typography,
 color, accessibility and removing AI "slop" tells — so output has a point of view instead of
 the generic average.
