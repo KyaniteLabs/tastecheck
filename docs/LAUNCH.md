@@ -63,7 +63,7 @@ the before/after image; the repo link rides along.
 > actually apologized last year for making indigo the demo default and seeding half of it.)
 >
 > I got tired of redesigning the same generated page, so I made tastecheck. It's a set of
-> 14 skills for AI coding agents. The part I think is actually new: the headline skill
+> 15 skills for AI coding agents. The part I think is actually new: the headline skill
 > doesn't fix the output afterward — it interviews you *before* the build and forces the
 > decisions the model would otherwise average away (reference instead of adjectives, one
 > dominant color instead of five pastels, a real type pairing instead of Inter). It writes

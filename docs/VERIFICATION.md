@@ -19,7 +19,7 @@ npm test
 
 `tools/verify.mjs` checks:
 
-- 14 skill directories exist and each `SKILL.md` frontmatter `name` matches its directory.
+- 15 skill directories exist and each `SKILL.md` frontmatter `name` matches its directory.
 - Referenced `references/*` and `assets/*` files exist.
 - Slash commands target real `~/.agents/skills/<name>/SKILL.md` paths.
 - `install.sh --yes` creates canonical `~/.agents/skills` links and detected Claude links.
