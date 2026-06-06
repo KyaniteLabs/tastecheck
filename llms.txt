@@ -14,6 +14,7 @@ commands.
 ## Start here
 - [README](README.md): the problem (every AI site looks the same), the fix, the samples, install
 - [Live gallery](https://kyanitelabs.github.io/tastecheck/samples/): five design systems, one product story
+- [15-skill integration demo](https://kyanitelabs.github.io/tastecheck/demos/skill-integration.html): one local website exercising every skill
 - [Verification report](docs/VERIFICATION.md): repeatable local verification plus browser QA checklist
 
 ## Skills
@@ -41,5 +42,5 @@ commands.
 - [Clay / Soft humanist](samples/clay/index.html): warm alternating zig-zag flow with pebble shapes
 
 ## Optional
-- [demos](demos/): standalone HTML pages applying the skills' CSS, incl. the before/after gallery
+- [demos](demos/): standalone HTML pages applying the skills' CSS, incl. the before/after gallery and 15-skill integration page
 - [commands](commands/): Claude Code slash-command wrappers (/designsystem, /deslop, …)

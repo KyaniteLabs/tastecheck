@@ -17,6 +17,8 @@ Run from the repo root:
 npm test
 ```
 
+`npm test` runs `tools/verify.mjs` and `tools/verify-integration.mjs`.
+
 `tools/verify.mjs` checks:
 
 - 15 skill directories exist and each `SKILL.md` frontmatter `name` matches its directory.
@@ -31,6 +33,16 @@ npm test
 - Stale internal skill names such as `dark-mode` are not used as handoff targets.
 - `a11y-pass/assets/audit.js` parses as JavaScript, avoids `arguments.callee`, and uses browser
   color rasterization instead of numeric-regex RGB guessing.
+
+`tools/verify-integration.mjs` checks [`demos/skill-integration.html`](../demos/skill-integration.html):
+
+- Every installed skill has a live `data-skill` surface on one local website.
+- The page exposes stable operator controls for themes, component states, forms, empty/error/retry,
+  and task-list recovery.
+- Form inputs are named, landmarks/headings/live regions/focus/reduced-motion/forced-colors are present.
+- The data-viz table has one row per plotted SVG point and the chart has title/description text.
+- Generic live-copy tells are absent from the improved site.
+- Responsive/theming foundations are present, including OKLCH tokens and mobile layout guards.
 
 ## Browser QA Checklist
 
@@ -57,16 +69,25 @@ For releases, append a short dated note with:
 
 ## Current Branch Evidence
 
-Date: 2026-06-05
+Date: 2026-06-06
 
-- `npm test`: PASS (`tastecheck verification passed`).
+- `npm test`: PASS (`tastecheck verification passed`; `integration verification passed`).
 - Browser: CloakBrowser Chromium against local `python3 -m http.server` on
-  `http://127.0.0.1:4174/`.
+  `http://127.0.0.1:4175/`.
 - Pages checked in real same-origin iframes at 390px and 1280px:
-  homepage, samples gallery, five sample systems, five demos, example-build after page,
+  homepage, samples gallery, five sample systems, six demos, example-build after page,
   and `skills/data-viz/assets/chart-starter.html`.
 - Browser smoke result: 28 page/viewport checks, 0 blank pages, 0 H1-count failures,
   0 horizontal-overflow failures, 0 broken images, 0 `a11yAudit()` failures.
 - Keyboard spot check: first Tab focus lands on the home link with a visible 2px outline.
 - Remaining audit warnings are manual-review prompts (tiny text, outline-at-rest heuristic,
   gradient/background manual contrast prompts), not measured failures.
+
+Additional 15-skill integration evidence:
+
+- Page: `demos/skill-integration.html`.
+- Desktop 1440px and mobile 390px: title/URL correct, 15 unique skills exposed, 0 horizontal overflow.
+- Real operator paths executed in browser: light/dark/high-contrast themes, component loading/success/disabled,
+  invalid and valid form submission, empty/error/retry task-list states, and chart/table parity.
+- `skills/a11y-pass/assets/audit.js`: 0 measured failures, 0 warnings on desktop and mobile.
+- Manual keyboard check: skip link, nav link, and theme button receive visible 3px focus outlines.
