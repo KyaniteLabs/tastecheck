@@ -58,10 +58,11 @@ function assertLandingOperatorPaths() {
     if (!html.includes(`data-test="${name}"`)) fail(`${rel(page)} missing landing operator data-test="${name}"`);
   }
 
-  for (const fn of ["setTheme", "cycleState", "submitInvalid", "submitValid", "showEmpty", "showError", "retryList"]) {
+  for (const fn of ["setTheme", "cycleState", "submitInvalid", "submitValid", "showEmpty", "showError", "retryList", "a11yAudit"]) {
     const exposesFunction = html.includes(`${fn}:`) || new RegExp(`\\b${fn}\\s*,`).test(html);
     if (!exposesFunction) fail(`${rel(page)} landing browser contract missing ${fn}`);
   }
+  if (!/window\.a11yAudit=runLandingA11yAudit/.test(html)) fail(`${rel(page)} missing browser-visible a11yAudit contract`);
 }
 
 function assertA11yStructure() {
