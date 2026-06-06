@@ -36,15 +36,15 @@ the before/after image; the repo link rides along.
 > · OKLCH palettes that actually pass contrast
 
 **Tweet 4**
-> It works with any agent — Claude Code, Codex, Gemini, Cursor, Kimi. Not Claude-only.
-> Plain Markdown skills, no runtime.
+> Plain Markdown skills, no runtime. The installer links `~/.agents/skills` and mirrors
+> into detected Claude Code, Codex, Gemini, Cursor, Kilocode, and Kimi skill dirs.
 >
 > One command:
 > `git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh`
 
 **Tweet 5 (the flex + close)**
 > Every other "fix AI design" repo is itself untested AI slop.
-> This one got rendered in a real browser before release — 0 console errors, screenshots in the repo.
+> This one ships a repeatable `npm test` gate plus browser QA notes and screenshots in the repo.
 >
 > MIT. Free. ⭐ it if you're tired of purple:
 > https://github.com/KyaniteLabs/tastecheck
@@ -73,11 +73,10 @@ the before/after image; the repo link rides along.
 > OKLCH color with real contrast math, dark mode by surface-lightness, WCAG 2.2 fixes,
 > responsive layout with container queries, the full component state matrix, etc.
 >
-> Two things I did differently from most skill repos: (1) it's provider-agnostic — installs
-> into Claude Code, Codex, Gemini, Cursor, Kilocode, Kimi, since they're just Markdown; and
-> (2) I rendered every skill's CSS in a real Chromium browser and reviewed it before
-> shipping (0 console errors and 0 contrast fails across the homepage and all five live samples), because an untested "anti-slop" pack would be
-> pretty funny. Verification notes and screenshots are in the repo.
+> Two things I did differently from most skill repos: (1) it's plain Markdown with a
+> canonical `~/.agents/skills` install path plus mirrors for detected agent homes; and
+> (2) it ships a repeatable `npm test` gate plus browser QA notes, because an untested
+> "anti-slop" pack would be pretty funny. Verification notes and screenshots are in the repo.
 >
 > MIT, no account, no SaaS: https://github.com/KyaniteLabs/tastecheck
 > Genuinely curious whether the "interview-first" idea holds up for people building with
@@ -108,9 +107,8 @@ the before/after image; the repo link rides along.
 >
 > [five-systems montage image]
 >
-> It works with any agent (not just Claude — it's plain Markdown), it's MIT, and I rendered
-> every skill in a real browser before release so it's not the usual untested "make it pop"
-> repo. Repo: https://github.com/KyaniteLabs/tastecheck
+> It's plain Markdown, MIT, and has a repeatable verification gate so it's not the usual
+> untested "make it pop" repo. Repo: https://github.com/KyaniteLabs/tastecheck
 >
 > Would love feedback, especially from anyone building with Cursor/Codex/Gemini.
 

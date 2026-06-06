@@ -45,8 +45,12 @@
 /* HIGH-CONTRAST — opt-in max-contrast mapping of the same tokens */
 @media (prefers-contrast: more){
   :root{ --bg:#fff; --surface-1:#fff; --surface-2:#fff; --text:#000; --text-muted:#1a1a1a; --border:#000; }
-  :root[data-theme="dark"], :root:not([data-theme="light"]){
+  :root[data-theme="dark"]{
     --bg:#000; --surface-1:#000; --surface-2:#0a0a0a; --text:#fff; --text-muted:#e6e6e6; --border:#fff; }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#000; --surface-1:#000; --surface-2:#0a0a0a; --text:#fff; --text-muted:#e6e6e6; --border:#fff; }
+  }
 }
 
 /* FORCED-COLORS (Windows High Contrast) — don't fight the OS; survive bg removal */

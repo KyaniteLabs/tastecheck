@@ -3,23 +3,60 @@
    eye misses: contrast, tap targets, missing names, heading order, focus, color-only.
    This is the "measure, don't eyeball" companion to the a11y-pass checklist.
    Usage: copy this whole file → devtools Console → Enter. Or: a11yAudit() to re-run. */
-(function(){
-  function lum(c){const m=(c.match(/[\d.]+/g)||[0,0,0]).map(Number);
+(function a11yAudit(){
+  const colorCanvas=document.createElement('canvas');
+  colorCanvas.width=colorCanvas.height=1;
+  const colorCtx=colorCanvas.getContext('2d',{willReadFrequently:true});
+  const cssEscape=window.CSS&&CSS.escape?CSS.escape:(s=>String(s).replace(/["\\]/g,'\\$&'));
+
+  function rgba(c){
+    if(!c||c==='transparent')return [0,0,0,0];
+    if(window.CSS&&CSS.supports&&!CSS.supports('color',c))return null;
+    colorCtx.clearRect(0,0,1,1);
+    colorCtx.fillStyle='rgba(0,0,0,0)';
+    colorCtx.fillStyle=c;
+    colorCtx.fillRect(0,0,1,1);
+    const d=colorCtx.getImageData(0,0,1,1).data;
+    return [d[0],d[1],d[2],d[3]/255];
+  }
+  function over(top,bottom){
+    const a=top[3]+bottom[3]*(1-top[3]);
+    if(a===0)return [0,0,0,0];
+    return [
+      (top[0]*top[3]+bottom[0]*bottom[3]*(1-top[3]))/a,
+      (top[1]*top[3]+bottom[1]*bottom[3]*(1-top[3]))/a,
+      (top[2]*top[3]+bottom[2]*bottom[3]*(1-top[3]))/a,
+      a
+    ];
+  }
+  function lumRgb(rgb){
     const f=x=>{x/=255;return x<=.04045?x/12.92:((x+.055)/1.055)**2.4};
-    return .2126*f(m[0]||0)+.7152*f(m[1]||0)+.0722*f(m[2]||0);}
-  function bgOf(el){let e=el;while(e){const c=getComputedStyle(e).backgroundColor;
-    if(c&&!/rgba\(0, 0, 0, 0\)|transparent/.test(c))return c;e=e.parentElement;}
-    return getComputedStyle(document.body).backgroundColor||'rgb(255,255,255)';}
-  function ratio(fg,bg){const L1=lum(fg),L2=lum(bg);const hi=Math.max(L1,L2),lo=Math.min(L1,L2);return (hi+.05)/(lo+.05);}
+    return .2126*f(rgb[0])+ .7152*f(rgb[1])+ .0722*f(rgb[2]);
+  }
+  function bgOf(el,warn){
+    let bg=[255,255,255,1],stack=[],e=el;
+    while(e){stack.unshift(e);e=e.parentElement;}
+    stack.forEach(node=>{
+      const cs=getComputedStyle(node);
+      if(cs.backgroundImage&&cs.backgroundImage!=='none')warn.push(`BACKGROUND image/gradient behind text — manually verify contrast near "${(el.textContent||'').trim().slice(0,28)}"`);
+      const c=rgba(cs.backgroundColor);
+      if(c&&c[3]>0)bg=over(c,bg);
+    });
+    return bg;
+  }
+  function ratio(fg,bg){const L1=lumRgb(fg),L2=lumRgb(bg);const hi=Math.max(L1,L2),lo=Math.min(L1,L2);return (hi+.05)/(lo+.05);}
   function vis(el){const r=el.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(el).visibility!=='hidden';}
 
   const fail=[],warn=[];
   // 1) text contrast
   document.querySelectorAll('h1,h2,h3,h4,h5,h6,p,a,span,li,button,label,td,th,small,strong,em').forEach(el=>{
-    if(!el.textContent.trim()||!vis(el)||el.children.length>2)return;
+    if(!el.textContent.trim()||!vis(el))return;
     const cs=getComputedStyle(el),px=parseFloat(cs.fontSize),w=+cs.fontWeight||400;
     const large=px>=24||(px>=18.66&&w>=700),need=large?3:4.5;
-    const r=ratio(cs.color,bgOf(el));
+    const bg=bgOf(el,warn),fgRaw=rgba(cs.color);
+    if(!fgRaw){warn.push(`COLOR parse failed — manually verify "${el.textContent.trim().slice(0,28)}"`);return;}
+    const fg=fgRaw[3]<1?over(fgRaw,bg):fgRaw;
+    const r=ratio(fg,bg);
     if(r<need-0.05)fail.push(`CONTRAST ${r.toFixed(2)}:1 (need ${need}) — ${px}px "${el.textContent.trim().slice(0,32)}"`);
     if(px<12)warn.push(`TINY ${px}px text — "${el.textContent.trim().slice(0,28)}"`);
   });
@@ -31,7 +68,7 @@
   // 3) accessible names
   document.querySelectorAll('img').forEach(el=>{if(el.getAttribute('alt')===null)fail.push(`IMG no alt — ${el.src.split('/').pop()}`);});
   document.querySelectorAll('input,select,textarea').forEach(el=>{
-    const id=el.id,lbl=id&&document.querySelector(`label[for="${id}"]`);
+    const id=el.id,lbl=id&&document.querySelector(`label[for="${cssEscape(id)}"]`);
     if(!lbl&&!el.getAttribute('aria-label')&&!el.getAttribute('aria-labelledby')&&el.type!=='hidden')
       fail.push(`INPUT no label — ${el.name||el.type}`);});
   document.querySelectorAll('button,a').forEach(el=>{if(vis(el)&&!el.textContent.trim()&&!el.getAttribute('aria-label')&&!el.querySelector('img[alt]'))fail.push(`${el.tagName} no accessible name`);});
@@ -52,6 +89,6 @@
   console.log(`%cFAILS (${fail.length})`,'color:#e5484d;font-weight:700');fail.forEach(f=>console.log('  ✗ '+f));
   console.log(`%cWARNINGS (${warn.length})`,'color:#c2851a;font-weight:700');warn.forEach(w=>console.log('  ! '+w));
   console.log(`%c${fail.length===0?'No measured failures. Now do the MANUAL checks: keyboard pass + screen-reader spot check + 400% zoom.':'Fix fails, then re-run a11yAudit().'}`,'color:#888');
-  window.a11yAudit=arguments.callee;
+  window.a11yAudit=a11yAudit;
   return {fails:fail.length,warnings:warn.length};
 })();

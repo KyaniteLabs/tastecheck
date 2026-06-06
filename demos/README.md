@@ -6,7 +6,7 @@ verification; rendered screenshots live in [`../docs/screenshots/`](../docs/scre
 
 | Demo | Exercises |
 |------|-----------|
-| `01-foundations.html` | color-system tokens + dark-mode surfaces + web-typography (measure, fluid heading). Click "Toggle theme". |
+| `01-foundations.html` | color-system tokens + themed surfaces + web-typography (measure, fluid heading). Click "Toggle theme". |
 | `02-states.html` | component-states full matrix: default/disabled/loading button, link, input + error, selected tab, toggles. |
 | `03-responsive.html` | responsive-layout intrinsic patterns: auto-fit grid + sidebar (resize the window — no breakpoints needed). |
 | `04-motion-forms-empty.html` | micro-motion skeleton shimmer, empty-states empty screen, form-ux labeled field with inline error. |

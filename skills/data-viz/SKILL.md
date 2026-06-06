@@ -1,27 +1,12 @@
 ---
 name: data-viz
 description: >-
-  Honest, Tufte-grade data visualization for the web — charts that show the data,
-  not decoration, and that fit your design system and pass accessibility. Apply
-  this whenever you build, choose, or fix a chart, graph, dashboard, metric, KPID
-  tile, sparkline, or any quantitative display in HTML/CSS/SVG/React/etc. Use it to
-  avoid the usual failures: charting ≤20 numbers that should be a table, chartjunk
-  (3D, gradients-as-data, heavy gridlines, decoration), dishonest proportions
-  (truncated bar axes, area/volume encoding a 1-D quantity — high "lie factor"),
-  legends the eye has to ping-pong to instead of direct labels, rainbow palettes,
-  meaning carried by color alone, charts unreadable in dark mode, and charts with
-  no text/table alternative for screen readers. Trigger on cues like "make a chart/
-  graph", "visualize this data", "build a dashboard", "which chart should I use",
-  "this chart looks cluttered/misleading", "add a sparkline", or "chart isn't
-  accessible". Gives genre-selection, the chartjunk taxonomy, the lie-factor check,
-  and web/token/a11y integration — checkable, not vibes. Grounded in Edward Tufte's
-  *Visual Display of Quantitative Information* and the gnurio/tufte-vdqi-plugin;
-  pairs with color-system, theming, a11y-pass. For deep Tufte assessment or
-  Python chart rendering, hand off to the installed assess-graphical-excellence /
-  render-tufte-chart skills.
+  Honest, Tufte-informed web data visualization. Use for charts, dashboards,
+  metrics, KPI tiles, sparklines, chart accessibility, chartjunk removal,
+  genre choice, lie-factor checks, direct labels, data tables, and themed SVG/HTML.
 ---
 
-# Data Viz (honest, web-native, Tufte-grade)
+# Data Viz (honest, web-native, Tufte-informed)
 
 Most charts are decoration wrapped around a few numbers. This skill makes the
 opposite: visualizations where **ink maps to data**, the genre fits the data shape,
@@ -29,11 +14,11 @@ the proportions don't lie, the labels are direct, and the result lives correctly
 inside your design system — responsive, theming-ready, and accessible. Every rule
 here is checkable.
 
-It is the **web/design-system member of a Tufte toolkit.** For deep critique of an
-existing graphic (nine criteria, named-failure catalogue, lie-factor scoring) or for
-Python-rendered publication SVGs, hand off to the installed **`assess-graphical-
-excellence`** and **`render-tufte-chart`** skills (the gnurio/tufte-vdqi-plugin).
-This skill is for *building the chart into a web UI, on-brand and accessible.*
+It is the **web/design-system layer for Tufte-informed charts.** If specialist
+assessment/rendering skills such as **`assess-graphical-excellence`** or
+**`render-tufte-chart`** are available, use them for deep critique or publication
+SVGs. This skill must still stand alone for *building the chart into a web UI,
+on-brand and accessible.*
 
 ## The decision order
 
@@ -151,12 +136,13 @@ SVG line:
 - State the genre choice and why ("12 numbers → table, not a pie"; "8 series → small
   multiples, not spaghetti"). Report the lie factor if proportions are dramatic.
 - Pull series colors from `color-system`; verify theming + contrast; add the data
-  table. For heavy assessment or Python SVGs, defer to `assess-graphical-excellence`/
-  `render-tufte-chart`.
+  table. For heavy assessment or Python SVGs, use `assess-graphical-excellence`/
+  `render-tufte-chart` only when those specialist skills are available.
 
 ## Provenance — principle, not property
 Grounded in Edward Tufte's *The Visual Display of Quantitative Information* and the
-**gnurio/tufte-vdqi-plugin** (the `assess-graphical-excellence` / `render-tufte-chart`
-/ `orchestrate-tufte-vdqi` skills). This skill is an independent, web-and-accessibility-
-focused synthesis of those public principles — credited, not copied. Use the original
-plugin for deep assessment and rendering; use this to build charts into web UIs.
+**gnurio/tufte-vdqi-plugin** (`assess-graphical-excellence`, `render-tufte-chart`,
+`orchestrate-tufte-vdqi`) when present. This skill is an independent,
+web-and-accessibility-focused synthesis of those public principles — credited, not
+copied. Use specialist tools for deep assessment and rendering when they exist; use
+this standalone skill to build charts into web UIs.
