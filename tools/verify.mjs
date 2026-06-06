@@ -162,6 +162,40 @@ function assertLocalLinks() {
   }
 }
 
+function assertLocalCssAssets() {
+  const candidates = files(root, [".html", ".css", ".md"]);
+  for (const path of candidates) {
+    const text = readFileSync(path, "utf8");
+    const dir = dirname(path);
+    for (const match of text.matchAll(/url\(\s*(["']?)([^"')]+)\1\s*\)/g)) {
+      const href = match[2].trim();
+      if (/^(?:https?:|data:|#)/i.test(href)) continue;
+      if (href.startsWith("/")) continue;
+      const target = join(dir, href.split(/[?#]/)[0]);
+      try {
+        statSync(target);
+      } catch {
+        fail(`${rel(path)} CSS url() missing ${href}`);
+      }
+    }
+  }
+}
+
+function assertInlineHandlersParse() {
+  const candidates = files(root, [".html"]);
+  for (const path of candidates) {
+    const text = readFileSync(path, "utf8");
+    for (const match of text.matchAll(/\son[a-z]+\s*=\s*(["'])([\s\S]*?)\1/gi)) {
+      const handler = match[2];
+      try {
+        new Function("event", handler);
+      } catch (error) {
+        fail(`${rel(path)} has invalid inline handler syntax: ${error.message}`);
+      }
+    }
+  }
+}
+
 function assertDemoInputsAreNamed() {
   for (const path of files(join(root, "demos"), [".html"])) {
     const text = readFileSync(path, "utf8");
@@ -221,6 +255,8 @@ assertCommandTargets();
 assertInstallSmoke();
 assertNoBadClampMath();
 assertLocalLinks();
+assertLocalCssAssets();
+assertInlineHandlersParse();
 assertDemoInputsAreNamed();
 assertDataVizTablesCoverData();
 assertNoStaleSkillAliases();
