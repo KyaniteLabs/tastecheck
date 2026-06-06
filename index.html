@@ -504,6 +504,28 @@ document.querySelectorAll('[data-fld]').forEach(function(f){
  document.querySelector('[data-test="retry-list"]').addEventListener('click',retry);
  window.tastecheckEmptyStates={setEmpty:setEmpty,setError:setError,retry:retry};
 })();
+function runLandingA11yAudit(){
+  var failures=[], warnings=[];
+  function has(pattern){return pattern.test(document.documentElement.innerHTML);}
+  if(document.querySelectorAll('main').length!==1) failures.push('Expected exactly one main landmark.');
+  if(document.querySelectorAll('h1').length!==1) failures.push('Expected exactly one h1.');
+  if(!document.querySelector('.skip[href="#main"]')) failures.push('Missing skip link to #main.');
+  if(!has(/:focus-visible/)) failures.push('Missing focus-visible CSS.');
+  if(!has(/prefers-reduced-motion:reduce/)) failures.push('Missing reduced-motion CSS guard.');
+  if(!has(/forced-colors:active/)) failures.push('Missing forced-colors CSS guard.');
+  function controlName(el){
+    var labelledby=el.getAttribute('aria-labelledby'),label='';
+    if(labelledby){label=labelledby.split(/\s+/).map(function(id){var node=document.getElementById(id);return node?node.textContent:'';}).join(' ');}
+    if(!label&&el.id){var byFor=document.querySelector('label[for="'+el.id+'"]');if(byFor)label=byFor.textContent;}
+    return (el.getAttribute('aria-label')||label||el.textContent||el.value||'').trim();
+  }
+  [].slice.call(document.querySelectorAll('button,input,select,summary')).forEach(function(el){
+    var name=controlName(el);
+    if(!name) failures.push('Unnamed control: '+el.tagName.toLowerCase()+(el.getAttribute('data-test')?'['+el.getAttribute('data-test')+']':''));
+  });
+  return {failures:failures,warnings:warnings};
+}
+window.a11yAudit=runLandingA11yAudit;
 window.tastecheckLanding={
   skillCount:15,
   skillNames:[].slice.call(document.querySelectorAll('[data-skill]')).map(function(node){return node.dataset.skill;}).filter(function(name,index,list){return list.indexOf(name)===index;}).sort(),
@@ -513,7 +535,8 @@ window.tastecheckLanding={
   submitValid:function(){var input=document.querySelector('[data-test="email-input"]');input.value='reader@example.com';input.dispatchEvent(new Event('blur'));return document.querySelector('[data-test="email-status"]').textContent;},
   showEmpty:window.tastecheckEmptyStates.setEmpty,
   showError:window.tastecheckEmptyStates.setError,
-  retryList:window.tastecheckEmptyStates.retry
+  retryList:window.tastecheckEmptyStates.retry,
+  a11yAudit:window.a11yAudit
 };
 </script>
 
