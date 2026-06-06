@@ -1,19 +1,9 @@
 ---
 name: responsive-layout
 description: >-
-  Layouts that don't break at any width. Apply this whenever you build or fix the
-  structure of a web page or component in CSS/Tailwind/React/etc. — page shells,
-  grids, navigation, sidebars, cards, hero sections, anything that must work from
-  a 320px phone to an ultrawide monitor. Use it to avoid the usual failures:
-  desktop-first CSS bolted onto mobile, fixed pixel widths that overflow, content
-  that doesn't reflow, breakpoints picked from device names instead of where the
-  content breaks, components that only adapt to the viewport (not their container),
-  horizontal scrollbars, and layouts that collapse at zoom. Trigger on cues like
-  "make this responsive", "it breaks on mobile / tablet", "fix the layout on small
-  screens", "the sidebar overflows", "should I use grid or flexbox", "add
-  breakpoints", or "this doesn't reflow". Gives the mobile-first method, intrinsic/
-  fluid patterns, container queries, and a checklist — not vibes. Framework-agnostic.
-  Pair with web-typography, deslop-ui, component-states.
+  Responsive layout pass for web pages and components. Use for mobile breakage,
+  overflow, grids, sidebars, navigation, cards, heroes, zoom/reflow, container
+  queries, intrinsic sizing, mobile-first CSS, and breakpoint decisions.
 ---
 
 # Responsive Layout

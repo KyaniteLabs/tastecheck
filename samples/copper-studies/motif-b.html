@@ -1,9 +1,9 @@
 <!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>motif B — vertical columns + striations</title>
 <style>
-@font-face{font-family:"Redaction0";src:url("fonts/redaction-0-700.woff2") format("woff2");font-weight:700;font-display:block}
-@font-face{font-family:"Redaction35";src:url("fonts/redaction-35-700.woff2") format("woff2");font-weight:700;font-display:block}
-@font-face{font-family:"Redaction70";src:url("fonts/redaction-70-700.woff2") format("woff2");font-weight:700;font-display:block}
-@font-face{font-family:"Redaction70";src:url("fonts/redaction-70-400.woff2") format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"Redaction0";src:url("fonts/redaction-0 - 700.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Redaction35";src:url("fonts/redaction-35 - 700.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Redaction70";src:url("fonts/redaction-70 - 700.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Redaction70";src:url("fonts/redaction-70 - 400.woff2") format("woff2");font-weight:400;font-display:block}
 @font-face{font-family:"Archivo";src:url("fonts/archivo-400.woff2") format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"Archivo";src:url("fonts/archivo-600.woff2") format("woff2");font-weight:600;font-display:swap}
 :root{--bg:oklch(0.15 0.02 280);--ink:oklch(0.96 0.01 90);--muted:oklch(0.74 0.02 90);
@@ -14,12 +14,12 @@ body{background:var(--bg);color:var(--ink);font-family:"Archivo",system-ui,sans-
 .scrim{position:fixed;inset:0;z-index:1;background:radial-gradient(120% 90% at 20% 0%, transparent 40%, oklch(0.15 0.02 280/.78) 100%)}
 .wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:60px 44px 90px}
 .kick{font-family:ui-monospace,Menlo,monospace;font-size:.78rem;letter-spacing:.28em;text-transform:uppercase;color:var(--jade)}
-.hero{font-family:"Redaction70",Georgia,serif;font-weight:700;font-size:clamp(3.2rem,1.5rem+7.5vw,7rem);line-height:.92;letter-spacing:-.02em;margin:.35em 0 .35em;max-width:15ch;text-shadow:0 2px 30px oklch(0.15 0.02 280/.6)}
+.hero{font-family:"Redaction70",Georgia,serif;font-weight:700;font-size:clamp(3.2rem,1.5rem + 7.5vw,7rem);line-height:.92;letter-spacing:-.02em;margin:.35em 0 .35em;max-width:15ch;text-shadow:0 2px 30px oklch(0.15 0.02 280/.6)}
 .hero em{font-style:italic;font-weight:400;color:var(--jade)}
 .lede{font-family:"Archivo";max-width:48ch;color:var(--muted);line-height:1.55;font-size:1.15rem;margin-bottom:2rem}
 .cta{display:inline-flex;gap:.6rem;align-items:center;font-family:"Archivo";font-weight:600;font-size:1.05rem;
 background:var(--jade);color:oklch(0.18 0.03 160);border:0;border-radius:3px;padding:.8em 1.5em;cursor:pointer}
-.sig{position:absolute;right:44px;top:60px;font-family:"Redaction70",serif;font-weight:700;font-size:clamp(5rem,3rem+9vw,11rem);line-height:.8;
+.sig{position:absolute;right:44px;top:60px;font-family:"Redaction70",serif;font-weight:700;font-size:clamp(5rem,3rem + 9vw,11rem);line-height:.8;
 color:var(--jade);opacity:.92;font-variant-numeric:tabular-nums;mix-blend-mode:screen}
 .tag{margin-top:3.5rem;font-family:ui-monospace,monospace;font-size:.8rem;color:var(--muted);letter-spacing:.05em}
 </style></head><body>
@@ -36,7 +36,7 @@ color:var(--jade);opacity:.92;font-variant-numeric:tabular-nums;mix-blend-mode:s
 const c=document.getElementById('field'),x=c.getContext('2d');
 function draw(){
  const W=c.width=innerWidth,H=c.height=innerHeight;
- let s=23; const rnd=()=>{s=(s*1103515245+12345)&0x7fffffff;return s/0x7fffffff;};
+ let s=23; const rnd=()=>{s=(s*1103515245 + 12345)&0x7fffffff;return s/0x7fffffff;};
  x.fillStyle='#21242c'; // base column tone
  // columns of varying width
  let xpos=0; const cols=[];
@@ -53,7 +53,7 @@ function draw(){
  for(let i=0;i<cols.length;i++){acc=cols[i][0];
    const hue=(i*47)%360, rad=hue*Math.PI/180;
    const g=x.createLinearGradient(acc-2,0,acc+2,0);
-   const R=120+110*Math.sin(rad),G=170+80*Math.sin(rad+2.1),B=185+70*Math.sin(rad+4.2);
+   const R=120 + 110*Math.sin(rad),G=170 + 80*Math.sin(rad+2.1),B=185 + 70*Math.sin(rad+4.2);
    g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(.5,`rgba(${R},${G},${B},0.55)`);g.addColorStop(1,'rgba(0,0,0,0)');
    x.fillStyle=g; x.fillRect(acc-2,0,4,H);
  }

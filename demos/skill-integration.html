@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PrepBoard skill integration test</title>
+<style>
+:root{
+  color-scheme:light;
+  --font-display:Georgia,"Times New Roman",serif;
+  --font-body:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --paper:oklch(97% .018 92);
+  --surface:oklch(99% .01 92);
+  --surface-2:oklch(93% .022 92);
+  --ink:oklch(21% .035 82);
+  --muted:oklch(42% .04 78);
+  --line:oklch(74% .045 82);
+  --accent:oklch(49% .12 45);
+  --accent-strong:oklch(38% .13 45);
+  --good:oklch(42% .12 156);
+  --warn:oklch(54% .13 72);
+  --bad:oklch(48% .16 27);
+  --focus:oklch(42% .16 225);
+  --radius:6px;
+  --shadow:0 16px 40px color-mix(in oklch,var(--ink) 14%,transparent);
+  --step--1:clamp(.84rem,.8rem + .14vw,.92rem);
+  --step-0:clamp(1rem,.96rem + .2vw,1.08rem);
+  --step-1:clamp(1.2rem,1.08rem + .48vw,1.5rem);
+  --step-2:clamp(1.55rem,1.3rem + 1vw,2.2rem);
+  --step-3:clamp(2.1rem,1.6rem + 2vw,3.4rem);
+  --step-4:clamp(3rem,2.1rem + 4vw,5.8rem);
+}
+[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:oklch(18% .03 72);
+  --surface:oklch(23% .032 72);
+  --surface-2:oklch(28% .038 72);
+  --ink:oklch(94% .016 92);
+  --muted:oklch(74% .028 85);
+  --line:oklch(43% .04 75);
+  --accent:oklch(70% .14 52);
+  --accent-strong:oklch(80% .12 55);
+  --focus:oklch(78% .12 220);
+}
+[data-theme="contrast"]{
+  color-scheme:dark;
+  --paper:#000;
+  --surface:#111;
+  --surface-2:#1b1b1b;
+  --ink:#fff;
+  --muted:#e8e8e8;
+  --line:#fff;
+  --accent:#ffd84d;
+  --accent-strong:#fff3a6;
+  --focus:#70d6ff;
+}
+*{box-sizing:border-box}
+html{font-size:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:var(--step-0)/1.58 var(--font-body);-webkit-font-smoothing:antialiased;font-synthesis:none}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(90deg,color-mix(in oklch,var(--accent) 8%,transparent) 1px,transparent 1px),linear-gradient(color-mix(in oklch,var(--accent) 7%,transparent) 1px,transparent 1px);background-size:64px 64px;opacity:.42}
+a{color:inherit;text-underline-offset:.18em}
+button,input,select{font:inherit}
+a,button,input,select{outline:3px solid transparent;outline-offset:4px}
+.skip{position:absolute;left:1rem;top:1rem;transform:translateY(-140%);background:var(--ink);color:var(--paper);padding:.65rem .9rem;border-radius:var(--radius);z-index:10}
+.skip:focus{transform:none}
+:focus-visible{outline:3px solid var(--focus);outline-offset:4px}
+.wrap{width:min(1180px,calc(100% - 32px));margin-inline:auto}
+.site-head{position:sticky;top:0;z-index:5;background:color-mix(in oklch,var(--paper) 92%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.site-head .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.85rem 0}
+.brand{font-family:var(--font-display);font-size:var(--step-1);font-weight:700;letter-spacing:.01em}
+.brand span{color:var(--accent)}
+.nav{display:flex;gap:.3rem .85rem;align-items:center;flex-wrap:wrap}
+.nav a,.theme button{min-height:32px;display:inline-flex;align-items:center;border-radius:var(--radius);padding:.35rem .55rem;font-size:var(--step--1)}
+.theme{display:flex;gap:.35rem;align-items:center;flex-wrap:wrap}
+.theme button{border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.theme button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+main{display:grid;gap:clamp(3rem,2rem + 5vw,6rem);padding:clamp(2rem,1rem + 4vw,4rem) 0 4rem}
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(20rem,.75fr);gap:clamp(2rem,1rem + 5vw,5.5rem);align-items:end}
+.kicker,.eyebrow{font:700 var(--step--1)/1.2 var(--font-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+h1,h2,h3,p{overflow-wrap:anywhere}
+h1{max-width:12ch;margin:.7rem 0 1rem;font-family:var(--font-display);font-size:var(--step-4);line-height:.96;letter-spacing:0;text-wrap:balance}
+h1 em{color:var(--accent);font-style:italic}
+h2{font-family:var(--font-display);font-size:var(--step-3);line-height:1.03;margin:0 0 .7rem;text-wrap:balance}
+h3{font-size:var(--step-1);line-height:1.16;margin:.2rem 0 .45rem}
+p{max-width:68ch}
+.lede{font-size:var(--step-1);color:var(--muted);max-width:35ch}
+.actions{display:flex;gap:.85rem;flex-wrap:wrap;margin-top:1.4rem}
+.btn{min-height:44px;border:1px solid var(--accent-strong);background:var(--accent);color:var(--paper);border-radius:var(--radius);padding:.75rem 1rem;font-weight:700;cursor:pointer;transition:transform 160ms cubic-bezier(.16,1,.3,1),background-color 160ms ease,opacity 160ms ease}
+.btn:hover{background:var(--accent-strong);transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
+.btn[aria-busy="true"]{opacity:.72;cursor:progress}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+.btn.secondary{background:transparent;color:var(--ink);border-color:var(--line)}
+.hero-card,.panel,.metric-card,.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.hero-card{padding:1.25rem}
+.hero-card ol{display:grid;gap:.8rem;margin:1rem 0 0;padding:0;list-style:none}
+.hero-card li{display:grid;grid-template-columns:3ch 1fr;gap:.75rem;align-items:start}
+.num{font:700 var(--step-2)/1 var(--font-display);color:var(--accent);font-variant-numeric:tabular-nums}
+.section-head{display:grid;gap:.45rem;margin-bottom:1.4rem}
+.audit-grid,.foundation-grid,.journey-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:1rem}
+.panel{padding:1rem}
+.span-4{grid-column:span 4}.span-5{grid-column:span 5}.span-6{grid-column:span 6}.span-7{grid-column:span 7}.span-8{grid-column:span 8}.span-12{grid-column:1/-1}
+.signal-list,.plain-list{margin:.6rem 0 0;padding-left:1.1rem}
+.signal-list li,.plain-list li{margin:.25rem 0}
+.token-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.5rem;margin-top:.8rem}
+.swatch{min-height:74px;border:1px solid var(--line);border-radius:var(--radius);display:grid;align-content:end;padding:.45rem;color:#fff;font:700 .78rem var(--font-mono)}
+.swatch.paper{background:var(--paper);color:var(--ink)}.swatch.ink{background:var(--ink);color:var(--paper)}.swatch.accent{background:var(--accent)}.swatch.good{background:var(--good)}.swatch.bad{background:var(--bad)}
+.type-spec{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:1rem;align-items:end}
+.type-spec .sample{font-family:var(--font-display);font-size:var(--step-4);line-height:.9;color:var(--accent)}
+.matrix{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem}
+.state-chip{border:1px solid var(--line);border-radius:var(--radius);padding:.65rem;background:var(--surface-2);min-height:60px}
+.state-chip strong{display:block}
+.state-chip small{color:var(--muted)}
+form{display:grid;gap:.85rem}
+.field{display:grid;gap:.3rem}
+label{font-weight:700}
+input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper);color:var(--ink);padding:.68rem .75rem}
+.hint,.error,.status,.caption{font-size:var(--step--1);color:var(--muted)}
+.error{color:var(--bad);min-height:1.3em}
+[aria-invalid="true"]{border-color:var(--bad)}
+.status{min-height:1.4em}
+.list-tools{display:flex;gap:.6rem;flex-wrap:wrap;margin:.8rem 0}
+.task-list{display:grid;gap:.6rem;margin-top:.7rem}
+.task{display:flex;align-items:center;justify-content:space-between;gap:1rem;border:1px solid var(--line);background:var(--surface-2);border-radius:var(--radius);padding:.75rem}
+.task b{display:block}
+.empty-box{border:1px dashed var(--line);border-radius:var(--radius);padding:1rem;background:var(--surface-2)}
+.motion-card{transition:transform 220ms cubic-bezier(.16,1,.3,1),box-shadow 220ms ease}
+.motion-card:hover{transform:translateY(-4px);box-shadow:0 20px 48px color-mix(in oklch,var(--ink) 18%,transparent)}
+.meter{height:9px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.meter span{display:block;height:100%;width:68%;background:linear-gradient(90deg,var(--accent),var(--good));animation:meter 1400ms ease-out both}
+@keyframes meter{from{width:0}to{width:68%}}
+.chart-wrap{display:grid;gap:.9rem}
+svg{width:100%;height:auto;display:block}
+.axis{stroke:var(--line);stroke-width:1}.trend{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.point{fill:var(--accent)}.chart-label{fill:var(--ink);font:700 12px var(--font-mono)}
+table{width:100%;border-collapse:collapse;font-size:var(--step--1)}
+th,td{border-bottom:1px solid var(--line);padding:.45rem;text-align:left}
+.metric-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.metric-card{padding:1rem}.metric-card b{display:block;font-family:var(--font-display);font-size:var(--step-2);color:var(--accent)}
+.copy-pair{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.copy-pair blockquote{margin:0;border-left:4px solid var(--line);padding:.75rem;background:var(--surface-2)}
+.copy-pair .after{border-left-color:var(--good)}
+.tldr{display:grid;gap:.6rem;border-left:5px solid var(--accent);padding:.8rem 1rem;background:var(--surface-2);border-radius:0 var(--radius) var(--radius) 0}
+.tldr strong{font:800 var(--step--1) var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.skill-map{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(15rem,100%),1fr));gap:.65rem}
+.skill-pill{border:1px solid var(--line);border-radius:var(--radius);padding:.7rem;background:var(--surface)}
+.skill-pill code{font-family:var(--font-mono);font-size:.86rem;color:var(--accent)}
+footer{border-top:1px solid var(--line);padding:1.5rem 0 3rem;color:var(--muted)}
+.sr-only{position:absolute;width:1px;height:1px;clip:rect(0 0 0 0);clip-path:inset(50%);overflow:hidden;white-space:nowrap}
+@media(max-width:860px){
+  .hero,.type-spec,.copy-pair{grid-template-columns:1fr}
+  .audit-grid,.foundation-grid,.journey-grid{grid-template-columns:1fr}
+  .span-4,.span-5,.span-6,.span-7,.span-8,.span-12{grid-column:auto}
+  .metric-row,.matrix,.token-grid{grid-template-columns:1fr}
+  .site-head .wrap{align-items:flex-start;flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+@media(forced-colors:active){
+  .btn,.panel,.card,.hero-card,.metric-card,input,select{border:1px solid CanvasText}
+  .swatch{forced-color-adjust:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="site-head">
+  <div class="wrap">
+    <div class="brand">Prep<span>Board</span></div>
+    <nav class="nav" aria-label="Primary">
+      <a href="#audit">Audit</a>
+      <a href="#system">System</a>
+      <a href="#journeys">Journeys</a>
+      <a href="#proof">Proof</a>
+    </nav>
+    <div class="theme" data-skill="theming" aria-label="Theme">
+      <button type="button" data-test="theme-light" aria-pressed="true">Light</button>
+      <button type="button" data-test="theme-dark" aria-pressed="false">Dark</button>
+      <button type="button" data-test="theme-contrast" aria-pressed="false">High contrast</button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <section class="hero" data-skill="design-system-interview">
+    <div>
+      <p class="kicker">Existing-site audit first</p>
+      <h1>Run prep from the <em>walk-in</em>, not a spreadsheet.</h1>
+      <p class="lede">This local clone turns the generic kitchen SaaS demo into a field-ready operations page with tokens, states, forms, charts, and recovery paths.</p>
+      <div class="actions" data-skill="component-states">
+        <button class="btn" type="button" data-test="primary-action">Start station check</button>
+        <button class="btn secondary" type="button" data-test="state-cycle">Cycle button state</button>
+      </div>
+      <p class="status" role="status" aria-live="polite" data-test="button-status">Ready for station check.</p>
+    </div>
+    <aside class="hero-card" data-skill="cognitive-a11y" aria-labelledby="today-title">
+      <p class="eyebrow">Today in plain language</p>
+      <h2 id="today-title">Three moves.</h2>
+      <ol>
+        <li><span class="num">01</span><span>Count cold prep before 10:30.</span></li>
+        <li><span class="num">02</span><span>Flag shortages while the supplier window is open.</span></li>
+        <li><span class="num">03</span><span>Send one order, with substitutions already named.</span></li>
+      </ol>
+    </aside>
+  </section>
+
+  <section id="audit" data-skill="improve-existing-website">
+    <div class="section-head">
+      <p class="eyebrow">01 / audit</p>
+      <h2>What the old page meant, before it drifted.</h2>
+      <p>The source HTML had useful product intent: kitchen inventory, prep, and ordering. The drift was the default SaaS costume: centered gradient hero, emoji cards, vague trust claims, and no real journeys.</p>
+    </div>
+    <div class="audit-grid">
+      <article class="panel span-4">
+        <h3>Signals preserved</h3>
+        <ul class="signal-list">
+          <li>Kitchen operations, not a generic productivity app.</li>
+          <li>Inventory, prep, ordering as the core loop.</li>
+          <li>Speed under pressure as the value wedge.</li>
+        </ul>
+      </article>
+      <article class="panel span-4" data-audit-drift>
+        <h3>Drift removed</h3>
+        <ul class="signal-list">
+          <li>Template gradient and pill-shaped CTA.</li>
+          <li>Emoji feature cards with abstract benefits.</li>
+          <li>Copy that could fit any B2B landing page.</li>
+        </ul>
+      </article>
+      <article class="panel span-4">
+        <h3>Inferred system</h3>
+        <p>Editorial kitchen field guide: warm paper, ledger rules, serif display, tabular numbers, grounded verbs, compact controls, and clear recovery states.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="system">
+    <div class="section-head">
+      <p class="eyebrow">02 / system</p>
+      <h2>Foundations made explicit.</h2>
+    </div>
+    <div class="foundation-grid">
+      <article class="panel span-6" data-skill="color-system">
+        <h3>OKLCH semantic tokens</h3>
+        <p class="caption">A warm paper scale, one ingredient accent, and separate status colors.</p>
+        <div class="token-grid" aria-label="Color token samples">
+          <div class="swatch paper">paper</div>
+          <div class="swatch ink">ink</div>
+          <div class="swatch accent">accent</div>
+          <div class="swatch good">good</div>
+          <div class="swatch bad">bad</div>
+        </div>
+      </article>
+      <article class="panel span-6" data-skill="web-typography">
+        <h3>Typography with a job</h3>
+        <div class="type-spec">
+          <div class="sample" aria-hidden="true">Aa<br>42</div>
+          <p>Serif headlines carry the field-guide voice; body text stays plain and readable at a 68ch maximum with fluid steps and no viewport-width font math.</p>
+        </div>
+      </article>
+      <article class="panel span-6" data-skill="responsive-layout">
+        <h3>Responsive layout</h3>
+        <p>The page uses intrinsic grids, `minmax(0,1fr)`, wrapping nav, and mobile single-column flow. No fixed-width panels are allowed to overflow the viewport.</p>
+      </article>
+      <article class="panel span-6 motion-card" data-skill="micro-motion">
+        <h3>Motion with restraint</h3>
+        <p>Hover lifts are short and functional. The prep meter animates once, then respects reduced-motion preferences.</p>
+        <div class="meter" aria-label="Prep completion 68 percent"><span></span></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="journeys">
+    <div class="section-head">
+      <p class="eyebrow">03 / operator journeys</p>
+      <h2>Real paths, not decorative modules.</h2>
+    </div>
+    <div class="journey-grid">
+      <article class="panel span-6" data-skill="form-ux">
+        <h3>Station check form</h3>
+        <form data-test="station-form" novalidate>
+          <div class="field">
+            <label for="station">Station</label>
+            <select id="station" name="station" autocomplete="organization-title" data-test="station">
+              <option value="">Choose a station</option>
+              <option>Cold line</option>
+              <option>Grill</option>
+              <option>Pastry</option>
+            </select>
+            <div class="hint" id="station-hint">Pick the station you are counting now.</div>
+          </div>
+          <div class="field">
+            <label for="item">Item counted</label>
+            <input id="item" name="item" autocomplete="off" data-test="item" aria-describedby="item-hint item-error" placeholder="cilantro bunches">
+            <div class="hint" id="item-hint">Use the kitchen name, not supplier shorthand.</div>
+            <div class="error" id="item-error" data-test="item-error" aria-live="polite"></div>
+          </div>
+          <div class="field">
+            <label for="count">Count</label>
+            <input id="count" name="count" inputmode="numeric" pattern="[0-9]*" data-test="count" aria-describedby="count-error" placeholder="12">
+            <div class="error" id="count-error" data-test="count-error" aria-live="polite"></div>
+          </div>
+          <button class="btn" type="submit" data-test="submit-count">Save count</button>
+          <p class="status" role="status" aria-live="polite" data-test="form-status">No count saved yet.</p>
+        </form>
+      </article>
+
+      <article class="panel span-6" data-skill="empty-states">
+        <h3>Prep list states</h3>
+        <p>Loading, empty, error, and recovered states keep the same footprint so the layout does not jump.</p>
+        <div class="list-tools">
+          <button class="btn secondary" type="button" data-test="show-empty">Show empty</button>
+          <button class="btn secondary" type="button" data-test="show-error">Show error</button>
+          <button class="btn secondary" type="button" data-test="retry-list">Retry</button>
+        </div>
+        <div class="task-list" data-test="task-list" aria-live="polite">
+          <div class="task"><span><b>Cold line</b>Check herbs and pickled onions.</span><span>10:30</span></div>
+          <div class="task"><span><b>Grill</b>Confirm ribeye count before supplier cutoff.</span><span>11:00</span></div>
+        </div>
+      </article>
+
+      <article class="panel span-7" data-skill="data-viz">
+        <h3>Waste trend with table fallback</h3>
+        <div class="chart-wrap">
+          <svg viewBox="0 0 560 220" role="img" aria-labelledby="chart-title chart-desc">
+            <title id="chart-title">Weekly food waste fell from 14 percent to 8 percent</title>
+            <desc id="chart-desc">Seven weekly points show waste decreasing as station counts stabilize.</desc>
+            <line class="axis" x1="40" y1="180" x2="530" y2="180"></line>
+            <line class="axis" x1="40" y1="28" x2="40" y2="180"></line>
+            <polyline class="trend" points="40,54 118,72 196,96 274,91 352,124 430,140 508,152"></polyline>
+            <circle class="point" cx="40" cy="54" r="5"></circle>
+            <circle class="point" cx="508" cy="152" r="5"></circle>
+            <text class="chart-label" x="44" y="42">14%</text>
+            <text class="chart-label" x="470" y="146">8%</text>
+          </svg>
+          <table id="waste-chart-table">
+            <caption>Waste by week</caption>
+            <thead><tr><th>Week</th><th>Waste</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>14%</td></tr>
+              <tr><td>2</td><td>13%</td></tr>
+              <tr><td>3</td><td>11%</td></tr>
+              <tr><td>4</td><td>11.5%</td></tr>
+              <tr><td>5</td><td>9.5%</td></tr>
+              <tr><td>6</td><td>8.7%</td></tr>
+              <tr><td>7</td><td>8%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="panel span-5" data-skill="humanize-copy">
+        <h3>Copy made specific</h3>
+        <div class="copy-pair">
+          <blockquote>This product helps kitchens do everything faster.</blockquote>
+          <blockquote class="after">Count cold prep before the supplier cutoff. Send one order with substitutions already named.</blockquote>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="proof">
+    <div class="section-head">
+      <p class="eyebrow">04 / proof</p>
+      <h2>Every skill has a live surface.</h2>
+      <p>The map below is intentionally redundant: the static verifier checks it, and the browser test walks the controls and state changes.</p>
+    </div>
+    <div class="tldr" data-skill="a11y-pass">
+      <strong>Accessibility gate</strong>
+      <span>Skip link, landmarks, one h1, named controls, visible focus, live regions, semantic buttons, table fallback, and reduced-motion support are present before shipping.</span>
+    </div>
+    <div class="skill-map" aria-label="Tastecheck skill coverage">
+      <div class="skill-pill" data-skill="deslop-ui"><code>deslop-ui</code><br>Removed generic generated-site tells.</div>
+      <div class="skill-pill" data-skill="component-states"><code>component-states</code><br>Default, loading, success, focus, disabled.</div>
+      <div class="skill-pill" data-skill="form-ux"><code>form-ux</code><br>Labels, hints, inline errors, live result.</div>
+      <div class="skill-pill" data-skill="empty-states"><code>empty-states</code><br>Empty, error, retry, recovered list.</div>
+      <div class="skill-pill" data-skill="theming"><code>theming</code><br>Light, dark, high contrast.</div>
+      <div class="skill-pill" data-skill="micro-motion"><code>micro-motion</code><br>Hover lift plus reduced-motion guard.</div>
+      <div class="skill-pill" data-skill="responsive-layout"><code>responsive-layout</code><br>Desktop grid and mobile single column.</div>
+      <div class="skill-pill" data-skill="color-system"><code>color-system</code><br>Semantic OKLCH token ramp.</div>
+      <div class="skill-pill" data-skill="web-typography"><code>web-typography</code><br>Type scale, measure, rhythm, wrapping.</div>
+      <div class="skill-pill" data-skill="data-viz"><code>data-viz</code><br>Direct labels and table fallback.</div>
+      <div class="skill-pill" data-skill="cognitive-a11y"><code>cognitive-a11y</code><br>TL;DR, one idea per line, stable states.</div>
+      <div class="skill-pill" data-skill="humanize-copy"><code>humanize-copy</code><br>Concrete kitchen verbs replace generic prose.</div>
+      <div class="skill-pill" data-skill="design-system-interview"><code>design-system-interview</code><br>Committed direction and tokens.</div>
+      <div class="skill-pill" data-skill="improve-existing-website"><code>improve-existing-website</code><br>Audit signal, drift, inferred system.</div>
+      <div class="skill-pill" data-skill="a11y-pass"><code>a11y-pass</code><br>Manual and runnable accessibility gates.</div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">PrepBoard integration page for tastecheck skill validation.</div>
+</footer>
+
+<script>
+const root = document.documentElement;
+const themeButtons = [...document.querySelectorAll(".theme button")];
+function setTheme(name){
+  root.dataset.theme = name;
+  themeButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.test === `theme-${name}`)));
+}
+themeButtons.forEach((button) => button.addEventListener("click", () => setTheme(button.dataset.test.replace("theme-",""))));
+
+let stateIndex = 0;
+const states = [
+  ["Ready for station check.", false, "false"],
+  ["Loading station check...", false, "true"],
+  ["Station check saved.", false, "false"],
+  ["Station check locked after submit.", true, "false"]
+];
+const primary = document.querySelector('[data-test="primary-action"]');
+const cycle = document.querySelector('[data-test="state-cycle"]');
+const buttonStatus = document.querySelector('[data-test="button-status"]');
+cycle.addEventListener("click", () => {
+  stateIndex = (stateIndex + 1) % states.length;
+  const [text, disabled, busy] = states[stateIndex];
+  primary.disabled = disabled;
+  primary.setAttribute("aria-busy", busy);
+  buttonStatus.textContent = text;
+});
+primary.addEventListener("click", () => {
+  buttonStatus.textContent = "Station check opened.";
+});
+
+const form = document.querySelector('[data-test="station-form"]');
+const item = document.querySelector('[data-test="item"]');
+const count = document.querySelector('[data-test="count"]');
+const formStatus = document.querySelector('[data-test="form-status"]');
+function setError(input, key, message){
+  const error = document.querySelector(`[data-test="${key}-error"]`);
+  input.setAttribute("aria-invalid", message ? "true" : "false");
+  error.textContent = message;
+}
+function validateForm(){
+  const itemOk = item.value.trim().length >= 3;
+  const countValue = Number(count.value);
+  const countOk = Number.isInteger(countValue) && countValue > 0;
+  setError(item, "item", itemOk ? "" : "Name the item you counted.");
+  setError(count, "count", countOk ? "" : "Enter a whole number above zero.");
+  return itemOk && countOk;
+}
+[item,count].forEach((input) => input.addEventListener("blur", validateForm));
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (!validateForm()) {
+    formStatus.textContent = "Fix the highlighted fields before saving.";
+    return;
+  }
+  formStatus.textContent = `${count.value} ${item.value.trim()} saved.`;
+});
+
+const list = document.querySelector('[data-test="task-list"]');
+const sampleTasks = list.innerHTML;
+document.querySelector('[data-test="show-empty"]').addEventListener("click", () => {
+  list.innerHTML = '<div class="empty-box"><b>No prep gaps.</b><p>All stations have counts for this window.</p></div>';
+});
+document.querySelector('[data-test="show-error"]').addEventListener("click", () => {
+  list.innerHTML = '<div class="empty-box" role="alert"><b>Supplier feed unavailable.</b><p>Keep counting offline; retry before the order cutoff.</p></div>';
+});
+document.querySelector('[data-test="retry-list"]').addEventListener("click", () => {
+  list.innerHTML = sampleTasks;
+});
+
+window.tastecheckIntegration = {
+  skillCount: 15,
+  skillNames: [...new Set([...document.querySelectorAll("[data-skill]")].map((node) => node.dataset.skill))].sort(),
+  setTheme,
+  cycleState: () => cycle.click(),
+  submitInvalid: () => form.requestSubmit(),
+  submitValid: () => {
+    item.value = "cilantro bunches";
+    count.value = "12";
+    form.requestSubmit();
+    return formStatus.textContent;
+  },
+  showEmpty: () => document.querySelector('[data-test="show-empty"]').click(),
+  showError: () => document.querySelector('[data-test="show-error"]').click(),
+  retryList: () => document.querySelector('[data-test="retry-list"]').click()
+};
+</script>
+</body>
+</html>

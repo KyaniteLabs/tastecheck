@@ -1,18 +1,9 @@
 ---
 name: component-states
 description: >-
-  Every interactive element has more than one state — design all of them. Apply
-  this whenever you build or review a button, link, input, select, checkbox,
-  toggle, card, menu item, tab, or any clickable/focusable component. Use it to
-  avoid the usual failure: shipping only the default state and forgetting hover,
-  focus, active/pressed, disabled, loading, selected, and error — so the UI feels
-  dead, gives no feedback, traps users on a greyed-out button, or is unusable by
-  keyboard. Trigger on cues like "build a button/input/component", "add hover/
-  focus states", "the button gives no feedback", "handle the loading state",
-  "disabled state", "make this interactive", or just after building any control.
-  Gives the full state matrix per component, the exact CSS pseudo-classes,
-  focus-visible rules, and a checklist — not vibes. Framework-agnostic. Pair with
-  form-ux, empty-states, micro-motion, a11y-pass.
+  State matrix for interactive UI. Use when building or reviewing buttons, links,
+  inputs, tabs, toggles, menus, cards, or controls that need hover, focus, active,
+  disabled, loading, selected, error, keyboard, or ARIA states.
 ---
 
 # Component States

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>tastecheck — stop AI shipping the same generic website | anti-slop skills for AI coding agents</title>
-<meta name="description" content="tastecheck is an open-source set of 14 craft skills for AI coding agents (Claude Code, Codex, Gemini, Cursor) that stops them building the same generic 'AI slop' website. It interviews you into a real design system first, then applies checkable typography, OKLCH color, accessibility and anti-slop rules. MIT.">
+<meta name="description" content="tastecheck is an open-source set of 15 craft skills for AI coding agents (Claude Code, Codex, Gemini, Cursor) that stops them building the same generic 'AI slop' website. It interviews or audits you into a real design system first, then applies checkable typography, OKLCH color, accessibility and anti-slop rules. MIT.">
 <meta name="keywords" content="AI slop, AI website design, AI coding agent skills, Claude Code skills, design system, design-system-interview, deslop, web typography, OKLCH color, WCAG accessibility, anti-slop, AI landing page, Codex, Gemini CLI, Cursor, frontend design">
 <meta name="author" content="Kyanite Labs">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
@@ -13,7 +13,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="tastecheck">
 <meta property="og:title" content="tastecheck — stop AI shipping the same generic website">
-<meta property="og:description" content="14 anti-slop craft skills for AI coding agents. It grills you into a real design system before writing code, then ships taste — not a purple gradient. Works with any agent. MIT.">
+<meta property="og:description" content="15 anti-slop craft skills for AI coding agents. It grills or audits you into a real design system before writing code, then ships taste — not a purple gradient. Plain Markdown, portable across agents. MIT.">
 <meta property="og:url" content="https://kyanitelabs.github.io/tastecheck/">
 <meta property="og:image" content="https://kyanitelabs.github.io/tastecheck/docs/hero/five-systems.png">
 <meta property="og:image:width" content="2420">
@@ -23,7 +23,7 @@
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="tastecheck — stop AI shipping the same generic website">
-<meta name="twitter:description" content="14 anti-slop craft skills for AI coding agents. Grills you into a real design system before writing code, then ships taste — not a purple gradient.">
+<meta name="twitter:description" content="15 anti-slop craft skills for AI coding agents. Grills or audits you into a real design system before writing code, then ships taste — not a purple gradient.">
 <meta name="twitter:image" content="https://kyanitelabs.github.io/tastecheck/docs/hero/five-systems.png">
 <meta name="twitter:image:alt" content="The same content rendered as five committed design systems with tastecheck: Copper, Swiss, Maximal, Concrete, Clay.">
 <script type="application/ld+json">
@@ -45,7 +45,7 @@
       "applicationCategory": "DeveloperApplication",
       "applicationSubCategory": "AI coding-agent skills",
       "operatingSystem": "Claude Code, Codex, Gemini CLI, Cursor, Kilocode, Kimi",
-      "description": "An open-source set of 14 frontend craft skills for AI coding agents that stops them building the same generic 'AI slop' website. The headline skill interviews you into a committed design system before any code; the rest apply checkable typography, OKLCH color, theming, responsive layout, component states, forms, motion, accessibility and de-slopping.",
+      "description": "An open-source set of 15 frontend craft skills for AI coding agents that stops them building the same generic 'AI slop' website. The headline skills interview you or audit an existing site into a committed design system before changes; the rest apply checkable typography, OKLCH color, theming, responsive layout, component states, forms, motion, accessibility and de-slopping.",
       "url": "https://kyanitelabs.github.io/tastecheck/",
       "codeRepository": "https://github.com/KyaniteLabs/tastecheck",
       "license": "https://opensource.org/licenses/MIT",
@@ -59,13 +59,13 @@
       "@id": "https://kyanitelabs.github.io/tastecheck/#faq",
       "mainEntity": [
         { "@type": "Question", "name": "What is tastecheck?",
-          "acceptedAnswer": { "@type": "Answer", "text": "tastecheck is a free, open-source (MIT) set of 14 craft skills for AI coding agents. Its headline skill interviews you into a committed design system before any code is written, then the other skills apply checkable rules for typography, color, accessibility and removing AI 'slop' tells, so the output has a point of view instead of the generic average." } },
+          "acceptedAnswer": { "@type": "Answer", "text": "tastecheck is a free, open-source (MIT) set of 15 craft skills for AI coding agents. Its headline skills interview you into a committed design system or infer one from an existing site before changes, then the other skills apply checkable rules for typography, color, accessibility and removing AI 'slop' tells, so the output has a point of view instead of the generic average." } },
         { "@type": "Question", "name": "Why do AI-generated websites all look the same?",
           "acceptedAnswer": { "@type": "Answer", "text": "With no design direction, a language model fills every blank with the most probable token: a purple/indigo gradient, the Inter font, a centered hero, three identical feature cards, pill buttons and glassmorphism. It is returning the statistical average of the web rather than designing. tastecheck fixes this by removing the blanks — making the real design decisions before the model gets to guess." } },
         { "@type": "Question", "name": "Which AI coding agents does tastecheck work with?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The skills are plain Markdown with no SDK or runtime, so they work with any agent that reads a skills directory: Claude Code, Codex, Gemini CLI, Cursor, Kilocode and Kimi. You can also point any other agent at a SKILL.md directly." } },
+          "acceptedAnswer": { "@type": "Answer", "text": "The skills are plain Markdown with no SDK or runtime. The installer links a canonical ~/.agents/skills directory and mirrors into detected Claude Code, Codex, Gemini CLI, Cursor, Kilocode and Kimi skill directories. Auto-loading depends on the agent; otherwise point the agent at a SKILL.md directly." } },
         { "@type": "Question", "name": "How is tastecheck different from other AI design tools?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Most tools clean up after the model generates a page. tastecheck works before the build: it grills you into a committed design system first. Its rules are checkable (a value, a count, a yes/no) rather than vibes, and every skill was rendered and verified in a real browser. The same content rendered through it produces five visibly different design systems, not five recolors of one template." } },
+          "acceptedAnswer": { "@type": "Answer", "text": "Most tools clean up after the model generates a page. tastecheck works before the build: it grills you into a committed design system first. Its rules are checkable (a value, a count, a yes/no) rather than vibes, and the repo ships an npm test verification gate. The same product story rendered through it produces five visibly different design systems, not five recolors of one template." } },
         { "@type": "Question", "name": "Is tastecheck free?",
           "acceptedAnswer": { "@type": "Answer", "text": "Yes. tastecheck is free and open-source under the MIT license. Clone the repository and run install.sh." } }
       ]
@@ -257,7 +257,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 <header class="nav"><div class="wrap">
   <span class="brand">taste<b>check</b></span>
   <details><summary aria-label="Menu">Menu ▾</summary>
-    <div class="menu"><a href="#why">Problem</a><a href="#how">How</a><a href="#skills">Skills</a><a href="#install">Install</a></div>
+    <div class="menu"><a href="#why">Problem</a><a href="#how">How</a><a href="#skills">Skills</a><a href="#proof">Proof</a><a href="#install">Install</a></div>
   </details>
 </div></header>
 <main id="main">
@@ -267,7 +267,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
   <div class="hcol">
     <div class="idx"><s></s>design intelligence · for any AI agent</div>
     <h1>Make it <span class="j">yours</span>, <span class="not">not</span> the average.</h1>
-    <p class="lede">Every AI builds the same site. tastecheck interviews you into a real design system first — then fourteen skills make sure your agent ships taste, not slop.</p>
+    <p class="lede">Every AI builds the same site. tastecheck interviews you or audits what you already have into a real design system first — then fifteen skills make sure your agent ships taste, not slop.</p>
     <div class="actions">
       <a class="btn btn-primary" href="https://github.com/KyaniteLabs/tastecheck">Run a taste check →</a>
       <a class="btn btn-ghost" href="#skills">See every skill</a>
@@ -318,54 +318,60 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
         <div class="out">→ tokens committed</div>
       </div><p class="cap">Grills you into a system + tokens before any code.</p></div>
 
-    <div class="cell w3"><div class="lab"><span class="n">01</span><h3>color-system</h3></div>
+    <div class="cell w3"><div class="lab"><span class="n">01</span><h3>improve-existing-website</h3></div>
+      <div class="stage" style="gap:.45rem">
+        <div class="hzb">audit: cards, nav, CTAs, type, color, states</div>
+        <div class="hzg">→ intended system inferred · 2 questions max</div>
+      </div><p class="cap">Reads the real site, separates signal from drift, then makes the partial system true.</p></div>
+
+    <div class="cell w3"><div class="lab"><span class="n">02</span><h3>color-system</h3></div>
       <div class="stage"><div class="ramp"><i style="background:#2a1606"></i><i style="background:#7a4518"></i><i style="background:#b06b2a"></i><i style="background:#f0a259"></i><i style="background:#f6c08a"></i><i style="background:#33d6ac"></i></div>
         <div class="row"><span class="note">OKLCH · copper × verdigris</span><span class="aa">AA 5.4:1 ✓</span></div></div>
       <p class="cap">Perceptual ramps that pass contrast — math, not vibes.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">02</span><h3>web-typography</h3></div>
+    <div class="cell"><div class="lab"><span class="n">03</span><h3>web-typography</h3></div>
       <div class="stage spec"><b style="font-size:2.4rem">Aa</b><span class="note">Redaction · perfect fourth · 66ch</span></div>
       <p class="cap">Scale, measure, rhythm — fluid &amp; legible.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">03</span><h3>component-states</h3></div>
+    <div class="cell"><div class="lab"><span class="n">04</span><h3>component-states</h3></div>
       <div class="stage"><button class="dbtn" data-cyc>Default</button><span class="note">click → cycles real states</span></div>
       <p class="cap">Hover, focus, active, disabled, loading — real.</p></div>
 
-    <div class="cell w3"><div class="lab"><span class="n">04</span><h3>form-ux</h3></div>
+    <div class="cell w3"><div class="lab"><span class="n">05</span><h3>form-ux</h3></div>
       <div class="stage"><div class="fld" data-fld><label for="de">Email</label><input id="de" type="email" placeholder="name@example.com"><div class="msg" data-msg>Type, then click away — it validates on blur.</div></div></div>
       <p class="cap">Labels, validate-on-blur, specific inline errors.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">05</span><h3>empty-states</h3></div>
+    <div class="cell"><div class="lab"><span class="n">06</span><h3>empty-states</h3></div>
       <div class="stage" data-empty><div class="sk" style="width:70%"></div><div class="sk" style="width:90%"></div><button class="dbtn" data-load style="margin-top:.4rem">Load</button></div>
       <p class="cap">Loading · empty · error — handled.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">06</span><h3>theming</h3></div>
+    <div class="cell"><div class="lab"><span class="n">07</span><h3>theming</h3></div>
       <div class="stage"><div class="dm"><i class="l">Light</i><i class="d">Dark</i></div><span class="note">light + dark + high-contrast · one token source</span></div>
       <p class="cap">Light, dark &amp; high-contrast from one set; elevation by lightness.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">07</span><h3>micro-motion</h3></div>
+    <div class="cell"><div class="lab"><span class="n">08</span><h3>micro-motion</h3></div>
       <div class="stage"><span class="mochip">Hover me ↗</span><span class="note">transform · 180ms · reduced-motion safe</span></div>
       <p class="cap">Animation that feels expensive.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">08</span><h3>responsive-layout</h3></div>
+    <div class="cell"><div class="lab"><span class="n">09</span><h3>responsive-layout</h3></div>
       <div class="stage"><div class="mini"><i></i><i></i><i></i><i></i><i></i></div><span class="note">intrinsic · container queries</span></div>
       <p class="cap">Survives any width — it just flows.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">09</span><h3>a11y-pass</h3></div>
+    <div class="cell"><div class="lab"><span class="n">10</span><h3>a11y-pass</h3></div>
       <div class="stage"><button class="dbtn" style="background:transparent;color:var(--ink);border-color:var(--line)">Tab to me</button><span class="aa">WCAG 2.2 AA ✓</span></div>
       <p class="cap">Keyboard, focus, contrast — fixed, not bolted on.</p></div>
 
-    <div class="cell w4"><div class="lab"><span class="n">10</span><h3>deslop-ui</h3></div>
+    <div class="cell w4"><div class="lab"><span class="n">11</span><h3>deslop-ui</h3></div>
       <div class="stage"><div class="ba"><div><div class="x bad">Get started</div><small>✕ pill · purple</small></div><div><div class="x good">Get started</div><small>✓ 5px · copper</small></div></div></div>
       <p class="cap">Strips the named AI tells; commits to a direction.</p></div>
 
-    <div class="cell w3"><div class="lab"><span class="n">11</span><h3>humanize-copy</h3></div>
+    <div class="cell w3"><div class="lab"><span class="n">12</span><h3>humanize-copy</h3></div>
       <div class="stage" style="gap:.45rem">
         <div class="hzb"><s>“In today’s fast-paced landscape we leverage synergies to delve…”</s></div>
         <div class="hzg">“Deploy logs in plain English — what shipped, what broke, what fixed it.”</div>
       </div><p class="cap">Strips the ChatGPT accent — a checkable kill-list.</p></div>
 
-    <div class="cell w3"><div class="lab"><span class="n">12</span><h3>data-viz</h3></div>
+    <div class="cell w3"><div class="lab"><span class="n">13</span><h3>data-viz</h3></div>
       <div class="stage">
         <figure style="margin:0;width:100%">
           <svg class="chart" viewBox="0 0 300 84" role="img" aria-label="Quarterly revenue rising 31% to $4.2M in Q2 2026">
@@ -376,23 +382,33 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
           </svg>
           <figcaption class="note" style="margin-top:.4rem">Revenue +31% · honest axis · direct label, no legend</figcaption>
         </figure>
-      </div><p class="cap">Tufte-grade charts: data-ink, no chartjunk, real table fallback.</p></div>
+      </div><p class="cap">Tufte-informed charts: data-ink, no chartjunk, real table fallback.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">13</span><h3>cognitive-a11y</h3></div>
+    <div class="cell"><div class="lab"><span class="n">14</span><h3>cognitive-a11y</h3></div>
       <div class="stage"><span class="tldr">TL;DR</span><span class="note">plain language · one idea per line · predictable layout</span></div>
       <p class="cap">Readable for ADHD, autism &amp; dyslexia — beyond WCAG.</p></div>
 
-    <div class="cell w2"><div class="lab"><span class="n">+</span><h3>any agent</h3></div>
+    <div class="cell w2"><div class="lab"><span class="n">+</span><h3>plain markdown</h3></div>
       <div class="stage" style="font:600 .9rem var(--body);color:var(--muted)">Claude · Codex · Gemini · Cursor · Kimi<br><span class="note" style="margin-top:.5rem;display:block">plain markdown · no runtime</span></div>
-      <p class="cap">Install once; works everywhere.</p></div>
+      <p class="cap">Canonical .agents links plus detected skill dirs.</p></div>
 
+  </div>
+</div></section>
+
+<section id="proof"><div class="wrap rv">
+  <div class="mark"><s></s>proof</div>
+  <h2>All fifteen skills now run through one real local website.</h2>
+  <p class="slede">The PrepBoard integration demo starts from an existing generated kitchen SaaS page, audits the intended system, then exercises every skill through real themes, states, form validation, empty/error/retry paths, chart/table parity, accessibility, copy, motion, and responsive layout.</p>
+  <div class="actions">
+    <a class="btn btn-primary" href="demos/skill-integration.html">Open the integration demo →</a>
+    <a class="btn btn-ghost" href="https://github.com/KyaniteLabs/tastecheck/blob/main/docs/VERIFICATION.md">Read verification notes</a>
   </div>
 </div></section>
 
 <section class="install" id="install"><div class="wrap rv">
   <div class="mark"><s></s>install</div>
   <h2>One command. Then just build.</h2>
-  <p class="slede">They auto-trigger when your request matches, on every agent you have.</p>
+  <p class="slede">Links canonical skills and mirrors them into detected agent homes.</p>
   <div class="box"><span class="c">$</span> git clone https://github.com/KyaniteLabs/tastecheck<br><span class="c">$</span> ./tastecheck/install.sh</div>
 </div></section>
 </main>

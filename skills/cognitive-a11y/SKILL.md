@@ -1,22 +1,9 @@
 ---
 name: cognitive-a11y
 description: >-
-  Make interfaces usable for ADHD, autism, dyslexia, and neurodivergent minds —
-  the cognitive accessibility that WCAG technical audits and a11y-pass barely
-  touch. Apply this whenever you write or build anything a person has to read,
-  understand, focus on, remember, or complete: copy, onboarding, forms, dashboards,
-  docs, settings, error/empty states, multi-step flows. Use it to avoid the usual
-  failures: walls of text, idioms/jargon/abstract language, no TL;DR or structure,
-  surprising or inconsistent layouts, autoplaying motion and distraction, forcing
-  users to remember things across screens, time limits, harsh sensory color/glare,
-  pure-black-on-white that hurts dyslexic reading, and punishing error handling.
-  Trigger on cues like "make this accessible for ADHD / autism / dyslexia /
-  neurodivergent users", "cognitive accessibility", "plain language", "reduce
-  cognitive load", "is this readable / understandable", "neuroinclusive", or
-  whenever you finish content/flows. Distinct from a11y-pass (sensory/motor/screen-
-  reader/WCAG); this is the understandable/attention/reading/predictability layer.
-  Checkable, per-profile, not vibes. Pairs with web-typography, humanize-copy,
-  micro-motion, form-ux, theming. Grounded in W3C COGA "Making Content Usable."
+  Cognitive accessibility pass for ADHD, autism, dyslexia, and neurodivergent
+  users. Use for readability, plain language, predictability, sensory load,
+  memory burden, time pressure, forms, onboarding, dashboards, docs, and flows.
 ---
 
 # Cognitive Accessibility (ADHD · autism · dyslexia · neurodivergence)

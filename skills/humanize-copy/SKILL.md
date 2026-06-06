@@ -1,20 +1,9 @@
 ---
 name: humanize-copy
 description: >-
-  Remove the "ChatGPT accent" from any writing so it reads like a human wrote it.
-  Apply this whenever you write or edit prose a person will read — landing-page
-  and marketing copy, READMEs, docs, blog posts, emails, UI microcopy, release
-  notes, social posts — and ESPECIALLY right after an LLM drafts text, because
-  models default to the same tells: buzzwords (delve, leverage, robust, seamless,
-  elevate, unleash), spatial metaphors (landscape, tapestry, realm, beacon),
-  "It's not just X, it's Y" and "not only… but also" parallelisms, "In today's
-  fast-paced world" openers, "Let's dive in", "In conclusion", forced rule-of-
-  three, hedging ("it's important to note"), and flat low-burstiness rhythm where
-  every sentence is the same length. Trigger on cues like "make this sound human",
-  "humanize this", "this reads like AI", "remove the AI tells", "less robotic",
-  "punch up this copy", or just after generating any prose. It's a checkable
-  kill-list + rewrite rules with before/after, not vibes. Language- and tool-
-  agnostic; for non-English, pair with idiomatic-translation.
+  Humanize prose by removing LLM tells. Use for landing copy, docs, READMEs,
+  emails, UI microcopy, release notes, social posts, or requests like humanize,
+  less robotic, remove AI tells, punch up, or make this sound human.
 ---
 
 # Humanize Copy

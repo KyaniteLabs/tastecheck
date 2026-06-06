@@ -57,8 +57,8 @@ be a table?" first; often the answer is yes.
 
 ### DR-7 · Hand off deep work
 - **Why:** don't reinvent the toolkit. **Apply:** for nine-criteria assessment / lie-factor
-  catalogue / Python publication SVGs, use the installed `assess-graphical-excellence` and
-  `render-tufte-chart` skills (gnurio/tufte-vdqi-plugin).
+  catalogue / Python publication SVGs, use `assess-graphical-excellence` and
+  `render-tufte-chart` when those specialist skills are available.
 
 ## Principle, not property
 Distills Tufte's public principles and the gnurio/tufte-vdqi-plugin's approach, extended
