@@ -5,6 +5,10 @@
 > oversized index numerals set in the serif." (decided boldly per design-system-interview;
 > no human to grill in a demo, so committed + announced — never resolved to the average.)
 
+> **Attractor note:** This deliberately sits near the 2026 "cream + wine-red editorial"
+> attractor so the demo can show before/after contrast quickly. In client work, do not copy
+> this as the house default; run the interview and commit to the user's own reference system.
+
 ## Direction
 - **Reference:** a Criterion Collection booklet × Aesop product page — printed, warm, confident.
 - **Aesthetic:** editorial luxury (NOT "modern/clean").

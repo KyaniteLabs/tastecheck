@@ -1,18 +1,9 @@
 ---
 name: empty-states
 description: >-
-  Design the empty, loading, and error screens everyone forgets. Apply this
-  whenever a UI region can have no data, be loading, or fail — first-run/onboarding
-  screens, zero-results from search/filters, empty lists/tables/dashboards,
-  loading states, and error/offline/permission states. Use it to avoid the usual
-  failures: a blank white void when there's no data, a dead-end "No results" with
-  no next step, spinners that say "stuck", layout that jumps when data arrives
-  (CLS), and errors that blame the user with a stack trace. Trigger on cues like
-  "add an empty state", "what shows when there's no data", "loading state",
-  "no results screen", "first-run / onboarding screen", "handle the error state",
-  or just after building any list/table/feed/search/dashboard. Gives the three-
-  state model, skeleton-vs-spinner rules, copy patterns, and a checklist — not
-  vibes. Framework-agnostic. Pair with micro-motion, form-ux, deslop-ui.
+  Empty, loading, and error-state design. Use for first-run screens, zero results,
+  empty lists/tables/dashboards, loading skeletons, offline/permission errors,
+  retries, layout stability, and state copy.
 ---
 
 # Empty States

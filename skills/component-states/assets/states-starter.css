@@ -24,16 +24,17 @@
 .btn:disabled, .btn[aria-disabled="true"] {
   opacity: .5; cursor: not-allowed; filter: grayscale(.2);
 }
-.btn[data-loading="true"] { color: transparent; pointer-events: none; position: relative; }
+.btn[data-loading="true"] { pointer-events: none; position: relative; padding-right: 2.4em; }
 .btn[data-loading="true"]::after {
-  content: ""; position: absolute; inset: 0; margin: auto;
+  content: ""; position: absolute; right: .9em; top: 50%; transform: translateY(-50%);
   width: 1em; height: 1em; border: 2px solid #fff; border-right-color: transparent;
   border-radius: 50%; animation: spin .6s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ---- Link: keep a non-color cue (underline) ---- */
-a { color: var(--color-primary); text-decoration: underline; text-underline-offset: .15em; }
+a { color: var(--color-primary); text-decoration: underline; text-underline-offset: .15em;
+    display: inline-flex; align-items: center; min-height: 24px; }
 a:hover { text-decoration-thickness: .12em; }
 a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; border-radius: 2px; }
 
@@ -68,6 +69,6 @@ a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; bo
 
 @media (prefers-reduced-motion: reduce) {
   .btn:active { transform: none; }
-  .btn[data-loading="true"]::after { animation-duration: 1.2s; }
+  .btn[data-loading="true"]::after { animation: none; border-right-color: #fff; }
   .switch, .switch::after { transition: none; }
 }

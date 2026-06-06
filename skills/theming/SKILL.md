@@ -1,21 +1,9 @@
 ---
 name: theming
 description: >-
-  Build a real theme system — light AND dark (and high-contrast) from ONE semantic
-  token source — not a one-off dark mode bolted on. Apply this whenever a site needs
-  light/dark, a theme toggle, "support dark mode," system-preference theming, a
-  high-contrast/accessible theme, or a token architecture that re-themes cleanly.
-  Use it to avoid the usual failures: a dark theme that's just inverted light
-  (pure-black, vibrating saturated colors, shadows that vanish), only one mode
-  shipped, no `prefers-color-scheme` default, no persistent user toggle, no
-  high-contrast/forced-colors support, and colors hard-coded so re-theming is
-  impossible. Trigger on cues like "add dark mode", "light and dark", "theme
-  toggle", "support prefers-color-scheme", "high-contrast mode", "make it themeable",
-  "the dark theme looks harsh", or "everything glows in dark". Gives the semantic-
-  token architecture, light + dark + high-contrast surface/contrast values,
-  elevation-by-lightness, the toggle, and forced-colors — checkable, not vibes.
-  Framework-agnostic. Pairs with color-system (palette), web-typography, a11y-pass,
-  cognitive-a11y (off-white not glare). Supersedes a dark-mode-only approach.
+  Semantic theme system for light, dark, and high contrast. Use for dark mode,
+  theme toggles, prefers-color-scheme, forced-colors, accessible contrast,
+  surface/elevation tokens, persistent user choice, and re-themeable components.
 ---
 
 # Theming (light · dark · high-contrast, from one token source)
@@ -81,7 +69,13 @@ toggle, `forced-colors`, dim-media-on-dark) is in `assets/theme-starter.css`. Sh
   --accent:oklch(0.72 0.12 250);                                     /* +L, −C for dark */
 }}
 :root[data-theme="dark"]{ /* same dark block, as an explicit override */ }
-@media (prefers-contrast: more){ :root{ --text:#000; --border:#000; --text-muted:#1a1a1a; } }
+@media (prefers-contrast: more){
+  :root{ --bg:#fff; --text:#000; --border:#000; --text-muted:#1a1a1a; }
+  :root[data-theme="dark"]{ --bg:#000; --text:#fff; --border:#fff; --text-muted:#e6e6e6; }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ --bg:#000; --text:#fff; --border:#fff; --text-muted:#e6e6e6; }
+  }
+}
 @media (forced-colors: active){ :root{ /* let system colors win; keep focus visible */ } }
 body{ background:var(--bg); color:var(--text); }
 ```

@@ -1,18 +1,9 @@
 ---
 name: form-ux
 description: >-
-  Forms people actually finish. Apply this whenever you build or review a form,
-  input, sign-up/login, checkout, settings, or any field collection in
-  HTML/React/Vue/etc. Use it to avoid the usual failures: no labels (or
-  placeholder-as-label), validation that only fires on submit, vague errors
-  ("Invalid input"), error messages not tied to their field, required fields
-  unmarked, multi-column layouts that break the eye, wrong input types/keyboards
-  on mobile, no autofill/autocomplete, disabled submit with no explanation, and
-  inaccessible fields. Trigger on cues like "build a form", "sign-up / login form",
-  "checkout", "add validation", "the form is confusing / people drop off", "fix
-  these inputs", or "make this form accessible". Gives checkable rules — label
-  patterns, when to validate, error-message formula, input types, accessibility —
-  not vibes. Framework-agnostic. Pair with empty-states, micro-motion, humanize-copy.
+  Form UX and accessibility pass. Use for forms, inputs, checkout, signup/login,
+  validation, labels, autocomplete, mobile keyboards, inline errors, required
+  fields, disabled submits, and field-level accessibility.
 ---
 
 # Form UX

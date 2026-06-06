@@ -1,22 +1,25 @@
 # tastecheck
 
-> Fourteen frontend craft skills for AI coding agents that stop AI from building the same
+> Fifteen frontend craft skills for AI coding agents that stop AI from building the same
 > generic "AI slop" website. The headline skill grills you into a committed design system
-> BEFORE any code; the rest (typography, color/OKLCH, theming, layout, states, forms,
+> BEFORE any code; improve-existing-website infers a system from existing sites; the rest (typography, color/OKLCH, theming, layout, states, forms,
 > motion, data-viz, a11y, cognitive-a11y, deslop, humanize-copy) apply checkable craft so
-> the output has a point of view. Works with any agent (Claude Code, Codex, Gemini, Cursor,
-> Kilocode, Kimi). Plain Markdown, no runtime. MIT.
+> the output has a point of view. Plain Markdown, no runtime, portable to agents that can
+> read skill files or directories. MIT.
 
-Install via install.sh (symlinks each skill into every detected agent's skills/ dir).
-Skills auto-trigger when a request matches them; Claude Code also gets slash commands.
+Install via install.sh (always symlinks skills into ~/.agents/skills and mirrors them into
+detected agent skill dirs). Auto-loading depends on the agent; Claude Code also gets slash
+commands.
 
 ## Start here
 - [README](README.md): the problem (every AI site looks the same), the fix, the samples, install
-- [Live gallery](https://kyanitelabs.github.io/tastecheck/samples/): five design systems, one identical content set
-- [Verification report](docs/VERIFICATION.md): every skill rendered in a real browser before release
+- [Live gallery](https://kyanitelabs.github.io/tastecheck/samples/): five design systems, one product story
+- [15-skill integration demo](https://kyanitelabs.github.io/tastecheck/demos/skill-integration.html): one local website exercising every skill
+- [Verification report](docs/VERIFICATION.md): repeatable local verification plus browser QA checklist
 
 ## Skills
 - [design-system-interview](skills/design-system-interview/SKILL.md): grills you into a committed design system + tokens before building (the headline)
+- [improve-existing-website](skills/improve-existing-website/SKILL.md): audit an existing site, infer its intended system, ask only targeted questions, then improve it
 - [deslop-ui](skills/deslop-ui/SKILL.md): remove the named AI visual + structural tells; commit to a direction
 - [humanize-copy](skills/humanize-copy/SKILL.md): strip the ChatGPT accent from writing with a checkable kill-list
 - [web-typography](skills/web-typography/SKILL.md): type scale, measure, rhythm, fonts, fluid clamp, web-font CLS, WCAG text
@@ -27,7 +30,7 @@ Skills auto-trigger when a request matches them; Claude Code also gets slash com
 - [form-ux](skills/form-ux/SKILL.md): labels, validation, input types, accessible forms
 - [empty-states](skills/empty-states/SKILL.md): empty/loading/error screens with recovery
 - [micro-motion](skills/micro-motion/SKILL.md): performant tasteful animation + reduced-motion
-- [data-viz](skills/data-viz/SKILL.md): honest, Tufte-grade charts that theme and pass a11y
+- [data-viz](skills/data-viz/SKILL.md): honest, Tufte-informed charts that theme and pass a11y
 - [a11y-pass](skills/a11y-pass/SKILL.md): runnable WCAG 2.2 AA fix pass with a paste-able auditor
 - [cognitive-a11y](skills/cognitive-a11y/SKILL.md): ADHD / autism / dyslexia / neurodivergent readability
 
@@ -39,5 +42,5 @@ Skills auto-trigger when a request matches them; Claude Code also gets slash com
 - [Clay / Soft humanist](samples/clay/index.html): warm alternating zig-zag flow with pebble shapes
 
 ## Optional
-- [demos](demos/): standalone HTML pages applying the skills' CSS, incl. the before/after gallery
+- [demos](demos/): standalone HTML pages applying the skills' CSS, incl. the before/after gallery and 15-skill integration page
 - [commands](commands/): Claude Code slash-command wrappers (/designsystem, /deslop, …)
