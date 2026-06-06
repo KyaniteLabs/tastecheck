@@ -27,18 +27,20 @@ git clone https://github.com/KyaniteLabs/tastecheck
 ```
 
 **Live:** the [five-design-system gallery](https://kyanitelabs.github.io/tastecheck/samples/) ·
-the [landing page](https://kyanitelabs.github.io/tastecheck/)
+the [landing page](https://kyanitelabs.github.io/tastecheck/) ·
+the [15-skill integration demo](https://kyanitelabs.github.io/tastecheck/demos/skill-integration.html)
 
 ---
 
 ## What is tastecheck?
 
 tastecheck is a free, open-source (MIT) **pack of 15 frontend craft skills for AI coding
-agents** — Claude Code, Codex, Gemini CLI, Cursor, Kilocode, Kimi. The headline skill
-*interviews you into a committed design system before any code is written*; the rest apply
-checkable rules for typography, color, theming, layout, component states, forms, motion,
-accessibility, and removing AI "slop" tells. The result: the same brief produces a design
-with a point of view, not the generic average.
+agents** — Claude Code, Codex, Gemini CLI, Cursor, Kilocode, Kimi. The headline skills
+either *interview you into a committed design system before any code is written* or audit
+an existing website to infer the intended system before changes. The rest apply checkable
+rules for typography, color, theming, layout, component states, forms, motion,
+accessibility, and removing AI "slop" tells. The result: a new build or partial existing
+site gets a point of view, not the generic average.
 
 ## Why every AI site looks the same
 
@@ -73,7 +75,8 @@ different visual/rhythm treatments on the same pitch. The repo includes a repeat
 verification gate for local links, install paths, command targets, CSS parse traps,
 starter accessibility, and chart data-table parity.
 
-**[▶ Open the live gallery](https://kyanitelabs.github.io/tastecheck/samples/)** · source in [`samples/`](samples/)
+- **[▶ Open the live gallery](https://kyanitelabs.github.io/tastecheck/samples/)** · source in [`samples/`](samples/)
+- **[▶ Open the 15-skill integration demo](https://kyanitelabs.github.io/tastecheck/demos/skill-integration.html)** · source in [`demos/skill-integration.html`](demos/skill-integration.html)
 
 | System | Territory | Signature structure | Type |
 |---|---|---|---|
@@ -130,8 +133,12 @@ before/after and a self-check the agent runs on its own output:
 
 And we ate our own cooking: the repo now ships a repeatable verification command instead
 of a trust-me receipt. Run `npm test` for structural, installer, command, link, CSS,
-a11y-starter, and data-viz checks. Browser/manual QA remains documented separately in
-[docs/VERIFICATION.md](docs/VERIFICATION.md) and the rendered [demos/](demos/).
+a11y-starter, data-viz, and real-website integration checks. The integration page starts
+from an existing kitchen SaaS HTML, audits the intended system, then exercises all 15
+skills through real controls: themes, component states, form validation, empty/error/retry,
+chart/table parity, copy, accessibility, cognitive readability, motion, and responsive
+layout. Browser/manual QA remains documented separately in [docs/VERIFICATION.md](docs/VERIFICATION.md)
+and the rendered [demos/](demos/).
 
 ## Portable Markdown
 
@@ -162,15 +169,16 @@ load the relevant skill; otherwise use the `SKILL.md` path directly. In Claude C
 also get slash commands:
 `/designsystem`, `/deslop`, `/humanize`, `/typography`, `/colorsystem`, `/theming`,
 `/responsive`, `/states`, `/formux`, `/emptystates`, `/motion`, `/dataviz`, `/a11y`,
-`/cognitive`.
+`/cognitive`, `/improvesite`.
 
 ## FAQ
 
 **What is tastecheck?**
 A free, open-source (MIT) pack of 15 craft skills for AI coding agents. It interviews you
-into a committed design system before any code, then applies checkable rules for typography,
-color, accessibility and removing AI "slop" tells — so output has a point of view instead of
-the generic average.
+into a committed design system before any code, or audits an existing site to infer the
+system already trying to exist, then applies checkable rules for typography, color,
+accessibility and removing AI "slop" tells — so output has a point of view instead of the
+generic average.
 
 **Why do AI-generated websites all look the same?**
 With no design direction a model fills every blank with the most probable token: a purple/
@@ -185,7 +193,8 @@ Gemini CLI, Cursor, Kilocode, and Kimi skill dirs. Auto-loading depends on the a
 **How is it different from other AI design tools?**
 Most clean up *after* generation. tastecheck works *before* the build, its rules are
 checkable rather than vibes, and the repo includes a repeatable `npm test` verification
-gate. Same product story through it = five visibly different design systems, not five recolors.
+gate plus a real integration page that exercises every skill end to end. Same product story
+through it = five visibly different design systems, not five recolors.
 
 **Is it free?**
 Yes — MIT licensed. Clone the repo and run `install.sh`.
