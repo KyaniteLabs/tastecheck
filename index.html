@@ -8,6 +8,7 @@
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#0f0d0b">
 <link rel="canonical" href="https://kyanitelabs.github.io/tastecheck/">
+<link rel="icon" href="favicon.ico">
 <link rel="sitemap" type="application/xml" href="https://kyanitelabs.github.io/tastecheck/sitemap.xml">
 <!-- Open Graph -->
 <meta property="og:type" content="website">
@@ -85,6 +86,10 @@
   --ink:oklch(94% .024 78); --muted:oklch(78% .041 75);
   --copper:oklch(76% .145 62); --copper-deep:oklch(42% .103 55); --on-copper:oklch(15% .049 55);
   --verd:oklch(78% .154 170);
+  --nav-bg:oklch(13% .018 64 / .78);
+  --hero-fade-a:oklch(13% .018 64 / 1);
+  --hero-fade-b:oklch(13% .018 64 / .76);
+  --hero-fade-c:oklch(13% .018 64 / .32);
   --disp:"Red0",Georgia,serif; --body:"Archivo",system-ui,-apple-system,sans-serif; --mono:ui-monospace,Menlo,monospace;
   --rc:5px; --rcell:14px;
 }
@@ -94,6 +99,10 @@
   --ink:oklch(19% .028 63); --muted:oklch(42% .046 66);
   --copper:oklch(55% .143 56); --copper-deep:oklch(40% .112 55); --on-copper:oklch(98% .018 75);
   --verd:oklch(47% .129 169);
+  --nav-bg:oklch(96% .023 78 / .9);
+  --hero-fade-a:oklch(96% .023 78 / .98);
+  --hero-fade-b:oklch(96% .023 78 / .9);
+  --hero-fade-c:oklch(96% .023 78 / .52);
 }
 [data-theme="contrast"]{
   color-scheme:dark;
@@ -101,6 +110,10 @@
   --ink:oklch(99% .006 96); --muted:oklch(88% .035 80);
   --copper:oklch(84% .174 69); --copper-deep:oklch(61% .151 60); --on-copper:oklch(7% .019 63);
   --verd:oklch(87% .158 170);
+  --nav-bg:oklch(6% .012 63 / .96);
+  --hero-fade-a:oklch(6% .012 63 / 1);
+  --hero-fade-b:oklch(6% .012 63 / .9);
+  --hero-fade-c:oklch(6% .012 63 / .5);
 }
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth}
@@ -114,7 +127,7 @@ a,button,input,select,summary{outline:2px solid transparent;outline-offset:3px}
 .skip{position:absolute;left:-999px}.skip:focus{left:16px;top:16px;z-index:99;background:var(--copper);color:var(--on-copper);padding:.6em 1em;border-radius:5px}
 
 /* NAV — real mobile (disclosure), tap targets >=44px */
-header.nav{position:sticky;top:0;z-index:40;background:rgba(15,13,11,.74);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header.nav{position:sticky;top:0;z-index:40;background:var(--nav-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .nav .wrap{display:flex;justify-content:space-between;align-items:center;min-height:60px}
 .brand{font-family:var(--disp);font-weight:700;font-size:1.5rem;letter-spacing:-.01em}
 .brand b{color:var(--copper)}
@@ -130,7 +143,8 @@ header.nav{position:sticky;top:0;z-index:40;background:rgba(15,13,11,.74);backdr
 /* HERO — asymmetric, living texture, column-rule motif, index marker (no mono eyebrow tell) */
 .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
 .hero .bg{position:absolute;inset:-4% ;z-index:0;background:url("site/img/basalt-copper.png") center/cover no-repeat;will-change:transform}
-.hero .scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(105deg, var(--bg) 12%, rgba(15,13,11,.72) 48%, rgba(15,13,11,.30) 100%)}
+.hero .scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(105deg, var(--hero-fade-a) 12%, var(--hero-fade-b) 50%, var(--hero-fade-c) 100%)}
+[data-theme="light"] .hero .bg{opacity:.48;filter:saturate(.82) contrast(.94)}
 .hero .wrap{position:relative;z-index:2;padding-block:clamp(4rem,2rem + 9vw,8rem);display:grid;grid-template-columns:auto 1fr;gap:clamp(1rem,.5rem + 2vw,2.2rem)}
 .rule{width:2px;background:linear-gradient(var(--copper),transparent);border-radius:2px}
 .hcol{max-width:min(100%,42rem)}
