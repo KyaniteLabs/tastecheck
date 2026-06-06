@@ -26,9 +26,9 @@ git clone https://github.com/KyaniteLabs/tastecheck
 # then point your agent at ~/.agents/skills or its detected skills directory
 ```
 
-**Live:** the [five-design-system gallery](https://kyanitelabs.github.io/tastecheck/samples/) ·
-the [landing page](https://kyanitelabs.github.io/tastecheck/) ·
-the [15-skill integration demo](https://kyanitelabs.github.io/tastecheck/demos/skill-integration.html)
+**Live:** the [landing page](https://kyanitelabs.github.io/tastecheck/) ·
+the [five-design-system gallery](https://kyanitelabs.github.io/tastecheck/samples/) ·
+the [secondary integration harness](https://kyanitelabs.github.io/tastecheck/demos/skill-integration.html)
 
 ---
 
@@ -67,16 +67,23 @@ genuinely don't care, it **decides boldly and tells you** — never resolves to 
 average. The output is a committed `DESIGN-SYSTEM.md` + design tokens that every other
 skill builds from. Taste is the only moat against AI slop; this operationalizes it.
 
-## Proof: five design systems, one product story
+## Proof: the GitHub Pages landing page runs the skills
 
-The strongest evidence the interview works: take the **same product story and core IA** and
-run it through five different committed systems. You don't get five recolors — you get five
-different visual/rhythm treatments on the same pitch. The repo includes a repeatable
-verification gate for local links, install paths, command targets, CSS parse traps,
-starter accessibility, and chart data-table parity.
+The homepage connected to GitHub Pages is not just a brochure. It is now the primary
+integration surface: the live landing page carries `data-skill` coverage for all 15 skills,
+page-level light/dark/high-contrast theme paths, component states, form validation,
+empty/error/retry recovery, chart/table parity, keyboard/focus affordances, reduced-motion
+guards, forced-colors support, humanized copy, and the existing-site audit story.
 
+The second proof: take the **same product story and core IA** and run it through five
+different committed systems. You don't get five recolors — you get five different
+visual/rhythm treatments on the same pitch. The repo includes a repeatable verification
+gate for local links, install paths, command targets, CSS parse traps, starter accessibility,
+homepage skill coverage, and chart data-table parity.
+
+- **[▶ Open the live landing page](https://kyanitelabs.github.io/tastecheck/)** · source in [`index.html`](index.html)
 - **[▶ Open the live gallery](https://kyanitelabs.github.io/tastecheck/samples/)** · source in [`samples/`](samples/)
-- **[▶ Open the 15-skill integration demo](https://kyanitelabs.github.io/tastecheck/demos/skill-integration.html)** · source in [`demos/skill-integration.html`](demos/skill-integration.html)
+- **[▶ Open the secondary integration harness](https://kyanitelabs.github.io/tastecheck/demos/skill-integration.html)** · source in [`demos/skill-integration.html`](demos/skill-integration.html)
 
 | System | Territory | Signature structure | Type |
 |---|---|---|---|
@@ -133,9 +140,9 @@ before/after and a self-check the agent runs on its own output:
 
 And we ate our own cooking: the repo now ships a repeatable verification command instead
 of a trust-me receipt. Run `npm test` for structural, installer, command, link, CSS,
-a11y-starter, data-viz, and real-website integration checks. The integration page starts
-from an existing kitchen SaaS HTML, audits the intended system, then exercises all 15
-skills through real controls: themes, component states, form validation, empty/error/retry,
+a11y-starter, data-viz, GitHub Pages landing-page coverage, and secondary integration
+checks. The landing page itself audits its existing direction, then exercises all 15 skills
+through real controls: themes, component states, form validation, empty/error/retry,
 chart/table parity, copy, accessibility, cognitive readability, motion, and responsive
 layout. Browser/manual QA remains documented separately in [docs/VERIFICATION.md](docs/VERIFICATION.md)
 and the rendered [demos/](demos/).
@@ -193,8 +200,8 @@ Gemini CLI, Cursor, Kilocode, and Kimi skill dirs. Auto-loading depends on the a
 **How is it different from other AI design tools?**
 Most clean up *after* generation. tastecheck works *before* the build, its rules are
 checkable rather than vibes, and the repo includes a repeatable `npm test` verification
-gate plus a real integration page that exercises every skill end to end. Same product story
-through it = five visibly different design systems, not five recolors.
+gate where the GitHub Pages landing page itself exercises every skill end to end. Same
+product story through it = five visibly different design systems, not five recolors.
 
 **Is it free?**
 Yes — MIT licensed. Clone the repo and run `install.sh`.
