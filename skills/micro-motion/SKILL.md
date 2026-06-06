@@ -1,18 +1,9 @@
 ---
 name: micro-motion
 description: >-
-  Animation that feels expensive, not annoying. Apply this whenever you add,
-  tune, or review motion on the web — hovers, button/press feedback, page-load and
-  scroll reveals, modal/drawer transitions, loading and skeleton states, list
-  reordering, toasts. Use it to avoid the usual failures: everything animating at
-  once, slow/laggy durations, linear easing, bouncy springs on serious UI,
-  janky animation of layout properties (width/height/top/left) instead of
-  transform/opacity, motion with no prefers-reduced-motion fallback, and gratuitous
-  scroll-jacking. Trigger on cues like "add animations", "make it feel polished/
-  premium", "the animations feel cheap/janky", "smooth transitions", "page load
-  animation", "hover effects", or "respect reduced motion". Gives checkable values
-  — durations, easing curves, the properties safe to animate, the 30% rule — plus a
-  reduced-motion contract. Framework-agnostic (CSS-first; Motion/Framer notes).
+  Web micro-motion guidance. Use for hover/press feedback, page reveals, modals,
+  drawers, loading states, list reordering, toasts, polish, cheap/janky animation,
+  easing/duration choices, transform/opacity, and reduced-motion fallbacks.
 ---
 
 # Micro-Motion

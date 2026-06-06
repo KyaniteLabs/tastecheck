@@ -13,7 +13,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="tastecheck">
 <meta property="og:title" content="tastecheck — stop AI shipping the same generic website">
-<meta property="og:description" content="14 anti-slop craft skills for AI coding agents. It grills you into a real design system before writing code, then ships taste — not a purple gradient. Works with any agent. MIT.">
+<meta property="og:description" content="14 anti-slop craft skills for AI coding agents. It grills you into a real design system before writing code, then ships taste — not a purple gradient. Plain Markdown, portable across agents. MIT.">
 <meta property="og:url" content="https://kyanitelabs.github.io/tastecheck/">
 <meta property="og:image" content="https://kyanitelabs.github.io/tastecheck/docs/hero/five-systems.png">
 <meta property="og:image:width" content="2420">
@@ -63,9 +63,9 @@
         { "@type": "Question", "name": "Why do AI-generated websites all look the same?",
           "acceptedAnswer": { "@type": "Answer", "text": "With no design direction, a language model fills every blank with the most probable token: a purple/indigo gradient, the Inter font, a centered hero, three identical feature cards, pill buttons and glassmorphism. It is returning the statistical average of the web rather than designing. tastecheck fixes this by removing the blanks — making the real design decisions before the model gets to guess." } },
         { "@type": "Question", "name": "Which AI coding agents does tastecheck work with?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The skills are plain Markdown with no SDK or runtime, so they work with any agent that reads a skills directory: Claude Code, Codex, Gemini CLI, Cursor, Kilocode and Kimi. You can also point any other agent at a SKILL.md directly." } },
+          "acceptedAnswer": { "@type": "Answer", "text": "The skills are plain Markdown with no SDK or runtime. The installer links a canonical ~/.agents/skills directory and mirrors into detected Claude Code, Codex, Gemini CLI, Cursor, Kilocode and Kimi skill directories. Auto-loading depends on the agent; otherwise point the agent at a SKILL.md directly." } },
         { "@type": "Question", "name": "How is tastecheck different from other AI design tools?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Most tools clean up after the model generates a page. tastecheck works before the build: it grills you into a committed design system first. Its rules are checkable (a value, a count, a yes/no) rather than vibes, and every skill was rendered and verified in a real browser. The same content rendered through it produces five visibly different design systems, not five recolors of one template." } },
+          "acceptedAnswer": { "@type": "Answer", "text": "Most tools clean up after the model generates a page. tastecheck works before the build: it grills you into a committed design system first. Its rules are checkable (a value, a count, a yes/no) rather than vibes, and the repo ships an npm test verification gate. The same product story rendered through it produces five visibly different design systems, not five recolors of one template." } },
         { "@type": "Question", "name": "Is tastecheck free?",
           "acceptedAnswer": { "@type": "Answer", "text": "Yes. tastecheck is free and open-source under the MIT license. Clone the repository and run install.sh." } }
       ]
@@ -376,15 +376,15 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
           </svg>
           <figcaption class="note" style="margin-top:.4rem">Revenue +31% · honest axis · direct label, no legend</figcaption>
         </figure>
-      </div><p class="cap">Tufte-grade charts: data-ink, no chartjunk, real table fallback.</p></div>
+      </div><p class="cap">Tufte-informed charts: data-ink, no chartjunk, real table fallback.</p></div>
 
     <div class="cell"><div class="lab"><span class="n">13</span><h3>cognitive-a11y</h3></div>
       <div class="stage"><span class="tldr">TL;DR</span><span class="note">plain language · one idea per line · predictable layout</span></div>
       <p class="cap">Readable for ADHD, autism &amp; dyslexia — beyond WCAG.</p></div>
 
-    <div class="cell w2"><div class="lab"><span class="n">+</span><h3>any agent</h3></div>
+    <div class="cell w2"><div class="lab"><span class="n">+</span><h3>plain markdown</h3></div>
       <div class="stage" style="font:600 .9rem var(--body);color:var(--muted)">Claude · Codex · Gemini · Cursor · Kimi<br><span class="note" style="margin-top:.5rem;display:block">plain markdown · no runtime</span></div>
-      <p class="cap">Install once; works everywhere.</p></div>
+      <p class="cap">Canonical .agents links plus detected skill dirs.</p></div>
 
   </div>
 </div></section>
@@ -392,7 +392,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 <section class="install" id="install"><div class="wrap rv">
   <div class="mark"><s></s>install</div>
   <h2>One command. Then just build.</h2>
-  <p class="slede">They auto-trigger when your request matches, on every agent you have.</p>
+  <p class="slede">Links canonical skills and mirrors them into detected agent homes.</p>
   <div class="box"><span class="c">$</span> git clone https://github.com/KyaniteLabs/tastecheck<br><span class="c">$</span> ./tastecheck/install.sh</div>
 </div></section>
 </main>

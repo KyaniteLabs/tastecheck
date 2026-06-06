@@ -16,7 +16,7 @@ tokens are a "only when necessary" escalation.
    `--color-border`, `--radius-control`, `--space-section`. Re-theming = remap these.
 
 Components reference **semantic only**, never primitives. That's what makes the system
-coherent and themeable (and what lets `dark-mode` swap the mapping for dark).
+coherent and themeable (and what lets `theming` swap the mapping for dark and high contrast).
 
 Optional third tier — **component tokens** (`--button-bg`) — only when a component needs
 to diverge from the semantic defaults. Don't add it preemptively; it's overhead.
@@ -61,7 +61,7 @@ Leave generated specifics (full ramps, type scale steps) to the implementing ski
 this block is the *contract*; they fill it in:
 - **color-system** → full OKLCH ramp + verified-contrast semantic colors + dark variant.
 - **web-typography** → fluid type scale from the chosen faces, measure, rhythm.
-- **dark-mode** → dark remap of the semantic tokens (raise L, lower C on accents).
+- **theming** → light/dark/high-contrast remaps of the semantic tokens.
 - **component-states / form-ux / empty-states** → implement using semantic tokens.
 - **micro-motion** → motion tokens at the chosen level.
 - **deslop-ui** → audits the built UI against this committed spec, not the average.

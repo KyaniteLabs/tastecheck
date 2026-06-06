@@ -3,7 +3,7 @@
 Read when choosing a genre or diagnosing a bad chart. This is an independent synthesis
 of Edward Tufte's *The Visual Display of Quantitative Information* (VDQI) and the
 gnurio/tufte-vdqi-plugin — credited, expressed in our own words. For deep, page-cited
-scoring use the installed `assess-graphical-excellence` skill.
+scoring use `assess-graphical-excellence` when that specialist skill is available.
 
 ## Data-ink (the core idea)
 **Data-ink ratio = ink that encodes data ÷ total ink.** Typical charts sit at 0.1–0.2;

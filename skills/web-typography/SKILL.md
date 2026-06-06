@@ -1,21 +1,9 @@
 ---
 name: web-typography
 description: >-
-  Expert front-end web typography — apply this whenever you are styling text on
-  the web or making type decisions in HTML/CSS/JSX/Tailwind. Use it for choosing
-  and pairing fonts, building a type scale, setting body copy and headings,
-  fluid/responsive type with clamp(), line-height and vertical rhythm, measure
-  and line-length, web-font loading and performance (variable fonts, font-display,
-  self-hosting, eliminating layout shift / CLS), accessible text (WCAG 2.2
-  contrast, resize, text-spacing), and modern CSS type features (text-wrap
-  balance/pretty, OpenType features, font-variant-numeric, text-box-trim,
-  container-query units). Trigger this even when the user just says things like
-  "the text looks off," "make this readable," "set up typography for this site,"
-  "pick a font," "fix the headings," "the heading wraps badly," or "fonts are
-  causing layout shift." Grounded in the principles of Ellen Lupton (Thinking
-  with Type, Type on Screen), Robert Bringhurst, and modern web-type authorities
-  (Tim Brown, Richard Rutter, Matthew Butterick), translated into current,
-  shippable CSS.
+  Front-end web typography. Use for font choice, type pairing, type scales,
+  readable body text, headings, clamp() fluid type, measure, line-height, rhythm,
+  font loading/CLS, text wrapping, OpenType features, and accessible text.
 ---
 
 # Web Typography
@@ -46,8 +34,10 @@ and never copy a source's prose, sample layouts, or proprietary content. The sha
 
 Make these decisions in sequence. Each one constrains the next.
 
-1. **Font choice** — Default to a fast, good system stack unless the brand needs a
-   web font. If you load a web font, plan its loading (step 6) at the same time.
+1. **Font choice** — For operational/product UI, a fast, good system stack is a
+   valid deliberate choice. For brand, marketing, portfolio, or launch surfaces,
+   start from the design-system interview and choose a display/body stance with
+   personality. If you load a web font, plan its loading (step 6) at the same time.
 2. **Base size & measure** — Body text ≥ `1rem` (16px), line-length 45–75
    characters (`max-width: ~66ch`). These two do more for readability than anything else.
 3. **Type scale** — Pick one modular ratio and derive every size from it. Make it
@@ -86,8 +76,9 @@ can apply them in novel situations, not just copy them.
 
 ## Quick-start CSS
 
-A sane, accessible baseline you can drop into almost any project. It uses a system
-font stack (zero download) and a fluid scale. Adapt the ratio and fonts to the brief.
+A sane, accessible baseline you can drop into product UI. It uses a system font
+stack (zero download) and a fluid scale. For brand/landing work, keep the scale
+and loading rules but swap in the type stance chosen by `design-system-interview`.
 
 ```css
 :root {

@@ -74,7 +74,7 @@ meta-pattern that justifies it, so the rule is memorable rather than arbitrary.
 - **Apply:** `font-size` in `rem`; `em` for size-relative spacing; `px` only for
   hairlines/physical details. Never disable zoom in the viewport meta tag.
 
-### DR-2 · Fluid sizing must keep a `rem` term (`clamp(rem, rem+vw, rem)`)
+### DR-2 · Fluid sizing must keep a `rem` term (`clamp(rem, rem + vw, rem)`)
 - **Decision:** fluid type via `clamp()`, never pure `vw`.
 - **Why (MP-4 + MP-5):** ratio-based smooth scaling *without* breaking zoom — pure
   `vw` ignores zoom/user-size and fails WCAG 1.4.4.

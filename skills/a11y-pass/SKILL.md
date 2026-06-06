@@ -1,20 +1,9 @@
 ---
 name: a11y-pass
 description: >-
-  The accessibility check everyone skips — a runnable fix pass to WCAG 2.2 AA.
-  Apply this whenever you build or finish any web UI, or are asked to make
-  something accessible/usable by everyone. Use it to catch and FIX the common
-  failures: no keyboard operability, missing or invisible focus indicators,
-  images without alt text, form inputs without labels, buttons/icons with no
-  accessible name, color-only meaning, low contrast, heading levels skipped,
-  div/span used as buttons, no landmarks, motion with no reduced-motion option,
-  and dynamic updates that screen readers never announce. Trigger on cues like
-  "make this accessible", "a11y", "accessibility audit/pass", "WCAG", "keyboard
-  navigation", "screen reader", "add alt text / ARIA", "is this accessible", or
-  before shipping any UI. Gives a prioritized, checkable audit + the exact fix for
-  each issue — not vibes. Framework-agnostic. Complements web-design-guidelines
-  (review) by being a focused fix pass; pairs with component-states, form-ux,
-  color-system.
+  WCAG 2.2 AA fix pass for web UI. Use before shipping, or for requests about
+  accessibility, a11y, keyboard navigation, screen readers, contrast, labels,
+  focus, landmarks, target size, reduced motion, or ARIA.
 ---
 
 # Accessibility Pass (WCAG 2.2 AA)

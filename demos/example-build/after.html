@@ -12,25 +12,27 @@ html{font-size:100%}
 body{margin:0;background:var(--paper);color:var(--text);
   font-family:var(--font-body);font-size:var(--step-0);line-height:1.55;
   -webkit-font-smoothing:antialiased;font-synthesis:none}
-.wrap{max-width:78rem;margin:0 auto;padding:clamp(1.5rem,1rem+3vw,3.5rem)}
+.wrap{max-width:78rem;margin:0 auto;padding:clamp(1.5rem,1rem + 3vw,3.5rem)}
 
 /* top rule / masthead (a11y: real header/nav landmarks) */
-.masthead{display:flex;justify-content:space-between;align-items:baseline;
+.masthead{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;
   border-bottom:1px solid var(--text);padding-bottom:1rem}
 .brand{font-family:var(--font-display);font-weight:700;font-size:var(--step-1);letter-spacing:-.01em}
-.masthead nav{display:flex;gap:1.5rem;font-size:var(--step--1);
+.masthead nav{display:flex;gap:.4rem 1.5rem;flex-wrap:wrap;font-size:var(--step--1);
   text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted)}
-.masthead nav a{color:inherit;text-decoration:none}
+.masthead nav a{color:inherit;text-decoration:none;display:inline-flex;align-items:center;min-height:24px}
 .masthead nav a:hover{color:var(--text)}
 
 /* HERO — asymmetric split (responsive-layout), NOT centered */
-.hero{display:grid;grid-template-columns:1.35fr 1fr;gap:clamp(2rem,1rem+4vw,5rem);
-  align-items:end;padding:clamp(3rem,2rem+5vw,7rem) 0 clamp(2rem,1rem+3vw,4rem)}
+.hero{display:grid;grid-template-columns:1.35fr 1fr;gap:clamp(2rem,1rem + 4vw,5rem);
+  align-items:end;padding:clamp(3rem,2rem + 5vw,7rem) 0 clamp(2rem,1rem + 3vw,4rem)}
+.hero>*{min-width:0}
 @media (max-width:760px){.hero{grid-template-columns:1fr;align-items:start}}
 .kicker{font-family:ui-monospace,Menlo,monospace;font-size:var(--step--1);
   letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin:0 0 1.25rem}
 h1{font-family:var(--font-display);font-weight:700;font-size:var(--step-5);
-  line-height:1.02;letter-spacing:-.025em;text-wrap:balance;margin:0;max-width:14ch}
+  line-height:1.02;letter-spacing:-.025em;text-wrap:balance;margin:0;max-width:14ch;
+  overflow-wrap:anywhere;hyphens:auto}
 h1 em{font-style:italic;color:var(--accent)}
 .hero-aside p{font-size:var(--step-1);line-height:1.45;color:var(--text-muted);
   text-wrap:pretty;max-width:34ch;margin:0 0 1.75rem}
@@ -49,7 +51,7 @@ h1 em{font-style:italic;color:var(--accent)}
 
 /* SIGNATURE — oversized serif index numerals (the committed motif) */
 .index{display:grid;grid-template-columns:repeat(3,1fr);gap:0;
-  border-top:1px solid var(--text);margin-top:clamp(2rem,1rem+3vw,4rem)}
+  border-top:1px solid var(--text);margin-top:clamp(2rem,1rem + 3vw,4rem)}
 .item{padding:1.75rem 1.5rem 1.75rem 0;border-right:1px solid var(--rule)}
 .item:last-child{border-right:0}
 @media (max-width:760px){.index{grid-template-columns:1fr}
@@ -59,10 +61,11 @@ h1 em{font-style:italic;color:var(--accent)}
 .item h3{font-family:var(--font-display);font-weight:700;font-size:var(--step-1);
   margin:.9rem 0 .4rem;letter-spacing:-.01em}
 .item p{margin:0;color:var(--text-muted);max-width:34ch;text-wrap:pretty}
+.sr-only{position:absolute;left:0;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 /* stat strip — tabular numerals, hairline rule. Grid w/ generous gap so labels never collide. */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.5rem,1rem+3vw,4rem);
-  border-top:1px solid var(--text);margin-top:clamp(2rem,1rem+3vw,4rem);padding-top:1.5rem}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.5rem,1rem + 3vw,4rem);
+  border-top:1px solid var(--text);margin-top:clamp(2rem,1rem + 3vw,4rem);padding-top:1.5rem}
 @media (max-width:560px){.stats{grid-template-columns:1fr;gap:1.25rem}}
 .stat{min-width:0}
 .stat .n{font-family:var(--font-display);font-weight:700;font-size:var(--step-3);
@@ -97,7 +100,8 @@ h1 em{font-style:italic;color:var(--accent)}
       </div>
     </section>
 
-    <section class="index" aria-label="How it works">
+    <section class="index" aria-labelledby="how-title">
+      <h2 id="how-title" class="sr-only">How it works</h2>
       <article class="item"><div class="num">01</div><h3>Count once</h3>
         <p>Scan or tap what's on the shelf. Prep counts roll over from last night automatically.</p></article>
       <article class="item"><div class="num">02</div><h3>Prep with the line</h3>
@@ -106,7 +110,8 @@ h1 em{font-style:italic;color:var(--accent)}
         <p>Suppliers, lead times, and budgets in view — so the 86 list stays short.</p></article>
     </section>
 
-    <section class="stats" aria-label="Results">
+    <section class="stats" aria-labelledby="results-title">
+      <h2 id="results-title" class="sr-only">Results</h2>
       <div class="stat"><div class="n">2,400</div><div class="l">kitchens running it</div></div>
       <div class="stat"><div class="n">31%</div><div class="l">less food waste</div></div>
       <div class="stat"><div class="n">6&nbsp;min</div><div class="l">to set up</div></div>
