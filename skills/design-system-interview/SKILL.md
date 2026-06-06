@@ -1,21 +1,9 @@
 ---
 name: design-system-interview
 description: >-
-  Grill the user into a real design system BEFORE building anything — the single
-  best defense against generic AI-slop UI. Apply this at the START of any new site,
-  app, landing page, dashboard, or redesign, the moment someone says "build me a
-  …", "make a landing page", "design a dashboard", "start a new frontend", or
-  "set up the design". Instead of letting the model fill the blanks with the
-  statistical average (purple gradient, Inter, centered hero, three cards), this
-  skill runs a short, opinionated interview that forces the real decisions —
-  aesthetic direction, brand personality, type, color, density, motion — then
-  emits a committed DESIGN-SYSTEM.md + design tokens the other skills build from.
-  Trigger it even when the user didn't ask for a "design system": a vague build
-  request is exactly when you need it. Also use for "help me decide a design
-  system", "give my app a consistent look", "pick a direction", or "my site looks
-  generic and I don't know what I want". Opinionated, decision-forcing, fast — not
-  a questionnaire. Pairs with deslop-ui, color-system, web-typography; emits tokens
-  the whole frontend-skills set consumes.
+  Design-system interview before new frontend builds or redesigns. Use for vague
+  site/app/landing/dashboard requests, generic-looking UI, direction-setting,
+  aesthetic choices, type/color/density decisions, and DESIGN-SYSTEM.md tokens.
 ---
 
 # Design System Interview
@@ -38,6 +26,11 @@ constraint. Your job here is to extract or supply those refusals.
 
 ## How to run it (the loop)
 
+0. **Choose the pressure level.** Greenfield brand/marketing work can use the full
+   opinionated interview. Internal tools, admin flows, urgent fixes, or users who ask for
+   low-friction help get a short recommendation first: "I can pick a calm default and
+   keep moving, or we can do the full taste interview." Pair this with
+   `cognitive-a11y`: decisive should not mean pressuring.
 1. **Don't start building.** If the request is "build/make/design a [frontend thing]"
    and no direction exists, run this interview first. Say so: "Before I build, 6 quick
    questions so this doesn't come out generic."
@@ -114,7 +107,7 @@ burnt-orange anchor, Fraunces display, sharp 4px corners, signature = oversized 
 ```
 
 Then hand off: `color-system` builds the ramp from the hue, `web-typography` sets the
-type scale from the faces, `dark-mode` derives the dark variant, `component-states`/
+type scale from the faces, `theming` derives light/dark/high-contrast variants, `component-states`/
 `form-ux`/etc. implement to the tokens, and `deslop-ui` audits the result against the
 committed spec (not the average).
 
@@ -149,5 +142,5 @@ committed spec (not the average).
   bold committed choice, never the average.
 - End with the one-line committed direction + the artifact, then build *to it*.
 - This is the front of the chain: **design-system-interview → color-system /
-  web-typography / dark-mode → layout/components → micro-motion → a11y-pass**, with
+  web-typography / theming → layout/components → micro-motion → a11y-pass**, with
   `deslop-ui` auditing against the committed spec.

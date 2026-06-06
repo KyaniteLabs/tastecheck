@@ -1,18 +1,9 @@
 ---
 name: color-system
 description: >-
-  Build a color palette that's cohesive AND passes contrast — using OKLCH, the
-  perceptual color space. Apply this whenever you choose, generate, or fix colors
-  for a website or app: brand palette, accent + neutral ramps, semantic state
-  colors (success/error/warning/info), hover/active variants, tints and shades,
-  and accessible text/background pairs. Use it to avoid the usual failures —
-  HSL ramps where "same lightness" looks wildly different across hues, random hex
-  values with no system, accents that fail WCAG, muddy mid-tones, and the timid
-  even palette that reads as AI slop. Trigger on cues like "pick a color palette",
-  "make a color system", "these colors clash / look muddy", "generate a ramp",
-  "is this contrast accessible", "semantic color tokens", or "create theme
-  variables". Gives a generation method, real OKLCH values, and contrast targets
-  — not vibes. Pair with theming and deslop-ui.
+  OKLCH color-system guidance for cohesive palettes and contrast-safe tokens. Use
+  when choosing colors, generating ramps, fixing muddy palettes, creating semantic
+  state colors, checking WCAG contrast, or defining theme variables.
 ---
 
 # Color System
@@ -85,6 +76,7 @@ real), **H** 0–360 hue. Benefits that matter:
   --neutral-200: oklch(0.90 0.008 250);
   --neutral-500: oklch(0.62 0.012 250);
   --neutral-800: oklch(0.32 0.010 250);
+  --neutral-900: oklch(0.22 0.010 250);
   --neutral-950: oklch(0.18 0.008 250);
 
   /* Semantic — matched L/C so they’re a family */
@@ -95,7 +87,7 @@ real), **H** 0–360 hue. Benefits that matter:
 
   /* Semantic aliases (what components reference) */
   --color-bg: var(--neutral-50);
-  --color-text: var(--neutral-900, oklch(0.22 0.01 250));
+  --color-text: var(--neutral-900);
   --color-primary: var(--brand-600);
   --color-primary-hover: var(--brand-700);
 }
