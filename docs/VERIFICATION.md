@@ -17,7 +17,8 @@ Run from the repo root:
 npm test
 ```
 
-`npm test` runs `tools/verify.mjs` and `tools/verify-integration.mjs`.
+`npm test` runs `tools/verify.mjs`, `tools/verify-landing.mjs`, and
+`tools/verify-integration.mjs`.
 
 `tools/verify.mjs` checks:
 
@@ -34,7 +35,20 @@ npm test
 - `a11y-pass/assets/audit.js` parses as JavaScript, avoids `arguments.callee`, and uses browser
   color rasterization instead of numeric-regex RGB guessing.
 
-`tools/verify-integration.mjs` checks [`demos/skill-integration.html`](../demos/skill-integration.html):
+`tools/verify-landing.mjs` checks [`index.html`](../index.html), the page connected to
+GitHub Pages:
+
+- Every installed skill has a live `data-skill` surface on the landing page itself.
+- The page exposes stable operator controls for light/dark/high-contrast themes, the primary
+  CTA path, component states, form validation, empty/error/retry recovery, and keyboard focus.
+- Form inputs are named, landmarks/headings/live regions/focus/reduced-motion/forced-colors are present.
+- The data-viz table has one row per plotted SVG point and the chart has title/description text.
+- The proof section makes the landing page the canonical integration surface instead of sending
+  the primary journey to a side demo.
+- Landing colors are tokenized with OKLCH and page-level theme wiring is present.
+
+`tools/verify-integration.mjs` checks the secondary harness,
+[`demos/skill-integration.html`](../demos/skill-integration.html):
 
 - Every installed skill has a live `data-skill` surface on one local website.
 - The page exposes stable operator controls for themes, component states, forms, empty/error/retry,
@@ -71,19 +85,31 @@ For releases, append a short dated note with:
 
 Date: 2026-06-06
 
-- `npm test`: PASS (`tastecheck verification passed`; `integration verification passed`).
+- `npm test`: PASS (`tastecheck verification passed`; `landing verification passed`; `integration verification passed`).
 - Browser: CloakBrowser Chromium against local `python3 -m http.server` on
-  `http://127.0.0.1:4175/`.
+  `http://127.0.0.1:4176/`.
 - Pages checked in real same-origin iframes at 390px and 1280px:
   homepage, samples gallery, five sample systems, six demos, example-build after page,
   and `skills/data-viz/assets/chart-starter.html`.
 - Browser smoke result: 28 page/viewport checks, 0 blank pages, 0 H1-count failures,
   0 horizontal-overflow failures, 0 broken images, 0 `a11yAudit()` failures.
 - Keyboard spot check: first Tab focus lands on the home link with a visible 2px outline.
-- Remaining audit warnings are manual-review prompts (tiny text, outline-at-rest heuristic,
-  gradient/background manual contrast prompts), not measured failures.
+- Homepage `skills/a11y-pass/assets/audit.js` result after the landing-page pass:
+  0 measured failures and 0 warnings at desktop 1440px and mobile 390px.
 
-Additional 15-skill integration evidence:
+Additional landing-page 15-skill evidence:
+
+- Page: `index.html`, served as the GitHub Pages homepage.
+- Static gate: all 15 installed skills are represented by `data-skill` on the homepage.
+- Real operator paths covered by the page contract: light/dark/high-contrast themes, primary CTA,
+  component loading/disabled/default states, invalid and valid email validation, empty/error/retry
+  recovery, chart/table parity, keyboard-focus target, and live-region status updates.
+- Proof copy now identifies the homepage itself as the integration surface.
+- Visual checks: desktop hero/nav and mobile hero/skills/proof sections inspected by screenshot;
+  the collapsed desktop nav, mobile tiny utility text, palette overlay collision, and mobile install
+  command overflow were fixed during the pass.
+
+Secondary integration harness evidence:
 
 - Page: `demos/skill-integration.html`.
 - Desktop 1440px and mobile 390px: title/URL correct, 15 unique skills exposed, 0 horizontal overflow.

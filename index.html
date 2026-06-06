@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>tastecheck — stop AI shipping the same generic website | anti-slop skills for AI coding agents</title>
 <meta name="description" content="tastecheck is an open-source set of 15 craft skills for AI coding agents (Claude Code, Codex, Gemini, Cursor) that stops them building the same generic 'AI slop' website. It interviews or audits you into a real design system first, then applies checkable typography, OKLCH color, accessibility and anti-slop rules. MIT.">
 <meta name="keywords" content="AI slop, AI website design, AI coding agent skills, Claude Code skills, design system, design-system-interview, deslop, web typography, OKLCH color, WCAG accessibility, anti-slop, AI landing page, Codex, Gemini CLI, Cursor, frontend design">
@@ -65,7 +65,7 @@
         { "@type": "Question", "name": "Which AI coding agents does tastecheck work with?",
           "acceptedAnswer": { "@type": "Answer", "text": "The skills are plain Markdown with no SDK or runtime. The installer links a canonical ~/.agents/skills directory and mirrors into detected Claude Code, Codex, Gemini CLI, Cursor, Kilocode and Kimi skill directories. Auto-loading depends on the agent; otherwise point the agent at a SKILL.md directly." } },
         { "@type": "Question", "name": "How is tastecheck different from other AI design tools?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Most tools clean up after the model generates a page. tastecheck works before the build: it grills you into a committed design system first. Its rules are checkable (a value, a count, a yes/no) rather than vibes, and the repo ships an npm test verification gate. The same product story rendered through it produces five visibly different design systems, not five recolors of one template." } },
+          "acceptedAnswer": { "@type": "Answer", "text": "Most tools clean up after the model generates a page. tastecheck works before the build: it grills you into a committed design system or audits the existing site first. Its rules are checkable (a value, a count, a yes/no) rather than vibes, and the repo ships an npm test verification gate where the GitHub Pages landing page itself exercises all 15 skills. The same product story rendered through it produces five visibly different design systems, not five recolors of one template." } },
         { "@type": "Question", "name": "Is tastecheck free?",
           "acceptedAnswer": { "@type": "Answer", "text": "Yes. tastecheck is free and open-source under the MIT license. Clone the repository and run install.sh." } }
       ]
@@ -80,18 +80,36 @@
 @font-face{font-family:"Archivo";src:url("site/fonts/archivo-400.woff2") format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"Archivo";src:url("site/fonts/archivo-600.woff2") format("woff2");font-weight:600;font-display:swap}
 :root{
-  --bg:#0f0d0b; --s1:#1a1611; --s2:#241e16; --s3:#2e261b; --line:#3a3024;
-  --ink:#f5efe6; --muted:#c3b6a4; /* warm, tinted toward copper, passes AA */
-  --copper:#f0a259; --copper-deep:#7a4518; --on-copper:#1a0e03;
-  --verd:#33d6ac;           /* verdigris reaction */
+  color-scheme:dark;
+  --bg:oklch(13% .018 64); --s1:oklch(18% .024 64); --s2:oklch(22% .031 64); --s3:oklch(27% .038 64); --line:oklch(32% .044 64);
+  --ink:oklch(94% .024 78); --muted:oklch(78% .041 75);
+  --copper:oklch(76% .145 62); --copper-deep:oklch(42% .103 55); --on-copper:oklch(15% .049 55);
+  --verd:oklch(78% .154 170);
   --disp:"Red0",Georgia,serif; --body:"Archivo",system-ui,-apple-system,sans-serif; --mono:ui-monospace,Menlo,monospace;
   --rc:5px; --rcell:14px;
+}
+[data-theme="light"]{
+  color-scheme:light;
+  --bg:oklch(96% .023 78); --s1:oklch(92% .032 76); --s2:oklch(88% .039 74); --s3:oklch(82% .047 73); --line:oklch(71% .05 71);
+  --ink:oklch(19% .028 63); --muted:oklch(42% .046 66);
+  --copper:oklch(55% .143 56); --copper-deep:oklch(40% .112 55); --on-copper:oklch(98% .018 75);
+  --verd:oklch(47% .129 169);
+}
+[data-theme="contrast"]{
+  color-scheme:dark;
+  --bg:oklch(6% .012 63); --s1:oklch(11% .016 63); --s2:oklch(15% .021 63); --s3:oklch(20% .028 63); --line:oklch(72% .045 74);
+  --ink:oklch(99% .006 96); --muted:oklch(88% .035 80);
+  --copper:oklch(84% .174 69); --copper-deep:oklch(61% .151 60); --on-copper:oklch(7% .019 63);
+  --verd:oklch(87% .158 170);
 }
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased;font-synthesis:none;overflow-x:hidden}
 a{color:inherit}
+a,button,input,select,summary{outline:2px solid transparent;outline-offset:3px}
 :focus-visible{outline:2px solid var(--copper);outline-offset:3px;border-radius:3px}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.status-line{font:600 .82rem var(--mono);color:var(--verd);min-height:1.4em;margin-top:.65rem}
 .wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(1.25rem,1rem + 3vw,3rem)}
 .skip{position:absolute;left:-999px}.skip:focus{left:16px;top:16px;z-index:99;background:var(--copper);color:var(--on-copper);padding:.6em 1em;border-radius:5px}
 
@@ -100,17 +118,14 @@ header.nav{position:sticky;top:0;z-index:40;background:rgba(15,13,11,.74);backdr
 .nav .wrap{display:flex;justify-content:space-between;align-items:center;min-height:60px}
 .brand{font-family:var(--disp);font-weight:700;font-size:1.5rem;letter-spacing:-.01em}
 .brand b{color:var(--copper)}
-.nav details{position:relative}
-.nav summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:.5rem;min-height:44px;padding-inline:.4rem;color:var(--muted);font:600 .9rem var(--body)}
-.nav summary::-webkit-details-marker{display:none}
 .nav .menu{display:flex;gap:.4rem}
 .nav .menu a{display:flex;align-items:center;min-height:44px;padding:0 .9rem;text-decoration:none;color:var(--muted);font:600 .82rem var(--body);border-radius:6px}
 .nav .menu a:hover{color:var(--ink);background:rgba(245,239,230,.05)}
 @media(max-width:680px){
-  .nav .menu{position:absolute;right:0;top:48px;flex-direction:column;background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:.4rem;min-width:170px}
-  .nav details:not([open]) .menu{display:none}
+  .nav .wrap{align-items:flex-start;gap:.2rem;padding-block:.45rem;flex-direction:column}
+  .nav .menu{flex-wrap:wrap}
+  .nav .menu a{min-height:38px;padding:0 .75rem}
 }
-@media(min-width:681px){.nav summary{display:none}}
 
 /* HERO — asymmetric, living texture, column-rule motif, index marker (no mono eyebrow tell) */
 .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
@@ -135,7 +150,7 @@ a.btn{display:inline-flex;align-items:center;justify-content:center;text-decorat
 h1 .not{text-decoration:underline;text-decoration-color:var(--verd);text-decoration-thickness:3px;text-underline-offset:6px}
 .hzb{font:600 .82rem var(--body);color:var(--muted)}
 .hzg{font:600 .92rem var(--body);color:var(--ink)}
-.tldr{align-self:flex-start;background:var(--copper);color:var(--on-copper);font:700 .72rem var(--mono);letter-spacing:.06em;padding:.35em .7em;border-radius:5px}
+.tldr{align-self:flex-start;background:var(--copper);color:var(--on-copper);font:700 .78rem var(--mono);letter-spacing:.06em;padding:.35em .7em;border-radius:5px}
 .chart{width:100%;height:auto}
 .chart .axis{stroke:var(--line);stroke-width:1}
 .chart .ln{fill:none;stroke:var(--copper);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
@@ -226,7 +241,7 @@ h2{font-family:var(--disp);font-weight:700;font-size:clamp(2.1rem,1.4rem + 3vw,3
 
 /* INSTALL */
 .install{background:var(--s1);border-block:1px solid var(--line)}
-.install .box{font-family:var(--mono);font-size:clamp(.82rem,.7rem + .5vw,1rem);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:1.2rem 1.4rem;margin-top:1.4rem;overflow-x:auto}.install .box .c{color:var(--copper)}
+.install .box{font-family:var(--mono);font-size:clamp(.82rem,.7rem + .5vw,1rem);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:1.2rem 1.4rem;margin-top:1.4rem;overflow-wrap:anywhere;white-space:pre-wrap}.install .box .c{color:var(--copper)}
 footer{border-top:1px solid var(--line);padding-block:2.4rem;color:var(--muted);font-size:.92rem}
 footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}footer b{color:var(--ink);font-family:var(--disp)}
 
@@ -248,30 +263,39 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 .tc-pal .tc-lbl{color:var(--tc-muted)}
 .tc-pal button{width:26px;height:26px;border-radius:50%;border:1px solid var(--tc-line);cursor:pointer;padding:0}
 .tc-pal button[aria-pressed=true]{outline:2px solid var(--tc-ink);outline-offset:2px}
-@media(max-width:560px){.tc-bar{font-size:.74rem}}
+.tc-theme{display:flex;align-items:center;gap:.35rem;color:var(--tc-muted)}
+.tc-theme span{font-weight:600;opacity:.8}
+.tc-theme button{min-height:32px;border:1px solid var(--tc-line);border-radius:5px;background:transparent;color:var(--tc-muted);font:600 .76rem system-ui,-apple-system,sans-serif;padding:.3rem .55rem;cursor:pointer}
+.tc-theme button[aria-pressed=true]{background:var(--tc-accent);color:var(--on-copper);border-color:transparent}
+@media(max-width:560px){
+  .tc-bar{font-size:.78rem;justify-content:flex-start;align-items:flex-start;gap:.35rem .7rem}
+  .tc-home{flex-basis:100%}
+  .tc-grp{gap:.25rem .5rem}
+  .tc-grp .tc-lbl{display:none}
+  .tc-theme{flex-basis:100%;flex-wrap:wrap}
+}
 </style>
 </head>
 <body>
-<div class="tc-bar"><a class="tc-home" href="./">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="samples/copper/" aria-current="page">Copper</a><a href="samples/swiss/">Swiss</a><a href="samples/maximal/">Maximal</a><a href="samples/concrete/">Concrete</a><a href="samples/clay/">Clay</a><a href="samples/">Gallery</a></nav></div>
+<div class="tc-bar"><a class="tc-home" href="./">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="samples/copper/" aria-current="page">Copper</a><a href="samples/swiss/">Swiss</a><a href="samples/maximal/">Maximal</a><a href="samples/concrete/">Concrete</a><a href="samples/clay/">Clay</a><a href="samples/">Gallery</a></nav><div class="tc-theme" data-skill="theming" aria-label="Theme"><span>Theme</span><button type="button" data-test="theme-dark" aria-pressed="true">Dark</button><button type="button" data-test="theme-light" aria-pressed="false">Light</button><button type="button" data-test="theme-contrast" aria-pressed="false">Contrast</button></div></div>
 <a class="skip" href="#main">Skip to content</a>
 <header class="nav"><div class="wrap">
   <span class="brand">taste<b>check</b></span>
-  <details><summary aria-label="Menu">Menu ▾</summary>
-    <div class="menu"><a href="#why">Problem</a><a href="#how">How</a><a href="#skills">Skills</a><a href="#proof">Proof</a><a href="#install">Install</a></div>
-  </details>
+  <nav class="menu" aria-label="Primary"><a href="#why">Problem</a><a href="#how">How</a><a href="#skills">Skills</a><a href="#proof">Proof</a><a href="#install">Install</a></nav>
 </div></header>
 <main id="main">
 
-<section class="hero"><div class="bg" aria-hidden="true"></div><div class="scrim" aria-hidden="true"></div><div class="wrap">
+<section class="hero" data-skill="design-system-interview"><div class="bg" aria-hidden="true"></div><div class="scrim" aria-hidden="true"></div><div class="wrap">
   <div class="rule" aria-hidden="true"></div>
   <div class="hcol">
     <div class="idx"><s></s>design intelligence · for any AI agent</div>
     <h1>Make it <span class="j">yours</span>, <span class="not">not</span> the average.</h1>
     <p class="lede">Every AI builds the same site. tastecheck interviews you or audits what you already have into a real design system first — then fifteen skills make sure your agent ships taste, not slop.</p>
     <div class="actions">
-      <a class="btn btn-primary" href="https://github.com/KyaniteLabs/tastecheck">Run a taste check →</a>
+      <a class="btn btn-primary" href="#install" data-test="primary-action">Run a taste check →</a>
       <a class="btn btn-ghost" href="#skills">See every skill</a>
     </div>
+    <p class="status-line" role="status" aria-live="polite" data-test="hero-status">Landing page audit ready.</p>
     <p class="trust">Works with <b>Claude Code</b> · <b>Codex</b> · <b>Gemini</b> · <b>Cursor</b> · MIT</p>
     <p class="trust">Same content, five committed design systems → <a href="samples/" style="color:var(--copper);font-weight:600;text-decoration:underline;text-underline-offset:3px;display:inline-block;padding-block:.35rem">see the gallery</a></p>
   </div>
@@ -311,80 +335,83 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
   <p class="slede">This whole page was built by them. Hover, type, toggle — they’re real.</p>
   <div class="bento">
 
-    <div class="cell w3 tall"><div class="lab"><span class="n">00</span><h3>design-system-interview</h3></div>
+    <div class="cell w3 tall" data-skill="design-system-interview"><div class="lab"><span class="n">00</span><h3>design-system-interview</h3></div>
       <div class="stage" style="gap:.5rem">
         <div class="bubble ai" style="max-width:100%;font-size:.95rem">“‘Modern’ is a non-answer — name one you’d resemble.”</div>
         <div class="bubble you" style="max-width:100%;font-size:.9rem">basalt + glaze</div>
         <div class="out">→ tokens committed</div>
       </div><p class="cap">Grills you into a system + tokens before any code.</p></div>
 
-    <div class="cell w3"><div class="lab"><span class="n">01</span><h3>improve-existing-website</h3></div>
+    <div class="cell w3" data-skill="improve-existing-website"><div class="lab"><span class="n">01</span><h3>improve-existing-website</h3></div>
       <div class="stage" style="gap:.45rem">
-        <div class="hzb">audit: cards, nav, CTAs, type, color, states</div>
-        <div class="hzg">→ intended system inferred · 2 questions max</div>
+        <div class="hzb">this page: nav, CTAs, type, color, states, proof</div>
+        <div class="hzg">→ existing system tightened on the live landing page</div>
       </div><p class="cap">Reads the real site, separates signal from drift, then makes the partial system true.</p></div>
 
-    <div class="cell w3"><div class="lab"><span class="n">02</span><h3>color-system</h3></div>
-      <div class="stage"><div class="ramp"><i style="background:#2a1606"></i><i style="background:#7a4518"></i><i style="background:#b06b2a"></i><i style="background:#f0a259"></i><i style="background:#f6c08a"></i><i style="background:#33d6ac"></i></div>
+    <div class="cell w3" data-skill="color-system"><div class="lab"><span class="n">02</span><h3>color-system</h3></div>
+      <div class="stage"><div class="ramp"><i style="background:oklch(22% .068 55)"></i><i style="background:oklch(42% .103 55)"></i><i style="background:oklch(56% .123 58)"></i><i style="background:oklch(76% .145 62)"></i><i style="background:oklch(84% .112 64)"></i><i style="background:oklch(78% .154 170)"></i></div>
         <div class="row"><span class="note">OKLCH · copper × verdigris</span><span class="aa">AA 5.4:1 ✓</span></div></div>
       <p class="cap">Perceptual ramps that pass contrast — math, not vibes.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">03</span><h3>web-typography</h3></div>
+    <div class="cell" data-skill="web-typography"><div class="lab"><span class="n">03</span><h3>web-typography</h3></div>
       <div class="stage spec"><b style="font-size:2.4rem">Aa</b><span class="note">Redaction · perfect fourth · 66ch</span></div>
       <p class="cap">Scale, measure, rhythm — fluid &amp; legible.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">04</span><h3>component-states</h3></div>
-      <div class="stage"><button class="dbtn" data-cyc>Default</button><span class="note">click → cycles real states</span></div>
+    <div class="cell" data-skill="component-states"><div class="lab"><span class="n">04</span><h3>component-states</h3></div>
+      <div class="stage"><button class="dbtn" type="button" data-cyc data-test="state-cycle">Default</button><span class="note" role="status" aria-live="polite" data-test="state-status">click → cycles real states</span></div>
       <p class="cap">Hover, focus, active, disabled, loading — real.</p></div>
 
-    <div class="cell w3"><div class="lab"><span class="n">05</span><h3>form-ux</h3></div>
-      <div class="stage"><div class="fld" data-fld><label for="de">Email</label><input id="de" type="email" placeholder="name@example.com"><div class="msg" data-msg>Type, then click away — it validates on blur.</div></div></div>
+    <div class="cell w3" data-skill="form-ux"><div class="lab"><span class="n">05</span><h3>form-ux</h3></div>
+      <div class="stage"><div class="fld" data-fld data-test="landing-form"><label for="de">Email</label><input id="de" type="email" placeholder="name@example.com" autocomplete="email" data-test="email-input" aria-describedby="email-msg"><div class="msg" id="email-msg" data-msg data-test="email-status" role="status" aria-live="polite">Type, then click away — it validates on blur.</div></div></div>
       <p class="cap">Labels, validate-on-blur, specific inline errors.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">06</span><h3>empty-states</h3></div>
-      <div class="stage" data-empty><div class="sk" style="width:70%"></div><div class="sk" style="width:90%"></div><button class="dbtn" data-load style="margin-top:.4rem">Load</button></div>
+    <div class="cell" data-skill="empty-states"><div class="lab"><span class="n">06</span><h3>empty-states</h3></div>
+      <div class="stage" data-empty><div class="sk" style="width:70%"></div><div class="sk" style="width:90%"></div><div class="row"><button class="dbtn" type="button" data-test="show-empty">Empty</button><button class="dbtn" type="button" data-test="show-error">Error</button><button class="dbtn" type="button" data-test="retry-list">Retry</button></div><div class="note" data-test="task-list" role="status" aria-live="polite">Loading preview.</div></div>
       <p class="cap">Loading · empty · error — handled.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">07</span><h3>theming</h3></div>
+    <div class="cell" data-skill="theming"><div class="lab"><span class="n">07</span><h3>theming</h3></div>
       <div class="stage"><div class="dm"><i class="l">Light</i><i class="d">Dark</i></div><span class="note">light + dark + high-contrast · one token source</span></div>
       <p class="cap">Light, dark &amp; high-contrast from one set; elevation by lightness.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">08</span><h3>micro-motion</h3></div>
+    <div class="cell" data-skill="micro-motion"><div class="lab"><span class="n">08</span><h3>micro-motion</h3></div>
       <div class="stage"><span class="mochip">Hover me ↗</span><span class="note">transform · 180ms · reduced-motion safe</span></div>
       <p class="cap">Animation that feels expensive.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">09</span><h3>responsive-layout</h3></div>
+    <div class="cell" data-skill="responsive-layout"><div class="lab"><span class="n">09</span><h3>responsive-layout</h3></div>
       <div class="stage"><div class="mini"><i></i><i></i><i></i><i></i><i></i></div><span class="note">intrinsic · container queries</span></div>
       <p class="cap">Survives any width — it just flows.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">10</span><h3>a11y-pass</h3></div>
-      <div class="stage"><button class="dbtn" style="background:transparent;color:var(--ink);border-color:var(--line)">Tab to me</button><span class="aa">WCAG 2.2 AA ✓</span></div>
+    <div class="cell" data-skill="a11y-pass"><div class="lab"><span class="n">10</span><h3>a11y-pass</h3></div>
+      <div class="stage"><button class="dbtn" type="button" data-test="a11y-focus" style="background:transparent;color:var(--ink);border-color:var(--line)">Tab to me</button><span class="aa">WCAG 2.2 AA ✓</span></div>
       <p class="cap">Keyboard, focus, contrast — fixed, not bolted on.</p></div>
 
-    <div class="cell w4"><div class="lab"><span class="n">11</span><h3>deslop-ui</h3></div>
+    <div class="cell w4" data-skill="deslop-ui"><div class="lab"><span class="n">11</span><h3>deslop-ui</h3></div>
       <div class="stage"><div class="ba"><div><div class="x bad">Get started</div><small>✕ pill · purple</small></div><div><div class="x good">Get started</div><small>✓ 5px · copper</small></div></div></div>
       <p class="cap">Strips the named AI tells; commits to a direction.</p></div>
 
-    <div class="cell w3"><div class="lab"><span class="n">12</span><h3>humanize-copy</h3></div>
+    <div class="cell w3" data-skill="humanize-copy"><div class="lab"><span class="n">12</span><h3>humanize-copy</h3></div>
       <div class="stage" style="gap:.45rem">
         <div class="hzb"><s>“In today’s fast-paced landscape we leverage synergies to delve…”</s></div>
         <div class="hzg">“Deploy logs in plain English — what shipped, what broke, what fixed it.”</div>
       </div><p class="cap">Strips the ChatGPT accent — a checkable kill-list.</p></div>
 
-    <div class="cell w3"><div class="lab"><span class="n">13</span><h3>data-viz</h3></div>
+    <div class="cell w3" data-skill="data-viz"><div class="lab"><span class="n">13</span><h3>data-viz</h3></div>
       <div class="stage">
         <figure style="margin:0;width:100%">
-          <svg class="chart" viewBox="0 0 300 84" role="img" aria-label="Quarterly revenue rising 31% to $4.2M in Q2 2026">
+          <svg class="chart" viewBox="0 0 300 84" role="img" aria-labelledby="landing-chart-title landing-chart-desc">
+            <title id="landing-chart-title">Quarterly revenue reaches $4.2M</title>
+            <desc id="landing-chart-desc">Seven quarterly points rise from 3.1 million dollars to 4.2 million dollars, a 31 percent increase.</desc>
             <line class="axis" x1="6" y1="74" x2="294" y2="74"/>
-            <polyline class="ln" points="10,62 58,55 106,47 154,41 202,24 250,31 290,12"/>
+            <polyline class="ln landing-trend" points="10,62 58,55 106,47 154,41 202,24 250,31 290,12"/>
             <circle class="end" cx="290" cy="12" r="4"/>
             <text x="284" y="26" text-anchor="end">$4.2M</text>
           </svg>
+          <table id="landing-chart-table" class="sr-only"><caption>Quarterly revenue values</caption><tbody><tr><td>Q4 2024</td><td>$3.1M</td></tr><tr><td>Q1 2025</td><td>$3.2M</td></tr><tr><td>Q2 2025</td><td>$3.35M</td></tr><tr><td>Q3 2025</td><td>$3.5M</td></tr><tr><td>Q4 2025</td><td>$3.9M</td></tr><tr><td>Q1 2026</td><td>$3.75M</td></tr><tr><td>Q2 2026</td><td>$4.2M</td></tr></tbody></table>
           <figcaption class="note" style="margin-top:.4rem">Revenue +31% · honest axis · direct label, no legend</figcaption>
         </figure>
       </div><p class="cap">Tufte-informed charts: data-ink, no chartjunk, real table fallback.</p></div>
 
-    <div class="cell"><div class="lab"><span class="n">14</span><h3>cognitive-a11y</h3></div>
+    <div class="cell" data-skill="cognitive-a11y"><div class="lab"><span class="n">14</span><h3>cognitive-a11y</h3></div>
       <div class="stage"><span class="tldr">TL;DR</span><span class="note">plain language · one idea per line · predictable layout</span></div>
       <p class="cap">Readable for ADHD, autism &amp; dyslexia — beyond WCAG.</p></div>
 
@@ -397,10 +424,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 
 <section id="proof"><div class="wrap rv">
   <div class="mark"><s></s>proof</div>
-  <h2>All fifteen skills now run through one real local website.</h2>
-  <p class="slede">The PrepBoard integration demo starts from an existing generated kitchen SaaS page, audits the intended system, then exercises every skill through real themes, states, form validation, empty/error/retry paths, chart/table parity, accessibility, copy, motion, and responsive layout.</p>
+  <h2>This landing page is the integration surface.</h2>
+  <p class="slede">The GitHub Pages homepage now runs every skill directly: existing-site audit, inferred design system, OKLCH themes, type, states, form validation, empty/error/retry paths, chart/table parity, accessibility, human copy, motion, and responsive layout.</p>
   <div class="actions">
-    <a class="btn btn-primary" href="demos/skill-integration.html">Open the integration demo →</a>
+    <a class="btn btn-primary" href="#skills">Review the live skill cells →</a>
     <a class="btn btn-ghost" href="https://github.com/KyaniteLabs/tastecheck/blob/main/docs/VERIFICATION.md">Read verification notes</a>
   </div>
 </div></section>
@@ -424,13 +451,23 @@ document.documentElement.classList.add('js');
  else{var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}})},{threshold:0,rootMargin:'0px 0px -8% 0px'});els.forEach(function(e){io.observe(e)});
    setTimeout(function(){els.forEach(function(e){e.classList.add('in')});},1500);}
 })();
+/* theming: page-level light, dark, high-contrast paths */
+(function(){
+ var buttons=[].slice.call(document.querySelectorAll('[data-test^="theme-"]'));
+ function setTheme(theme){
+   document.documentElement.dataset.theme=theme;
+   buttons.forEach(function(button){button.setAttribute('aria-pressed',button.dataset.test==='theme-'+theme?'true':'false');});
+ }
+ buttons.forEach(function(button){button.addEventListener('click',function(){setTheme(button.dataset.test.replace('theme-',''));});});
+ window.setTastecheckTheme=setTheme;
+})();
 /* component-states: cycle real states */
 document.querySelectorAll('[data-cyc]').forEach(function(b){
- var st=['Default','Disabled','Loading'],i=0;
+ var st=['Default','Loading','Disabled'],i=0,status=document.querySelector('[data-test="state-status"]');
  b.addEventListener('click',function(){i=(i+1)%st.length;b.disabled=false;b.classList.remove('loading');
-   if(st[i]==='Disabled'){b.disabled=true;b.textContent='Disabled';}
-   else if(st[i]==='Loading'){b.classList.add('loading');b.textContent='Loading';setTimeout(function(){b.classList.remove('loading');b.textContent='Default';i=0;},1400);}
-   else b.textContent='Default';});
+   if(st[i]==='Disabled'){b.disabled=true;b.textContent='Disabled';if(status)status.textContent='Disabled state is visible, then re-enables for the demo.';setTimeout(function(){b.disabled=false;if(status)status.textContent='Disabled state shown; button re-enabled.';},900);}
+   else if(st[i]==='Loading'){b.classList.add('loading');b.textContent='Loading';if(status)status.textContent='Loading state is visible and temporary.';setTimeout(function(){b.classList.remove('loading');b.textContent='Loaded';if(status)status.textContent='Loading state completed.';},900);}
+   else{b.textContent='Default';if(status)status.textContent='Default state restored.';}});
 });
 /* form-ux: real validate on blur */
 document.querySelectorAll('[data-fld]').forEach(function(f){
@@ -442,34 +479,36 @@ document.querySelectorAll('[data-fld]').forEach(function(f){
  });
  inp.addEventListener('input',function(){if(f.classList.contains('err')&&inp.checkValidity()){f.className='fld ok';msg.textContent='Looks good.';}});
 });
-/* empty-states: load -> content */
-document.querySelectorAll('[data-load]').forEach(function(b){
- b.addEventListener('click',function(){var st=b.closest('[data-empty]');b.textContent='Loading…';b.classList.add('loading');
-   setTimeout(function(){st.innerHTML='<div style="font:600 .9rem var(--body);color:var(--ink)">3 projects</div><div class="note">loaded · try empty &amp; error too</div>';},1100);});
-});
+/* empty-states: empty, error, retry recovery */
+(function(){
+ var target=document.querySelector('[data-test="task-list"]');
+ function setEmpty(){target.textContent='No checks yet. Run a taste check to create the first report.';}
+ function setError(){target.textContent='Could not load checks. Retry keeps the path recoverable.';}
+ function retry(){target.textContent='3 checks loaded: typography, color, accessibility.';}
+ document.querySelector('[data-test="show-empty"]').addEventListener('click',setEmpty);
+ document.querySelector('[data-test="show-error"]').addEventListener('click',setError);
+ document.querySelector('[data-test="retry-list"]').addEventListener('click',retry);
+ window.tastecheckEmptyStates={setEmpty:setEmpty,setError:setError,retry:retry};
+})();
+window.tastecheckLanding={
+  skillCount:15,
+  skillNames:[].slice.call(document.querySelectorAll('[data-skill]')).map(function(node){return node.dataset.skill;}).filter(function(name,index,list){return list.indexOf(name)===index;}).sort(),
+  setTheme:window.setTastecheckTheme,
+  cycleState:function(){document.querySelector('[data-test="state-cycle"]').click();},
+  submitInvalid:function(){var input=document.querySelector('[data-test="email-input"]');input.value='not-an-email';input.dispatchEvent(new Event('blur'));return document.querySelector('[data-test="email-status"]').textContent;},
+  submitValid:function(){var input=document.querySelector('[data-test="email-input"]');input.value='reader@example.com';input.dispatchEvent(new Event('blur'));return document.querySelector('[data-test="email-status"]').textContent;},
+  showEmpty:window.tastecheckEmptyStates.setEmpty,
+  showError:window.tastecheckEmptyStates.setError,
+  retryList:window.tastecheckEmptyStates.retry
+};
 </script>
 
-<script data-palette-switcher>
-(function(){
- var P={copper:['#f0a259','#7a4518','#1a0e03','basalt-copper.png'],
-        jade:['#13b083','#0a6c50','#04241a','basalt-glaze.png'],
-        cobalt:['#5b91ff','#1e3a8a','#ffffff','basalt-cobalt.png'],
-        magenta:['#ef5aa3','#7a1f4d','#ffffff','basalt-magenta.png'],
-        amber:['#f3b53a','#6e4d08','#1a1205','basalt-amber.png']};
- function set(n){var c=P[n]||P.copper,r=document.documentElement.style;
-   r.setProperty('--copper',c[0]);r.setProperty('--copper-deep',c[1]);r.setProperty('--on-copper',c[2]);
-   var s=document.getElementById('palbg')||(function(){var e=document.createElement('style');e.id='palbg';document.head.appendChild(e);return e;})();
-   s.textContent='.hero .bg{background-image:url("site/img/'+c[3]+'")!important}';
-   document.querySelectorAll('[data-pal]').forEach(function(b){b.setAttribute('aria-current',b.dataset.pal===n?'true':'false');});}
- window.addEventListener('DOMContentLoaded',function(){
-   var bar=document.createElement('div');bar.setAttribute('aria-label','Palette');
-   bar.style.cssText='position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:99;display:flex;gap:4px;background:rgba(15,13,11,.88);backdrop-filter:blur(8px);border:1px solid #3a3024;border-radius:999px;padding:5px';
-   Object.keys(P).forEach(function(n){var b=document.createElement('button');b.dataset.pal=n;b.textContent=n;
-     b.style.cssText='font:600 .78rem ui-monospace,monospace;border:0;border-radius:999px;padding:.5em .9em;min-height:32px;cursor:pointer;background:transparent;color:#c3b6a4';
-     b.onclick=function(){set(n)};bar.appendChild(b);});
-   var st=document.createElement('style');st.textContent='[data-pal][aria-current="true"]{background:var(--copper)!important;color:var(--on-copper)!important}';document.head.appendChild(st);
-   document.body.appendChild(bar);
-   var p=new URLSearchParams(location.search).get('p')||'copper';set(p);});
-})();
-</script>
+<style>
+@media(forced-colors:active){
+  :root{--bg:Canvas;--s1:Canvas;--s2:Canvas;--s3:Canvas;--line:CanvasText;--ink:CanvasText;--muted:CanvasText;--copper:Highlight;--copper-deep:ButtonText;--on-copper:HighlightText;--verd:Highlight}
+  .hero .bg,.hero .scrim{display:none}
+  .btn,.dbtn,.tc-theme button,.cell,.stage,.ts{border-color:CanvasText}
+  .btn-primary,.tc-theme button[aria-pressed=true]{background:Highlight;color:HighlightText}
+}
+</style>
 </body></html>
