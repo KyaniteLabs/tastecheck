@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tools/verify.mjs",
-    "verify": "node tools/verify.mjs"
+    "test": "node tools/verify.mjs && node tools/verify-integration.mjs",
+    "verify": "node tools/verify.mjs && node tools/verify-integration.mjs",
+    "verify:skills": "node tools/verify.mjs",
+    "verify:integration": "node tools/verify-integration.mjs"
   }
 }

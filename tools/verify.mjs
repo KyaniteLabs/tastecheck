@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { lstatSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from "node:fs";
+import { existsSync, lstatSync, mkdtempSync, readFileSync, readdirSync, readlinkSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { join, relative, dirname } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -80,11 +80,40 @@ function assertInstallSmoke() {
         try {
           const st = lstatSync(dest);
           if (!st.isSymbolicLink()) fail(`${h}/skills/${skill} is not a symlink`);
+          if (readlinkSync(dest) !== join(root, "skills", skill)) fail(`${h}/skills/${skill} points to ${readlinkSync(dest)}`);
         } catch {
           fail(`${h}/skills/${skill} was not installed`);
         }
       }
     }
+
+    try {
+      statSync(join(home, ".claude", "commands", "improvesite.md"));
+    } catch {
+      fail("install.sh --yes did not copy improvesite.md into .claude/commands");
+    }
+
+    const noCommandHome = mkdtempSync(join(tmpdir(), "tastecheck-no-commands-"));
+    execFileSync("mkdir", ["-p", join(noCommandHome, ".claude")]);
+    execFileSync(join(root, "install.sh"), ["--no-commands"], { env: { ...process.env, HOME: noCommandHome }, stdio: "pipe" });
+    const commandDir = join(noCommandHome, ".claude", "commands");
+    if (existsSync(commandDir) && readdirSync(commandDir).some((name) => name.endsWith(".md"))) {
+      fail("install.sh --no-commands still copied Claude command files");
+    }
+    rmSync(noCommandHome, { recursive: true, force: true });
+
+    const forceHome = mkdtempSync(join(tmpdir(), "tastecheck-force-"));
+    execFileSync("mkdir", ["-p", join(forceHome, ".agents", "skills", "theming")]);
+    writeFileSync(join(forceHome, ".agents", "skills", "theming", "stale.txt"), "stale");
+    execFileSync(join(root, "install.sh"), ["--force", "--no-commands"], { env: { ...process.env, HOME: forceHome }, stdio: "pipe" });
+    const forcedDest = join(forceHome, ".agents", "skills", "theming");
+    if (!lstatSync(forcedDest).isSymbolicLink() || readlinkSync(forcedDest) !== join(root, "skills", "theming")) {
+      fail("install.sh --force did not replace stale theming directory with the correct symlink");
+    }
+    if (!readdirSync(join(forceHome, ".agents", "skills")).some((name) => /^theming\.backup\./.test(name))) {
+      fail("install.sh --force did not keep a timestamped backup of the stale theming directory");
+    }
+    rmSync(forceHome, { recursive: true, force: true });
 
     const staleHome = mkdtempSync(join(tmpdir(), "tastecheck-stale-"));
     execFileSync("mkdir", ["-p", join(staleHome, ".codex", "skills", "deslop-ui")]);
