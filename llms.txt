@@ -1,8 +1,8 @@
 # tastecheck
 
-> Fourteen frontend craft skills for AI coding agents that stop AI from building the same
+> Fifteen frontend craft skills for AI coding agents that stop AI from building the same
 > generic "AI slop" website. The headline skill grills you into a committed design system
-> BEFORE any code; the rest (typography, color/OKLCH, theming, layout, states, forms,
+> BEFORE any code; improve-existing-website infers a system from existing sites; the rest (typography, color/OKLCH, theming, layout, states, forms,
 > motion, data-viz, a11y, cognitive-a11y, deslop, humanize-copy) apply checkable craft so
 > the output has a point of view. Plain Markdown, no runtime, portable to agents that can
 > read skill files or directories. MIT.
@@ -18,6 +18,7 @@ commands.
 
 ## Skills
 - [design-system-interview](skills/design-system-interview/SKILL.md): grills you into a committed design system + tokens before building (the headline)
+- [improve-existing-website](skills/improve-existing-website/SKILL.md): audit an existing site, infer its intended system, ask only targeted questions, then improve it
 - [deslop-ui](skills/deslop-ui/SKILL.md): remove the named AI visual + structural tells; commit to a direction
 - [humanize-copy](skills/humanize-copy/SKILL.md): strip the ChatGPT accent from writing with a checkable kill-list
 - [web-typography](skills/web-typography/SKILL.md): type scale, measure, rhythm, fonts, fluid clamp, web-font CLS, WCAG text

@@ -55,7 +55,7 @@ function assertSkillStructure() {
     }
   }
 
-  if (skillDirs.length !== 14) fail(`expected 14 skills, found ${skillDirs.length}`);
+  if (skillDirs.length !== 15) fail(`expected 15 skills, found ${skillDirs.length}`);
 }
 
 function assertCommandTargets() {
@@ -75,7 +75,7 @@ function assertInstallSmoke() {
     execFileSync(join(root, "install.sh"), ["--yes"], { env: { ...process.env, HOME: home }, stdio: "pipe" });
 
     for (const h of [".agents", ".claude"]) {
-      for (const skill of ["theming", "web-typography", "data-viz"]) {
+      for (const skill of ["theming", "web-typography", "data-viz", "improve-existing-website"]) {
         const dest = join(home, h, "skills", skill);
         try {
           const st = lstatSync(dest);
