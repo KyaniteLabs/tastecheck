@@ -1,19 +1,9 @@
 ---
 name: deslop-ui
 description: >-
-  Strip the "AI slop" tells out of any UI so it stops looking machine-generated.
-  Apply this whenever you generate, review, or polish a website, landing page,
-  dashboard, or component in HTML/CSS/React/Vue/Svelte/Tailwind — and ESPECIALLY
-  right after an LLM produces frontend code, because models converge on the same
-  giveaways: the indigo→violet "purple gradient", pill-shaped CTA buttons
-  (border-radius 9999px), Inter/Roboto everywhere, the centered-hero +
-  three-icon-cards layout, glassmorphism on everything, uniform shadow-2xl, the
-  default Tailwind slate palette, and emoji section headers. Trigger it on cues
-  like "make this look less AI", "this looks generic/templated", "deslop this",
-  "remove the AI look", "why does my site look like every other AI site", or just
-  after building any UI. It is a checkable catalog of named anti-patterns, each
-  with the specific value to change and the fix — not vibes. Provider- and
-  framework-agnostic.
+  Anti-slop UI review for generated or generic frontend work. Use after LLM UI
+  output, or for requests to remove AI tells: purple gradients, pill CTAs,
+  default type, centered heroes, three-card grids, glassmorphism, and template sameness.
 ---
 
 # Deslop UI
@@ -70,11 +60,12 @@ Each entry: **the tell → why it reads as AI → the fix (specific value).**
   truly-floating elements (modals, popovers).
 
 ### Typography
-- **Inter / Roboto / Open Sans / Arial / system default** as the headline face.
-  The "safe font" tell. **Fix:** one distinctive display face with personality
-  (e.g. editorial: Fraunces, Newsreader; technical: IBM Plex; geometric: Space
-  Grotesk *used decisively* — note even Space Grotesk is now an over-default).
-  Pair on contrast. (See the `web-typography` skill for the full system.)
+- **Inter / Roboto / Open Sans / Arial / system default** as the unexamined
+  hero/headline face on brand, marketing, portfolio, or launch surfaces. The
+  "safe font" tell. **Fix:** one deliberate type stance: a distinctive display
+  face when the surface needs brand personality, or an explicitly performance-first
+  system stack for operational product UI. Pair on contrast. (See the
+  `web-typography` skill for the full system.)
 - **Timid scale** — H1 only ~1.5× body, weight 600 vs 400. **Fix:** real jumps
   (3×+ size between display and body) and weight extremes (800/900 vs 300/400).
 

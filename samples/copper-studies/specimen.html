@@ -2,11 +2,11 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>tastecheck — type + motif specimen</title>
 <style>
-@font-face{font-family:"Redaction0";src:url("fonts/redaction-0-700.woff2") format("woff2");font-weight:700;font-display:block}
-@font-face{font-family:"Redaction0";src:url("fonts/redaction-0-400.woff2") format("woff2");font-weight:400;font-display:block}
-@font-face{font-family:"Redaction35";src:url("fonts/redaction-35-700.woff2") format("woff2");font-weight:700;font-display:block}
-@font-face{font-family:"Redaction70";src:url("fonts/redaction-70-700.woff2") format("woff2");font-weight:700;font-display:block}
-@font-face{font-family:"Redaction70";src:url("fonts/redaction-70-400.woff2") format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"Redaction0";src:url("fonts/redaction-0 - 700.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Redaction0";src:url("fonts/redaction-0 - 400.woff2") format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"Redaction35";src:url("fonts/redaction-35 - 700.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Redaction70";src:url("fonts/redaction-70 - 700.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Redaction70";src:url("fonts/redaction-70 - 400.woff2") format("woff2");font-weight:400;font-display:block}
 @font-face{font-family:"Archivo";src:url("fonts/archivo-400.woff2") format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"Archivo";src:url("fonts/archivo-600.woff2") format("woff2");font-weight:600;font-display:swap}
 :root{
@@ -22,7 +22,7 @@ body{background:var(--bg);color:var(--ink);font-family:"Archivo",system-ui,sans-
 #field{position:fixed;inset:0;z-index:0;opacity:.55}
 .wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:56px 40px 72px}
 .kick{font-family:ui-monospace,Menlo,monospace;font-size:.78rem;letter-spacing:.28em;text-transform:uppercase;color:var(--signal)}
-.h-hero{font-family:"Redaction70",Georgia,serif;font-weight:700;font-size:clamp(3rem,1.5rem+7vw,7rem);line-height:.94;letter-spacing:-.02em;margin:.4em 0 .1em}
+.h-hero{font-family:"Redaction70",Georgia,serif;font-weight:700;font-size:clamp(3rem,1.5rem + 7vw,7rem);line-height:.94;letter-spacing:-.02em;margin:.4em 0 .1em}
 .h-hero em{font-style:italic;color:var(--signal);font-weight:400}
 .row{border-top:1px solid color-mix(in oklab,var(--ink) 18%,transparent);padding:26px 0;display:grid;grid-template-columns:90px 1fr;gap:24px;align-items:baseline}
 .row .lab{font-family:ui-monospace,monospace;font-size:.72rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
@@ -30,7 +30,7 @@ body{background:var(--bg);color:var(--ink);font-family:"Archivo",system-ui,sans-
 .g35{font-family:"Redaction35",serif;font-weight:700;font-size:2.4rem;line-height:1}
 .g70{font-family:"Redaction70",serif;font-weight:700;font-size:2.4rem;line-height:1}
 .body{font-family:"Archivo";max-width:62ch;color:var(--muted);line-height:1.6;font-size:1.05rem}
-.sig{display:inline-block;font-family:"Redaction70",serif;font-weight:700;font-size:clamp(4rem,2rem+8vw,9rem);line-height:.8;
+.sig{display:inline-block;font-family:"Redaction70",serif;font-weight:700;font-size:clamp(4rem,2rem + 8vw,9rem);line-height:.8;
   background:linear-gradient(92deg,var(--signal),var(--signal2));-webkit-background-clip:text;background-clip:text;color:transparent;
   font-variant-numeric:tabular-nums}
 .note{color:var(--muted);font-size:.95rem;margin-top:6px}
@@ -56,7 +56,7 @@ function draw(){
   const W=c.width=innerWidth, H=c.height=innerHeight;
   const N=46, seeds=[];
   // deterministic-ish scatter (no Math.random dependency for repeatability across renders)
-  let s=12345; const rnd=()=>{s=(s*1103515245+12345)&0x7fffffff;return s/0x7fffffff;};
+  let s=12345; const rnd=()=>{s=(s*1103515245 + 12345)&0x7fffffff;return s/0x7fffffff;};
   for(let i=0;i<N;i++) seeds.push([rnd()*W, rnd()*H]);
   const img=x.createImageData(W,H), d=img.data;
   // assign each pixel to nearest seed; edge = where 1st and 2nd nearest are close (cell boundary)
@@ -70,7 +70,7 @@ function draw(){
     let r,g,bl,a;
     if(isEdge){ // iridescent edge stroke (jade->violet sweep by hue)
       const t=(Math.sin(hue*0.0349)+1)/2;
-      r=80+120*t; g=200-80*t; bl=150+90*t; a=170;
+      r=80 + 120*t; g=200 - 80*t; bl=150 + 90*t; a=170;
     }else{ // faint cell fill, slightly tinted by hue (basalt facets)
       const v=22+ (bi%5)*5; r=v; g=v+6; bl=v+14; a=255;
     }

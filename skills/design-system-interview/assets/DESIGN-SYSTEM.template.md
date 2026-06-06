@@ -40,6 +40,6 @@
 See `tokens.css` (primitive → semantic). Components reference semantic tokens only.
 
 ## Build order
-design-system-interview (this) → color-system + web-typography + dark-mode →
+design-system-interview (this) → color-system + web-typography + theming →
 responsive-layout → component-states + form-ux + empty-states → micro-motion →
 a11y-pass. Audit the result with deslop-ui **against this spec**, not the average.
