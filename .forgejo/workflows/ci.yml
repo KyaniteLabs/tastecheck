@@ -5,8 +5,6 @@ on:
 jobs:
   test:
     runs-on: docker
-    container:
-      image: node:22-slim
     steps:
       - uses: actions/checkout@v4
       - name: Validate HTML
