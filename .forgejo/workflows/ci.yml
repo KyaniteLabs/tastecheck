@@ -7,6 +7,8 @@ jobs:
     runs-on: docker
     steps:
       - uses: actions/checkout@v4
+      - name: Debug info
+        run: echo "CI started" && pwd && ls -la
       - name: Validate HTML
         run: |
           npx --yes html-validate "*.html" "**/*.html" || true
