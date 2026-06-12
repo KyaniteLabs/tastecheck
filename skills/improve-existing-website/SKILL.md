@@ -66,6 +66,18 @@ After editing, report:
 - what was verified in-browser and by static checks
 - any remaining ambiguity or deliberately deferred work
 
+## Reference files
+
+- `references/audit-procedure.md` — exactly what to extract and in what order
+  (rendered reality → de-facto tokens with counts → component habits → voice →
+  business signals). Read before inspecting.
+- `references/signal-vs-drift.md` — the tests that separate identity from accident,
+  a worked example (the bakery), and the cardinal sins (erasing identity, formalizing
+  the accident, the stealth redesign). Read before deciding what to change.
+- `references/decision-records.md` — meta-patterns + ADR rules (what to fix without
+  asking, what always gets asked, scope visibility).
+- `assets/improve-checklist.md` — the run checklist (before / during / done).
+
 ## Self-Check
 
 1. Did I inspect the actual rendered site or files before prescribing changes?
