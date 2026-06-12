@@ -7,9 +7,9 @@ A user-requested higher-contrast variant you control. Remap the same semantic to
 maximal legibility:
 ```css
 @media (prefers-contrast: more){
-  :root{ --text:#000; --text-muted:#1a1a1a; --border:#000; --bg:#fff; }
+  :root{ --color-text:#000; --color-text-muted:#1a1a1a; --color-border:#000; --color-bg:#fff; }
   :root[data-theme="dark"], :root:not([data-theme="light"]){
-    --text:#fff; --text-muted:#e6e6e6; --border:#fff; --bg:#000; }
+    --color-text:#fff; --color-text-muted:#e6e6e6; --color-border:#fff; --color-bg:#000; }
 }
 ```
 Here pure black/white IS correct — this is the opt-in maximal-contrast path. Thicken
