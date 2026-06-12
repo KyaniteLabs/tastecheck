@@ -1,13 +1,15 @@
 {
   "name": "tastecheck",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tools/verify.mjs && node tools/verify-landing.mjs && node tools/verify-integration.mjs",
-    "verify": "node tools/verify.mjs && node tools/verify-landing.mjs && node tools/verify-integration.mjs",
+    "test": "node tools/verify.mjs && node tools/lint-skills.mjs && node tools/verify-landing.mjs && node tools/verify-integration.mjs",
+    "verify": "npm test",
     "verify:skills": "node tools/verify.mjs",
+    "lint:skills": "node tools/lint-skills.mjs",
     "verify:landing": "node tools/verify-landing.mjs",
-    "verify:integration": "node tools/verify-integration.mjs"
+    "verify:integration": "node tools/verify-integration.mjs",
+    "smoke": "node tools/smoke/run-smoke.mjs"
   }
 }

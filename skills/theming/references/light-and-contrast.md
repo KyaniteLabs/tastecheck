@@ -17,7 +17,7 @@ Opposite of dark. In light, raised surfaces can be pure white over an off-white 
 plus a soft real shadow:
 ```css
 --color-bg:#faf7f0; --color-surface-1:#ffffff; --color-surface-2:#fbf9f4;
---shadow-raise:0 1px 2px rgb(0 0 0 / .06); --shadow-float:0 10px 30px rgb(0 0 0 / .12);
+--shadow-card:0 1px 2px rgb(0 0 0 / .06); --shadow-float:0 10px 30px rgb(0 0 0 / .12);
 ```
 Keep one elevation scale; most surfaces flat with a hairline border, depth reserved for
 floating UI.
