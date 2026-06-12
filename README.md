@@ -4,9 +4,9 @@
 identical feature cards, pill buttons, glassmorphism. You've seen it a thousand times
 because the model isn't designing — it's returning the statistical average of the web.
 
-**tastecheck is the fix.** It's a set of **15 craft skills for AI coding agents** that does
+**tastecheck is the fix.** It's a set of **19 craft skills for AI coding agents** that does
 two things no prompt does: it **grills you into a real design system *before* it writes any
-code**, then applies fifteen checkable craft skills so the output has a point of view
+code**, then applies checkable craft skills so the output has a point of view
 instead of a purple gradient.
 
 ![tastecheck — one landing-page pitch rendered as five committed design systems: Copper, Swiss, Maximal, Concrete and Clay](docs/hero/five-systems.png)
@@ -16,7 +16,7 @@ five committed design systems. That's the whole pitch: a committed design system
 average. Open the [live gallery →](https://kyanitelabs.github.io/tastecheck/samples/)*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-15-success.svg)](#whats-inside)
+[![Skills](https://img.shields.io/badge/skills-19-success.svg)](#whats-inside)
 [![Portable Markdown](https://img.shields.io/badge/plain%20markdown-portable-black.svg)](#portable-markdown)
 [![Verified](https://img.shields.io/badge/verified-npm%20test-brightgreen.svg)](docs/VERIFICATION.md)
 
@@ -34,7 +34,7 @@ the [secondary integration harness](https://kyanitelabs.github.io/tastecheck/dem
 
 ## What is tastecheck?
 
-tastecheck is a free, open-source (MIT) **pack of 15 frontend craft skills for AI coding
+tastecheck is a free, open-source (MIT) **pack of 19 frontend craft skills for AI coding
 agents** — Claude Code, Codex, Gemini CLI, Cursor, Kilocode, Kimi. The headline skills
 either *interview you into a committed design system before any code is written* or audit
 an existing website to infer the intended system before changes. The rest apply checkable
@@ -70,7 +70,7 @@ skill builds from. Taste is the only moat against AI slop; this operationalizes 
 ## Proof: the GitHub Pages landing page runs the skills
 
 The homepage connected to GitHub Pages is not just a brochure. It is now the primary
-integration surface: the live landing page carries `data-skill` coverage for all 15 skills,
+integration surface: the live landing page carries `data-skill` coverage for the 15 founding skills (the four 2026 additions — art-direction, spacing-system, i18n-ready, tastecheck-pass — are verified by the skill lint and declared in skills.json),
 page-level light/dark/high-contrast theme paths, component states, form validation,
 empty/error/retry recovery, chart/table parity, keyboard/focus affordances, reduced-motion
 guards, forced-colors support, humanized copy, and the existing-site audit story.
@@ -109,6 +109,7 @@ audit) and reviewed by independent models from different families before shippin
 **Get the foundations right**
 - **web-typography** — type scale, measure, rhythm, fluid `clamp()`, web-font loading/CLS, WCAG text.
 - **color-system** — OKLCH palettes that are cohesive *and* pass contrast.
+- **spacing-system** — one spacing scale + section rhythm; every gap a token, no 17px/19px/24px soup.
 - **theming** — light + dark + high-contrast from one token source; elevation by lightness, not shadow.
 
 **Build the structure & behavior**
@@ -120,8 +121,11 @@ audit) and reviewed by independent models from different families before shippin
 **Polish & verify**
 - **micro-motion** — animation that feels expensive: transform/opacity, 150–300ms, reduced-motion.
 - **data-viz** — honest, Tufte-informed charts (data-ink, no chartjunk, lie-factor check) that also theme and pass a11y.
+- **art-direction** — imagery, illustration, and iconography as committed decisions: one treatment, one named icon set, real OG/favicon — no gradient-blob AI graphics.
 - **a11y-pass** — a runnable WCAG 2.2 AA fix pass with a paste-able auditor.
 - **cognitive-a11y** — the layer WCAG barely touches: ADHD, autism, dyslexia and neurodivergent readability (plain language, structure, predictability).
+- **i18n-ready** — multilingual-resilient UI, English/Spanish first-class: +30% expansion, logical properties, `Intl`, native voice per language.
+- **tastecheck-pass** — the ship gate: states the canonical pipeline once, runs every relevant self-check, reports a pass/fail table.
 
 Each skill is a folder: `SKILL.md` (decision order, non-negotiables, quick-start,
 self-check) + `references/` (deep guidance + a `decision-records.md` explaining *why*) +
@@ -141,7 +145,7 @@ before/after and a self-check the agent runs on its own output:
 And we ate our own cooking: the repo now ships a repeatable verification command instead
 of a trust-me receipt. Run `npm test` for structural, installer, command, link, CSS,
 a11y-starter, data-viz, GitHub Pages landing-page coverage, and secondary integration
-checks. The landing page itself audits its existing direction, then exercises all 15 skills
+checks. The landing page itself audits its existing direction, then exercises the 15 landing-covered skills
 through real controls: themes, component states, form validation, empty/error/retry,
 chart/table parity, copy, accessibility, cognitive readability, motion, and responsive
 layout. Browser/manual QA remains documented separately in [docs/VERIFICATION.md](docs/VERIFICATION.md)
@@ -157,11 +161,14 @@ loading depends on each agent's skill support; otherwise point the agent at the 
 
 ## How it all fits together
 
-> **design-system-interview / improve-existing-website** (decide or infer taste) → **color-system · web-typography · theming**
-> (foundations) → **responsive-layout** (structure) → **component-states · form-ux ·
-> empty-states** (behavior) → **micro-motion · data-viz** (polish) → **a11y-pass ·
-> cognitive-a11y** (verify) — with **deslop-ui** and **humanize-copy** auditing the result
-> against *your committed spec*, not the average.
+> **design-system-interview / improve-existing-website** (decide or infer taste) →
+> **color-system · web-typography · spacing-system · theming** (foundations) →
+> **responsive-layout** (structure) → **component-states · form-ux · empty-states**
+> (behavior) → **micro-motion · data-viz · art-direction** (surface) → **a11y-pass ·
+> cognitive-a11y · i18n-ready** (verify) — with **deslop-ui** and **humanize-copy**
+> auditing the result against *your committed spec*, not the average, and
+> **tastecheck-pass** gating the ship. (The canonical pipeline lives in
+> `skills/tastecheck-pass/SKILL.md`; every other description is a summary of it.)
 
 ## Install
 
@@ -174,14 +181,15 @@ The installer creates canonical links in `~/.agents/skills/` and mirrors them in
 agent skill directories. In agents with skill auto-loading enabled, matching requests can
 load the relevant skill; otherwise use the `SKILL.md` path directly. In Claude Code you
 also get slash commands:
-`/designsystem`, `/deslop`, `/humanize`, `/typography`, `/colorsystem`, `/theming`,
-`/responsive`, `/states`, `/formux`, `/emptystates`, `/motion`, `/dataviz`, `/a11y`,
-`/cognitive`, `/improvesite`.
+`/designsystem`, `/deslop`, `/humanize`, `/typography`, `/colorsystem`, `/spacing`,
+`/theming`, `/responsive`, `/states`, `/formux`, `/emptystates`, `/motion`, `/dataviz`,
+`/artdirection`, `/a11y`, `/cognitive`, `/i18n`, `/improvesite`, `/tastecheckpass`
+(plus `/darkmode`, an alias of `/theming`).
 
 ## FAQ
 
 **What is tastecheck?**
-A free, open-source (MIT) pack of 15 craft skills for AI coding agents. It interviews you
+A free, open-source (MIT) pack of 19 craft skills for AI coding agents. It interviews you
 into a committed design system before any code, or audits an existing site to infer the
 system already trying to exist, then applies checkable rules for typography, color,
 accessibility and removing AI "slop" tells — so output has a point of view instead of the

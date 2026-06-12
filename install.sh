@@ -11,19 +11,29 @@ COMMANDS=ask
 
 usage() {
   cat <<'USAGE'
-Usage: ./install.sh [--force] [--yes|--no-commands]
+Usage: ./install.sh [--force] [--yes|--no-commands] [--uninstall]
 
   --force        Move pre-existing real skill dirs/files aside before linking.
-  --yes          Copy Claude Code slash commands without prompting.
-  --no-commands  Do not copy Claude Code slash commands.
+  --yes          Link Claude Code slash commands without prompting.
+  --no-commands  Do not link Claude Code slash commands.
+  --uninstall    Remove every symlink this installer created (links that point
+                 into this repo) from all agent homes, then exit.
+
+Notes on agent homes: skills are always linked into the canonical ~/.agents/skills/.
+They are also mirrored into ~/.claude, ~/.codex, ~/.gemini, ~/.cursor, ~/.kilocode and
+~/.kimi when those directories already exist — but whether an agent AUTO-LOADS from
+its directory varies by agent and version. If yours doesn't, point it at the SKILL.md
+files in ~/.agents/skills/ directly.
 USAGE
 }
 
+UNINSTALL=0
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --force) FORCE=1 ;;
     --yes) COMMANDS=yes ;;
     --no-commands) COMMANDS=no ;;
+    --uninstall) UNINSTALL=1 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "ERROR: unknown option: $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -38,6 +48,35 @@ done < <(find "$SKILLS_SRC" -mindepth 1 -maxdepth 1 -type d -name '*' | sort)
 # Agent homes that use a ~/<home>/skills/ convention.
 # ~/.agents is canonical because the slash commands load from that path.
 HOMES=(.claude .codex .gemini .cursor .kilocode .kimi)
+
+uninstall_all() {
+  local removed=0
+  for h in .agents "${HOMES[@]}"; do
+    local sk="$HOME/$h/skills"
+    [ -d "$sk" ] || continue
+    for link in "$sk"/*; do
+      [ -L "$link" ] || continue
+      case "$(readlink "$link")" in
+        "$SKILLS_SRC"/*) rm "$link"; removed=$((removed+1)) ;;
+      esac
+    done
+  done
+  local cmds="$HOME/.claude/commands"
+  if [ -d "$cmds" ]; then
+    for link in "$cmds"/*.md; do
+      [ -L "$link" ] || continue
+      case "$(readlink "$link")" in
+        "$REPO/commands/"*) rm "$link"; removed=$((removed+1)) ;;
+      esac
+    done
+  fi
+  echo "Removed $removed tastecheck symlinks."
+}
+
+if [ "$UNINSTALL" = 1 ]; then
+  uninstall_all
+  exit 0
+fi
 
 echo "frontend-skills installer"
 echo "repo: $REPO"
@@ -104,15 +143,18 @@ fi
 # Optional: Claude Code slash commands
 if [ -d "$HOME/.claude" ]; then
   if [ "$COMMANDS" = ask ]; then
-    read -r -p $'\nCopy slash commands into ~/.claude/commands/ (Claude Code)? [y/N] ' ans || ans=n
+    read -r -p $'\nLink slash commands into ~/.claude/commands/ (Claude Code)? [y/N] ' ans || ans=n
     [[ "${ans:-n}" =~ ^[Yy]$ ]] && COMMANDS=yes || COMMANDS=no
   fi
 
   if [ "$COMMANDS" = yes ]; then
     mkdir -p "$HOME/.claude/commands"
-    cp "$REPO/commands/"*.md "$HOME/.claude/commands/"
-    command_count=$(find "$REPO/commands" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')
-    echo "  copied $command_count Claude Code slash commands into ~/.claude/commands/"
+    command_count=0
+    for cmd in "$REPO/commands/"*.md; do
+      link_skill "$cmd" "$HOME/.claude/commands/$(basename "$cmd")"
+      command_count=$((command_count+1))
+    done
+    echo "  linked $command_count Claude Code slash commands into ~/.claude/commands/ (git pull updates them)"
   fi
 fi
 

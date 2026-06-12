@@ -26,8 +26,16 @@
 - **Corner radius:** controls {0–4|8–12|16+}px · cards {…}px (CTAs never pill)
 - **Elevation:** {flat+borders | layered shadow scale}
 
+## Imagery & iconography (→ art-direction)
+- **Imagery stance:** {photography + treatment | illustration + style | type/texture only | none}
+- **Icon set:** {named set} at {stroke weight} — one set, no emoji-as-icons
+- **Image-shaped holes:** {what fills hero/cards/empty states}
+
 ## Motion (→ micro-motion)
 - **Level:** {restrained | lively | none}
+
+## Language (→ i18n-ready, if multilingual)
+- **Languages:** {e.g. EN + ES} · UI must hold at ~+25% string length
 
 ## Refusals (what we will NOT do)
 - No {Inter/Roboto/Arial} — using {our faces}
@@ -40,6 +48,8 @@
 See `tokens.css` (primitive → semantic). Components reference semantic tokens only.
 
 ## Build order
-design-system-interview (this) → color-system + web-typography + theming →
-responsive-layout → component-states + form-ux + empty-states → micro-motion →
-a11y-pass. Audit the result with deslop-ui **against this spec**, not the average.
+design-system-interview (this) → color-system + web-typography + theming +
+spacing-system → responsive-layout → component-states + form-ux + empty-states →
+micro-motion + data-viz + art-direction → a11y-pass + cognitive-a11y (+ i18n-ready if
+multilingual). Audit with deslop-ui + humanize-copy **against this spec**, not the
+average; gate the ship with tastecheck-pass.

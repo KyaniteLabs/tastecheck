@@ -1,0 +1,25 @@
+{
+  "$comment": "Manifest of the tastecheck skill pack. `landing` marks skills exercised end-to-end on the GitHub Pages landing page (verify-landing.mjs enforces coverage for those). Stages mirror the canonical pipeline in skills/tastecheck-pass/SKILL.md.",
+  "version": "0.1.0",
+  "skills": [
+    { "name": "design-system-interview", "stage": "direction", "landing": true },
+    { "name": "improve-existing-website", "stage": "direction", "landing": true },
+    { "name": "color-system", "stage": "foundations", "landing": true },
+    { "name": "web-typography", "stage": "foundations", "landing": true },
+    { "name": "spacing-system", "stage": "foundations", "landing": false },
+    { "name": "theming", "stage": "foundations", "landing": true },
+    { "name": "responsive-layout", "stage": "structure", "landing": true },
+    { "name": "component-states", "stage": "behavior", "landing": true },
+    { "name": "form-ux", "stage": "behavior", "landing": true },
+    { "name": "empty-states", "stage": "behavior", "landing": true },
+    { "name": "micro-motion", "stage": "surface", "landing": true },
+    { "name": "data-viz", "stage": "surface", "landing": true },
+    { "name": "art-direction", "stage": "surface", "landing": false },
+    { "name": "a11y-pass", "stage": "verification", "landing": true },
+    { "name": "cognitive-a11y", "stage": "verification", "landing": true },
+    { "name": "i18n-ready", "stage": "verification", "landing": false },
+    { "name": "deslop-ui", "stage": "audit", "landing": true },
+    { "name": "humanize-copy", "stage": "audit", "landing": true },
+    { "name": "tastecheck-pass", "stage": "gate", "landing": false }
+  ]
+}

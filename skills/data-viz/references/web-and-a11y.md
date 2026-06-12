@@ -9,14 +9,14 @@ This is the part the pure-Tufte plugin doesn't cover.
   sequential/categorical scale (OKLCH). Cap at ~5 categorical hues.
 - **Contrast:** each series ≥3:1 against the background AND distinguishable from adjacent
   series; axis/label text ≥4.5:1 (it's text). Verify — don't assume.
-- **Tokens for everything:** `--series-1..n`, `--axis`, `--grid`, `--chart-bg`. One source
+- **Tokens for everything:** `--series-1…6`, `--chart-label`, `--chart-grid`, and the page's `--color-bg`. One source
   of truth so the chart re-themes for free.
 
 ## Dark mode (pairs with the theming skill)
 - Re-check every contrast on the dark surface; axis lines and labels that passed on white
   often fail on dark.
 - Desaturate/raise lightness of series colors for dark (OKLCH +L, −C), like any accent.
-- Don't use pure white gridlines on near-black; use a faint token (`--grid`) or none.
+- Don't use pure white gridlines on near-black; use a faint token (`--chart-grid`) or none.
 
 ## Responsive
 - Author SVG with `viewBox` + `width:100%;height:auto` so it scales fluidly; never a fixed
