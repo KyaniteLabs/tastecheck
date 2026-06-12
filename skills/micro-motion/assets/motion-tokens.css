@@ -47,7 +47,7 @@
 
 /* Skeleton shimmer (the one place linear is correct) */
 .skeleton { background: linear-gradient(90deg,
-              var(--surface-1,#eee) 25%, var(--surface-2,#f5f5f5) 37%, var(--surface-1,#eee) 63%);
+              var(--color-surface-1,#eee) 25%, var(--color-surface-2,#f5f5f5) 37%, var(--color-surface-1,#eee) 63%);
             background-size: 400% 100%; animation: shimmer 1.4s linear infinite; }
 @keyframes shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
 @media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }

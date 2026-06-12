@@ -29,11 +29,8 @@
   --step-5:  clamp(2.49rem, 2.20rem + 1.43vw, 3.43rem);   /* display */
 
   /* --- Rhythm & layout --- */
-  --leading-body: 1.55;
-  --leading-tight: 1.15;
-  --measure: 66ch;            /* ideal line length for body text */
-  --measure-narrow: 45ch;
-
+    --measure: 66ch;            /* ideal line length for body text */
+  
   /* --- Color (check contrast >= 4.5:1 for body; see references/accessibility.md) --- */
   --color-text: #1a1a1a;
   --color-bg: #ffffff;
@@ -60,7 +57,7 @@ body {
   color: var(--color-text);
   font-family: var(--font-body);
   font-size: var(--step-0);
-  line-height: var(--leading-body);
+  line-height: 1.55;
   font-synthesis: none;            /* don't fake bold/italic — load the real cut */
   font-optical-sizing: auto;       /* let variable fonts adapt to size */
   text-rendering: optimizeLegibility;
@@ -70,7 +67,7 @@ body {
 
 /* --- Headings: tight leading, balanced wrap, slight negative tracking on display --- */
 h1, h2, h3, h4, h5, h6 {
-  line-height: var(--leading-tight);
+  line-height: 1.15;
   text-wrap: balance;
   margin-block: 0 0.5em;
   font-weight: 700;

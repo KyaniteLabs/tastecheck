@@ -84,10 +84,10 @@ real), **H** 0–360 hue. Benefits that matter:
   --neutral-950: oklch(0.18 0.008 250);
 
   /* Semantic — matched L/C so they’re a family */
-  --success: oklch(0.62 0.15 150);
-  --error:   oklch(0.60 0.20 25);
-  --warning: oklch(0.75 0.15 85);
-  --info:    oklch(0.65 0.14 230);
+  --color-success: oklch(0.62 0.15 150);
+  --color-error:   oklch(0.60 0.20 25);
+  --color-warning: oklch(0.75 0.15 85);
+  --color-info:    oklch(0.65 0.14 230);
 
   /* Semantic aliases (the canonical contract names — what components reference) */
   --color-bg: var(--neutral-50);

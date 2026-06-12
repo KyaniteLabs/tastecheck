@@ -19,7 +19,7 @@ Arrows within composite widgets (menus, tabs, radios).
 **Test:** every Tab stop shows a clear indicator; it's not hidden behind sticky bars.
 **Fix:**
 ```css
-:focus-visible { outline: 2px solid var(--focus, #1d4ed8); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--color-focus, #1d4ed8); outline-offset: 2px; }
 ```
 Never `outline:none` without replacement. For sticky headers, add `scroll-margin-top`
 to focus targets so they aren't obscured (2.4.11):

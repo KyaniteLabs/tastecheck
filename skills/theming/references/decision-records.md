@@ -27,7 +27,7 @@ surface they sit on.
 
 ### MP-5 · Tokens are the sync mechanism
 Two themes drift unless components reference semantic variables, never raw colors.
-**Consequence:** `--surface/--color-text/--color-accent` swap by theme; components are theme-blind.
+**Consequence:** `--color-surface-1/--color-text/--color-accent` swap by theme; components are theme-blind.
 
 ## Decision records
 
