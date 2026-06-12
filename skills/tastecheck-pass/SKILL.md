@@ -71,6 +71,12 @@ Gate: PASS (n checks, m fixed during gate)
 
 ## Non-negotiables
 
+- **The gate outranks polish — budget for it.** In turn- or time-limited runs, reserve
+  capacity for this gate *before* spending on optional extras (additional screenshots,
+  embellishments, refactors). A first live pipeline run produced an excellent page and
+  then starved the gate at the turn limit — an ungated "done" is the exact honor-system
+  failure this skill exists to close. If you genuinely cannot finish the gate, say so
+  explicitly in the deliverable; never imply it ran.
 - **Never gate your own taste — gate the spec.** Disagreements with the committed
   direction are interview feedback, not gate failures.
 - **Measure where a number exists** (contrast, target size, measure, zoom, duration);
