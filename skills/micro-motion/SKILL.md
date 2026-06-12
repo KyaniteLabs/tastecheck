@@ -62,6 +62,23 @@ place — it's what makes motion read as crafted versus the mushy default `ease`
 
 ## The reduced-motion contract (always include)
 
+**This skill owns reduced-motion for the whole project** — define it once here, not
+per-skill. The primary pattern: gate the *movement* behind `no-preference`, so
+reduced-motion users still get a (motionless) fade and never a broken layout:
+
+```css
+/* PRIMARY: design the reduced variant — keep a gentle fade, drop the movement */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal { opacity: 0; transform: translateY(12px); transition:
+            opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out); }
+  .reveal.in { opacity: 1; transform: none; }
+}
+```
+
+Only as an *emergency baseline* (retrofitting a site you can't redesign motion for),
+the global kill switch — note it nukes useful transitions too, so prefer the gated
+pattern above for anything you're building:
+
 ```css
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -71,15 +88,7 @@ place — it's what makes motion read as crafted versus the mushy default `ease`
     scroll-behavior: auto !important;
   }
 }
-/* Better: design the reduced variant — keep a gentle fade, drop the movement */
-@media (prefers-reduced-motion: no-preference) {
-  .reveal { opacity: 0; transform: translateY(12px); transition:
-            opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out); }
-  .reveal.in { opacity: 1; transform: none; }
-}
 ```
-The pattern that matters: gate the *movement* behind `no-preference`, so reduced-motion
-users still get a (motionless) fade and never a broken layout.
 
 ## Patterns that read as premium
 
@@ -87,8 +96,8 @@ users still get a (motionless) fade and never a broken layout.
   `animation-delay` (or stagger index), each 200–300ms ease-out, total under ~800ms.
   Far more delight than scattered hover effects (this is straight from Anthropic's
   frontend guidance).
-- **Press feedback:** `transform: scale(0.97)` on `:active`, 150ms. Cheap, universal,
-  satisfying.
+- **Press feedback:** `transform: scale(0.97)` on `:active`, 120–150ms. Cheap,
+  universal, satisfying.
 - **Entrance from origin:** menus/popovers scale+fade *from* their trigger
   (`transform-origin`) so they feel connected, not teleported.
 - **Skeletons over spinners** for content loading (see `empty-states`): a subtle
@@ -117,7 +126,7 @@ users still get a (motionless) fade and never a broken layout.
 ## Self-check
 
 - [ ] Animate only `transform`/`opacity` (compositor) — nothing animates layout props
-- [ ] Durations/easings are tokens; entrances ~150–250ms ease-out (custom curve, not linear)
+- [ ] Durations/easings are tokens (`--dur-*`/`--ease-*`); entrances ~200–300ms ease-out (custom curve, not linear)
 - [ ] `prefers-reduced-motion` path tested (motion off or cross-fade) — content never depends on it
 - [ ] Under the ~30% rule; one signature moment, not blob soup
 - [ ] No scroll-jacking; total page-load motion < ~800ms; nothing flashes > 3×/s

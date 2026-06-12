@@ -25,8 +25,8 @@ most recognizable AI fingerprint.
 **Fix:** commit to one brand hue. If you gradient, stay within-hue or to an analogous
 neighbor, keep the spread small, and don't put it on a white page.
 ```css
-:root { --brand: oklch(0.62 0.13 195); }            /* one committed hue (teal) */
-.hero { background: var(--brand); color: white; }    /* or a subtle within-hue gradient */
+:root { --color-primary: oklch(0.62 0.13 195); }            /* one committed hue (teal) */
+.hero { background: var(--color-primary); color: white; }    /* or a subtle within-hue gradient */
 ```
 
 ## 2. Pill CTA buttons
@@ -46,10 +46,10 @@ icon-only buttons.
 **Why:** uniformity signals "no system, just a default applied globally."
 **Fix:** a small radius scale by role.
 ```css
-:root { --r-control: 6px; --r-card: 12px; --r-pill: 9999px; }
-.btn, .input { border-radius: var(--r-control); }
-.card        { border-radius: var(--r-card); }
-.chip        { border-radius: var(--r-pill); }
+:root { --radius-control: 6px; --radius-card: 12px; --radius-pill: 9999px; }
+.btn, .input { border-radius: var(--radius-control); }
+.card        { border-radius: var(--radius-card); }
+.chip        { border-radius: var(--radius-pill); }
 ```
 
 ## 4. Uniform heavy shadow
@@ -59,9 +59,9 @@ icon-only buttons.
 on everything = "I applied one class everywhere."
 **Fix:** one elevation scale; default flat or hairline; reserve depth for floating UI.
 ```css
-:root { --e-flat: none; --e-raised: 0 1px 2px rgb(0 0 0 / .06); --e-float: 0 8px 24px rgb(0 0 0 / .12); }
-.card  { box-shadow: var(--e-flat); border: 1px solid var(--hairline); }
-.modal { box-shadow: var(--e-float); }
+:root { --shadow-card: 0 1px 2px rgb(0 0 0 / .06); --shadow-float: 0 8px 24px rgb(0 0 0 / .12); }
+.card  { box-shadow: none; border: 1px solid var(--color-border); }
+.modal { box-shadow: var(--shadow-float); }
 ```
 
 ## 5. Safe/default fonts
@@ -145,7 +145,7 @@ image. Often: nothing is better.
 - **Placeholder content left in:** "Lorem ipsum", "John Doe" ×3, "Company Name".
   **Fix:** realistic, varied content (names, lengths, avatars).
 - **No focus states / a11y:** missing `:focus-visible`, ARIA, alt text. **Fix:**
-  visible focus rings, labels, alt — see `web-design-guidelines`.
+  visible focus rings, labels, alt — run `a11y-pass`.
 
 ---
 

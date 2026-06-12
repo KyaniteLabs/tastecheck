@@ -53,26 +53,29 @@ and error (form fields) where they apply.
 - **State changes must meet contrast.** Hover/active/selected colors still need ≥3:1
   for UI and ≥4.5:1 for text (see `color-system`/`a11y-pass`). Don't signal state by a
   color change so subtle it's invisible — or by color alone.
-- **Pressed/active feedback should be instant** (~100–150ms, transform-based — see
-  `micro-motion`).
+- **Pressed/active feedback should be instant** (120–150ms, transform-based — the
+  `--dur-fast` token; see `micro-motion`).
 
 ## Quick-start: a fully-stated button
 
 ```css
+/* All colors come from the project's DESIGN-SYSTEM.md tokens (the canonical contract)
+   — never hard-code brand values here. No fallback hexes: if the tokens are missing,
+   that's a build error to fix, not to paper over with a default blue. */
 .btn {
-  --btn-bg: var(--color-primary, #2563eb);
-  background: var(--btn-bg);
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-primary-ink);
   border: 1px solid transparent;
-  border-radius: 8px;                 /* not pill — see deslop-ui */
+  border-radius: var(--radius-control);   /* not pill — see deslop-ui */
   padding: 0.6em 1.1em;
   cursor: pointer;
-  transition: background-color 150ms ease, transform 120ms ease;
+  transition: background-color var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out);
 }
-.btn:hover  { background: color-mix(in oklab, var(--btn-bg) 88%, black); }
+.btn:hover  { background: var(--color-primary-hover); }
 .btn:active { transform: scale(0.97); }                 /* pressed feedback */
 .btn:focus-visible {                                    /* keyboard focus only */
-  outline: 2px solid var(--color-focus, #1d4ed8);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 .btn:disabled,
@@ -82,7 +85,8 @@ and error (form fields) where they apply.
 .btn[data-loading="true"] { color: transparent; pointer-events: none; position: relative; }
 .btn[data-loading="true"]::after {                      /* spinner */
   content: ""; position: absolute; inset: 0; margin: auto;
-  width: 1em; height: 1em; border: 2px solid #fff; border-right-color: transparent;
+  width: 1em; height: 1em; border: 2px solid var(--color-primary-ink);
+  border-right-color: transparent;
   border-radius: 50%; animation: spin .6s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -116,6 +120,10 @@ and error (form fields) where they apply.
   whole thing keyboard-focusable if it's clickable.
 - **Menu item:** default/hover/focus/disabled; hover and keyboard focus should look the
   same here so arrow-key users see the highlight.
+- **Tooltip / popover / toast (overlays):** open/closed + entrance/exit; prefer the
+  native Popover API (`popover` attribute) and `<dialog>` over hand-rolled z-index
+  stacks — they give you focus handling, light-dismiss, and top-layer for free. Toasts
+  announce via `role="status"`; never trap hover-only content (it must be focusable).
 
 ## Reference files
 

@@ -37,7 +37,7 @@ keyboard." Each state has a job; skipping one removes feedback the user relies o
 ```css
 /* shared highlight for menu items: hover OR keyboard focus */
 .menu-item:hover,
-.menu-item:focus-visible { background: var(--surface-2); }
+.menu-item:focus-visible { background: var(--color-surface-2); }
 ```
 
 ## Loading & optimistic patterns

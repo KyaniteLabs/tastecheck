@@ -45,7 +45,9 @@ Make these decisions in sequence. Each one constrains the next.
 4. **Vertical rhythm** — Line-height ~1.5 for body, tighter (1.1–1.3) for large
    headings. Space paragraphs *or* indent them, never both.
 5. **Hierarchy & polish** — Weight/size/space contrast, `text-wrap: balance` on
-   headings and `pretty` on body, tracking on caps and display, OpenType features.
+   headings and `pretty` on body, OpenType features, and tracking: display sizes
+   (step-3 and up) get −0.01 to −0.03em letter-spacing, ALL-CAPS labels get +0.05 to
+   +0.1em — body text is never negative-tracked.
 6. **Loading & performance** — `font-display`, preload the one critical font,
    self-host WOFF2, and **metric-match the fallback** so the page doesn't shift (CLS).
 7. **Accessibility pass** — Contrast, zoom to 200%, the WCAG 1.4.12 text-spacing
@@ -82,10 +84,11 @@ and loading rules but swap in the type stance chosen by `design-system-interview
 
 ```css
 :root {
-  /* Fonts — system stack by default (instant, no CLS, native feel) */
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+  /* Canonical token names (design-system-interview contract). System stack as the
+     DEFAULT VALUE for product UI — swap in the interview's faces for brand work. */
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
                "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
-  --font-serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  --font-display: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
 
   /* Fluid type scale (≈ Major Third 1.25 at desktop). Generate real projects with Utopia.fyi */
@@ -102,14 +105,14 @@ and loading rules but swap in the type stance chosen by `design-system-interview
 html { font-size: 100%; -webkit-text-size-adjust: 100%; }
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: var(--step-0);
   line-height: 1.5;
   font-synthesis: none;            /* don't fake bold/italic */
-  text-rendering: optimizeLegibility;
 }
 
 h1, h2, h3, h4 { line-height: 1.15; text-wrap: balance; }   /* tight + even line lengths */
+h1, h2 { letter-spacing: -0.02em; }   /* display sizes tighten −0.01…−0.03em; never track body negative */
 h1 { font-size: var(--step-4); }
 h2 { font-size: var(--step-3); }
 h3 { font-size: var(--step-2); }
@@ -122,11 +125,10 @@ p + p { margin-block-start: 1em; }                                   /* space, d
 
 /* Data/figures align in columns */
 table, .tabular-nums { font-variant-numeric: tabular-nums; }
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
-}
 ```
+
+(Reduced-motion handling belongs to one owner — the `micro-motion` skill defines the
+project's `prefers-reduced-motion` contract; don't add a second copy here.)
 
 A more complete, commented starter — including a metric-matched web-font example —
 is in `assets/starter.css`. Read it when scaffolding a project's type from scratch.
@@ -178,6 +180,9 @@ Keep this file in context; pull a reference in when the task calls for it.
 - After non-trivial changes, do the **accessibility pass** (`references/accessibility.md`)
   before declaring done. Verify contrast and that the layout survives 200% zoom and
   the text-spacing overrides.
+- For multilingual surfaces, pair with `i18n-ready`: confirm the chosen faces cover the
+  target languages' glyphs (Spanish diacritics at minimum), and that line-height/measure
+  hold for ~25% longer strings.
 
 ## Self-check
 

@@ -10,8 +10,8 @@ description: >-
 
 Raw LLM prose is statistically safe, which is exactly why it reads as machine-made:
 the same buzzwords, the same rhythm, the same hedging, the same tidy intro-three-
-points-conclusion. Readers in 2026 have a sixth sense for it — surveys show a
-majority stop reading the moment they suspect a bot wrote it. This skill is the
+points-conclusion. Readers in 2026 have a sixth sense for it, and many stop reading
+the moment they suspect a bot wrote it. This skill is the
 **AI-accent remover for writing**: a kill-list and a set of rewrite rules, each
 checkable, that turn beige AI output into something a person would actually say.
 
@@ -65,7 +65,12 @@ adjective.
 - **"Picture this… / Imagine a world where… / As a [role], you know…"** — faked
   experience. Replace with a specific, grainy detail only a real person would know.
 - **The "No X. No Y. Just Z." rule-of-three** — fine once, robotic when it's in every
-  section. Use at most once per piece.
+  section. Use at most once per piece. (Same budget for any triad construction:
+  "fast, simple, and powerful" lists of exactly three are a cadence tell.)
+- **Em-dash chains** — one or two per page is punctuation; one per paragraph — like
+  this — is a 2025-era model tell. Convert most to periods or commas.
+- **"Here's the thing:" / "The best part?" / colon-hook sentences** — manufactured
+  anticipation. State the thing.
 
 ## Rhythm & structure rules
 
@@ -123,5 +128,6 @@ RLHF makes models allergic to a strong position. That allergy is a tell.
   sound human — get them from the user or the source.
 - Keep the register appropriate (a README isn't a sales page). "Human" means natural
   for *that* context, not casual everywhere.
-- For non-English copy, the tells differ by language — pair with the
-  `idiomatic-translation` skill so you don't trade an AI accent for a translation accent.
+- For non-English copy, the tells differ by language — pair with `i18n-ready` so you
+  don't trade an AI accent for a translation accent (Spanish has its own LLM tells:
+  calqued English idioms, "no solo X, sino Y" parallelism, uniform sentence length).
