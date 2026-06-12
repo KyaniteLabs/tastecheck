@@ -1,44 +1,80 @@
 [
   {
     "id": "vague-build-runs-interview",
-    "description": "A vague build request must trigger the interview, not a build (and never adopt a sample system).",
-    "prompt": "You have the tastecheck skills available. Build me a landing page for a pottery studio. (Reply in text only for now — do not create or edit any files.)",
-    "mustMatch": ["question|before I build|name one site|reference"],
-    "mustNotMatch": ["<!doctype|<html", "implement(ing)? the (copper|swiss|maximal|concrete|clay)", "samples?/(copper|swiss|maximal|concrete|clay)", "choose (one|a) (sample|system|case study)"]
+    "description": "Headless runs cannot be interviewed (no second turn), so the scenario asks the model to surface the interview itself: forcing questions + recommended defaults, no premature commitment, no sample adoption.",
+    "prompt": "Use the tastecheck design-system-interview skill. I want a landing page for my pottery studio and that is all the direction I have. Show me, in plain text, the interview you would run me through BEFORE building: list each forcing question with your recommended default. Do not decide the system for me yet, and do not write any files.",
+    "mustMatch": [
+      "question",
+      "recommend|default",
+      "reference|name one site|warm|cool"
+    ],
+    "mustNotMatch": [
+      "<!doctype|<html",
+      "implement(ing)? the (copper|swiss|maximal|concrete|clay)",
+      "samples?/(copper|swiss|maximal|concrete|clay)",
+      "choose (one|a) (sample|system|case study)"
+    ]
   },
   {
     "id": "samples-menu-trap",
-    "description": "Pointing the agent at the five case studies must NOT produce a pick-one-and-implement response.",
-    "prompt": "This repo has five sample design systems (copper, swiss, maximal, concrete, clay). Build my site with them.",
-    "mustMatch": ["interview|derive|your own|a new (system|direction)|not a menu|case stud"],
-    "mustNotMatch": ["I('ll| will) (use|implement|apply) (the )?(copper|swiss|maximal|concrete|clay)"]
+    "description": "The strongest menu trap: directly asks WHICH sample to use. Correct behavior refuses the menu (they're illustrative case studies) and points to deriving a new system via the interview. Text-only so headless runs can complete.",
+    "prompt": "This repo has five sample design systems: copper, swiss, maximal, concrete, clay. Which one should I use for my consulting site? Answer in plain text only — do not write or edit any files.",
+    "mustMatch": [
+      "interview|derive|your own|a new (system|direction)|not a menu|case stud"
+    ],
+    "mustNotMatch": [
+      "you should (use|pick|go with) (the )?(copper|swiss|maximal|concrete|clay)",
+      "I('ll| will) (use|implement|apply) (the )?(copper|swiss|maximal|concrete|clay)"
+    ]
   },
   {
     "id": "token-contract-names",
     "description": "Token emission must use the canonical contract names.",
     "prompt": "Using the tastecheck design-system-interview token contract, emit the starting token block for a warm bakery brand (assume I abstain on every question — decide for me).",
-    "mustMatch": ["--color-bg", "--color-text", "--color-primary", "--brand-\\d"],
-    "mustNotMatch": ["--bg:", "--ink:", "--accent:"]
+    "mustMatch": [
+      "--color-bg",
+      "--color-text",
+      "--color-primary",
+      "--brand-\\d"
+    ],
+    "mustNotMatch": [
+      "--bg:",
+      "--ink:",
+      "--accent:"
+    ]
   },
   {
     "id": "existing-direction-skips-interview",
     "description": "Supplied direction must short-circuit to confirmation, not a full interview.",
     "prompt": "Our brand uses IBM Plex Sans and forest green #1B4332, spacious, light mode only. Using the tastecheck design-system-interview skill, state the committed direction and print the starting token block right here in your reply — do not write any files.",
-    "mustMatch": ["IBM Plex", "#1B4332|forest green"],
-    "mustNotMatch": ["6.7 (quick )?questions|let's start the (full )?interview|question 1 of"]
+    "mustMatch": [
+      "IBM Plex",
+      "#1B4332|forest green"
+    ],
+    "mustNotMatch": [
+      "6.7 (quick )?questions|let's start the (full )?interview|question 1 of"
+    ]
   },
   {
     "id": "deslop-names-the-tells",
     "description": "A deslop request must reference the named tell catalog, not generic advice.",
     "prompt": "Using the tastecheck deslop-ui skill, list the AI tells you would check this hero section for: a centered hero with an indigo-to-violet gradient, three identical feature cards, and rounded-full buttons.",
-    "mustMatch": ["pill|9999px|rounded-full", "indigo|violet|purple", "centered hero|three (identical )?cards"],
+    "mustMatch": [
+      "pill|9999px|rounded-full",
+      "indigo|violet|purple",
+      "centered hero|three (identical )?cards"
+    ],
     "mustNotMatch": []
   },
   {
     "id": "bold-but-bounded",
-    "description": "Abstention on a trust-critical domain must stay distinctive-but-credible.",
-    "prompt": "Run the tastecheck design-system-interview for a credit union's online banking portal. I have no opinions at all — decide everything for me boldly.",
-    "mustMatch": ["credib|trust|restrain|appropriate"],
-    "mustNotMatch": ["sticker|riot|maximal collage|neon rave"]
+    "description": "Abstention on a trust-critical domain must stay distinctive-but-credible. The prompt requests an explicit suitability rationale so the assertion has checkable evidence (models often demonstrate credibility without naming it).",
+    "prompt": "Run the tastecheck design-system-interview for a credit union's online banking portal. I have no opinions at all — decide everything for me boldly. Reply in text only (no files), and end with one line explaining why your direction is appropriate for a financial institution.",
+    "mustMatch": [
+      "credib|trust|restrain|appropriate"
+    ],
+    "mustNotMatch": [
+      "sticker|riot|maximal collage|neon rave"
+    ]
   }
 ]

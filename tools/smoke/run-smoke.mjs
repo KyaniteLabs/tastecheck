@@ -18,13 +18,25 @@ const dryRun = process.argv.includes("--dry-run");
 // 4 turns was too tight: interview-triggering prompts died on "Reached max turns".
 const TIMEOUT_MS = 360_000;
 
+// Headless runs can't answer questions: suppress interactive feature offers
+// (browser visuals, setup prompts) that otherwise stall -p transcripts mid-answer.
+const HEADLESS_SUFFIX =
+  " (You are running headless: answer completely in plain text in this single reply." +
+  " Do not offer optional features, visual previews, or ask setup questions.)";
+
 function runAgent(prompt) {
+  const full = prompt + HEADLESS_SUFFIX;
   const cmd = agent === "codex"
-    ? ["codex", ["exec", "--sandbox", "read-only", prompt]]
-    : ["claude", ["-p", prompt, "--max-turns", "12"]];
+    ? ["codex", ["exec", "--sandbox", "read-only", full]]
+    : ["claude", ["-p", full, "--max-turns", "12"]];
   const res = spawnSync(cmd[0], cmd[1], { cwd: root, encoding: "utf8", timeout: TIMEOUT_MS });
   // Make timeouts/crashes visible — an empty transcript is undiagnosable.
-  const meta = res.signal ? `\n[runner: process killed by ${res.signal} — likely hit the ${TIMEOUT_MS / 1000}s timeout]` : "";
+  const notes = [];
+  if (res.signal) notes.push(`killed by ${res.signal} — likely hit the ${TIMEOUT_MS / 1000}s timeout`);
+  if (res.error) notes.push(`spawn error: ${res.error.message}`);
+  if (typeof res.status === "number" && res.status !== 0) notes.push(`agent exit code ${res.status}`);
+  if (!(res.stdout ?? "").trim() && !(res.stderr ?? "").trim()) notes.push("agent produced no output");
+  const meta = notes.length ? `\n[runner: ${notes.join("; ")}]` : "";
   return `${res.stdout ?? ""}\n${res.stderr ?? ""}${meta}`;
 }
 
