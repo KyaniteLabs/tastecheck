@@ -10,8 +10,10 @@ description: >-
 
 Accessibility isn't a feature you add — it's whether people can actually use what you
 built: with a keyboard, a screen reader, low vision, color blindness, a motor
-impairment, or just a phone in bright sun. It's also law in many places (ADA/EN 301
-549/AODA) and the same work that makes a UI usable for everyone. Most of it is cheap if
+impairment, or just a phone in bright sun. It's also law in many places (ADA, EN 301
+549, AODA, and the EU's European Accessibility Act — enforceable since June 2025 for
+most consumer-facing digital products) and the same work that makes a UI usable for
+everyone. Most of it is cheap if
 done as you build and painful if bolted on.
 
 This skill is a **prioritized fix pass to WCAG 2.2 AA**: the issues that actually occur,
@@ -30,9 +32,10 @@ These four catch the majority of real-world barriers:
    (not "click here").
 3. **Contrast:** Text ≥ 4.5:1 (large ≥ 3:1); UI/icons/focus rings ≥ 3:1. Nothing
    conveyed by **color alone**.
-4. **Structure:** One `<h1>`, heading levels not skipped, real landmarks (`<header>`
-   `<nav>` `<main>` `<footer>`), and semantic elements (`<button>`, not a clickable
-   `<div>`).
+4. **Structure:** One `<h1>` (best practice — WCAG doesn't strictly require it, but
+   screen-reader navigation benefits), heading levels not skipped, real landmarks
+   (`<header>` `<nav>` `<main>` `<footer>`), and semantic elements (`<button>`, not a
+   clickable `<div>`).
 
 ## Non-negotiables (the fixes that matter most)
 
@@ -127,4 +130,4 @@ were caught only by measuring.*
   keyboard + SR checks.
 - Pair with `component-states` (focus/disabled), `form-ux` (labels/errors),
   `color-system` (contrast), `responsive-layout` + `web-typography` (zoom/reflow),
-  `web-design-guidelines` (broader review).
+  and `cognitive-a11y` (the cognitive layer this pass doesn't cover).

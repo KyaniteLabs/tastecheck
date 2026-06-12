@@ -18,10 +18,10 @@ lightness. A practical 4-step ramp:
 
 | Token | Role | Example |
 |-------|------|---------|
-| `--bg` | app background (lowest) | `#121212` |
-| `--surface-1` | cards, panels | `#1e1e20` |
-| `--surface-2` | raised cards, popovers | `#26262a` |
-| `--surface-3` | modals, menus (highest) | `#2f2f34` |
+| `--color-bg` | app background (lowest) | `#121212` |
+| `--color-surface-1` | cards, panels | `#1e1e20` |
+| `--color-surface-2` | raised cards, popovers | `#26262a` |
+| `--color-surface-3` | modals, menus (highest) | `#2f2f34` |
 
 Rules:
 - Steps should be perceptually even — OKLCH lightness steps of ~0.03–0.04 work well
@@ -39,9 +39,9 @@ elevation — higher elevation = higher white-alpha. Approximate alphas: 1dp ≈
 2dp ≈ 7%, 4dp ≈ 9%, 8dp ≈ 12%, 16dp ≈ 15%, 24dp ≈ 16%.
 
 ```css
---surface-1: color-mix(in oklab, white 6%, var(--bg));
---surface-2: color-mix(in oklab, white 9%, var(--bg));
---surface-3: color-mix(in oklab, white 12%, var(--bg));
+--color-surface-1: color-mix(in oklab, white 6%, var(--color-bg));
+--color-surface-2: color-mix(in oklab, white 9%, var(--color-bg));
+--color-surface-3: color-mix(in oklab, white 12%, var(--color-bg));
 ```
 This keeps elevation consistent and derives from one base color.
 
@@ -60,7 +60,7 @@ surface; never rely on shadow alone for elevation on dark.
 
 ```css
 --shadow-float: 0 8px 30px rgb(0 0 0 / .5);   /* darker/larger than light-mode shadow */
-.modal { background: var(--surface-3); box-shadow: var(--shadow-float); }
+.modal { background: var(--color-surface-3); box-shadow: var(--shadow-float); }
 ```
 
 ## Self-check

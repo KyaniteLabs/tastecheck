@@ -140,8 +140,8 @@ Derive secondary text colors from your palette instead of hard-coding greys, and
 keep them tied to the background so contrast holds:
 
 ```css
-:root { --ink: #1a1a1a; --bg: #fff; }
-.muted { color: color-mix(in oklab, var(--ink) 70%, var(--bg)); } /* readable secondary text */
+:root { --color-text: #1a1a1a; --color-bg: #fff; }
+.muted { color: color-mix(in oklab, var(--color-text) 70%, var(--color-bg)); } /* readable secondary text */
 ```
 
 Prefer mixing in `oklab`/`oklch` for perceptually even results. Still **verify

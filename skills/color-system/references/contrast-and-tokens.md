@@ -32,7 +32,7 @@ reference *only* the semantic layer, so re-theming = swap the mapping.
   --neutral-900: oklch(0.22 0.01 250);
   /* semantic (roles — what components use) */
   --color-bg:            var(--neutral-50);
-  --color-surface:       white;
+  --color-surface-1:       white;
   --color-text:          var(--neutral-900);
   --color-text-muted:    oklch(0.50 0.02 250);
   --color-primary:       var(--brand-600);
