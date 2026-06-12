@@ -39,17 +39,17 @@ unchanged but the background changed:
 The light-mode red/green/amber are usually too saturated. Provide dark-tuned variants:
 
 ```css
-:root { --success:#1a7f37; --error:#cf222e; --warning:#9a6700; }
+:root { --color-success:#1a7f37; --color-error:#cf222e; --color-warning:#9a6700; }
 @media (prefers-color-scheme: dark) {
   :root {
-    --success: oklch(0.78 0.15 150);
-    --error:   oklch(0.72 0.17 25);
-    --warning: oklch(0.82 0.14 85);
+    --color-success: oklch(0.78 0.15 150);
+    --color-error:   oklch(0.72 0.17 25);
+    --color-warning: oklch(0.82 0.14 85);
   }
 }
 ```
 Tint their backgrounds with `color-mix` so alert surfaces don't blast:
-`background: color-mix(in oklab, var(--error) 18%, var(--color-bg));`
+`background: color-mix(in oklab, var(--color-error) 18%, var(--color-bg));`
 
 ## Handling brand colors that just won't pass
 

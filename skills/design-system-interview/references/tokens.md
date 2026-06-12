@@ -34,7 +34,7 @@ to diverge from the semantic defaults. Don't add it preemptively; it's overhead.
 | Token | Role |
 |---|---|
 | `--color-bg` | page ground |
-| `--color-surface-1` / `--color-surface-2` | raised surfaces (each step *lighter* in dark mode) |
+| `--color-surface-1` / `--color-surface-2` (/ `-3` if a dark elevation ramp needs it) | raised surfaces (each step *lighter* in dark mode) |
 | `--color-text` / `--color-text-muted` | ink / secondary ink |
 | `--color-border` | hairlines, dividers, input borders |
 | `--color-primary` / `--color-primary-hover` / `--color-primary-ink` | primary action bg, its hover, text *on* it |
@@ -115,7 +115,8 @@ to the implementing skills — this block is the *contract*; they fill it in:
 - **deslop-ui** → audits the built UI against this committed spec, not the average.
 
 ## Naming rules
-- Semantic names describe **role**, not value: `--color-error`, not `--color-red`.
+- Semantic names describe **role**, not value: `--color-error`, never a hue name like
+  "color-red".
 - Primitives describe **value/scale position**: `--brand-600`, `--space-4`.
 - Be consistent: `--{category}-{role|step}`. Don't mix conventions.
 - One source of truth: the other skills *extend* this, never fork a parallel set.
