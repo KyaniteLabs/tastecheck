@@ -31,6 +31,15 @@ constraint. Your job here is to extract or supply those refusals.
    low-friction help get a short recommendation first: "I can pick a calm default and
    keep moving, or we can do the full taste interview." Pair this with
    `cognitive-a11y`: decisive should not mean pressuring.
+0.5 **Check what already exists — never interview past given direction.** If the
+   project already has a `DESIGN-SYSTEM.md`, brand guidelines, or the user *stated*
+   direction in the request ("use IBM Plex and forest green"), don't run the full
+   interview: restate the direction in one line, fill only the genuinely undecided
+   dimensions (usually structure/rhythm and the signature move), and confirm. And
+   **never adopt an example system as the answer** — worked examples in this skill,
+   sample/case-study files in any repo, or gallery sites demonstrate *variance*, not a
+   menu. If multiple DESIGN-SYSTEM-like files exist in a project, ask which one is
+   canonical; never silently pick one.
 1. **Don't start building.** If the request is "build/make/design a [frontend thing]"
    and no direction exists, run this interview first. Say so: "Before I build, 6 quick
    questions so this doesn't come out generic."
@@ -43,13 +52,18 @@ constraint. Your job here is to extract or supply those refusals.
    a specific named choice and write it down.
 5. **If the user truly doesn't care, decide boldly and state it.** A committed
    unexpected choice beats a safe average. Never resolve indecision toward the mean.
+   Bold is bounded by the domain: for trust-critical surfaces (banking, healthcare,
+   legal, government) commit to a *distinctive-but-credible* direction — editorial
+   restraint, confident type, a real hue — not novelty for its own sake. "Bold" means
+   specific, never reckless.
 6. **Emit the artifact.** Produce `DESIGN-SYSTEM.md` + a token block, then hand off to
    `color-system`, `web-typography`, etc. to implement.
 
 ## The interview (the forcing questions)
 
 Ask these in order. Each has the **anti-slop framing** and **concrete forks** to offer.
-Keep it to ~6–7; this is a sprint, not a survey.
+Keep the conversation to ~6–8 exchanges by batching related questions; this is a
+sprint, not a survey.
 
 1. **Reference, not adjectives.** "Name one site, brand, or object whose feel you want
    — Stripe? a Criterion DVD case? a 1970s ski lodge? Bloomberg terminal?" Concrete
@@ -64,9 +78,11 @@ Keep it to ~6–7; this is a sprint, not a survey.
 4. **Type stance.** Recommend a distinctive display + readable body pairing (NOT Inter/
    Roboto). "Headlines in Fraunces (editorial) or Space Grotesk (technical); body in a
    clean humanist sans. Or do you have brand fonts?" Force a real face. (→ web-typography)
-5. **Color anchor.** "One dominant brand hue + one sharp accent — what's the dominant?
-   (and we tint neutrals toward it; no dead grays; no purple-on-white default)." Get a
-   hue, not a palette; we generate the ramp. (→ color-system)
+5. **Color anchor & mode.** "One dominant brand hue + one sharp accent — what's the
+   dominant? (and we tint neutrals toward it; no dead grays; no purple-on-white
+   default)." Get a hue, not a palette; we generate the ramp. In the same breath,
+   decide **mode**: light-only, or light + dark from day one (retrofit dark later is
+   how token systems rot). (→ color-system, theming)
 6. **Density & shape.** Spacious or dense? Sharp corners (0–4px), soft (8–12px), or
    round (16px+)? Flat or layered/shadowed? These set the whole feel and are usually
    skipped. Land on numbers.
@@ -80,8 +96,20 @@ Keep it to ~6–7; this is a sprint, not a survey.
    unexpected color, a distinctive grid/structure, one orchestrated load animation?"
    Designed work has exactly one. Pick it.
 
-(Optional 9th for products: motion level — restrained / lively / none — feeding
+9. **Imagery & iconography stance (one decision, huge slop lever).** What fills the
+   image-shaped holes — real photography (what treatment?), illustration (what style?),
+   pure type/texture, or *nothing*? And one icon set, by name, at one stroke weight —
+   never emoji-as-icons, never three mixed icon styles. Generic AI-gradient
+   illustrations and stock-photo soup undo every other commitment. (→ `art-direction`)
+
+(Optional 10th for products: motion level — restrained / lively / none — feeding
 `micro-motion`.)
+
+**Do not copy this skill's examples.** Every concrete example in this file and its
+references ("1970s ski lodge," Fraunces, burnt-orange…) illustrates *what specificity
+looks like* — it is not a recommended answer. If your output's aesthetic phrase, faces,
+or hue match an example here, you've parroted the textbook: re-derive from the user's
+actual references.
 
 ## Anti-slop guardrails (enforce during the interview)
 
@@ -126,6 +154,9 @@ committed spec (not the average).
 
 ## Self-check (before you start building)
 
+0. If direction already existed (DESIGN-SYSTEM.md, brand guide, stated prefs), did I
+   build on it instead of re-interviewing — and did I avoid adopting any example or
+   sample system as the answer?
 1. Did I run the interview *before* building, on a vague request?
 2. Is there a **named aesthetic in one concrete phrase** (not "modern/clean")?
 3. One dominant color hue chosen (not five pastels, not "we'll see")?
@@ -133,7 +164,11 @@ committed spec (not the average).
 5. A pole picked on each personality axis (no "both")?
 6. Density + corner + elevation decided as actual values?
 7. One signature move named?
-8. Wrote `DESIGN-SYSTEM.md` + tokens, and handed off to the implementing skills?
+8. Imagery/illustration stance + one named icon set decided (not left to chance)?
+9. Mode decided (light-only vs light+dark) — not deferred to a retrofit?
+10. Wrote `DESIGN-SYSTEM.md` + tokens, and handed off to the implementing skills?
+11. Does my output match any worked example from this skill? If yes, re-derive — that's
+    parroting, not designing.
 
 ## How to deliver
 
