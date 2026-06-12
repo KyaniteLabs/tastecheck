@@ -14,14 +14,18 @@ const scenarios = JSON.parse(readFileSync(join(root, "tools/smoke/prompts.json")
 const agent = process.env.SMOKE_AGENT ?? "claude";
 const only = process.argv.includes("--only") ? process.argv[process.argv.indexOf("--only") + 1] : null;
 const dryRun = process.argv.includes("--dry-run");
-const TIMEOUT_MS = 180_000;
+// Agentic scenarios load skills and run interviews — they need real turn/time budget.
+// 4 turns was too tight: interview-triggering prompts died on "Reached max turns".
+const TIMEOUT_MS = 360_000;
 
 function runAgent(prompt) {
   const cmd = agent === "codex"
     ? ["codex", ["exec", "--sandbox", "read-only", prompt]]
-    : ["claude", ["-p", prompt, "--max-turns", "4"]];
+    : ["claude", ["-p", prompt, "--max-turns", "12"]];
   const res = spawnSync(cmd[0], cmd[1], { cwd: root, encoding: "utf8", timeout: TIMEOUT_MS });
-  return `${res.stdout ?? ""}\n${res.stderr ?? ""}`;
+  // Make timeouts/crashes visible — an empty transcript is undiagnosable.
+  const meta = res.signal ? `\n[runner: process killed by ${res.signal} — likely hit the ${TIMEOUT_MS / 1000}s timeout]` : "";
+  return `${res.stdout ?? ""}\n${res.stderr ?? ""}${meta}`;
 }
 
 let failures = 0;
