@@ -20,18 +20,22 @@ function count(pattern, text = html) {
 }
 
 function assertSkillCoverage() {
-  const skillDirs = readdirSync(join(root, "skills"))
-    .filter((name) => statSync(join(root, "skills", name)).isDirectory())
-    .sort();
+  const manifest = JSON.parse(readFileSync(join(root, "skills.json"), "utf8"));
+  const integrationSkills = manifest.skills.filter((s) => s.landing).map((s) => s.name).sort();
   const covered = new Set([...html.matchAll(/data-skill="([^"]+)"/g)].map((match) => match[1]));
 
-  for (const skill of skillDirs) {
+  for (const skill of integrationSkills) {
     if (!covered.has(skill)) fail(`${rel(page)} does not exercise ${skill}`);
   }
-  if (covered.size !== skillDirs.length) {
-    fail(`${rel(page)} covers ${covered.size} unique skills, expected ${skillDirs.length}`);
+  for (const skill of covered) {
+    if (!integrationSkills.includes(skill)) {
+      fail(`${rel(page)} claims data-skill="${skill}" not marked landing:true in skills.json`);
+    }
   }
-  if (!/skillCount:\s*15/.test(html)) fail(`${rel(page)} browser test contract does not expose skillCount: 15`);
+  const countPattern = new RegExp(`skillCount:\\s*${integrationSkills.length}\\b`);
+  if (!countPattern.test(html)) {
+    fail(`${rel(page)} browser test contract does not expose skillCount: ${integrationSkills.length}`);
+  }
 }
 
 function assertOperatorControls() {
