@@ -52,7 +52,10 @@ Each entry: **the tell → why it reads as AI → the fix (specific value).**
 ### Buttons & shape
 - **Pill CTAs** — `border-radius: 9999px` / `rounded-full` on primary action
   buttons. Reads as template. **Fix:** 6–10px (`rounded-md`/`rounded-lg`). Reserve
-  fully-round for tags, chips, avatars, icon buttons — not text CTAs.
+  fully-round for tags, chips, avatars, icon buttons — not text CTAs. (Exception
+  that proves the rule: if the project's *committed* DESIGN-SYSTEM.md chooses pills
+  as a deliberate signature, that's a choice, not a tell — slop is the *unchosen*
+  default, never the documented decision.)
 - **Everything same radius** — every card, input, button at `rounded-xl`. **Fix:**
   one radius system with 2–3 steps (e.g. 6px controls / 12px cards), applied by role.
 - **Uniform heavy shadow** — `shadow-2xl` (or `shadow-lg`) on every card. **Fix:**

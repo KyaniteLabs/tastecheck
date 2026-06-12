@@ -10,9 +10,9 @@
 
 :root {
   /* --- Font stacks (Modern Font Stacks style; all are pre-installed, $0 load) --- */
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
                "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
-  --font-serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia,
+  --font-display: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia,
                 "Times New Roman", serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Source Code Pro",
                Menlo, Consolas, "DejaVu Sans Mono", monospace;
@@ -35,16 +35,16 @@
   --measure-narrow: 45ch;
 
   /* --- Color (check contrast >= 4.5:1 for body; see references/accessibility.md) --- */
-  --ink: #1a1a1a;
-  --bg: #ffffff;
-  --ink-muted: color-mix(in oklab, var(--ink) 68%, var(--bg));
+  --color-text: #1a1a1a;
+  --color-bg: #ffffff;
+  --color-text-muted: color-mix(in oklab, var(--color-text) 68%, var(--color-bg));
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --ink: #ececec;
-    --bg: #131313;
-    --ink-muted: color-mix(in oklab, var(--ink) 70%, var(--bg));
+    --color-text: #ececec;
+    --color-bg: #131313;
+    --color-text-muted: color-mix(in oklab, var(--color-text) 70%, var(--color-bg));
   }
 }
 
@@ -56,9 +56,9 @@ html {
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
   font-size: var(--step-0);
   line-height: var(--leading-body);
   font-synthesis: none;            /* don't fake bold/italic — load the real cut */
@@ -94,9 +94,9 @@ li { margin-block: 0.25em 0; }
 :is(h1, h2, h3, h4, h5, h6) + * { margin-block-start: 0; }
 * + :is(h2, h3, h4) { margin-block-start: 1.6em; }
 
-.lead { font-size: var(--step-1); color: var(--ink-muted); max-width: var(--measure); }
+.lead { font-size: var(--step-1); color: var(--color-text-muted); max-width: var(--measure); }
 .small, small, figcaption { font-size: var(--step--1); }
-.muted { color: var(--ink-muted); }
+.muted { color: var(--color-text-muted); }
 
 /* --- Links: underlined, accessible offset --- */
 a {
@@ -109,7 +109,7 @@ a:hover { text-decoration-thickness: 0.12em; }
 
 /* --- Blockquote --- */
 blockquote {
-  border-inline-start: 0.2rem solid var(--ink-muted);
+  border-inline-start: 0.2rem solid var(--color-text-muted);
   padding-inline-start: 1em;
   font-style: italic;
 }
@@ -166,5 +166,5 @@ table { font-variant-numeric: tabular-nums; border-collapse: collapse; }
   descent-override: 22%;
   line-gap-override: 0%;
 }
-:root { --font-sans: "Brand", "Brand-fallback", system-ui, sans-serif; }
+:root { --font-body: "Brand", "Brand-fallback", system-ui, sans-serif; }
 */

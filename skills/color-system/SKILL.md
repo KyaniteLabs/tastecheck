@@ -50,7 +50,10 @@ real), **H** 0–360 hue. Benefits that matter:
   evenly-distributed five-pastel palette is an AI-slop tell (see `deslop-ui`). Commit.
 - **Tint neutrals toward the brand hue** (tiny chroma) — pure `#888` grays look dead.
 - **Verify WCAG on real pairs:** body text ≥ 4.5:1, large text/UI/icons ≥ 3:1. A color
-  that looks fine can still fail; measure.
+  that looks fine can still fail; measure. (WCAG 2.x ratios remain the AA/legal target
+  in 2026; APCA is informative-only — use it as a sanity check, not the compliance
+  number. CSS `contrast-color()` is useful where supported but still ships only a
+  black/white answer — don't lean on it for brand pairs.)
 - **Don't convey meaning by color alone** (color-blind users) — pair with icon/text.
 - **Chroma tapers at lightness extremes.** Max chroma lives in the mid L range; near-
   white and near-black stops must drop C or they look neon/muddy.
@@ -73,6 +76,7 @@ real), **H** 0–360 hue. Benefits that matter:
 
   /* Neutrals = brand hue at tiny chroma (not dead gray) */
   --neutral-50:  oklch(0.98 0.005 250);
+  --neutral-100: oklch(0.95 0.006 250);
   --neutral-200: oklch(0.90 0.008 250);
   --neutral-500: oklch(0.62 0.012 250);
   --neutral-800: oklch(0.32 0.010 250);
@@ -85,11 +89,26 @@ real), **H** 0–360 hue. Benefits that matter:
   --warning: oklch(0.75 0.15 85);
   --info:    oklch(0.65 0.14 230);
 
-  /* Semantic aliases (what components reference) */
+  /* Semantic aliases (the canonical contract names — what components reference) */
   --color-bg: var(--neutral-50);
+  --color-surface-1: var(--neutral-100);
+  --color-surface-2: var(--neutral-200);
   --color-text: var(--neutral-900);
+  --color-text-muted: var(--neutral-500);
+  --color-border: var(--neutral-200);
   --color-primary: var(--brand-600);
   --color-primary-hover: var(--brand-700);
+  --color-primary-ink: var(--neutral-50);
+  --color-focus: var(--brand-600);
+
+  /* Data-viz categorical series (consumed by data-viz; ≥3:1 vs bg AND vs neighbors,
+     ordered so series 1–2 alone remain distinguishable for color-blind readers) */
+  --series-1: var(--brand-600);
+  --series-2: oklch(0.62 0.14 110);   /* ~hue-shifted, matched L/C */
+  --series-3: oklch(0.62 0.14 350);
+  --series-4: var(--neutral-500);
+  --chart-grid: var(--neutral-200);
+  --chart-label: var(--neutral-500);
 }
 ```
 

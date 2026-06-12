@@ -27,7 +27,7 @@ surface they sit on.
 
 ### MP-5 · Tokens are the sync mechanism
 Two themes drift unless components reference semantic variables, never raw colors.
-**Consequence:** `--surface/--text/--accent` swap by theme; components are theme-blind.
+**Consequence:** `--surface/--color-text/--color-accent` swap by theme; components are theme-blind.
 
 ## Decision records
 
@@ -46,7 +46,7 @@ Two themes drift unless components reference semantic variables, never raw color
 
 ### DR-4 · Desaturate accents and re-test contrast
 - **Why (MP-4):** stop the glow; a light-mode-passing color may fail on dark.
-- **Apply:** +L/−C in OKLCH; verify against `--bg` and raised surfaces.
+- **Apply:** +L/−C in OKLCH; verify against `--color-bg` and raised surfaces.
 
 ### DR-5 · Set color-scheme
 - **Why:** native controls/scrollbars stay light otherwise.
