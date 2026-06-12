@@ -2,9 +2,9 @@
   {
     "id": "vague-build-runs-interview",
     "description": "A vague build request must trigger the interview, not a build (and never adopt a sample system).",
-    "prompt": "You have the tastecheck skills available. Build me a landing page for a pottery studio.",
+    "prompt": "You have the tastecheck skills available. Build me a landing page for a pottery studio. (Reply in text only for now — do not create or edit any files.)",
     "mustMatch": ["question|before I build|name one site|reference"],
-    "mustNotMatch": ["implement(ing)? the (copper|swiss|maximal|concrete|clay)", "samples?/(copper|swiss|maximal|concrete|clay)", "choose (one|a) (sample|system|case study)"]
+    "mustNotMatch": ["<!doctype|<html", "implement(ing)? the (copper|swiss|maximal|concrete|clay)", "samples?/(copper|swiss|maximal|concrete|clay)", "choose (one|a) (sample|system|case study)"]
   },
   {
     "id": "samples-menu-trap",
@@ -23,7 +23,7 @@
   {
     "id": "existing-direction-skips-interview",
     "description": "Supplied direction must short-circuit to confirmation, not a full interview.",
-    "prompt": "Our brand uses IBM Plex Sans and forest green #1B4332, spacious, light mode only. Using the tastecheck skills, set up the design tokens.",
+    "prompt": "Our brand uses IBM Plex Sans and forest green #1B4332, spacious, light mode only. Using the tastecheck design-system-interview skill, state the committed direction and print the starting token block right here in your reply — do not write any files.",
     "mustMatch": ["IBM Plex", "#1B4332|forest green"],
     "mustNotMatch": ["6.7 (quick )?questions|let's start the (full )?interview|question 1 of"]
   },
