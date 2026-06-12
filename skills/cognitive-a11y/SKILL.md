@@ -23,7 +23,7 @@ fixes help everyone — but each profile has sharp specifics, below.
 - **Plain language.** Short sentences (aim ≤ ~20 words), common words, **literal not
   idiomatic** (no "hit the ground running," "low-hanging fruit"), active voice,
   front-load the point. Target ~grade 8 reading level for general UI. (Pairs with
-  `humanize-copy`; for other languages, `idiomatic-translation`.)
+  `humanize-copy`; for multilingual surfaces, `i18n-ready`.)
 - **Chunk and structure.** Short paragraphs, headings, lists, one idea per chunk. Long
   pages get a **TL;DR / summary up top**. Long tasks get **visible steps + progress.**
 - **Be predictable and consistent.** Same nav, labels, and patterns everywhere; help in

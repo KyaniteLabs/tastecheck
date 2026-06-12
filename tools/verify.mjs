@@ -55,7 +55,15 @@ function assertSkillStructure() {
     }
   }
 
-  if (skillDirs.length !== 15) fail(`expected 15 skills, found ${skillDirs.length}`);
+  const manifest = JSON.parse(readFileSync(join(root, "skills.json"), "utf8"));
+  const manifestNames = new Set(manifest.skills.map((s) => s.name));
+  const dirNames = new Set(skillDirs.map((dir) => dir.split("/").pop()));
+  for (const name of manifestNames) {
+    if (!dirNames.has(name)) fail(`skills.json lists ${name} but skills/${name}/ does not exist`);
+  }
+  for (const name of dirNames) {
+    if (!manifestNames.has(name)) fail(`skills/${name}/ exists but is not listed in skills.json`);
+  }
 }
 
 function assertCommandTargets() {

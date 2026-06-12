@@ -1,3 +1,10 @@
+> **⚠ ILLUSTRATIVE CASE STUDY — DO NOT IMPLEMENT OR CHOOSE FROM THIS.** This file is one
+> of five worked examples that exist only to demonstrate how differently the same content
+> can come out of the design-system-interview. It is **not** a menu option, not a starter,
+> and not this (or any) project's design system. Derive a NEW system from the actual
+> user's interview answers. If you arrived here looking for a project's DESIGN-SYSTEM.md,
+> this is not it.
+
 # Sample E — "Clay" (soft / humanist) — Design System (from a simulated interview)
 
 > **North star:** Calm, warm, human. The quiet-premium lane — soft edges, warm light, lots

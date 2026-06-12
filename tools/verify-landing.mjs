@@ -20,19 +20,27 @@ function count(pattern, text = html) {
 }
 
 function assertLandingSkillCoverage() {
-  const skillDirs = readdirSync(join(root, "skills"))
-    .filter((name) => statSync(join(root, "skills", name)).isDirectory())
-    .sort();
+  const manifest = JSON.parse(readFileSync(join(root, "skills.json"), "utf8"));
+  const landingSkills = manifest.skills.filter((s) => s.landing).map((s) => s.name).sort();
+  // Every manifest skill must exist on disk regardless of landing coverage.
+  for (const s of manifest.skills) {
+    if (!statSync(join(root, "skills", s.name)).isDirectory()) {
+      fail(`skills.json lists ${s.name} but skills/${s.name}/ is not a directory`);
+    }
+  }
   const covered = new Set([...html.matchAll(/data-skill="([^"]+)"/g)].map((match) => match[1]));
 
-  for (const skill of skillDirs) {
+  for (const skill of landingSkills) {
     if (!covered.has(skill)) fail(`${rel(page)} does not run ${skill} through the landing page`);
   }
-  if (covered.size !== skillDirs.length) {
-    fail(`${rel(page)} covers ${covered.size} unique landing-page skills, expected ${skillDirs.length}`);
+  for (const skill of covered) {
+    if (!landingSkills.includes(skill)) fail(`${rel(page)} claims data-skill="${skill}" not marked landing:true in skills.json`);
   }
   if (!/window\.tastecheckLanding=/.test(html)) fail(`${rel(page)} missing landing-page browser contract`);
-  if (!/skillCount:\s*15/.test(html)) fail(`${rel(page)} browser contract does not expose skillCount: 15`);
+  const countPattern = new RegExp(`skillCount:\\s*${landingSkills.length}\\b`);
+  if (!countPattern.test(html)) {
+    fail(`${rel(page)} browser contract does not expose skillCount: ${landingSkills.length} (the landing-covered skills)`);
+  }
 }
 
 function assertLandingOperatorPaths() {

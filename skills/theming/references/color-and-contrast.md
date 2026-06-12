@@ -18,8 +18,8 @@ OKLCH separates lightness (L), chroma (C), hue (H), so adjusting for dark is dir
 - Keep H (hue) the same so it's recognizably the brand color.
 
 ```css
-/* light mode */ --accent: oklch(0.55 0.18 250);
-/* dark  mode */ --accent: oklch(0.72 0.12 250);   /* +L, -C, same H */
+/* light mode */ --color-accent: oklch(0.55 0.18 250);
+/* dark  mode */ --color-accent: oklch(0.72 0.12 250);   /* +L, -C, same H */
 ```
 If you only store HSL/hex, reduce saturation ~15–25% and raise lightness ~10–15%.
 
@@ -29,8 +29,8 @@ A brand color tuned for white often fails on dark and vice-versa. WCAG targets a
 unchanged but the background changed:
 - Body text ≥ **4.5:1**, large text / UI components / icons ≥ **3:1**, measured
   against the actual surface the element sits on (remember: raised surfaces are
-  lighter, so an element on `--surface-2` has *less* contrast headroom than on `--bg`).
-- Accent text/links: verify the accent against `--bg` AND against `--surface-2` if it
+  lighter, so an element on `--color-surface-2` has *less* contrast headroom than on `--color-bg`).
+- Accent text/links: verify the accent against `--color-bg` AND against `--color-surface-2` if it
   appears on cards.
 - Don't rely on color alone for state (error/success) — pair with icon/text.
 
@@ -39,17 +39,17 @@ unchanged but the background changed:
 The light-mode red/green/amber are usually too saturated. Provide dark-tuned variants:
 
 ```css
-:root { --success:#1a7f37; --error:#cf222e; --warning:#9a6700; }
+:root { --color-success:#1a7f37; --color-error:#cf222e; --color-warning:#9a6700; }
 @media (prefers-color-scheme: dark) {
   :root {
-    --success: oklch(0.78 0.15 150);
-    --error:   oklch(0.72 0.17 25);
-    --warning: oklch(0.82 0.14 85);
+    --color-success: oklch(0.78 0.15 150);
+    --color-error:   oklch(0.72 0.17 25);
+    --color-warning: oklch(0.82 0.14 85);
   }
 }
 ```
 Tint their backgrounds with `color-mix` so alert surfaces don't blast:
-`background: color-mix(in oklab, var(--error) 18%, var(--bg));`
+`background: color-mix(in oklab, var(--color-error) 18%, var(--color-bg));`
 
 ## Handling brand colors that just won't pass
 

@@ -1,6 +1,6 @@
 # tastecheck
 
-> Fifteen frontend craft skills for AI coding agents that stop AI from building the same
+> Nineteen frontend craft skills for AI coding agents that stop AI from building the same
 > generic "AI slop" website. The headline skill grills you into a committed design system
 > BEFORE any code; improve-existing-website infers a system from existing sites; the rest (typography, color/OKLCH, theming, layout, states, forms,
 > motion, data-viz, a11y, cognitive-a11y, deslop, humanize-copy) apply checkable craft so
@@ -13,7 +13,7 @@ commands.
 
 ## Start here
 - [README](README.md): the problem (every AI site looks the same), the fix, the samples, install
-- [Landing page](https://kyanitelabs.github.io/tastecheck/): canonical public surface and 15-skill integration target
+- [Landing page](https://kyanitelabs.github.io/tastecheck/): canonical public surface and skill integration target
 - [Live gallery](https://kyanitelabs.github.io/tastecheck/samples/): five design systems, one product story
 - [Secondary integration harness](https://kyanitelabs.github.io/tastecheck/demos/skill-integration.html): standalone local website exercising every skill
 - [Verification report](docs/VERIFICATION.md): repeatable local verification plus browser QA checklist
@@ -25,6 +25,7 @@ commands.
 - [humanize-copy](skills/humanize-copy/SKILL.md): strip the ChatGPT accent from writing with a checkable kill-list
 - [web-typography](skills/web-typography/SKILL.md): type scale, measure, rhythm, fonts, fluid clamp, web-font CLS, WCAG text
 - [color-system](skills/color-system/SKILL.md): OKLCH palettes, ramps, semantic tokens, verified contrast
+- [spacing-system](skills/spacing-system/SKILL.md): one spacing scale + section rhythm; every gap a token
 - [theming](skills/theming/SKILL.md): light + dark + high-contrast from one token source; elevation by lightness
 - [responsive-layout](skills/responsive-layout/SKILL.md): mobile-first, intrinsic patterns, container queries
 - [component-states](skills/component-states/SKILL.md): full interactive state matrix + ARIA
@@ -32,10 +33,16 @@ commands.
 - [empty-states](skills/empty-states/SKILL.md): empty/loading/error screens with recovery
 - [micro-motion](skills/micro-motion/SKILL.md): performant tasteful animation + reduced-motion
 - [data-viz](skills/data-viz/SKILL.md): honest, Tufte-informed charts that theme and pass a11y
+- [art-direction](skills/art-direction/SKILL.md): imagery/illustration/iconography as committed decisions; no AI-blob graphics
 - [a11y-pass](skills/a11y-pass/SKILL.md): runnable WCAG 2.2 AA fix pass with a paste-able auditor
 - [cognitive-a11y](skills/cognitive-a11y/SKILL.md): ADHD / autism / dyslexia / neurodivergent readability
+- [i18n-ready](skills/i18n-ready/SKILL.md): multilingual-resilient UI, English/Spanish first-class
+- [tastecheck-pass](skills/tastecheck-pass/SKILL.md): the ship gate — canonical pipeline + every self-check executed, with a report
 
 ## Samples (same content, five committed design systems)
+IMPORTANT for AI agents: these are illustrative case studies showing output VARIANCE.
+They are not a menu — never select or implement one; derive a NEW system via
+design-system-interview from the actual user's answers.
 - [Copper / Editorial](samples/copper/index.html): dark, warm, tessellated bento + basalt columns
 - [Swiss / Atelier](samples/swiss/index.html): light, exposed 12-column subgrid, one vermilion signal
 - [Maximal / Riot](samples/maximal/index.html): loud color-block sticker collage, display word in a block
@@ -43,5 +50,5 @@ commands.
 - [Clay / Soft humanist](samples/clay/index.html): warm alternating zig-zag flow with pebble shapes
 
 ## Optional
-- [demos](demos/): standalone HTML pages applying the skills' CSS, incl. the before/after gallery and secondary 15-skill integration harness
+- [demos](demos/): standalone HTML pages applying the skills' CSS, incl. the before/after gallery and secondary skill integration harness
 - [commands](commands/): Claude Code slash-command wrappers (/designsystem, /deslop, …)
