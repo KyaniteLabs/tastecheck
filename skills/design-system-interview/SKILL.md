@@ -46,6 +46,12 @@ constraint. Your job here is to extract or supply those refusals.
 2. **Ask in rounds, not all at once.** Lead each question with a *concrete recommended
    default* (your opinion), so the user can react ("yes" / "no, more X") instead of
    facing a blank. Reacting is easier than inventing — and it still forces a decision.
+2.5 **Non-interactive context? Show your work, don't decide silently.** If you're
+   running where the user cannot answer (one-shot prompt, headless run, CI), do NOT
+   skip straight to a finished system: surface the forcing questions WITH the default
+   you'd choose for each, clearly labeled as overridable assumptions, then proceed on
+   those defaults. "Decide boldly" covers a user who *abstained* — not a user who was
+   never shown the questions.
 3. **Push back on vagueness.** "Modern / clean / professional / sleek" are non-answers
    — that *is* the average. When you hear them, counter with concrete forks (below).
 4. **Force a commitment per dimension.** Don't leave a dimension at "default"; land on
