@@ -49,6 +49,13 @@ direction, foundations, structure, a11y, and the deslop audit are never skippabl
    **cold load** of the finished artifact (fresh page, no interaction): all content
    visible, no validation errors showing before any input, no stuck skeletons or
    unrevealed sections. A page can pass every interactive check and still open broken.
+   On that same fresh load, paste the gate's own auditor (`assets/gate-audit.js`) into
+   the console and copy its printed lines into the report — it mechanically catches
+   what self-reported tables most often get wrong: `hidden` defeated by a CSS display
+   rule, error text visible before input, content stuck at opacity 0, uniform card
+   grids, stat-counter bands, pill CTAs, and the indigo gradient. Script output is
+   evidence; cross-model runs have caught real shipped bugs with it that both the
+   building model's gate and a human visual review missed.
 4. **Audit against the spec, not taste:** does the output match the committed
    aesthetic phrase, tokens, refusals, and signature move? Any default that snuck back
    in on any plane — surface, structural skeleton, or verbal (`deslop-ui` tell catalog
