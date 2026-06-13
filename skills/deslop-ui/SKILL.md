@@ -114,11 +114,25 @@ Answer each; any "yes" in the first group means it's still slop:
 7. Emoji in section headers? → real headings/icon set.
 8. Default untouched Tailwind slate/gray tokens? → semantic, hue-tinted tokens.
 
+Then the **structural check** — sketch the page's section stack first; these can't be
+grepped, which is exactly why generated pages pass the surface checks and still ship
+the generic skeleton (any "yes" here is still slop):
+
+9. Section stack = the SaaS template skeleton (nav → centered hero → "the problem" →
+   3-step "how it works" → uniform card grid → testimonial/stat-counter band → CTA →
+   footer)? → reorder, cut, or vary section treatment.
+10. Any uniform equal-card grid — N identical bordered boxes (the "three cards", or
+    6/9/12)? → irregular sizes, a lead item, or not a grid at all.
+11. Every section the same rhythm (eyebrow → H2 → lede → grid, same padding, same
+    shape)? → syncopate width, density, alignment, and treatment.
+12. Image-shaped placeholder boxes where the committed spec promised real imagery?
+    → ship the committed art direction or change the commitment (see `art-direction`).
+
 Then the **commitment check** (the positive half — see `references/design-direction.md`):
-9. Can you name the aesthetic in one phrase ("1970s ski lodge", "Swiss editorial",
-   "terminal/brutalist")? If not, you've only removed defaults, not designed.
-10. Is there one dominant color and one real accent — not five timid pastels?
-11. Does typography have real size/weight contrast (3×+ / 800-vs-300)?
+13. Can you name the aesthetic in one phrase ("1970s ski lodge", "Swiss editorial",
+    "terminal/brutalist")? If not, you've only removed defaults, not designed.
+14. Is there one dominant color and one real accent — not five timid pastels?
+15. Does typography have real size/weight contrast (3×+ / 800-vs-300)?
 
 ## Three planes of slop (don't stop at the surface)
 
@@ -126,8 +140,10 @@ Slop lives on three planes — fixing one leaves the others:
 1. **Surface/visual** — palette, type, shape, effects (the Tell Catalog above).
 2. **Structural** — the layout *skeleton* and rhythm. You can fix every pill button and
    still ship the generic SaaS skeleton (centered hero → 3-step → uniform card grid).
-   This is the deepest layer and the one most AI pages never escape — see
-   `references/structural-tells.md`. **Audit every page structurally, not just its parts.**
+   This is the deepest layer and the one most AI pages never escape. The runnable
+   checks are items 9–12 of the self-check above — they are part of every deslop pass,
+   not optional reading; `references/structural-tells.md` is the full catalog with
+   fixes. **Audit every page structurally, not just its parts.**
 3. **Verbal** — the copy/voice (the ChatGPT accent). Hand to the **`humanize-copy`** skill.
 
 And slop **moves**: each anti-slop choice becomes next year's default. `structural-tells.md`
