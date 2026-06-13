@@ -14,7 +14,8 @@ A page is only deslopped when all three planes are.
 
 ## The structural tells (named, with the fix)
 - **The SaaS template skeleton** — nav → centered hero → "the problem" → 3-step "how it
-  works" → uniform feature-card grid → testimonial row → CTA band → footer, in that order.
+  works" → uniform feature-card grid → testimonial row or stat-counter band (three big
+  numbers with labels) → CTA band → footer, in that order.
   **Fix:** vary section *order, count, and treatment*; cut or merge the boilerplate
   sections; let the content dictate structure, not the template.
 - **Centered everything** — hero (and most sections) center-aligned, content in a single
@@ -57,6 +58,8 @@ when the defaults shift.
    can't name the structural choice, it's slop — go back to the interview.
 
 ## Self-check
+(The short form of this list also lives in the SKILL.md self-check, items 9–12, so it
+runs on every pass — keep the two in sync when editing.)
 - [ ] Section stack is not the generic SaaS skeleton (varied order/treatment).
 - [ ] Hero/composition is asymmetric, not centered-column.
 - [ ] No uniform equal-card grid (irregular sizes or a different structure).
