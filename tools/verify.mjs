@@ -149,6 +149,25 @@ function assertNoBadClampMath() {
   }
 }
 
+// Catch curly/smart quotes used as HTML attribute delimiters (class=”…”). LLM agents
+// emit these constantly; the browser then never matches the intended class/selector, so
+// the layout silently degrades and the page still "passes" every content check. The
+// signature `=` immediately followed by a curly quote is never valid HTML and never
+// occurs in prose, so this is a zero-false-positive trip. (Found the hard way: four
+// agents shipped curly-broken sample layouts that all reported npm test green.)
+function assertNoCurlyQuoteAttributes() {
+  const curlyAfterEquals = /=[“”‘’]/;
+  for (const path of files(root, [".html"])) {
+    const lines = readFileSync(path, "utf8").split("\n");
+    lines.forEach((line, i) => {
+      if (curlyAfterEquals.test(line)) {
+        const at = line.search(curlyAfterEquals);
+        fail(`${rel(path)}:${i + 1} curly quote used as an attribute delimiter (use straight "): …${line.slice(Math.max(0, at - 12), at + 14)}…`);
+      }
+    });
+  }
+}
+
 function assertLocalLinks() {
   const candidates = files(root, [".md", ".html"]);
   for (const path of candidates) {
@@ -275,6 +294,7 @@ assertSkillStructure();
 assertCommandTargets();
 assertInstallSmoke();
 assertNoBadClampMath();
+assertNoCurlyQuoteAttributes();
 assertLocalLinks();
 assertLocalCssAssets();
 assertInlineHandlersParse();

@@ -9,6 +9,14 @@ The "the gate actually runs, and it caught us" pass — findings from a cross-mo
 (one build brief through 7 model lanes) shipped back into the pack, then the pack held to
 its own standard on its own surfaces.
 
+### Guardrails
+- **`verify.mjs` now fails on curly quotes used as HTML attribute delimiters** (`class=”…”`).
+  LLM agents emit smart quotes in code constantly; the browser then never matches the
+  class, the layout silently degrades, and the page still passes every content check.
+  Four agents shipped curly-broken sample layouts in this very pass — all reporting
+  `npm test` green. The signature (`=` followed by a curly quote) is never valid HTML and
+  never appears in prose, so the check is zero-false-positive.
+
 ### Samples & landing (dogfooding the structural plane)
 - **The landing page now runs all 19 skills live** (was 15). The four newer skills —
   spacing-system, art-direction, i18n-ready, tastecheck-pass — are now working bento
