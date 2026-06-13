@@ -387,6 +387,10 @@ footer{border-top:1px solid var(--line);padding:1.5rem 0 3rem;color:var(--muted)
       <div class="skill-pill" data-skill="design-system-interview"><code>design-system-interview</code><br>Committed direction and tokens.</div>
       <div class="skill-pill" data-skill="improve-existing-website"><code>improve-existing-website</code><br>Audit signal, drift, inferred system.</div>
       <div class="skill-pill" data-skill="a11y-pass"><code>a11y-pass</code><br>Manual and runnable accessibility gates.</div>
+      <div class="skill-pill" data-skill="spacing-system"><code>spacing-system</code><br>One --space-* scale and section rhythm.</div>
+      <div class="skill-pill" data-skill="art-direction"><code>art-direction</code><br>Committed icon set, real OG and favicon.</div>
+      <div class="skill-pill" data-skill="i18n-ready"><code>i18n-ready</code><br>EN/ES first-class, +30% text expansion.</div>
+      <div class="skill-pill" data-skill="tastecheck-pass"><code>tastecheck-pass</code><br>The ship gate, every self-check run.</div>
     </div>
   </section>
 </main>
@@ -465,7 +469,7 @@ document.querySelector('[data-test="retry-list"]').addEventListener("click", () 
 });
 
 window.tastecheckIntegration = {
-  skillCount: 15,
+  skillCount: 19,
   skillNames: [...new Set([...document.querySelectorAll("[data-skill]")].map((node) => node.dataset.skill))].sort(),
   setTheme,
   cycleState: () => cycle.click(),

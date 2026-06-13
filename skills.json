@@ -6,7 +6,7 @@
     { "name": "improve-existing-website", "stage": "direction", "landing": true },
     { "name": "color-system", "stage": "foundations", "landing": true },
     { "name": "web-typography", "stage": "foundations", "landing": true },
-    { "name": "spacing-system", "stage": "foundations", "landing": false },
+    { "name": "spacing-system", "stage": "foundations", "landing": true },
     { "name": "theming", "stage": "foundations", "landing": true },
     { "name": "responsive-layout", "stage": "structure", "landing": true },
     { "name": "component-states", "stage": "behavior", "landing": true },
@@ -14,12 +14,12 @@
     { "name": "empty-states", "stage": "behavior", "landing": true },
     { "name": "micro-motion", "stage": "surface", "landing": true },
     { "name": "data-viz", "stage": "surface", "landing": true },
-    { "name": "art-direction", "stage": "surface", "landing": false },
+    { "name": "art-direction", "stage": "surface", "landing": true },
     { "name": "a11y-pass", "stage": "verification", "landing": true },
     { "name": "cognitive-a11y", "stage": "verification", "landing": true },
-    { "name": "i18n-ready", "stage": "verification", "landing": false },
+    { "name": "i18n-ready", "stage": "verification", "landing": true },
     { "name": "deslop-ui", "stage": "audit", "landing": true },
     { "name": "humanize-copy", "stage": "audit", "landing": true },
-    { "name": "tastecheck-pass", "stage": "gate", "landing": false }
+    { "name": "tastecheck-pass", "stage": "gate", "landing": true }
   ]
 }
