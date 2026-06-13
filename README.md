@@ -70,7 +70,7 @@ skill builds from. Taste is the only moat against AI slop; this operationalizes 
 ## Proof: the GitHub Pages landing page runs the skills
 
 The homepage connected to GitHub Pages is not just a brochure. It is now the primary
-integration surface: the live landing page carries `data-skill` coverage for the 15 founding skills (the four 2026 additions — art-direction, spacing-system, i18n-ready, tastecheck-pass — are verified by the skill lint and declared in skills.json),
+integration surface: the live landing page carries `data-skill` coverage for all 19 skills,
 page-level light/dark/high-contrast theme paths, component states, form validation,
 empty/error/retry recovery, chart/table parity, keyboard/focus affordances, reduced-motion
 guards, forced-colors support, humanized copy, and the existing-site audit story.
@@ -147,7 +147,7 @@ of a trust-me receipt. Run `npm test` for structural, installer, command, link, 
 a11y-starter, data-viz, skill-lint, gate-auditor-contract, GitHub Pages landing-page
 coverage, and secondary integration checks. The ship gate's own auditor is dogfooded on
 the landing page: it passes (the one purple-gradient warn is the intentional "before"
-slop swatch). The landing page itself audits its existing direction, then exercises the 15 landing-covered skills
+slop swatch). The landing page itself audits its existing direction, then exercises all 19 skills
 through real controls: themes, component states, form validation, empty/error/retry,
 chart/table parity, copy, accessibility, cognitive readability, motion, and responsive
 layout. Browser/manual QA remains documented separately in [docs/VERIFICATION.md](docs/VERIFICATION.md)

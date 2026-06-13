@@ -66,7 +66,7 @@
         { "@type": "Question", "name": "Which AI coding agents does tastecheck work with?",
           "acceptedAnswer": { "@type": "Answer", "text": "The skills are plain Markdown with no SDK or runtime. The installer links a canonical ~/.agents/skills directory and mirrors into detected Claude Code, Codex, Gemini CLI, Cursor, Kilocode and Kimi skill directories. Auto-loading depends on the agent; otherwise point the agent at a SKILL.md directly." } },
         { "@type": "Question", "name": "How is tastecheck different from other AI design tools?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Most tools clean up after the model generates a page. tastecheck works before the build: it grills you into a committed design system or audits the existing site first. Its rules are checkable (a value, a count, a yes/no) rather than vibes, and the repo ships an npm test verification gate where the GitHub Pages landing page itself exercises all 15 skills. The same product story rendered through it produces five visibly different design systems, not five recolors of one template." } },
+          "acceptedAnswer": { "@type": "Answer", "text": "Most tools clean up after the model generates a page. tastecheck works before the build: it grills you into a committed design system or audits the existing site first. Its rules are checkable (a value, a count, a yes/no) rather than vibes, and the repo ships an npm test verification gate where the GitHub Pages landing page itself exercises all 19 skills. The same product story rendered through it produces five visibly different design systems, not five recolors of one template." } },
         { "@type": "Question", "name": "Is tastecheck free?",
           "acceptedAnswer": { "@type": "Answer", "text": "Yes. tastecheck is free and open-source under the MIT license. Clone the repository and run install.sh." } }
       ]
@@ -304,7 +304,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
   <div class="hcol">
     <div class="idx"><s></s>design intelligence · for any AI agent</div>
     <h1>Make it <span class="j">yours</span>, <span class="not">not</span> the average.</h1>
-    <p class="lede">Every AI builds the same site. tastecheck interviews you or audits what you already have into a real design system first — then fifteen skills make sure your agent ships taste, not slop.</p>
+    <p class="lede">Every AI builds the same site. tastecheck interviews you or audits what you already have into a real design system first — then nineteen skills make sure your agent ships taste, not slop.</p>
     <div class="actions">
       <a class="btn btn-primary" href="#install" data-test="primary-action">Run a taste check →</a>
       <a class="btn btn-ghost" href="#skills">See every skill</a>
@@ -400,6 +400,22 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
     <div class="cell" data-skill="cognitive-a11y"><div class="lab"><span class="n">14</span><h3>cognitive-a11y</h3></div>
       <div class="stage"><span class="tldr">TL;DR</span><span class="note">plain language · one idea per line · predictable layout</span></div>
       <p class="cap">Readable for ADHD, autism &amp; dyslexia — beyond WCAG.</p></div>
+
+    <div class="cell" data-skill="spacing-system"><div class="lab"><span class="n">15</span><h3>spacing-system</h3></div>
+      <div class="stage"><div style="display:flex;flex-direction:column;gap:6px;width:100%" aria-hidden="true"><i style="height:8px;width:22%;background:var(--copper);border-radius:3px"></i><i style="height:8px;width:42%;background:var(--copper);border-radius:3px;opacity:.78"></i><i style="height:8px;width:66%;background:var(--copper);border-radius:3px;opacity:.56"></i><i style="height:8px;width:100%;background:var(--copper);border-radius:3px;opacity:.36"></i></div><span class="note">one --space-* scale · section rhythm</span></div>
+      <p class="cap">Consistent spacing &amp; vertical cadence from one ramp.</p></div>
+
+    <div class="cell w3" data-skill="i18n-ready"><div class="lab"><span class="n">16</span><h3>i18n-ready</h3></div>
+      <div class="stage" style="gap:.45rem"><div class="hzb" lang="en">Get started</div><div class="hzg" lang="es">Comienza ahora mismo</div><span class="note">EN/ES first-class · +30% expansion · logical properties</span></div>
+      <p class="cap">Multilingual-resilient: text expansion, <code>Intl</code>, native voice per language.</p></div>
+
+    <div class="cell" data-skill="art-direction"><div class="lab"><span class="n">17</span><h3>art-direction</h3></div>
+      <div class="stage"><div style="display:flex;gap:.45rem;align-items:center" aria-hidden="true"><span style="width:26px;height:26px;border:2px solid var(--copper);border-radius:7px"></span><span style="width:26px;height:26px;border:2px solid var(--copper);border-radius:7px"></span><span style="width:26px;height:26px;border:2px solid var(--copper);border-radius:7px"></span></div><span class="note">one committed icon set · real OG/favicon</span></div>
+      <p class="cap">Imagery &amp; icons as decisions — no gradient-blob AI graphics.</p></div>
+
+    <div class="cell w3 tall" data-skill="tastecheck-pass"><div class="lab"><span class="n">18</span><h3>tastecheck-pass</h3></div>
+      <div class="stage" style="gap:.55rem"><div class="note" style="line-height:1.95">✓ tokens · ✓ contrast ≥ 4.5:1 · ✓ keyboard<br>✓ cold-load render · ✓ no slop tells · ✓ structural</div><span class="aa">Gate: PASS ✓</span></div>
+      <p class="cap">The ship gate: runs every self-check, reports a pass/fail table — with a paste-able auditor.</p></div>
 
     <div class="cell w2"><div class="lab"><span class="n">+</span><h3>plain markdown</h3></div>
       <div class="stage" style="font:600 .9rem var(--body);color:var(--muted)">Claude · Codex · Gemini · Cursor · Kimi<br><span class="note" style="margin-top:.5rem;display:block">plain markdown · no runtime</span></div>
@@ -514,7 +530,7 @@ function runLandingA11yAudit(){
 }
 window.a11yAudit=runLandingA11yAudit;
 window.tastecheckLanding={
-  skillCount:15,
+  skillCount:19,
   skillNames:[].slice.call(document.querySelectorAll('[data-skill]')).map(function(node){return node.dataset.skill;}).filter(function(name,index,list){return list.indexOf(name)===index;}).sort(),
   setTheme:window.setTastecheckTheme,
   cycleState:function(){document.querySelector('[data-test="state-cycle"]').click();},

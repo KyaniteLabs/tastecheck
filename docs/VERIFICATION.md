@@ -145,10 +145,10 @@ Date: 2026-06-06
 - Homepage `skills/a11y-pass/assets/audit.js` result after the landing-page pass:
   0 measured failures and 0 warnings at desktop 1440px and mobile 390px.
 
-Additional landing-page 15-skill evidence:
+Additional landing-page 19-skill evidence:
 
 - Page: `index.html`, served as the GitHub Pages homepage.
-- Static gate: all 15 installed skills are represented by `data-skill` on the homepage.
+- Static gate: all 19 installed skills are represented by `data-skill` on the homepage.
 - Real operator paths covered by the page contract: light/dark/high-contrast themes, primary CTA,
   component loading/disabled/default states, invalid and valid email validation, empty/error/retry
   recovery, chart/table parity, keyboard-focus target, and live-region status updates.
@@ -160,7 +160,7 @@ Additional landing-page 15-skill evidence:
 Secondary integration harness evidence:
 
 - Page: `demos/skill-integration.html`.
-- Desktop 1440px and mobile 390px: title/URL correct, 15 unique skills exposed, 0 horizontal overflow.
+- Desktop 1440px and mobile 390px: title/URL correct, 19 unique skills exposed, 0 horizontal overflow.
 - Real operator paths executed in browser: light/dark/high-contrast themes, component loading/success/disabled,
   invalid and valid form submission, empty/error/retry task-list states, and chart/table parity.
 - `skills/a11y-pass/assets/audit.js`: 0 measured failures, 0 warnings on desktop and mobile.
