@@ -6,7 +6,26 @@ All notable changes to the tastecheck skill pack. Format follows
 ## [Unreleased]
 
 The "the gate actually runs, and it caught us" pass — findings from a cross-model audit
-(one build brief through 7 model lanes) shipped back into the pack.
+(one build brief through 7 model lanes) shipped back into the pack, then the pack held to
+its own standard on its own surfaces.
+
+### Samples & landing (dogfooding the structural plane)
+- **The landing page now runs all 19 skills live** (was 15). The four newer skills —
+  spacing-system, art-direction, i18n-ready, tastecheck-pass — are now working bento
+  cells (the gate cell shows a live PASS), `landing:true` in the manifest, with
+  `skillCount` bumped to 19 on the landing and the integration harness.
+- **The landing page was restructured to break the SaaS-skeleton order** it was quietly
+  shipping (hero → problem → how → grid → CTA): it now leads with the live bento and
+  demotes "the problem" to a principle after the demonstration. The structural self-check
+  caught this; the mechanical auditor could not.
+- **All five samples stopped being recolors of one skeleton.** Each gets a reading order
+  AND a skills-section layout native to its committed aesthetic: concrete a spec-sheet
+  ledger, swiss a modular grid, maximal a color-block wall, copper a tessellated bento,
+  clay soft grouped clusters.
+- **A sixth sample — Dispatch / Shipping log** — a dark emerald-slate release timeline
+  whose content is the changelog of the work above. The gallery is now "six committed
+  design systems," a claim now backed by structure (no two share a section order or a
+  skills layout), not skin.
 
 ### Added
 - **Runnable gate auditor** (`skills/tastecheck-pass/assets/gate-audit.js`) — a paste-able
