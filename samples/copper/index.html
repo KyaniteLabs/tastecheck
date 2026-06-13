@@ -89,17 +89,18 @@ h2{font-family:var(--disp);font-weight:700;font-size:clamp(2.1rem,1.4rem + 3vw,3
 .step .q{font-family:var(--disp);font-style:italic;color:var(--ink);margin-top:.9rem;border-left:2px solid var(--copper);padding-left:.8rem}
 .step:nth-child(3) .q{border-left-color:var(--verd)}
 @media(max-width:760px){.steps{grid-template-columns:1fr}.steps .step{grid-column:auto;grid-row:auto}}
-/* skills — IRREGULAR TESSELLATED BENTO (varied cell sizes), 2 iridescent feature cells */
+/* skills — IRREGULAR TESSELLATED BENTO (varied cell sizes): hero, wide, standard, tall spans */
 .skills-g{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:3rem;grid-auto-flow:dense}
-.sk{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:1.2rem;grid-column:span 2;transition:border-color .16s,transform .16s}
+.sk{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:1.2rem;grid-column:span 2;min-height:9.5rem;display:flex;flex-direction:column;gap:.4rem;transition:border-color .16s,transform .16s}
 .sk:hover{border-color:var(--verd);transform:translateY(-2px)}
-.sk:nth-child(1),.sk:nth-child(11){grid-column:span 4}
-.sk:nth-child(6),.sk:nth-child(7){grid-column:span 3}
+/* iridescent feature border for lead / gate cells */
 .sk.feat{border:1px solid transparent;background:linear-gradient(var(--s1),var(--s1)) padding-box,linear-gradient(120deg,var(--copper),var(--verd)) border-box}
-.sk.feat h3{font-size:1.3rem}
-.sk .n{font:600 .8rem var(--mono);color:var(--copper)}.sk h3{font-family:var(--disp);font-weight:700;font-size:1.12rem;margin:.35rem 0 .25rem}.sk p{color:var(--muted);font-size:.88rem}
-@media(max-width:880px){.skills-g{grid-template-columns:repeat(2,1fr)}.skills-g .sk{grid-column:auto}}
-@media(max-width:520px){.skills-g{grid-template-columns:1fr}.skills-g .sk{grid-column:auto}}
+/* VARIED SPANS: lead hero → span 4 tall; second feature → span 4; gate → span 4; misc wide → span 3 */
+.sk.s4{grid-column:span 4}.sk.s3{grid-column:span 3}.sk.s2{grid-column:span 2}.sk.tall{grid-row:span 2}
+.sk.feat h3{font-size:1.25rem}
+.sk .n{font:600 .8rem var(--mono);color:var(--copper)}.sk h3{font-family:var(--disp);font-weight:700;font-size:1.12rem;margin:.3rem 0 .22rem}.sk p{color:var(--muted);font-size:.88rem;margin-top:auto}
+@media(max-width:880px){.skills-g{grid-template-columns:repeat(4,1fr)}.skills-g .sk.s4{grid-column:span 4}.skills-g .sk.s3{grid-column:span 2}.skills-g .sk.s2{grid-column:span 2}.skills-g .sk.tall{grid-row:auto}}
+@media(max-width:520px){.skills-g{grid-template-columns:repeat(2,1fr)}.skills-g .sk,.skills-g .sk.s4,.skills-g .sk.s3,.skills-g .sk.s2{grid-column:span 2}.skills-g .sk.tall{grid-row:auto}}
 .install{background:var(--s1);border-block:1px solid var(--line)}
 .cmd{font-family:var(--mono);font-size:clamp(.85rem,.7rem + .5vw,1rem);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:1.2rem 1.4rem;margin-top:1.4rem;overflow-x:auto}.cmd .c{color:var(--copper)}
 footer{border-top:1px solid var(--line);padding-block:2.4rem;color:var(--muted);font-size:.92rem}
@@ -147,51 +148,63 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
   </div>
 </div></section>
 
-<section id=”skills”><div class=”wrap rv”>
-  <div class=”mark”><span class=”hr”></span>each skill, working</div>
+<section id="skills"><div class="wrap rv">
+  <div class="mark"><span class="hr"></span>each skill, working</div>
   <h2>Nineteen skills. Zero vibes.</h2>
-  <div class=”skills-g”>
-    <div class=”sk feat”><div class=”n”>00</div><h3>design-system-interview</h3><p>Grills you into a committed system + tokens before a line of code.</p></div>
-    <div class=”sk”><div class=”n”>01</div><h3>improve-existing-website</h3><p>Audit a site, infer its intended system, and make it true.</p></div>
-    <div class=”sk”><div class=”n”>02</div><h3>color-system</h3><p>OKLCH palettes that pass contrast.</p></div>
-    <div class=”sk”><div class=”n”>03</div><h3>web-typography</h3><p>Scale, measure, rhythm, font loading.</p></div>
-    <div class=”sk”><div class=”n”>04</div><h3>spacing-system</h3><p>One --space-* scale; section rhythm.</p></div>
-    <div class=”sk”><div class=”n”>05</div><h3>theming</h3><p>Light + dark + high-contrast from one token set.</p></div>
-    <div class=”sk”><div class=”n”>06</div><h3>responsive-layout</h3><p>Survives any width.</p></div>
-    <div class=”sk”><div class=”n”>07</div><h3>component-states</h3><p>Every interactive state + ARIA.</p></div>
-    <div class=”sk”><div class=”n”>08</div><h3>form-ux</h3><p>Forms people actually finish.</p></div>
-    <div class=”sk”><div class=”n”>09</div><h3>empty-states</h3><p>Empty / loading / error, handled.</p></div>
-    <div class=”sk feat”><div class=”n”>10</div><h3>micro-motion</h3><p>Animation that feels expensive, never decorative.</p></div>
-    <div class=”sk”><div class=”n”>11</div><h3>data-viz</h3><p>Honest, Tufte-informed charts.</p></div>
-    <div class=”sk”><div class=”n”>12</div><h3>art-direction</h3><p>Imagery, illustration, iconography as committed decisions.</p></div>
-    <div class=”sk”><div class=”n”>13</div><h3>a11y-pass</h3><p>Runnable WCAG 2.2 AA audit.</p></div>
-    <div class=”sk”><div class=”n”>14</div><h3>cognitive-a11y</h3><p>ADHD · autism · dyslexia · neurodivergence.</p></div>
-    <div class=”sk”><div class=”n”>15</div><h3>i18n-ready</h3><p>Multilingual-resilient UI; EN/ES first-class.</p></div>
-    <div class=”sk”><div class=”n”>16</div><h3>deslop-ui</h3><p>Strip the AI tells — visual and structural.</p></div>
-    <div class=”sk”><div class=”n”>17</div><h3>humanize-copy</h3><p>Remove the ChatGPT accent from writing.</p></div>
-    <div class=”sk”><div class=”n”>18</div><h3>tastecheck-pass</h3><p>The ship gate: every self-check, run + reported.</p></div>
+  <div class="skills-g">
+    <!-- 00 — lead hero: span 4, tall (2 rows), iridescent border -->
+    <div class="sk feat s4 tall"><div class="n">00</div><h3>design-system-interview</h3><p>Grills you into a committed system + tokens before a line of code.</p></div>
+    <!-- 01 — span 2 -->
+    <div class="sk s2"><div class="n">01</div><h3>improve-existing-website</h3><p>Audit a site, infer its intended system, and make it true.</p></div>
+    <!-- 02 — span 2; fills the tall row next to 00 -->
+    <div class="sk s2"><div class="n">02</div><h3>color-system</h3><p>OKLCH palettes that pass contrast.</p></div>
+    <!-- row 2: 03 wide + 04 wide fills remaining cols beside the tall cell -->
+    <div class="sk s3"><div class="n">03</div><h3>web-typography</h3><p>Scale, measure, rhythm, font loading.</p></div>
+    <div class="sk s3"><div class="n">04</div><h3>spacing-system</h3><p>One --space-* scale; section rhythm.</p></div>
+    <!-- row 3: two standard + one wide -->
+    <div class="sk s2"><div class="n">05</div><h3>theming</h3><p>Light + dark + high-contrast from one token set.</p></div>
+    <div class="sk s2"><div class="n">06</div><h3>responsive-layout</h3><p>Survives any width.</p></div>
+    <div class="sk s2"><div class="n">07</div><h3>component-states</h3><p>Every interactive state + ARIA.</p></div>
+    <!-- row 4: wide + two standard -->
+    <div class="sk s3"><div class="n">08</div><h3>form-ux</h3><p>Forms people actually finish.</p></div>
+    <div class="sk s2"><div class="n">09</div><h3>empty-states</h3><p>Empty / loading / error, handled.</p></div>
+    <!-- 10 — second feature: span 4, iridescent -->
+    <div class="sk feat s4"><div class="n">10</div><h3>micro-motion</h3><p>Animation that feels expensive, never decorative.</p></div>
+    <!-- 11 — span 2 to complete the row -->
+    <div class="sk s2"><div class="n">11</div><h3>data-viz</h3><p>Honest, Tufte-informed charts.</p></div>
+    <!-- row 5: wide + standard + standard -->
+    <div class="sk s3"><div class="n">12</div><h3>art-direction</h3><p>Imagery, illustration, iconography as committed decisions.</p></div>
+    <div class="sk s2"><div class="n">13</div><h3>a11y-pass</h3><p>Runnable WCAG 2.2 AA audit.</p></div>
+    <!-- row 6: standard + wide + standard -->
+    <div class="sk s2"><div class="n">14</div><h3>cognitive-a11y</h3><p>ADHD · autism · dyslexia · neurodivergence.</p></div>
+    <div class="sk s2"><div class="n">15</div><h3>i18n-ready</h3><p>Multilingual-resilient UI; EN/ES first-class.</p></div>
+    <div class="sk s2"><div class="n">16</div><h3>deslop-ui</h3><p>Strip the AI tells — visual and structural.</p></div>
+    <!-- row 7: standard + gate wide -->
+    <div class="sk s2"><div class="n">17</div><h3>humanize-copy</h3><p>Remove the ChatGPT accent from writing.</p></div>
+    <!-- 18 — gate cell: span 4, iridescent -->
+    <div class="sk feat s4"><div class="n">18</div><h3>tastecheck-pass</h3><p>The ship gate: every self-check, run + reported.</p></div>
   </div>
 </div></section>
 
-<section id=”why”><div class=”wrap rv”>
-  <div class=”mark”><span class=”hr”></span>what it refuses</div>
+<section id="why"><div class="wrap rv">
+  <div class="mark"><span class="hr"></span>what it refuses</div>
   <h2>There isn’t one AI slop. There are three.</h2>
-  <p class=”slede”>After you’ve seen the skills, here’s what they’re refusing. It’s not just the look — the skeleton repeats, and so does the copy. tastecheck refuses all three planes.</p>
-  <div class=”slops”>
-    <div class=”slop”><div class=”sw p”></div><div class=”sw c”></div><h3>The look</h3><p>Purple gradient or editorial serif — the same average, one season apart.</p></div>
-    <div class=”slop”><div class=”wf” aria-hidden=”true”><div class=”h”></div><div class=”r”><span></span><span></span><span></span></div></div><h3>The structure</h3><p>Centered hero, three cards, equal grid — the same bones under any skin.</p></div>
-    <div class=”slop”><div class=”slopx” aria-hidden=”true”><s>”delve”</s><s>”in today’s fast-paced world”</s><s>”it’s not just X, it’s Y”</s></div><h3>The copy</h3><p>The ChatGPT accent — buzzwords, hedging, one tired rhythm. We strip it.</p></div>
+  <p class="slede">After you’ve seen the skills, here’s what they’re refusing. It’s not just the look — the skeleton repeats, and so does the copy. tastecheck refuses all three planes.</p>
+  <div class="slops">
+    <div class="slop"><div class="sw p"></div><div class="sw c"></div><h3>The look</h3><p>Purple gradient or editorial serif — the same average, one season apart.</p></div>
+    <div class="slop"><div class="wf" aria-hidden="true"><div class="h"></div><div class="r"><span></span><span></span><span></span></div></div><h3>The structure</h3><p>Centered hero, three cards, equal grid — the same bones under any skin.</p></div>
+    <div class="slop"><div class="slopx" aria-hidden="true"><s>”delve”</s><s>”in today’s fast-paced world”</s><s>”it’s not just X, it’s Y”</s></div><h3>The copy</h3><p>The ChatGPT accent — buzzwords, hedging, one tired rhythm. We strip it.</p></div>
   </div>
 </div></section>
 
-<section id=”how”><div class=”wrap rv”>
-  <div class=”mark”><span class=”hr”></span>the method</div>
+<section id="how"><div class="wrap rv">
+  <div class="mark"><span class="hr"></span>the method</div>
   <h2>It interviews you first.</h2>
-  <p class=”slede”>No menus. It surfaces every decision you didn’t know you had.</p>
-  <div class=”steps”>
-    <div class=”step”><div class=”num”>01</div><h3>It grills you</h3><p>Function first, then references — it finds the pattern across what you love.</p><div class=”q”>”’Modern’ is a non-answer — name one you’d resemble.”</div></div>
-    <div class=”step”><div class=”num”>02</div><h3>It commits</h3><p>OKLCH palette with verified contrast, real type, structure, motion — as tokens.</p><div class=”q”>”One dominant color, not five. And not indigo→violet.”</div></div>
-    <div class=”step”><div class=”num”>03</div><h3>It builds &amp; checks</h3><p>The skills apply the system, then audit the result against your spec.</p><div class=”q”>”That wine-red is the new tell. For your energy, push here.”</div></div>
+  <p class="slede">No menus. It surfaces every decision you didn’t know you had.</p>
+  <div class="steps">
+    <div class="step"><div class="num">01</div><h3>It grills you</h3><p>Function first, then references — it finds the pattern across what you love.</p><div class="q">”’Modern’ is a non-answer — name one you’d resemble.”</div></div>
+    <div class="step"><div class="num">02</div><h3>It commits</h3><p>OKLCH palette with verified contrast, real type, structure, motion — as tokens.</p><div class="q">”One dominant color, not five. And not indigo→violet.”</div></div>
+    <div class="step"><div class="num">03</div><h3>It builds &amp; checks</h3><p>The skills apply the system, then audit the result against your spec.</p><div class="q">”That wine-red is the new tell. For your energy, push here.”</div></div>
   </div>
 </div></section>
 
