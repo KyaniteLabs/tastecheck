@@ -37,6 +37,14 @@ cut it.
 - **Always provide a `prefers-reduced-motion` fallback.** Replace movement/scale with
   a simple opacity fade (or nothing). This is an accessibility requirement, not a
   nicety — large motion can trigger vestibular illness.
+- **Reveal-on-scroll must not hide content from a no-JS reader.** If the static
+  stylesheet sets the waiting state (`.reveal { opacity: 0 }`), the content is
+  invisible whenever the script doesn't run — broken JS, reader mode, some crawlers
+  and full-page captures. Gate the hidden state behind a JS-added hook (e.g. a class
+  the script adds to `<html>` on boot) or apply it from the same script that registers
+  the observer. A reduced-motion block alone doesn't cover this: motion-tolerant
+  users with failed JS still get blank sections — the `tastecheck-pass` auditor flags
+  text sitting at computed opacity 0 on a fresh load.
 - **Never animate on a loop without reason, never scroll-jack.** Auto-playing infinite
   motion and hijacked scrolling are the top "annoying" complaints and can fail WCAG
   2.2.2 (pause/stop/hide).
@@ -128,6 +136,7 @@ pattern above for anything you're building:
 - [ ] Animate only `transform`/`opacity` (compositor) — nothing animates layout props
 - [ ] Durations/easings are tokens (`--dur-*`/`--ease-*`); entrances ~200–300ms ease-out (custom curve, not linear)
 - [ ] `prefers-reduced-motion` path tested (motion off or cross-fade) — content never depends on it
+- [ ] Page reads complete with JS disabled — no content left at stylesheet opacity 0 waiting for a reveal that never comes
 - [ ] Under the ~30% rule; one signature moment, not blob soup
 - [ ] No scroll-jacking; total page-load motion < ~800ms; nothing flashes > 3×/s
 - [ ] Stated the tokens used and what to look at
