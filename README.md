@@ -125,7 +125,7 @@ audit) and reviewed by independent models from different families before shippin
 - **a11y-pass** — a runnable WCAG 2.2 AA fix pass with a paste-able auditor.
 - **cognitive-a11y** — the layer WCAG barely touches: ADHD, autism, dyslexia and neurodivergent readability (plain language, structure, predictability).
 - **i18n-ready** — multilingual-resilient UI, English/Spanish first-class: +30% expansion, logical properties, `Intl`, native voice per language.
-- **tastecheck-pass** — the ship gate: states the canonical pipeline once, runs every relevant self-check, reports a pass/fail table.
+- **tastecheck-pass** — the ship gate: states the canonical pipeline once, runs every relevant self-check, reports a pass/fail table — with a paste-able (or browser-injectable) auditor that mechanically catches the cold-load tells a self-reported table misses.
 
 Each skill is a folder: `SKILL.md` (decision order, non-negotiables, quick-start,
 self-check) + `references/` (deep guidance + a `decision-records.md` explaining *why*) +
@@ -144,8 +144,10 @@ before/after and a self-check the agent runs on its own output:
 
 And we ate our own cooking: the repo now ships a repeatable verification command instead
 of a trust-me receipt. Run `npm test` for structural, installer, command, link, CSS,
-a11y-starter, data-viz, GitHub Pages landing-page coverage, and secondary integration
-checks. The landing page itself audits its existing direction, then exercises the 15 landing-covered skills
+a11y-starter, data-viz, skill-lint, gate-auditor-contract, GitHub Pages landing-page
+coverage, and secondary integration checks. The ship gate's own auditor is dogfooded on
+the landing page: it passes (the one purple-gradient warn is the intentional "before"
+slop swatch). The landing page itself audits its existing direction, then exercises the 15 landing-covered skills
 through real controls: themes, component states, form validation, empty/error/retry,
 chart/table parity, copy, accessibility, cognitive readability, motion, and responsive
 layout. Browser/manual QA remains documented separately in [docs/VERIFICATION.md](docs/VERIFICATION.md)
