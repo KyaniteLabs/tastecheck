@@ -17,12 +17,12 @@ Run from the repo root:
 npm test
 ```
 
-`npm test` runs `tools/verify.mjs`, `tools/verify-landing.mjs`, and
-`tools/verify-integration.mjs`.
+`npm test` runs `tools/verify.mjs`, `tools/lint-skills.mjs`, `tools/verify-landing.mjs`,
+`tools/verify-integration.mjs`, and `tools/verify-gate-audit.mjs`.
 
 `tools/verify.mjs` checks:
 
-- 15 skill directories exist and each `SKILL.md` frontmatter `name` matches its directory.
+- 19 skill directories exist and each `SKILL.md` frontmatter `name` matches its directory.
 - Referenced `references/*` and `assets/*` files exist.
 - Slash commands target real `~/.agents/skills/<name>/SKILL.md` paths.
 - `install.sh --yes` creates canonical `~/.agents/skills` links and detected Claude links.
@@ -34,6 +34,18 @@ npm test
 - Stale internal skill names such as `dark-mode` are not used as handoff targets.
 - `a11y-pass/assets/audit.js` parses as JavaScript, avoids `arguments.callee`, and uses browser
   color rasterization instead of numeric-regex RGB guessing.
+
+`tools/lint-skills.mjs` checks the skill *content* (what static link checks miss): dead
+skill cross-references, design tokens outside the canonical glossary, and frontmatter
+drift across all 19 skills.
+
+`tools/verify-gate-audit.mjs` executes `tastecheck-pass/assets/gate-audit.js` against a
+minimal fake DOM and asserts its automation contract — `window.__gateAudit` is a
+`{verdict, fails, warns, notes}` object, the console path still emits, and its output
+matches the committed golden (`tools/smoke/fixtures/gate-audit-golden.txt`). Scope is
+deliberate: it guards the attribute-pure checks (a layout-faithful fake DOM would be a
+partial browser); the layout-dependent stat-band/date-context check is protected by the
+real-browser fixture in `tools/smoke/fixtures/` instead.
 
 `tools/verify-landing.mjs` checks [`index.html`](../index.html), the page connected to
 GitHub Pages:
@@ -67,6 +79,8 @@ Run this before publishing visual claims or screenshots:
 - Confirm first meaningful content renders, fonts/images resolve, and there is no horizontal overflow.
 - Open DevTools console; record any errors or warnings relevant to the page.
 - Paste `skills/a11y-pass/assets/audit.js` and record fails/warnings.
+- On a FRESH load (no clicks/scroll first), paste `skills/tastecheck-pass/assets/gate-audit.js`
+  and record the verdict + any fails/warns (cold-load state honesty + slop tells).
 - Do a keyboard pass: skip link, nav, buttons, forms, toggles, and links must be reachable and visibly focused.
 - Check reduced motion with `prefers-reduced-motion: reduce`.
 - Spot-check dark and high-contrast theme mappings where a page exposes them.
@@ -80,6 +94,40 @@ For releases, append a short dated note with:
 - Browser/version used for manual QA.
 - Pages and viewport widths checked.
 - Any remaining warnings and why they are acceptable.
+
+## Gate-Auditor Dogfood
+
+Date: 2026-06-12
+
+The full `tastecheck-pass` gate was run against the landing page (`index.html`), and it
+matters *which layer* caught what — the lesson is that the mechanical auditor is the
+shallow layer.
+
+**The mechanical auditor (`gate-audit.js`) passed and was not enough.** On a fresh load
+it reported 0 cold-load failures (nothing `hidden` defeated by CSS, no error text before
+input, no content stuck at opacity 0, no stuck skeletons) and one accepted warn — the
+intentional indigo→violet "before" demonstration (the `deslop-ui` cell's `✕ pill · purple`
+example, and the `aria-hidden` slop swatch). The reveal-on-scroll already followed the
+`micro-motion` no-JS rule (`.js .rv` behind a script-added `html.js` hook, with an
+observer fallback and a `setTimeout` safety net); the display face resolves to "Red0"
+(Redaction 0, the committed distinctive font) — a NOTE, not a tell.
+
+**The structural self-check (`deslop-ui`) caught what the auditor structurally cannot.**
+The page predated the structural-plane self-check, and applying it by judgment surfaced a
+real defect the 10-check auditor has no concept of: the section stack was the SaaS
+**funnel order** — hero → "the problem" → "how it works" → feature grid → proof → CTA.
+Every section mapped to a skeleton slot, in skeleton order; only the *treatment* was
+varied. That is exactly the tell `references/structural-tells.md` names.
+
+**The fix (this branch):** the landing page was restructured to break the funnel on
+order *and* count — lead with the working bento (demonstrate before pitching), demote the
+three-planes section from a problem-opener to a principle that lands *after* the
+demonstration, and cut the redundant "how it works" section (the interview already lives
+in bento cell 00). New stack: `hero → skills (live) → what-it-refuses → proof → install`.
+`npm test` stays green; the auditor re-run is still 0 fail / 1 (accepted) warn; the
+structural self-check now passes. The takeaway recorded here: a clean mechanical-auditor
+run is necessary, not sufficient — the structural plane is judgment work, and it bit the
+pack's own page.
 
 ## Current Branch Evidence
 
@@ -97,10 +145,10 @@ Date: 2026-06-06
 - Homepage `skills/a11y-pass/assets/audit.js` result after the landing-page pass:
   0 measured failures and 0 warnings at desktop 1440px and mobile 390px.
 
-Additional landing-page 15-skill evidence:
+Additional landing-page 19-skill evidence:
 
 - Page: `index.html`, served as the GitHub Pages homepage.
-- Static gate: all 15 installed skills are represented by `data-skill` on the homepage.
+- Static gate: all 19 installed skills are represented by `data-skill` on the homepage.
 - Real operator paths covered by the page contract: light/dark/high-contrast themes, primary CTA,
   component loading/disabled/default states, invalid and valid email validation, empty/error/retry
   recovery, chart/table parity, keyboard-focus target, and live-region status updates.
@@ -112,7 +160,7 @@ Additional landing-page 15-skill evidence:
 Secondary integration harness evidence:
 
 - Page: `demos/skill-integration.html`.
-- Desktop 1440px and mobile 390px: title/URL correct, 15 unique skills exposed, 0 horizontal overflow.
+- Desktop 1440px and mobile 390px: title/URL correct, 19 unique skills exposed, 0 horizontal overflow.
 - Real operator paths executed in browser: light/dark/high-contrast themes, component loading/success/disabled,
   invalid and valid form submission, empty/error/retry task-list states, and chart/table parity.
 - `skills/a11y-pass/assets/audit.js`: 0 measured failures, 0 warnings on desktop and mobile.

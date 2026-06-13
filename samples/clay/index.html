@@ -80,12 +80,46 @@ h2{font-weight:800;font-size:clamp(1.9rem,1.4rem + 2.4vw,3rem);line-height:1.1;l
 .frow h3{font-weight:800;font-size:1.35rem;margin-bottom:.3rem}.frow p{color:var(--muted)}
 .frow .q{margin-top:.7rem;color:var(--sage-deep);font-weight:600}
 @media(max-width:680px){.frow{grid-template-columns:1fr}.frow .peb{order:-1!important;max-width:160px}}
-/* skills — calm pebble list (2-col), not a card grid */
-.slist{display:grid;grid-template-columns:1fr 1fr;gap:.2rem 2.6rem;margin-top:2rem}
-@media(max-width:680px){.slist{grid-template-columns:1fr}}
-.sitem{display:grid;grid-template-columns:auto 1fr;gap:1rem;padding:1.05rem .2rem;border-bottom:1px solid var(--line);align-items:start}
-.sitem .pn{width:2.6rem;height:2.6rem;border-radius:50%;background:var(--tint-s);color:var(--sage-deep);font-weight:800;font-size:.85rem;display:grid;place-items:center}
-.sitem h3{font-weight:800;font-size:1.02rem}.sitem p{color:var(--muted);font-size:.88rem}
+/* skills — soft grouped cluster cards */
+.sitem .pn{width:2.4rem;height:2.4rem;border-radius:50%;background:rgba(255,255,255,.55);color:var(--sage-deep);font-weight:800;font-size:.82rem;display:grid;place-items:center;flex-shrink:0}
+.sitem{display:flex;gap:.85rem;align-items:flex-start;padding:.55rem 0}
+.sitem:not(:last-child){border-bottom:1px solid rgba(0,0,0,.06)}
+.sitem h3{font-weight:800;font-size:.98rem;margin-bottom:.1rem}.sitem p{color:var(--muted);font-size:.86rem;line-height:1.55}
+/* cluster card — base */
+.sk-cluster{border-radius:calc(var(--r) + 4px);padding:1.6rem 1.8rem}
+.sk-cluster .sk-head{font-weight:800;font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;color:var(--sage-deep);opacity:.75;margin-bottom:1.1rem}
+/* cluster tints — warm alternation */
+.sk-cluster.tint-a{background:var(--tint-s)}
+.sk-cluster.tint-b{background:var(--tint-c)}
+.sk-cluster.tint-c{background:#eef3ec}
+.sk-cluster.tint-ship{background:var(--sage);color:var(--bg)}
+.sk-cluster.tint-ship .sk-head{color:#d6e8d1;opacity:1}
+.sk-cluster.tint-ship .sitem h3{color:var(--bg)}
+.sk-cluster.tint-ship .sitem p{color:rgba(255,255,255,.72)}
+.sk-cluster.tint-ship .sitem:not(:last-child){border-bottom-color:rgba(255,255,255,.12)}
+.sk-cluster.tint-ship .sitem .pn{background:rgba(255,255,255,.18);color:var(--bg)}
+/* cluster layout grid — intentionally irregular */
+.sgroups{display:grid;gap:1.2rem;margin-top:2.2rem;
+  grid-template-columns:1fr 1fr 1fr;
+  grid-template-areas:
+    "dir  dir  dir"
+    "fnd  fnd  surf"
+    "str  incl ship";}
+.sk-dir  {grid-area:dir}
+.sk-fnd  {grid-area:fnd}
+.sk-surf {grid-area:surf}
+.sk-str  {grid-area:str}
+.sk-incl {grid-area:incl}
+.sk-ship {grid-area:ship}
+/* direction card — full-width, 2-col skill list inside */
+.sk-dir .sk-skills{display:grid;grid-template-columns:1fr 1fr;gap:0 2rem}
+@media(max-width:820px){
+  .sgroups{grid-template-columns:1fr 1fr;grid-template-areas:"dir dir""fnd surf""str incl""ship ship"}
+  .sk-dir .sk-skills{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .sgroups{grid-template-columns:1fr;grid-template-areas:"dir""fnd""surf""str""incl""ship"}
+}
 /* install — soft sage panel */
 .install .wrap{background:var(--sage);color:var(--bg);border-radius:28px;padding:clamp(1.8rem,1rem + 3vw,3rem);max-width:980px}
 .install .eyebrow{color:#e8f0e3}.install h2{color:var(--bg)}
@@ -115,11 +149,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 <style id="tc-slop">#why .slops{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2rem}@media(max-width:760px){#why .slops{grid-template-columns:1fr}}#why .sw{height:44px;border-radius:6px;margin:0 0 .45rem}.wf{display:grid;gap:5px;padding:9px;border:1px solid var(--tc-line);border-radius:8px;margin-bottom:.9rem}.wf .h{height:11px;width:55%;margin:0 auto;background:var(--tc-muted);border-radius:2px;opacity:.65}.wf .r{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.wf .r span{height:22px;background:var(--tc-line);border-radius:3px}.slopx{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.9rem}.slopx s{border:1px solid var(--tc-line);border-radius:4px;padding:.18em .5em;color:var(--tc-muted);font-size:.8rem;text-decoration-thickness:1px}#why .slop:nth-child(3){background:var(--tint-s)}</style>
 </head>
 <body>
-<div class="tc-bar"><a class="tc-home" href="../../">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="../copper/">Copper</a><a href="../swiss/">Swiss</a><a href="../maximal/">Maximal</a><a href="../concrete/">Concrete</a><a href="../clay/" aria-current="page">Clay</a><a href="../">Gallery</a></nav><div class="tc-pal" role="group" aria-label="Color palette"><span class="tc-lbl">Palette</span><button type="button" data-pal="a" aria-pressed="true" aria-label="Sage palette" title="Sage" style="background:#4f6f4a"></button><button type="button" data-pal="b" aria-pressed="false" aria-label="Slate palette" title="Slate" style="background:#3f6a86"></button><button type="button" data-pal="c" aria-pressed="false" aria-label="Plum palette" title="Plum" style="background:#6a4a78"></button></div></div>
+<div class="tc-bar"><a class="tc-home" href="../../">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="../copper/">Copper</a><a href="../swiss/">Swiss</a><a href="../maximal/">Maximal</a><a href="../concrete/">Concrete</a><a href="../clay/" aria-current="page">Clay</a><a href="../dispatch/">Dispatch</a><a href="../">Gallery</a></nav><div class="tc-pal" role="group" aria-label="Color palette"><span class="tc-lbl">Palette</span><button type="button" data-pal="a" aria-pressed="true" aria-label="Sage palette" title="Sage" style="background:#4f6f4a"></button><button type="button" data-pal="b" aria-pressed="false" aria-label="Slate palette" title="Slate" style="background:#3f6a86"></button><button type="button" data-pal="c" aria-pressed="false" aria-label="Plum palette" title="Plum" style="background:#6a4a78"></button></div></div>
 <a class="skip" href="#main">Skip to content</a>
 <header><div class="wrap nav">
   <span class="brand">taste<i>check</i></span>
-  <details><summary aria-label="Menu">Menu ▾</summary><div class="menu"><a href="#why">Problem</a><a href="#how">How</a><a href="#skills">Skills</a><a href="#install">Install</a></div></details>
+  <details><summary aria-label="Menu">Menu ▾</summary><div class="menu"><a href="#skills">Skills</a><a href="#how">How it works</a><a href="#why">What it refuses</a><a href="#install">Install</a></div></details>
 </div></header>
 
 <main id="main">
@@ -127,54 +161,92 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
   <div>
     <span class="kicker">design intelligence for AI agents</span>
     <h1>Make it yours, not the <span class="a">average</span>.</h1>
-    <p class="lede">Every AI builds the same site. tastecheck interviews you into a real design system first — then 15 skills make sure your agent ships taste, not slop.</p>
+    <p class="lede">Every AI builds the same site. tastecheck interviews you into a real design system first — then 19 skills make sure your agent ships taste, not slop.</p>
     <div class="actions"><a class="btn btn-primary" href="https://github.com/KyaniteLabs/tastecheck">Run a taste check →</a><a class="btn btn-ghost" href="#skills">See the skills</a></div>
     <p class="trust">Works with <b>Claude Code</b> · <b>Codex</b> · <b>Gemini</b> · <b>Cursor</b> · MIT</p>
   </div>
   <div class="pebble-hero" aria-hidden="true"></div>
 </div></section>
 
-<section id="why"><div class="wrap rv">
-  <p class="eyebrow">the problem</p>
-  <h2>There isn’t one AI slop. There are three.</h2>
-  <p class="slede">It’s not just the look — the skeleton repeats, and so does the copy. tastecheck refuses all three planes.</p>
-  <div class="slops">
-    <div class="slop"><div class="sw p"></div><div class="sw c"></div><h3>The look</h3><p>Purple gradient or editorial serif — the same average, one season apart.</p></div>
-    <div class="slop"><div class="wf" aria-hidden="true"><div class="h"></div><div class="r"><span></span><span></span><span></span></div></div><h3>The structure</h3><p>Centered hero, three cards, equal grid — the same bones under any skin.</p></div>
-    <div class="slop"><div class="slopx" aria-hidden="true"><s>“delve”</s><s>“in today’s fast-paced world”</s><s>“it’s not just X, it’s Y”</s></div><h3>The copy</h3><p>The ChatGPT accent — buzzwords, hedging, one tired rhythm. We strip it.</p></div>
+<section id="skills"><div class="wrap rv">
+  <p class="eyebrow">nineteen skills</p>
+  <h2>What you get. All of it.</h2>
+  <p class="slede">Each skill is a checkable contract — a real outcome you can hold, not a vibe.</p>
+  <div class="sgroups">
+
+    <!-- Direction — full width, 2 skills side by side inside -->
+    <div class="sk-cluster tint-b sk-dir">
+      <p class="sk-head">Direction</p>
+      <div class="sk-skills">
+        <div class="sitem"><span class="pn">00</span><div><h3>design-system-interview</h3><p>Grills you into a committed system + tokens before code.</p></div></div>
+        <div class="sitem"><span class="pn">01</span><div><h3>improve-existing-website</h3><p>Audit a site, infer its intended system, and make it true.</p></div></div>
+      </div>
+    </div>
+
+    <!-- Foundations — medium, spans 2 columns -->
+    <div class="sk-cluster tint-a sk-fnd">
+      <p class="sk-head">Foundations</p>
+      <div class="sitem"><span class="pn">02</span><div><h3>color-system</h3><p>OKLCH palettes that pass contrast.</p></div></div>
+      <div class="sitem"><span class="pn">03</span><div><h3>web-typography</h3><p>Scale, measure, rhythm, font loading.</p></div></div>
+      <div class="sitem"><span class="pn">04</span><div><h3>spacing-system</h3><p>One --space-* scale; section rhythm.</p></div></div>
+      <div class="sitem"><span class="pn">05</span><div><h3>theming</h3><p>Light + dark + high-contrast from one token set.</p></div></div>
+    </div>
+
+    <!-- Surface — narrower, stacks beside Foundations -->
+    <div class="sk-cluster tint-c sk-surf">
+      <p class="sk-head">Surface</p>
+      <div class="sitem"><span class="pn">10</span><div><h3>micro-motion</h3><p>Animation that feels expensive.</p></div></div>
+      <div class="sitem"><span class="pn">11</span><div><h3>data-viz</h3><p>Honest, Tufte-informed charts.</p></div></div>
+      <div class="sitem"><span class="pn">12</span><div><h3>art-direction</h3><p>Imagery, illustration, iconography as committed decisions.</p></div></div>
+    </div>
+
+    <!-- Structure & Behavior -->
+    <div class="sk-cluster tint-c sk-str">
+      <p class="sk-head">Structure &amp; Behavior</p>
+      <div class="sitem"><span class="pn">06</span><div><h3>responsive-layout</h3><p>Survives any width.</p></div></div>
+      <div class="sitem"><span class="pn">07</span><div><h3>component-states</h3><p>Every interactive state + ARIA.</p></div></div>
+      <div class="sitem"><span class="pn">08</span><div><h3>form-ux</h3><p>Forms people actually finish.</p></div></div>
+      <div class="sitem"><span class="pn">09</span><div><h3>empty-states</h3><p>Empty / loading / error, handled.</p></div></div>
+    </div>
+
+    <!-- Inclusive -->
+    <div class="sk-cluster tint-b sk-incl">
+      <p class="sk-head">Inclusive</p>
+      <div class="sitem"><span class="pn">13</span><div><h3>a11y-pass</h3><p>Runnable WCAG 2.2 AA audit.</p></div></div>
+      <div class="sitem"><span class="pn">14</span><div><h3>cognitive-a11y</h3><p>ADHD · autism · dyslexia · neurodivergence.</p></div></div>
+      <div class="sitem"><span class="pn">15</span><div><h3>i18n-ready</h3><p>Multilingual-resilient UI; EN/ES first-class.</p></div></div>
+    </div>
+
+    <!-- Ship — accent sage card -->
+    <div class="sk-cluster tint-ship sk-ship">
+      <p class="sk-head">Ship</p>
+      <div class="sitem"><span class="pn">16</span><div><h3>deslop-ui</h3><p>Strip the AI tells — visual and structural.</p></div></div>
+      <div class="sitem"><span class="pn">17</span><div><h3>humanize-copy</h3><p>Remove the ChatGPT accent from writing.</p></div></div>
+      <div class="sitem"><span class="pn">18</span><div><h3>tastecheck-pass</h3><p>The ship gate: every self-check, run + reported.</p></div></div>
+    </div>
+
   </div>
 </div></section>
 
 <section id="how"><div class="wrap rv">
   <p class="eyebrow">how it works</p>
   <h2>It interviews you first.</h2>
-  <p class="slede">No menus. It surfaces every decision you didn’t know you had.</p>
+  <p class="slede">No menus. It surfaces every decision you didn’t know you had, gently and unhurriedly.</p>
   <div class="flow">
-    <div class="frow"><div class="peb"><span class="num">01</span></div><div><h3>It grills you</h3><p>Function first, then references — it finds the pattern across what you love.</p><div class="q">“‘Modern’ is a non-answer — name one you’d resemble.”</div></div></div>
-    <div class="frow"><div class="peb"><span class="num">02</span></div><div><h3>It commits</h3><p>OKLCH palette with verified contrast, real type, structure, motion — as tokens.</p><div class="q">“One dominant color, not five. And not indigo→violet.”</div></div></div>
-    <div class="frow"><div class="peb"><span class="num">03</span></div><div><h3>It builds &amp; checks</h3><p>The skills apply the system, then audit the result against your spec.</p><div class="q">“That wine-red is the new tell. For your energy, push here.”</div></div></div>
+    <div class="frow"><div class="peb"><span class="num">01</span></div><div><h3>It grills you</h3><p>Function first, then references — it finds the pattern across what you love.</p><div class="q">”’Modern’ is a non-answer — name one you’d resemble.”</div></div></div>
+    <div class="frow"><div class="peb"><span class="num">02</span></div><div><h3>It commits</h3><p>OKLCH palette with verified contrast, real type, structure, motion — as tokens.</p><div class="q">”One dominant color, not five. And not indigo→violet.”</div></div></div>
+    <div class="frow"><div class="peb"><span class="num">03</span></div><div><h3>It builds &amp; checks</h3><p>The skills apply the system, then audit the result against your spec.</p><div class="q">”That wine-red is the new tell. For your energy, push here.”</div></div></div>
   </div>
 </div></section>
 
-<section id="skills"><div class="wrap rv">
-  <p class="eyebrow">what's inside</p>
-  <h2>Fifteen skills. Zero vibes.</h2>
-  <div class="slist">
-    <div class="sitem"><span class="pn">00</span><div><h3>design-system-interview</h3><p>Grills you into a committed system + tokens before code.</p></div></div>
-    <div class="sitem"><span class="pn">01</span><div><h3>deslop-ui</h3><p>Strip the AI tells — visual and structural.</p></div></div>
-    <div class="sitem"><span class="pn">02</span><div><h3>humanize-copy</h3><p>Remove the ChatGPT accent from writing.</p></div></div>
-    <div class="sitem"><span class="pn">03</span><div><h3>web-typography</h3><p>Scale, measure, rhythm, font loading.</p></div></div>
-    <div class="sitem"><span class="pn">04</span><div><h3>color-system</h3><p>OKLCH palettes that pass contrast.</p></div></div>
-    <div class="sitem"><span class="pn">05</span><div><h3>theming</h3><p>Light + dark + high-contrast from one token set.</p></div></div>
-    <div class="sitem"><span class="pn">06</span><div><h3>responsive-layout</h3><p>Survives any width.</p></div></div>
-    <div class="sitem"><span class="pn">07</span><div><h3>component-states</h3><p>Every interactive state + ARIA.</p></div></div>
-    <div class="sitem"><span class="pn">08</span><div><h3>form-ux</h3><p>Forms people actually finish.</p></div></div>
-    <div class="sitem"><span class="pn">09</span><div><h3>empty-states</h3><p>Empty / loading / error, handled.</p></div></div>
-    <div class="sitem"><span class="pn">10</span><div><h3>micro-motion</h3><p>Animation that feels expensive.</p></div></div>
-    <div class="sitem"><span class="pn">11</span><div><h3>a11y-pass</h3><p>Runnable WCAG 2.2 AA audit.</p></div></div>
-    <div class="sitem"><span class="pn">12</span><div><h3>cognitive-a11y</h3><p>ADHD · autism · dyslexia · neurodivergence.</p></div></div>
-    <div class="sitem"><span class="pn">13</span><div><h3>data-viz</h3><p>Honest, Tufte-informed charts.</p></div></div>
-    <div class="sitem"><span class="pn">14</span><div><h3>improve-existing-website</h3><p>Audit a site, infer its intended system, and make it true.</p></div></div>
+<section id="why"><div class="wrap rv">
+  <p class="eyebrow">what it gently refuses</p>
+  <h2>Three planes of slop. All of them.</h2>
+  <p class="slede">It’s not only the look — the skeleton repeats, and so does the copy. tastecheck quietly refuses all three.</p>
+  <div class="slops">
+    <div class="slop"><div class="sw p"></div><div class="sw c"></div><h3>The look</h3><p>Purple gradient or editorial serif — the same average, one season apart.</p></div>
+    <div class="slop"><div class="wf" aria-hidden="true"><div class="h"></div><div class="r"><span></span><span></span><span></span></div></div><h3>The structure</h3><p>Centered hero, three cards, equal grid — the same bones under any skin.</p></div>
+    <div class="slop"><div class="slopx" aria-hidden="true"><s>”delve”</s><s>”in today’s fast-paced world”</s><s>”it’s not just X, it’s Y”</s></div><h3>The copy</h3><p>The ChatGPT accent — buzzwords, hedging, one tired rhythm. We strip it.</p></div>
   </div>
 </div></section>
 

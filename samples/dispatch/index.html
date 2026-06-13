@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>tastecheck — Dispatch / Shipping log sample</title>
+<meta name="description" content="Dispatch / Shipping log: a dark emerald-slate tastecheck sample built as a reverse-chronological release timeline — the design system IS the changelog of what the pack shipped. Bricolage display over a teal-tinted ground with a left-rail timeline.">
+<meta name="keywords" content="tastecheck, design system, changelog, release notes, shipping log, timeline, dev tool, anti-slop, design sample">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="Kyanite Labs">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0f0d">
+<link rel="canonical" href="https://kyanitelabs.github.io/tastecheck/samples/dispatch/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="tastecheck">
+<meta property="og:title" content="tastecheck — Dispatch / Shipping log design-system sample">
+<meta property="og:description" content="A dark emerald-slate tastecheck sample built as a release timeline — the design system IS the changelog of what shipped.">
+<meta property="og:url" content="https://kyanitelabs.github.io/tastecheck/samples/dispatch/">
+<meta property="og:image" content="https://kyanitelabs.github.io/tastecheck/docs/hero/five-systems.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="tastecheck — Dispatch / Shipping log design-system sample">
+<meta name="twitter:description" content="A dark emerald-slate tastecheck sample built as a release timeline — the design system IS the changelog.">
+<meta name="twitter:image" content="https://kyanitelabs.github.io/tastecheck/docs/hero/five-systems.png">
+<style>
+@font-face{font-family:"Bric";src:url("../fonts/bricolage-800.woff2") format("woff2");font-weight:800;font-display:block}
+@font-face{font-family:"Bric";src:url("../fonts/bricolage-700.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Hanken";src:url("../fonts/hanken-400.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Hanken";src:url("../fonts/hanken-600.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Hanken";src:url("../fonts/hanken-800.woff2") format("woff2");font-weight:800;font-display:swap}
+:root{
+  /* emerald-slate shipping log: green-tinted ink ground, one electric ship accent */
+  --bg:#0a0f0d; --s1:#111a16; --s2:#16211c; --ink:#e7f0eb; --muted:#8fa89d; --line:#23332c;
+  --ship:#2dd4a8; --ship-ink:#03120d;
+  --add:#2dd4a8; --chg:#7cc4ff; --fix:#ffcf5e; --proof:#c79bff;
+  --disp:"Bric",system-ui,sans-serif; --body:"Hanken",system-ui,sans-serif; --mono:ui-monospace,"SF Mono",Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ship);outline-offset:3px;border-radius:5px}
+.skip{position:absolute;left:-999px}.skip:focus{left:14px;top:14px;z-index:99;background:var(--ship);color:var(--ship-ink);padding:.6em 1em;border-radius:8px;font-weight:600}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:clamp(1.1rem,1rem + 2.5vw,2.6rem)}
+.mono{font-family:var(--mono);font-size:.78rem;letter-spacing:.02em}
+/* header */
+header{position:sticky;top:0;z-index:40;background:color-mix(in oklab,var(--bg) 86%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav{display:flex;justify-content:space-between;align-items:center;min-height:62px}
+.brand{font:800 1.3rem var(--disp);letter-spacing:-.02em}.brand i{font-style:normal;color:var(--ship)}
+.nav details{position:relative}.nav summary{list-style:none;cursor:pointer;min-height:44px;display:flex;align-items:center;font:600 .82rem var(--body)}
+.nav summary::-webkit-details-marker{display:none}.menu{display:flex;gap:.1rem}
+.menu a{display:flex;align-items:center;min-height:44px;padding:0 13px;text-decoration:none;font:600 .82rem var(--body);color:var(--muted);border-radius:7px}.menu a:hover{color:var(--ink);background:var(--s1)}
+@media(max-width:680px){.menu{position:absolute;right:0;top:52px;flex-direction:column;background:var(--s1);border:1px solid var(--line);border-radius:12px;min-width:200px;padding:.4rem}.nav details:not([open]) .menu{display:none}}
+@media(min-width:681px){.nav summary{display:none}}
+/* hero — a release header, not a marketing funnel */
+.hero .wrap{padding-block:clamp(3.2rem,2rem + 6vw,6rem)}
+.relline{display:flex;align-items:center;gap:.7rem;color:var(--muted);margin-bottom:1.4rem}
+.relline .tagv{font-family:var(--mono);font-size:.76rem;color:var(--ship);border:1px solid var(--ship);border-radius:999px;padding:.18em .7em}
+.relline .pulse{width:8px;height:8px;border-radius:50%;background:var(--ship);box-shadow:0 0 0 0 color-mix(in oklab,var(--ship) 60%,transparent);animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in oklab,var(--ship) 55%,transparent)}70%{box-shadow:0 0 0 11px transparent}100%{box-shadow:0 0 0 0 transparent}}
+h1{font:800 clamp(2.7rem,1.5rem + 6vw,5.6rem) var(--disp);line-height:.95;letter-spacing:-.035em;max-width:15ch}
+h1 .g{color:var(--ship)}
+.lede{font-size:clamp(1.05rem,1rem + .5vw,1.32rem);color:var(--muted);max-width:56ch;margin-top:1.5rem;text-wrap:pretty}
+.actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:2rem}
+.btn{font:600 .9rem var(--body);cursor:pointer;border:0;padding:.85em 1.4em;min-height:48px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center}
+.btn-primary{background:var(--ship);color:var(--ship-ink)}.btn-primary:hover{filter:brightness(1.08)}
+.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}.btn-ghost:hover{border-color:var(--ship)}
+.trust{margin-top:1.5rem;color:var(--muted);font-size:.86rem}.trust b{color:var(--ink)}
+section{padding-block:clamp(2.6rem,2rem + 3vw,4.4rem)}
+.eyebrow{font-family:var(--mono);font-size:.76rem;color:var(--ship);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.7rem}
+h2{font:700 clamp(1.7rem,1.3rem + 2vw,2.7rem) var(--disp);line-height:1.02;letter-spacing:-.02em}
+.slede{color:var(--muted);max-width:60ch;margin-top:.6rem}
+/* the feed — a left-rail timeline (the signature move) */
+.feed{margin-top:2.4rem;position:relative;padding-left:clamp(1.6rem,1rem + 3vw,3rem)}
+.feed::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--ship),var(--line))}
+.entry{position:relative;padding:0 0 2.2rem}
+.entry::before{content:"";position:absolute;left:calc(-1*clamp(1.6rem,1rem + 3vw,3rem) + 1px);top:7px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--ship)}
+.entry:first-child::before{background:var(--ship);box-shadow:0 0 0 4px color-mix(in oklab,var(--ship) 22%,transparent)}
+.emeta{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;margin-bottom:.55rem}
+.date{font-family:var(--mono);font-size:.76rem;color:var(--muted)}
+.tag{font-family:var(--mono);font-size:.7rem;font-weight:700;letter-spacing:.06em;padding:.16em .55em;border-radius:6px;border:1px solid currentColor}
+.tag.add{color:var(--add)}.tag.chg{color:var(--chg)}.tag.fix{color:var(--fix)}.tag.proof{color:var(--proof)}
+.pr{font-family:var(--mono);font-size:.74rem;color:var(--muted);margin-left:auto}
+.entry h3{font:700 1.2rem var(--disp);letter-spacing:-.01em}
+.entry p{color:var(--muted);font-size:.96rem;margin-top:.35rem;max-width:64ch}
+.lead-entry{background:var(--s1);border:1px solid var(--line);border-radius:14px;padding:1.3rem 1.4rem;margin-bottom:2.2rem}
+.lead-entry h3{font-size:1.45rem}.lead-entry p{color:#bcd0c6}
+/* proof strip — prose, deliberately not a stat band */
+.proof{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--s1)}
+.proof .wrap{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(1.4rem,1rem + 3vw,3rem);align-items:center}
+@media(max-width:760px){.proof .wrap{grid-template-columns:1fr}}
+.proof ul{list-style:none;display:grid;gap:1rem;margin-top:1.2rem}
+.proof li{padding-left:1.5rem;position:relative;color:var(--muted)}
+.proof li::before{content:"\2713";position:absolute;left:0;top:0;color:var(--ship);font-weight:700}
+.proof li b{color:var(--ink);font-weight:600}
+/* install */
+.cmd{font-family:var(--mono);font-size:clamp(.82rem,.7rem + .5vw,.98rem);background:var(--s2);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.3rem;margin-top:1.3rem;overflow-x:auto}.cmd .c{color:var(--ship);font-weight:700}
+footer{border-top:1px solid var(--line);padding-block:2.2rem;color:var(--muted);font-size:.86rem}
+footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}footer b{font-family:var(--disp);color:var(--ink)}footer b i{font-style:normal;color:var(--ship)}
+/* reveal — gated behind .js so content shows complete without JS (the no-JS rule, dogfooded) */
+.js .rv{opacity:0;transform:translateY(12px)}
+.js .rv.in{opacity:1;transform:none;transition:opacity .4s cubic-bezier(.16,1,.3,1),transform .4s cubic-bezier(.16,1,.3,1)}
+@media(prefers-reduced-motion:reduce){.js .rv{opacity:1;transform:none}*{animation:none!important;transition-duration:.01ms!important}}
+</style><style id="tc-nav">
+:root{--tc-bg:var(--bg);--tc-ink:var(--ink);--tc-line:var(--line);--tc-muted:var(--muted);--tc-accent:var(--ship)}
+.tc-bar{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem 1.2rem;justify-content:space-between;background:var(--tc-bg);color:var(--tc-ink);border-bottom:1px solid var(--tc-line);padding:.55rem clamp(1rem,3vw,2rem);font:600 .8rem system-ui,-apple-system,sans-serif}
+.tc-bar a{color:var(--tc-muted);text-decoration:none;display:inline-flex;align-items:center;min-height:24px;padding-block:.15rem}
+.tc-bar a:hover{color:var(--tc-ink)}
+.tc-home{color:var(--tc-ink)!important;font-weight:700}
+.tc-grp{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .8rem}
+.tc-grp .tc-lbl{color:var(--tc-muted);font-weight:600;opacity:.8}
+.tc-samples a[aria-current=page]{color:var(--tc-ink);font-weight:700;text-decoration:underline;text-decoration-color:var(--tc-accent);text-underline-offset:3px;text-decoration-thickness:2px}
+.tc-pal{display:flex;align-items:center;gap:.4rem}
+.tc-pal .tc-lbl{color:var(--tc-muted)}
+.tc-pal button{width:26px;height:26px;border-radius:50%;border:1px solid var(--tc-line);cursor:pointer;padding:0}
+.tc-pal button[aria-pressed=true]{outline:2px solid var(--tc-ink);outline-offset:2px}
+@media(max-width:560px){.tc-bar{font-size:.74rem}}
+</style>
+</head>
+<body>
+<div class="tc-bar"><a class="tc-home" href="../../">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="../copper/">Copper</a><a href="../swiss/">Swiss</a><a href="../maximal/">Maximal</a><a href="../concrete/">Concrete</a><a href="../clay/">Clay</a><a href="../dispatch/" aria-current="page">Dispatch</a><a href="../">Gallery</a></nav><div class="tc-pal" role="group" aria-label="Accent palette"><span class="tc-lbl">Accent</span><button type="button" data-pal="a" aria-pressed="true" aria-label="Emerald accent" title="Emerald" style="background:#2dd4a8"></button><button type="button" data-pal="b" aria-pressed="false" aria-label="Cyan accent" title="Cyan" style="background:#38bdf8"></button><button type="button" data-pal="c" aria-pressed="false" aria-label="Lime accent" title="Lime" style="background:#a3e635"></button><button type="button" data-pal="d" aria-pressed="false" aria-label="Amber accent" title="Amber" style="background:#fbbf24"></button></div></div>
+<a class="skip" href="#main">Skip to content</a>
+<header><div class="wrap nav">
+  <span class="brand">taste<i>check</i></span>
+  <details><summary aria-label="Menu">Menu &#9662;</summary><div class="menu"><a href="#log">Log</a><a href="#proof">What it proves</a><a href="#install">Install</a></div></details>
+</div></header>
+
+<main id="main">
+<section class="hero"><div class="wrap">
+  <p class="relline"><span class="pulse" aria-hidden="true"></span><span class="tagv">v0.1 · shipping</span><span class="mono">the design system is the changelog</span></p>
+  <h1>What <span class="g">shipped.</span></h1>
+  <p class="lede">A tastecheck sample built as a release log: the same product story, structured as a reverse-chronological feed of what the pack actually changed — most of it in the last two days.</p>
+  <div class="actions"><a class="btn btn-primary" href="#log">Read the log &#8595;</a><a class="btn btn-ghost" href="https://github.com/KyaniteLabs/tastecheck">Source</a></div>
+  <p class="trust">Built by the pack it documents · Works with <b>Claude Code</b> · <b>Codex</b> · <b>Gemini</b> · <b>Cursor</b> · MIT</p>
+</div></section>
+
+<section id="log"><div class="wrap rv">
+  <p class="eyebrow">the log</p>
+  <h2>Every change is a checkable contract.</h2>
+  <p class="slede">Newest first. Each entry is a real thing that shipped — not a roadmap, not a promise.</p>
+  <div class="feed">
+    <article class="entry lead-entry rv">
+      <div class="emeta"><span class="date">2026-06-13</span><span class="tag add">SHIPPED</span><span class="pr">19 skills, live</span></div>
+      <h3>The landing page runs all nineteen skills.</h3>
+      <p>The homepage stopped claiming fifteen and started exercising all nineteen — every skill is a working cell on the page that documents them, the ship gate included. The proof and the product are the same surface.</p>
+    </article>
+    <article class="entry rv">
+      <div class="emeta"><span class="date">2026-06-13</span><span class="tag chg">REBUILT</span><span class="pr">samples</span></div>
+      <h3>Five samples, five real structures.</h3>
+      <p>The gallery stopped being five recolors of one skeleton. Each system now leads with substance in a layout native to it: a spec-sheet ledger, a modular grid, a color-block wall, a tessellated bento, soft clusters — and this release log.</p>
+    </article>
+    <article class="entry rv">
+      <div class="emeta"><span class="date">2026-06-12</span><span class="tag add">ADDED</span><span class="pr">PR #10</span></div>
+      <h3>The gate auditor became automatable.</h3>
+      <p>It now exposes a structured result a browser-driving runner reads directly — the evidence appears with no manual paste. A pure-Node regression and a real-browser fixture guard the auditor itself.</p>
+    </article>
+    <article class="entry rv">
+      <div class="emeta"><span class="date">2026-06-12</span><span class="tag add">ADDED</span><span class="pr">PR #9</span></div>
+      <h3>A runnable ship-gate auditor.</h3>
+      <p>A paste-able console auditor for the cold-load tells a self-reported table misses: hidden defeated by CSS, errors before input, content stuck at opacity zero, the indigo gradient. Plus two rules — budget for the gate from minute one, and reveal-on-scroll must never hide content from a no-JS reader.</p>
+    </article>
+    <article class="entry rv">
+      <div class="emeta"><span class="date">2026-06-12</span><span class="tag fix">CHANGED</span><span class="pr">PR #8</span></div>
+      <h3>The deslop audit grew a structural plane.</h3>
+      <p>The SaaS-skeleton, uniform-grid and metronomic-rhythm checks moved into the runnable self-check, so the structural tells run on every pass — not buried in a reference file the model never opens.</p>
+    </article>
+    <article class="entry rv">
+      <div class="emeta"><span class="date">2026-06-12</span><span class="tag fix">CHANGED</span><span class="pr">PR #7</span></div>
+      <h3>The gate outranks polish.</h3>
+      <p>In budget-limited runs, reserve capacity for the gate before optional extras — and if it genuinely cannot run, say so. Never imply it ran when it did not.</p>
+    </article>
+    <article class="entry rv">
+      <div class="emeta"><span class="date">2026-06-12</span><span class="tag proof">PROVEN</span><span class="pr">7 lanes</span></div>
+      <h3>A cross-model audit started all of it.</h3>
+      <p>One brief, seven models. The grep-able surface tells held everywhere; the structural plane is where weaker models leak and their own gates miss it. Every entry above traces back to this run.</p>
+    </article>
+  </div>
+</div></section>
+
+<section class="proof" id="proof"><div class="wrap rv">
+  <div>
+    <p class="eyebrow">what it proves</p>
+    <h2>A green check is necessary. Never sufficient.</h2>
+    <p class="slede">This log isn't a feature list — it's the record of a pack being held to its own standard, and sometimes failing it.</p>
+  </div>
+  <ul>
+    <li><b>Checks that run, not vibes.</b> Every rule is a value, a count, a yes/no — and the gate auditor's printed output is the evidence, not a claim.</li>
+    <li><b>The structural plane is judgment work.</b> The cross-model run proved smaller models pass the surface and ship the skeleton; so did dogfooding this very pack.</li>
+    <li><b>Taste is the only moat.</b> The same product story, rendered through a committed system, reads as a distinct product — this page included.</li>
+  </ul>
+</div></section>
+
+<section id="install"><div class="wrap rv">
+  <p class="eyebrow">install</p>
+  <h2>One command. Then just build.</h2>
+  <p class="slede">Links the canonical skills and mirrors them into detected agent homes.</p>
+  <div class="cmd"><span class="c">$</span> git clone https://github.com/KyaniteLabs/tastecheck<br><span class="c">$</span> ./tastecheck/install.sh</div>
+</div></section>
+</main>
+
+<footer><div class="wrap"><b>taste<i>check</i></b><span>taste is the only moat &middot; MIT &middot; sample &middot; Dispatch / Shipping log</span></div></footer>
+
+<script>
+document.documentElement.classList.add('js');
+document.querySelector('summary')?.addEventListener('click',function(){var s=this;setTimeout(function(){s.setAttribute('aria-expanded',s.closest('details').open)},0)});
+(function(){var rm=matchMedia('(prefers-reduced-motion: reduce)').matches;var els=[].slice.call(document.querySelectorAll('.rv'));
+ if(rm||!('IntersectionObserver'in window)){els.forEach(function(e){e.classList.add('in')});return;}
+ var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}})},{threshold:0,rootMargin:'0px 0px -8% 0px'});
+ els.forEach(function(e){io.observe(e)});setTimeout(function(){els.forEach(function(e){e.classList.add('in')})},1500);})();
+</script>
+<script>(function(){var P={"a":{"--ship":"#2dd4a8"},"b":{"--ship":"#38bdf8"},"c":{"--ship":"#a3e635"},"d":{"--ship":"#fbbf24"}};var r=document.documentElement;document.querySelectorAll(".tc-pal button").forEach(function(b){b.addEventListener("click",function(){var p=P[b.dataset.pal];if(!p)return;Object.keys(p).forEach(function(k){r.style.setProperty(k,p[k])});document.querySelectorAll(".tc-pal button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false")});});});})();</script>
+</body></html>
