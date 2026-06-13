@@ -18,26 +18,43 @@
     return r.width>0&&r.height>0;
   };
   const text=el=>(el.textContent||'').replace(/\s+/g,' ').trim();
-  const name=el=>el.tagName.toLowerCase()
-    +(el.id?'#'+el.id:'')
-    +(el.classList.length?'.'+el.classList[0]:'');
+  const name=el=>{
+    let n=el.tagName.toLowerCase()
+      +(el.id?'#'+el.id:'')
+      +(el.classList.length?'.'+el.classList[0]:'');
+    if(!el.id&&!el.classList.length&&el.parentElement){
+      /* anonymous element — add position + parent so the locator stays usable */
+      const sibs=[...el.parentElement.children].filter(s=>s.tagName===el.tagName);
+      if(sibs.length>1)n+=`:nth-of-type(${sibs.indexOf(el)+1})`;
+      const p=el.parentElement;
+      n=p.tagName.toLowerCase()+(p.id?'#'+p.id:'')
+        +(p.classList.length?'.'+p.classList[0]:'')+' > '+n;
+    }
+    return n;
+  };
   const px=v=>parseFloat(v)||0;
   const bodyFont=px(cs(document.body).fontSize)||16;
 
   /* 1. FAIL — [hidden] defeated by author CSS (a display rule beats the attribute) */
+  const hiddenHits=[];
   document.querySelectorAll('[hidden]').forEach(el=>{
-    if(cs(el).display!=='none')
-      fails.push(`[hidden] rendered visible (CSS display:${cs(el).display} beats the attribute): ${name(el)}`);
+    if(cs(el).display!=='none'){
+      hiddenHits.push(el);
+      const t=text(el);
+      fails.push(`[hidden] rendered visible (CSS display:${cs(el).display} beats the attribute): ${name(el)}${t?` — "${t.slice(0,40)}"`:''}`);
+    }
   });
 
-  /* 2. FAIL — error/alert content visible before any user input */
+  /* 2. FAIL — error/alert content visible before any user input. One defect, one
+        line: anything check 1 already reported (or its wrapper) is skipped here */
   const errCands=[...document.querySelectorAll('[role="alert"],[aria-invalid="true"],[class*="error" i]')];
   errCands.forEach(el=>{
+    if(errCands.some(o=>o!==el&&o.contains(el)))return; /* outermost only */
+    if(hiddenHits.some(h=>h===el||h.contains(el)||el.contains(h)))return;
     if(el.matches('[aria-invalid="true"]')&&el.matches('input,select,textarea')){
       fails.push(`field marked aria-invalid on a fresh load: ${name(el)}`);
       return;
     }
-    if(errCands.some(o=>o!==el&&o.contains(el)))return; /* outermost only */
     const t=text(el);
     if(t&&visible(el))
       fails.push(`error text visible before any input: "${t.slice(0,60)}" (${name(el)})`);
@@ -90,17 +107,24 @@
     });
   });
 
-  /* 7. WARN — the stat-counter band (3+ big numeric callouts in one container);
-        ordered lists and 01/02/03-style ordinals are enumerations, not stats */
+  /* 7. WARN — the stat-counter band (3+ big numeric callouts in one container).
+        Not stats: ordered lists, 01/02/03 ordinals (enumerations), and bare prices
+        ($29 = pricing tier; currency only counts with a magnitude suffix, $2M) */
   document.querySelectorAll('body *').forEach(parent=>{
     if(parent.tagName==='OL')return;
     const kids=[...parent.children].filter(visible);
     if(kids.length<3)return;
     const stat=kids.filter(k=>{
-      /* first descendant in document order — deeply nested numerals can be missed */
-      const lead=k.querySelector(':scope :first-child')||k;
-      return /^[$~]?(?!0\d)\d[\d.,]*\s?(%|\+|k|K|M|x|×)?\+?$/.test(text(lead).slice(0,8).trim())
-        &&px(cs(lead).fontSize)>=bodyFont*1.6;
+      /* the biggest-font short text inside the block is the candidate numeral */
+      const lead=[k,...k.querySelectorAll('*')]
+        .filter(e=>{const t=text(e);return t&&t.length<=8;})
+        .sort((a,b)=>px(cs(b).fontSize)-px(cs(a).fontSize))[0];
+      if(!lead||px(cs(lead).fontSize)<bodyFont*1.6)return false;
+      /* a numeral in a date context (event lists, calendars) is not a stat */
+      if(lead.closest('time,[class*="date" i],[class*="day" i],[class*="month" i]'))return false;
+      const t=text(lead).trim();
+      if(/^[$€£]/.test(t))return /^[$€£]\d[\d.,]*\s?(k|K|M)\+?$/.test(t);
+      return /^~?(?!0\d)\d[\d.,]*\s?(%|\+|k|K|M|x|×)?\+?$/.test(t);
     });
     if(stat.length>=3&&!seen.has('stat'+name(parent))){
       seen.add('stat'+name(parent));
