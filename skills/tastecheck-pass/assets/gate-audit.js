@@ -97,6 +97,7 @@
     const kids=[...parent.children].filter(visible);
     if(kids.length<3)return;
     const stat=kids.filter(k=>{
+      /* first descendant in document order — deeply nested numerals can be missed */
       const lead=k.querySelector(':scope :first-child')||k;
       return /^[$~]?(?!0\d)\d[\d.,]*\s?(%|\+|k|K|M|x|×)?\+?$/.test(text(lead).slice(0,8).trim())
         &&px(cs(lead).fontSize)>=bodyFont*1.6;
@@ -135,12 +136,14 @@
   }
 
   /* report */
+  const wShow=warns.length>12?[...warns.slice(0,12),`…and ${warns.length-12} more warns`]:warns;
   const lines=[
     'TASTECHECK GATE AUDIT — fresh-load + tells (paste into the gate report)',
     ...fails.map(f=>'✗ FAIL '+f),
-    ...warns.map(w=>'⚠ WARN '+w),
+    ...wShow.map(w=>'⚠ WARN '+w),
     ...notes.map(n=>'— '+n),
     `verdict: ${fails.length?'FAIL':warns.length?'REVIEW WARNS':'CLEAN'} — ${fails.length} fail / ${warns.length} warn · 10 checks · gateAudit() to re-run`,
+    'Scope: light DOM only — shadow roots and iframes are not audited.',
     'Reminder: run on a FRESH load. Warns are evidence for judgment against the committed spec, not verdicts.'
   ];
   console.log(lines.join('\n'));
