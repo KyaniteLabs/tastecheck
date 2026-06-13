@@ -160,16 +160,23 @@
   }
 
   /* report */
+  const verdict=fails.length?'FAIL':warns.length?'REVIEW WARNS':'CLEAN';
   const wShow=warns.length>12?[...warns.slice(0,12),`…and ${warns.length-12} more warns`]:warns;
   const lines=[
     'TASTECHECK GATE AUDIT — fresh-load + tells (paste into the gate report)',
     ...fails.map(f=>'✗ FAIL '+f),
     ...wShow.map(w=>'⚠ WARN '+w),
     ...notes.map(n=>'— '+n),
-    `verdict: ${fails.length?'FAIL':warns.length?'REVIEW WARNS':'CLEAN'} — ${fails.length} fail / ${warns.length} warn · 10 checks · gateAudit() to re-run`,
+    `verdict: ${verdict} — ${fails.length} fail / ${warns.length} warn · 10 checks · gateAudit() to re-run`,
     'Scope: light DOM only — shadow roots and iframes are not audited.',
     'Reminder: run on a FRESH load. Warns are evidence for judgment against the committed spec, not verdicts.'
   ];
   console.log(lines.join('\n'));
   window.gateAudit=gateAudit;
+  /* Automation surface: a browser-driving harness (Playwright/Puppeteer/CDP) that
+     injects this file reads the structured result here instead of scraping the
+     console — addScriptTag runs the IIFE synchronously, so __gateAudit is set by
+     the time the inject call resolves. warns is the FULL list, not the console cap. */
+  window.__gateAudit={verdict,fails,warns,notes};
+  return window.__gateAudit;
 })();
