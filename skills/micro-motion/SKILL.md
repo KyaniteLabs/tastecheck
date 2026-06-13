@@ -75,11 +75,14 @@ per-skill. The primary pattern: gate the *movement* behind `no-preference`, so
 reduced-motion users still get a (motionless) fade and never a broken layout:
 
 ```css
-/* PRIMARY: design the reduced variant — keep a gentle fade, drop the movement */
+/* PRIMARY: design the reduced variant — keep a gentle fade, drop the movement.
+   The waiting state hangs off a .js hook the boot script adds to <html>
+   (document.documentElement.classList.add('js')) — so when the script never
+   runs, nothing was ever hidden and the page still reads complete. */
 @media (prefers-reduced-motion: no-preference) {
-  .reveal { opacity: 0; transform: translateY(12px); transition:
+  html.js .reveal { opacity: 0; transform: translateY(12px); transition:
             opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out); }
-  .reveal.in { opacity: 1; transform: none; }
+  html.js .reveal.in { opacity: 1; transform: none; }
 }
 ```
 

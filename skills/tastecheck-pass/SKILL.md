@@ -53,9 +53,10 @@ direction, foundations, structure, a11y, and the deslop audit are never skippabl
    the console and copy its printed lines into the report — it mechanically catches
    what self-reported tables most often get wrong: `hidden` defeated by a CSS display
    rule, error text visible before input, content stuck at opacity 0, uniform card
-   grids, stat-counter bands, pill CTAs, and the indigo gradient. Script output is
-   evidence; cross-model runs have caught real shipped bugs with it that both the
-   building model's gate and a human visual review missed.
+   grids, stat-counter bands, pill CTAs, and the indigo gradient. It audits the light
+   DOM only (shadow roots and iframes are outside its reach — check those by hand).
+   Script output is evidence; cross-model runs have caught real shipped bugs with it
+   that both the building model's gate and a human visual review missed.
 4. **Audit against the spec, not taste:** does the output match the committed
    aesthetic phrase, tokens, refusals, and signature move? Any default that snuck back
    in on any plane — surface, structural skeleton, or verbal (`deslop-ui` tell catalog
