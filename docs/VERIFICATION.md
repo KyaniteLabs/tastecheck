@@ -99,23 +99,35 @@ For releases, append a short dated note with:
 
 Date: 2026-06-12
 
-The ship gate's own auditor (`skills/tastecheck-pass/assets/gate-audit.js`) was run
-against the landing page (`index.html`) on a fresh load, the way the pipeline expects a
-finished page to be gated.
+The full `tastecheck-pass` gate was run against the landing page (`index.html`), and it
+matters *which layer* caught what — the lesson is that the mechanical auditor is the
+shallow layer.
 
-- **Verdict: REVIEW WARNS — 0 fail / 1 warn.** No cold-load failures: nothing `hidden`
-  defeated by CSS, no error text before input, no content stuck at opacity 0, no stuck
-  skeletons.
-- The one warn is the **indigo→violet gradient on the `.sw.p` swatch** — the intentional
-  "before" demonstration (`aria-hidden`, captioned *"Purple gradient or editorial serif —
-  same average, one season apart"*). Accepted against the committed spec: the page is
-  deliberately *showing* the slop tell, not committing it. Warns require judgment against
-  the spec; this is the case the framing exists for.
-- The reveal-on-scroll pattern already follows the `micro-motion` no-JS rule (`.js .rv`
-  hidden state gated behind a script-added `html.js` hook, with an IntersectionObserver
-  fallback and a `setTimeout` safety net), so no content depends on JS to be visible.
-- The display face resolves to "Red0" (Redaction 0, the committed distinctive display
-  font) — logged as a NOTE, not a safe-font tell.
+**The mechanical auditor (`gate-audit.js`) passed and was not enough.** On a fresh load
+it reported 0 cold-load failures (nothing `hidden` defeated by CSS, no error text before
+input, no content stuck at opacity 0, no stuck skeletons) and one accepted warn — the
+intentional indigo→violet "before" demonstration (the `deslop-ui` cell's `✕ pill · purple`
+example, and the `aria-hidden` slop swatch). The reveal-on-scroll already followed the
+`micro-motion` no-JS rule (`.js .rv` behind a script-added `html.js` hook, with an
+observer fallback and a `setTimeout` safety net); the display face resolves to "Red0"
+(Redaction 0, the committed distinctive font) — a NOTE, not a tell.
+
+**The structural self-check (`deslop-ui`) caught what the auditor structurally cannot.**
+The page predated the structural-plane self-check, and applying it by judgment surfaced a
+real defect the 10-check auditor has no concept of: the section stack was the SaaS
+**funnel order** — hero → "the problem" → "how it works" → feature grid → proof → CTA.
+Every section mapped to a skeleton slot, in skeleton order; only the *treatment* was
+varied. That is exactly the tell `references/structural-tells.md` names.
+
+**The fix (this branch):** the landing page was restructured to break the funnel on
+order *and* count — lead with the working bento (demonstrate before pitching), demote the
+three-planes section from a problem-opener to a principle that lands *after* the
+demonstration, and cut the redundant "how it works" section (the interview already lives
+in bento cell 00). New stack: `hero → skills (live) → what-it-refuses → proof → install`.
+`npm test` stays green; the auditor re-run is still 0 fail / 1 (accepted) warn; the
+structural self-check now passes. The takeaway recorded here: a clean mechanical-auditor
+run is necessary, not sufficient — the structural plane is judgment work, and it bit the
+pack's own page.
 
 ## Current Branch Evidence
 
