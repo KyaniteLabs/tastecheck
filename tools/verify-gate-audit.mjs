@@ -141,6 +141,14 @@ for (const [label, run] of [["A", a], ["B", b], ["C", c]]) {
   if (!/TASTECHECK GATE AUDIT/.test(run.log)) fail(`case ${label}: console path did not emit the report`);
 }
 
+// If the structured contract is broken, the per-check assertions below would crash on
+// undefined results — report cleanly and stop here instead.
+if (failures.length) {
+  console.error(`gate-audit verification failed (${failures.length})`);
+  for (const f of failures) console.error(`- ${f}`);
+  process.exit(1);
+}
+
 // Check 1 — [hidden] defeated → FAIL, exactly one fail line, names the defect.
 if (a.result.verdict !== "FAIL") fail(`case A: expected verdict FAIL, got ${a.result?.verdict}`);
 if (a.result.fails.length !== 1) fail(`case A: expected 1 fail, got ${a.result?.fails.length}`);
