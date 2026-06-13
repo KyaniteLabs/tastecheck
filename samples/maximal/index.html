@@ -105,7 +105,9 @@ h2{font-family:var(--disp);font-weight:800;font-size:clamp(2.1rem,1.4rem + 3.2vw
 .sk:nth-child(4){grid-column:span 3}.sk:nth-child(5){grid-column:span 4}.sk:nth-child(6){grid-column:span 5}
 .sk:nth-child(7){grid-column:span 4}.sk:nth-child(8){grid-column:span 4}.sk:nth-child(9){grid-column:span 4}
 .sk:nth-child(10){grid-column:span 3}.sk:nth-child(11){grid-column:span 6}.sk:nth-child(12){grid-column:span 3}
-.sk:nth-child(13),.sk:nth-child(14),.sk:nth-child(15){grid-column:span 4}
+.sk:nth-child(13){grid-column:span 5}.sk:nth-child(14){grid-column:span 4}.sk:nth-child(15){grid-column:span 3}
+.sk:nth-child(16){grid-column:span 4}.sk:nth-child(17){grid-column:span 4}.sk:nth-child(18){grid-column:span 4}
+.sk:nth-child(19){grid-column:span 12}
 .sk .n{font:800 .85rem var(--body)}
 .sk h3{font-family:var(--disp);font-weight:700;font-size:1.1rem;margin:.3rem 0 .25rem}
 .sk p{color:var(--muted);font-size:.88rem}
@@ -154,7 +156,7 @@ footer b{font-family:var(--disp);color:var(--text)}footer b i{color:var(--magent
 <header><div class="wrap nav">
   <span class="brand">taste<i>check</i></span>
   <details><summary aria-label="Menu">Menu ▾</summary>
-    <div class="menu"><a href="#why">Problem</a><a href="#how">How</a><a href="#skills">Skills</a><a href="#install">Install</a></div>
+    <div class="menu"><a href="#skills">Showcase</a><a href="#how">Method</a><a href="#why">Refused</a><a href="#install">Install</a></div>
   </details>
 </div></header>
 
@@ -164,7 +166,7 @@ footer b{font-family:var(--disp);color:var(--text)}footer b i{color:var(--magent
   <div class="wrap">
     <span class="kick">design intelligence for AI agents</span>
     <h1>Make it <span class="m">yours</span>, not the <span class="y">average</span>.</h1>
-    <p class="lede">Every AI builds the same site. tastecheck interviews you into a real design system first — then 15 skills make sure your agent ships taste, not slop.</p>
+    <p class="lede">Every AI builds the same site. tastecheck interviews you into a real design system first — then 19 skills make sure your agent ships taste, not slop.</p>
     <div class="actions">
       <a class="btn btn-primary" href="https://github.com/KyaniteLabs/tastecheck">Run a taste check →</a>
       <a class="btn btn-ghost" href="#skills">See the skills</a>
@@ -173,47 +175,52 @@ footer b{font-family:var(--disp);color:var(--text)}footer b i{color:var(--magent
   </div>
 </section>
 
-<section id="why"><div class="wrap rv">
-  <p class="eyebrow">the problem</p>
-  <h2>There isn’t one AI slop. There are three.</h2>
-  <p class="slede">It’s not just the look — the skeleton repeats, and so does the copy. tastecheck refuses all three planes.</p>
-  <div class="slops">
-    <div class="slop"><div class="sw p"></div><div class="sw c"></div><h3>The look</h3><p>Purple gradient or editorial serif — the same average, one season apart.</p></div>
-    <div class="slop"><div class="wf" aria-hidden="true"><div class="h"></div><div class="r"><span></span><span></span><span></span></div></div><h3>The structure</h3><p>Centered hero, three cards, equal grid — the same bones under any skin.</p></div>
-    <div class="slop"><div class="slopx" aria-hidden="true"><s>“delve”</s><s>“in today’s fast-paced world”</s><s>“it’s not just X, it’s Y”</s></div><h3>The copy</h3><p>The ChatGPT accent — buzzwords, hedging, one tired rhythm. We strip it.</p></div>
+<section id=”skills”><div class=”wrap rv”>
+  <p class=”eyebrow”>nineteen skills · zero vibes</p>
+  <h2>The whole <span style=”color:var(--magenta)”>wall</span>.</h2>
+  <p class=”slede”>Every skill is a checkable contract. Together they are the full color-blocked showcase — substance leads.</p>
+  <div class=”skills-g”>
+    <div class=”sk block b-mag”><div class=”n”>00</div><h3>design-system-interview</h3><p>Grills you into a committed system + tokens before a line of code.</p></div>
+    <div class=”sk”><div class=”n” style=”color:var(--yellow)”>01</div><h3>improve-existing-website</h3><p>Audit a site, infer its intended system, and make it true.</p></div>
+    <div class=”sk”><div class=”n” style=”color:var(--cobalt-lite)”>02</div><h3>color-system</h3><p>OKLCH palettes that pass contrast.</p></div>
+    <div class=”sk”><div class=”n” style=”color:var(--mint)”>03</div><h3>web-typography</h3><p>Scale, measure, rhythm, font loading.</p></div>
+    <div class=”sk block b-yel”><div class=”n”>04</div><h3>spacing-system</h3><p>One --space-* scale; section rhythm.</p></div>
+    <div class=”sk”><div class=”n” style=”color:var(--magenta)”>05</div><h3>theming</h3><p>Light + dark + high-contrast from one token set.</p></div>
+    <div class=”sk”><div class=”n” style=”color:var(--cobalt-lite)”>06</div><h3>responsive-layout</h3><p>Survives any width.</p></div>
+    <div class=”sk”><div class=”n” style=”color:var(--mint)”>07</div><h3>component-states</h3><p>Every interactive state + ARIA.</p></div>
+    <div class=”sk”><div class=”n” style=”color:var(--magenta)”>08</div><h3>form-ux</h3><p>Forms people actually finish.</p></div>
+    <div class=”sk”><div class=”n” style=”color:var(--yellow)”>09</div><h3>empty-states</h3><p>Empty / loading / error, handled.</p></div>
+    <div class=”sk block b-mint”><div class=”n”>10</div><h3>micro-motion</h3><p>Animation that feels expensive, never decorative.</p></div>
+    <div class=”sk”><div class=”n” style=”color:var(--mint)”>11</div><h3>data-viz</h3><p>Honest, Tufte-informed charts.</p></div>
+    <div class=”sk”><div class=”n” style=”color:var(--magenta)”>12</div><h3>art-direction</h3><p>Imagery, illustration, iconography as committed decisions.</p></div>
+    <div class=”sk”><div class=”n” style=”color:var(--yellow)”>13</div><h3>a11y-pass</h3><p>Runnable WCAG 2.2 AA audit.</p></div>
+    <div class=”sk”><div class=”n” style=”color:var(--cobalt-lite)”>14</div><h3>cognitive-a11y</h3><p>ADHD · autism · dyslexia · neurodivergence.</p></div>
+    <div class=”sk block b-mag”><div class=”n”>15</div><h3>i18n-ready</h3><p>Multilingual-resilient UI; EN/ES first-class.</p></div>
+    <div class=”sk”><div class=”n” style=”color:var(--yellow)”>16</div><h3>deslop-ui</h3><p>Strip the AI tells — visual and structural.</p></div>
+    <div class=”sk”><div class=”n” style=”color:var(--mint)”>17</div><h3>humanize-copy</h3><p>Remove the ChatGPT accent from writing.</p></div>
+    <div class=”sk block b-yel”><div class=”n”>18</div><h3>tastecheck-pass</h3><p>The ship gate: every self-check, run + reported.</p></div>
   </div>
 </div></section>
 
-<section id="how"><div class="wrap rv">
-  <p class="eyebrow">how it works</p>
-  <h2>It interviews you first.</h2>
-  <p class="slede">No menus. It surfaces every decision you didn’t know you had.</p>
-  <div class="steps">
-    <div class="step"><div class="num">01</div><h3>It grills you</h3><p>Function first, then references — it finds the pattern across what you love.</p><div class="q">“‘Modern’ is a non-answer — name one you’d resemble.”</div></div>
-    <div class="step"><div class="num">02</div><h3>It commits</h3><p>OKLCH palette with verified contrast, real type, structure, motion — as tokens.</p><div class="q">“One dominant color, not five. And not indigo→violet.”</div></div>
-    <div class="step"><div class="num">03</div><h3>It builds &amp; checks</h3><p>The skills apply the system, then audit the result against your spec.</p><div class="q">“That wine-red is the new tell. For your energy, push here.”</div></div>
+<section id=”how”><div class=”wrap rv”>
+  <p class=”eyebrow”>the method</p>
+  <h2>It interviews you <span style=”color:var(--magenta)”>first</span>.</h2>
+  <p class=”slede”>No menus. It surfaces every decision you didn’t know you had.</p>
+  <div class=”steps”>
+    <div class=”step”><div class=”num”>01</div><h3>It grills you</h3><p>Function first, then references — it finds the pattern across what you love.</p><div class=”q”>”’Modern’ is a non-answer — name one you’d resemble.”</div></div>
+    <div class=”step”><div class=”num”>02</div><h3>It commits</h3><p>OKLCH palette with verified contrast, real type, structure, motion — as tokens.</p><div class=”q”>”One dominant color, not five. And not indigo→violet.”</div></div>
+    <div class=”step”><div class=”num”>03</div><h3>It builds &amp; checks</h3><p>The skills apply the system, then audit the result against your spec.</p><div class=”q”>”That wine-red is the new tell. For your energy, push here.”</div></div>
   </div>
 </div></section>
 
-<section id="skills"><div class="wrap rv">
-  <p class="eyebrow">what's inside</p>
-  <h2>Fifteen skills. Zero vibes.</h2>
-  <div class="skills-g">
-    <div class="sk block b-mag"><div class="n">00</div><h3>design-system-interview</h3><p>Grills you into a committed system + tokens before a line of code.</p></div>
-    <div class="sk"><div class="n" style="color:var(--yellow)">01</div><h3>deslop-ui</h3><p>Strip the AI tells — visual and structural.</p></div>
-    <div class="sk"><div class="n" style="color:var(--cobalt-lite)">02</div><h3>humanize-copy</h3><p>Remove the ChatGPT accent from writing.</p></div>
-    <div class="sk"><div class="n" style="color:var(--mint)">03</div><h3>web-typography</h3><p>Scale, measure, rhythm, font loading.</p></div>
-    <div class="sk"><div class="n" style="color:var(--magenta)">04</div><h3>color-system</h3><p>OKLCH palettes that pass contrast.</p></div>
-    <div class="sk block b-yel"><div class="n">05</div><h3>theming</h3><p>Light + dark + high-contrast from one token set.</p></div>
-    <div class="sk"><div class="n" style="color:var(--cobalt-lite)">06</div><h3>responsive-layout</h3><p>Survives any width.</p></div>
-    <div class="sk"><div class="n" style="color:var(--mint)">07</div><h3>component-states</h3><p>Every interactive state + ARIA.</p></div>
-    <div class="sk"><div class="n" style="color:var(--magenta)">08</div><h3>form-ux</h3><p>Forms people actually finish.</p></div>
-    <div class="sk"><div class="n" style="color:var(--yellow)">09</div><h3>empty-states</h3><p>Empty / loading / error, handled.</p></div>
-    <div class="sk block b-mint"><div class="n">10</div><h3>micro-motion</h3><p>Animation that feels expensive, never decorative.</p></div>
-    <div class="sk"><div class="n" style="color:var(--mint)">11</div><h3>a11y-pass</h3><p>Runnable WCAG 2.2 AA audit.</p></div>
-    <div class="sk"><div class="n" style="color:var(--magenta)">12</div><h3>cognitive-a11y</h3><p>ADHD · autism · dyslexia · neurodivergence.</p></div>
-    <div class="sk"><div class="n" style="color:var(--yellow)">13</div><h3>data-viz</h3><p>Honest, Tufte-informed charts.</p></div>
-    <div class="sk"><div class="n" style="color:var(--mint)">14</div><h3>improve-existing-website</h3><p>Audit a site, infer its intended system, and make it true.</p></div>
+<section id=”why”><div class=”wrap rv”>
+  <p class=”eyebrow”>what we refuse</p>
+  <h2>No. <span style=”color:var(--yellow)”>Hard</span> no.</h2>
+  <p class=”slede”>It’s not just the look — the skeleton repeats, and so does the copy. We refuse all three planes.</p>
+  <div class=”slops”>
+    <div class=”slop”><div class=”sw p”></div><div class=”sw c”></div><h3>The look</h3><p>Purple gradient or editorial serif — the same average, one season apart.</p></div>
+    <div class=”slop”><div class=”wf” aria-hidden=”true”><div class=”h”></div><div class=”r”><span></span><span></span><span></span></div></div><h3>The structure</h3><p>Centered hero, three cards, equal grid — the same bones under any skin.</p></div>
+    <div class=”slop”><div class=”slopx” aria-hidden=”true”><s>”delve”</s><s>”in today’s fast-paced world”</s><s>”it’s not just X, it’s Y”</s></div><h3>The copy</h3><p>The ChatGPT accent — buzzwords, hedging, one tired rhythm. We strip it.</p></div>
   </div>
 </div></section>
 
