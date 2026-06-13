@@ -45,10 +45,16 @@ direction, foundations, structure, a11y, and the deslop audit are never skippabl
    ✗ fail / n/a (with why).
 3. **Run the measurable checks**: the paste-able auditor that ships with `a11y-pass`
    (its audit.js asset) in the browser console; 320px + 400% zoom; keyboard
-   tab-through; each theme's contrast; `prefers-reduced-motion` path.
+   tab-through; each theme's contrast; `prefers-reduced-motion` path. Include one
+   **cold load** of the finished artifact (fresh page, no interaction): all content
+   visible, no validation errors showing before any input, no stuck skeletons or
+   unrevealed sections. A page can pass every interactive check and still open broken.
 4. **Audit against the spec, not taste:** does the output match the committed
    aesthetic phrase, tokens, refusals, and signature move? Any default that snuck back
-   in (`deslop-ui` tell catalog) is a fail even if it "looks fine."
+   in on any plane — surface, structural skeleton, or verbal (`deslop-ui` tell catalog
+   plus the structural items in its self-check) — is a fail even if it "looks fine."
+   The structural plane is where audits go soft: a page with clean tokens can still be
+   the template skeleton, and that is a gate failure, not a style preference.
 5. **Report the table** (see shape below), fix the ✗ rows, re-run the failed checks.
    The gate passes only when every non-n/a row passes.
 
@@ -80,7 +86,10 @@ Gate: PASS (n checks, m fixed during gate)
 - **Never gate your own taste — gate the spec.** Disagreements with the committed
   direction are interview feedback, not gate failures.
 - **Measure where a number exists** (contrast, target size, measure, zoom, duration);
-  eyeballing a measurable is a skipped check.
+  eyeballing a measurable is a skipped check, and a ✓ on a measurable row whose Notes
+  column doesn't carry the measured value is a skipped check wearing a checkmark. A
+  table of bare checkmarks is the honor system with extra steps — cross-model runs
+  have produced plausible all-✓ tables over pages that opened visibly broken.
 - **A failed row is fixed or explicitly accepted by the user** — never silently waved
   through.
 - **The report ships with the work.** "Gate passed" without the table is the same
@@ -90,7 +99,8 @@ Gate: PASS (n checks, m fixed during gate)
 
 1. Spec confirmed before checking anything against it?
 2. Every pipeline-relevant skill's self-check executed (not summarized from memory)?
-3. Measurable checks actually measured (auditor run, zoom tested, contrast numbers)?
+3. Measurable checks actually measured (auditor run, zoom tested, contrast numbers
+   recorded in the table, cold-load render verified)?
 4. Output audited against the *committed spec* (refusals honored, signature present)?
 5. Report table delivered with the work, failures fixed or explicitly accepted?
 
