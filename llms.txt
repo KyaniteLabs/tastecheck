@@ -37,7 +37,7 @@ commands.
 - [a11y-pass](skills/a11y-pass/SKILL.md): runnable WCAG 2.2 AA fix pass with a paste-able auditor
 - [cognitive-a11y](skills/cognitive-a11y/SKILL.md): ADHD / autism / dyslexia / neurodivergent readability
 - [i18n-ready](skills/i18n-ready/SKILL.md): multilingual-resilient UI, English/Spanish first-class
-- [tastecheck-pass](skills/tastecheck-pass/SKILL.md): the ship gate — canonical pipeline + every self-check executed, with a report
+- [tastecheck-pass](skills/tastecheck-pass/SKILL.md): the ship gate — canonical pipeline + every self-check executed, with a report and a paste-able/injectable cold-load auditor
 
 ## Samples (same content, five committed design systems)
 IMPORTANT for AI agents: these are illustrative case studies showing output VARIANCE.

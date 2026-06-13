@@ -17,12 +17,12 @@ Run from the repo root:
 npm test
 ```
 
-`npm test` runs `tools/verify.mjs`, `tools/verify-landing.mjs`, and
-`tools/verify-integration.mjs`.
+`npm test` runs `tools/verify.mjs`, `tools/lint-skills.mjs`, `tools/verify-landing.mjs`,
+`tools/verify-integration.mjs`, and `tools/verify-gate-audit.mjs`.
 
 `tools/verify.mjs` checks:
 
-- 15 skill directories exist and each `SKILL.md` frontmatter `name` matches its directory.
+- 19 skill directories exist and each `SKILL.md` frontmatter `name` matches its directory.
 - Referenced `references/*` and `assets/*` files exist.
 - Slash commands target real `~/.agents/skills/<name>/SKILL.md` paths.
 - `install.sh --yes` creates canonical `~/.agents/skills` links and detected Claude links.
@@ -34,6 +34,18 @@ npm test
 - Stale internal skill names such as `dark-mode` are not used as handoff targets.
 - `a11y-pass/assets/audit.js` parses as JavaScript, avoids `arguments.callee`, and uses browser
   color rasterization instead of numeric-regex RGB guessing.
+
+`tools/lint-skills.mjs` checks the skill *content* (what static link checks miss): dead
+skill cross-references, design tokens outside the canonical glossary, and frontmatter
+drift across all 19 skills.
+
+`tools/verify-gate-audit.mjs` executes `tastecheck-pass/assets/gate-audit.js` against a
+minimal fake DOM and asserts its automation contract — `window.__gateAudit` is a
+`{verdict, fails, warns, notes}` object, the console path still emits, and its output
+matches the committed golden (`tools/smoke/fixtures/gate-audit-golden.txt`). Scope is
+deliberate: it guards the attribute-pure checks (a layout-faithful fake DOM would be a
+partial browser); the layout-dependent stat-band/date-context check is protected by the
+real-browser fixture in `tools/smoke/fixtures/` instead.
 
 `tools/verify-landing.mjs` checks [`index.html`](../index.html), the page connected to
 GitHub Pages:
@@ -67,6 +79,8 @@ Run this before publishing visual claims or screenshots:
 - Confirm first meaningful content renders, fonts/images resolve, and there is no horizontal overflow.
 - Open DevTools console; record any errors or warnings relevant to the page.
 - Paste `skills/a11y-pass/assets/audit.js` and record fails/warnings.
+- On a FRESH load (no clicks/scroll first), paste `skills/tastecheck-pass/assets/gate-audit.js`
+  and record the verdict + any fails/warns (cold-load state honesty + slop tells).
 - Do a keyboard pass: skip link, nav, buttons, forms, toggles, and links must be reachable and visibly focused.
 - Check reduced motion with `prefers-reduced-motion: reduce`.
 - Spot-check dark and high-contrast theme mappings where a page exposes them.
@@ -80,6 +94,28 @@ For releases, append a short dated note with:
 - Browser/version used for manual QA.
 - Pages and viewport widths checked.
 - Any remaining warnings and why they are acceptable.
+
+## Gate-Auditor Dogfood
+
+Date: 2026-06-12
+
+The ship gate's own auditor (`skills/tastecheck-pass/assets/gate-audit.js`) was run
+against the landing page (`index.html`) on a fresh load, the way the pipeline expects a
+finished page to be gated.
+
+- **Verdict: REVIEW WARNS — 0 fail / 1 warn.** No cold-load failures: nothing `hidden`
+  defeated by CSS, no error text before input, no content stuck at opacity 0, no stuck
+  skeletons.
+- The one warn is the **indigo→violet gradient on the `.sw.p` swatch** — the intentional
+  "before" demonstration (`aria-hidden`, captioned *"Purple gradient or editorial serif —
+  same average, one season apart"*). Accepted against the committed spec: the page is
+  deliberately *showing* the slop tell, not committing it. Warns require judgment against
+  the spec; this is the case the framing exists for.
+- The reveal-on-scroll pattern already follows the `micro-motion` no-JS rule (`.js .rv`
+  hidden state gated behind a script-added `html.js` hook, with an IntersectionObserver
+  fallback and a `setTimeout` safety net), so no content depends on JS to be visible.
+- The display face resolves to "Red0" (Redaction 0, the committed distinctive display
+  font) — logged as a NOTE, not a safe-font tell.
 
 ## Current Branch Evidence
 
