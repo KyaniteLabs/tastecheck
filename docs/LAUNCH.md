@@ -2,7 +2,7 @@
 
 Draft copy for launch. Written to read human (ran against the humanize-copy kill-list:
 no buzzwords, varied sentence length, a real stance, concrete specifics). Edit the
-@handle, links, and any numbers before posting. Attach `docs/hero/five-systems.png` as
+@handle, links, and any numbers before posting. Attach `docs/hero/six-systems.png` as
 the lead image everywhere.
 
 The one rule: **lead with the picture and the enemy, not the feature list.** People share
@@ -19,7 +19,7 @@ the before/after image; the repo link rides along.
 > Not because it's wrong — because it's the average of the web.
 >
 > So I built the thing that stops it. Same prompt, same model, one skill on 👇
-> [attach docs/hero/five-systems.png]
+> [attach docs/hero/six-systems.png]
 
 **Tweet 2**
 > The trick isn't cleaning up after the AI. It's refusing to let it guess.
@@ -63,7 +63,7 @@ the before/after image; the repo link rides along.
 > actually apologized last year for making indigo the demo default and seeding half of it.)
 >
 > I got tired of redesigning the same generated page, so I made tastecheck. It's a set of
-> 15 skills for AI coding agents. The part I think is actually new: the headline skill
+> 19 skills for AI coding agents. The part I think is actually new: the headline skill
 > doesn't fix the output afterward — it interviews you *before* the build and forces the
 > decisions the model would otherwise average away (reference instead of adjectives, one
 > dominant color instead of five pastels, a real type pairing instead of Inter). It writes
@@ -105,7 +105,7 @@ the before/after image; the repo link rides along.
 > mode that isn't pure black, WCAG 2.2 fixes, container-query layouts, every component
 > state, accessible forms, tasteful motion.
 >
-> [five-systems montage image]
+> [six-systems montage image]
 >
 > It's plain Markdown, MIT, and has a repeatable verification gate so it's not the usual
 > untested "make it pop" repo. Repo: https://github.com/KyaniteLabs/tastecheck
@@ -115,7 +115,7 @@ the before/after image; the repo link rides along.
 ---
 
 ## Notes for posting
-- **Image first.** The five-systems montage PNG is the asset (plus the live gallery). On X it's the whole tweet; on Reddit
+- **Image first.** The six-systems montage PNG is the asset (plus the live gallery). On X it's the whole tweet; on Reddit
   it goes in the body; on HN it lives in the repo README (HN is text).
 - **HN timing:** weekday morning US Eastern; reply fast to the first comments.
 - **Don't cross-post the same minute** — stagger by a few hours; let X/Reddit traction
