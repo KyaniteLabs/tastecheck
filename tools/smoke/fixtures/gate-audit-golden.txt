@@ -1,0 +1,5 @@
+TASTECHECK GATE AUDIT — fresh-load + tells (paste into the gate report)
+✗ FAIL [hidden] rendered visible (CSS display:block beats the attribute): body > div — "boom"
+verdict: FAIL — 1 fail / 0 warn · 10 checks · gateAudit() to re-run
+Scope: light DOM only — shadow roots and iframes are not audited.
+Reminder: run on a FRESH load. Warns are evidence for judgment against the committed spec, not verdicts.
