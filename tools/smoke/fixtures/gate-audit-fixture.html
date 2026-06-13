@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gate-audit browser fixture — stat-band / date-context regression</title>
+<!--
+  REAL-BROWSER regression fixture for skills/tastecheck-pass/assets/gate-audit.js.
+  Covers what the pure-Node verifier (tools/verify-gate-audit.mjs) deliberately can't:
+  check 7 (the stat-counter band) depends on computed font size, layout, and the
+  case-insensitive `[class*="date" i]` selector — only a real browser renders that
+  honestly. Each section isolates ONE outcome (no borders/radius/shadow, so check 6's
+  card-grid never co-fires).
+
+  Expected current verdict: REVIEW WARNS — 0 fail / 1 warn
+    • the .stats section MUST warn   (nested-numeral stat band: 99% / 12k+ / 38)
+    • the .pricing section must NOT warn  ($29/$59/$99 = pricing tier, no magnitude suffix)
+    • the .events section must NOT warn   (big day numbers live in a [class*="date"] wrapper)
+
+  MUTATION TEST (proves the date-context guard at gate-audit.js has teeth):
+  delete the line `if(lead.closest('time,[class*="date" i]...'))return false;`,
+  re-run the auditor here, and the verdict becomes 2 warns (the events day-numbers
+  now read as a second stat band). Restore the line → back to 1 warn.
+  Run it: serve this dir, open the file, paste gate-audit.js in the console (or use
+  the Playwright/Puppeteer snippet in tools/smoke/README.md).
+-->
+<style>
+  body { font: 16px/1.5 Georgia, serif; margin: 2rem; color: #1a1a1a; }
+  h2 { font-size: 1.1rem; margin: 2rem 0 1rem; }
+  .row { display: flex; gap: 1.5rem; }
+  .tier, .stat, .event { width: 200px; padding: 1rem; }
+  .price, .stat header span { font-size: 2.4rem; display: block; }
+  .events { list-style: none; padding: 0; }
+  .event { display: flex; gap: 1rem; align-items: baseline; }
+  .event-date { font-size: 2.4rem; font-weight: 700; }
+  .event-title { font-size: 1rem; }
+</style>
+</head>
+<body>
+  <h1>gate-audit fixture</h1>
+
+  <section>
+    <h2>Pricing — must NOT warn (bare prices are tiers, not social proof)</h2>
+    <div class="row pricing">
+      <div class="tier"><span class="price">$29</span><p>Starter plan for tiny teams getting going on a budget.</p></div>
+      <div class="tier"><span class="price">$59</span><p>Growth plan for small studios that ship every week now.</p></div>
+      <div class="tier"><span class="price">$99</span><p>Scale plan for agencies handling real client volume.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Stats — MUST warn (nested-numeral stat band)</h2>
+    <div class="row stats">
+      <div class="stat"><header><span>99%</span></header><p>uptime promised this year</p></div>
+      <div class="stat"><header><span>12k+</span></header><p>readers counted to date</p></div>
+      <div class="stat"><header><span>38</span></header><p>years on the same corner</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Events — must NOT warn (day numbers sit in a date context)</h2>
+    <ul class="row events">
+      <li class="event"><span class="event-date">18</span><span class="event-title">Author Night with Elena Vázquez</span></li>
+      <li class="event"><span class="event-date">24</span><span class="event-title">Maritime History Reading Circle</span></li>
+      <li class="event"><span class="event-date">27</span><span class="event-title">Coastal Fiction Book Club</span></li>
+    </ul>
+  </section>
+</body>
+</html>
