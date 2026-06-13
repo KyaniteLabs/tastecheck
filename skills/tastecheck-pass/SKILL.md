@@ -56,7 +56,11 @@ direction, foundations, structure, a11y, and the deslop audit are never skippabl
    grids, stat-counter bands, pill CTAs, and the indigo gradient. It audits the light
    DOM only (shadow roots and iframes are outside its reach — check those by hand).
    Script output is evidence; cross-model runs have caught real shipped bugs with it
-   that both the building model's gate and a human visual review missed.
+   that both the building model's gate and a human visual review missed. If you drive
+   the page through a browser (Playwright/Puppeteer/CDP) rather than by hand, inject
+   the file instead of pasting and read the structured result — the IIFE assigns
+   `window.__gateAudit = { verdict, fails, warns, notes }` on inject, so the evidence
+   lands in the report with no manual copy (snippet in `tools/smoke/README.md`).
 4. **Audit against the spec, not taste:** does the output match the committed
    aesthetic phrase, tokens, refusals, and signature move? Any default that snuck back
    in on any plane — surface, structural skeleton, or verbal (`deslop-ui` tell catalog
