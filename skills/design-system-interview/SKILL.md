@@ -52,6 +52,13 @@ constraint. Your job here is to extract or supply those refusals.
    you'd choose for each, clearly labeled as overridable assumptions, then proceed on
    those defaults. "Decide boldly" covers a user who *abstained* — not a user who was
    never shown the questions.
+2.6 **Budget for the gate from minute one.** This interview is the first step of a
+   pipeline that ends with the `tastecheck-pass` gate, and in turn- or time-limited
+   runs the gate starves more often than it fails: cross-model runs have produced
+   excellent pages whose final turns went to optional extras (more screenshots,
+   embellishments) and then hit the cap mid-gate, shipping an ungated "done". Plan
+   the run so the gate fits; if the budget dies early anyway, say so in the
+   deliverable — never imply the gate ran.
 3. **Push back on vagueness.** "Modern / clean / professional / sleek" are non-answers
    — that *is* the average. When you hear them, counter with concrete forks (below).
 4. **Force a commitment per dimension.** Don't leave a dimension at "default"; land on

@@ -258,6 +258,19 @@ function assertA11yAuditModernColorPath() {
   if (/arguments\.callee/.test(text)) fail(`${rel(path)} still uses arguments.callee`);
 }
 
+function assertGateAuditParses() {
+  const path = join(root, "skills", "tastecheck-pass", "assets", "gate-audit.js");
+  const text = readFileSync(path, "utf8");
+  try {
+    new Function(text);
+  } catch (error) {
+    fail(`${rel(path)} has invalid JavaScript syntax: ${error.message}`);
+  }
+  if (!/getComputedStyle/.test(text)) fail(`${rel(path)} no longer audits computed style`);
+  if (!/\[hidden\]/.test(text)) fail(`${rel(path)} lost the hidden-defeated-by-CSS check`);
+  if (!/light DOM only/.test(text)) fail(`${rel(path)} lost the light-DOM scope caveat`);
+}
+
 assertSkillStructure();
 assertCommandTargets();
 assertInstallSmoke();
@@ -269,6 +282,7 @@ assertDemoInputsAreNamed();
 assertDataVizTablesCoverData();
 assertNoStaleSkillAliases();
 assertA11yAuditModernColorPath();
+assertGateAuditParses();
 
 if (failures.length) {
   console.error(`tastecheck verification failed (${failures.length})`);
