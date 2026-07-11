@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "skills": [
+    {
+      "skill": "component-states",
+      "baseline_count": 0,
+      "upgraded_count": 0,
+      "failed_count": 0,
+      "checks": {
+        "has_baseline": false,
+        "has_upgraded": false,
+        "all_fields_present": true
+      },
+      "lift": "awaiting_judged_receipt",
+      "pass": false
+    },
+    {
+      "skill": "deslop-ui",
+      "baseline_count": 0,
+      "upgraded_count": 0,
+      "failed_count": 0,
+      "checks": {
+        "has_baseline": false,
+        "has_upgraded": false,
+        "all_fields_present": true
+      },
+      "lift": "awaiting_judged_receipt",
+      "pass": false
+    },
+    {
+      "skill": "tastecheck-pass",
+      "baseline_count": 0,
+      "upgraded_count": 0,
+      "failed_count": 0,
+      "checks": {
+        "has_baseline": false,
+        "has_upgraded": false,
+        "all_fields_present": true
+      },
+      "lift": "awaiting_judged_receipt",
+      "pass": false
+    }
+  ],
+  "overall_pass": false,
+  "missing_evidence_message": "6 blocking gaps — evidence incomplete. Do not proceed to blinding or judging."
+}

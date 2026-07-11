@@ -1,124 +1,94 @@
 ---
 name: tastecheck-pass
 description: >-
-  The ship gate and canonical pipeline for the tastecheck pack. Use before
-  declaring frontend work done, for final review, pre-ship verification,
-  running all skill self-checks, or when asked what order the skills run in.
+  Use when final frontend work needs an evidence-backed ship or hold decision, a
+  fail-closed release gate, or an actionable cross-skill verification report.
 ---
 
 # TasteCheck Pass (the ship gate)
 
-Every tastecheck skill ends with a self-check — and nothing makes sure they actually
-ran. This skill is the **gate**: it states the canonical pipeline once (every other
-description of the order defers to this one), then executes every relevant self-check
-against the finished work and reports a pass/fail table. Honor-system checklists
-become a verification step.
+This is the fail-closed ship gate: execute relevant self-checks against finished work,
+then issue the evidence-backed verdict. “Done” requires execution evidence.
 
-Governing rule: **"done" is a claim that requires evidence.** The output of this skill
-is the evidence.
+## Canonical ledger contract
+
+Create one authoritative row per applicable check: `skill`, `check_id`, `status`,
+`reason`, `remediation`, `evidence`, and `provenance`. `n/a` requires named subject
+absence, never unexecuted work. Keep rows, measurements, skip reasons, interpretation,
+and verdict stable; a readable report only links to—not rewrites—the ledger.
 
 ## The canonical pipeline (the single source of truth for ordering)
 
-1. **Direction** — `design-system-interview` (new work) or `improve-existing-website`
-   (existing sites) → produces `DESIGN-SYSTEM.md` + the canonical tokens.
-2. **Foundations** — `color-system` · `web-typography` · `spacing-system` · `theming`
-   → fill in the token values (ramps, scale, spacing, theme mappings).
-3. **Structure** — `responsive-layout`.
-4. **Behavior** — `component-states` · `form-ux` · `empty-states`.
-5. **Surface** — `micro-motion` · `data-viz` · `art-direction` (each only where the
-   work has motion / charts / imagery).
-6. **Verification** — `a11y-pass` · `cognitive-a11y` · `i18n-ready` (if multilingual).
-7. **Audit** — `deslop-ui` (against the committed spec, never the average) ·
-   `humanize-copy` (the verbal plane).
-8. **Gate** — this skill.
+1. Direction: `design-system-interview` (new) or `improve-existing-website` (existing).
+2. Foundations: `color-system`, `web-typography`, `spacing-system`, `theming`.
+3. Structure/behavior: `responsive-layout`; `component-states`, `form-ux`, `empty-states`.
+4. Surface: `micro-motion`, `data-viz`, `art-direction` where subject exists.
+5. Verification/audit: `a11y-pass`, `cognitive-a11y`, `i18n-ready` if multilingual,
+   `deslop-ui` against spec, and `humanize-copy`; then this gate.
 
-A skill is *skippable* only when its subject is absent (no charts → no data-viz);
-direction, foundations, structure, a11y, and the deslop audit are never skippable.
+Only absent subjects skip; direction, foundations, structure, a11y, and deslop do not.
 
 ## How to run the gate
 
-1. **Confirm the spec exists.** There is a `DESIGN-SYSTEM.md` (or an inferred-system
-   statement from `improve-existing-website`) and the work was built *to it*. No spec
-   → fail the gate; go to step 1 of the pipeline, don't improvise one retroactively.
-2. **Run each relevant skill's self-check** against the actual artifact (rendered
-   where possible — open it; measuring beats reading). Record per item: ✓ pass /
-   ✗ fail / n/a (with why).
-3. **Run the measurable checks**: the paste-able auditor that ships with `a11y-pass`
-   (its audit.js asset) in the browser console; 320px + 400% zoom; keyboard
-   tab-through; each theme's contrast; `prefers-reduced-motion` path. Include one
-   **cold load** of the finished artifact (fresh page, no interaction): all content
-   visible, no validation errors showing before any input, no stuck skeletons or
-   unrevealed sections. A page can pass every interactive check and still open broken.
-   On that same fresh load, paste the gate's own auditor (`assets/gate-audit.js`) into
-   the console and copy its printed lines into the report — it mechanically catches
-   what self-reported tables most often get wrong: `hidden` defeated by a CSS display
-   rule, error text visible before input, content stuck at opacity 0, uniform card
-   grids, stat-counter bands, pill CTAs, and the indigo gradient. It audits the light
-   DOM only (shadow roots and iframes are outside its reach — check those by hand).
-   Script output is evidence; cross-model runs have caught real shipped bugs with it
-   that both the building model's gate and a human visual review missed. If you drive
-   the page through a browser (Playwright/Puppeteer/CDP) rather than by hand, inject
-   the file instead of pasting and read the structured result — the IIFE assigns
-   `window.__gateAudit = { verdict, fails, warns, notes }` on inject, so the evidence
-   lands in the report with no manual copy (snippet in `tools/smoke/README.md`).
-4. **Audit against the spec, not taste:** does the output match the committed
-   aesthetic phrase, tokens, refusals, and signature move? Any default that snuck back
-   in on any plane — surface, structural skeleton, or verbal (`deslop-ui` tell catalog
-   plus the structural items in its self-check) — is a fail even if it "looks fine."
-   The structural plane is where audits go soft: a page with clean tokens can still be
-   the template skeleton, and that is a gate failure, not a style preference.
-5. **Report the table** (see shape below), fix the ✗ rows, re-run the failed checks.
-   The gate passes only when every non-n/a row passes.
+1. Confirm `DESIGN-SYSTEM.md` or approved inferred-system statement and built-to-spec
+   status; otherwise fail and return to direction.
+2. Run each relevant self-check on the real rendered artifact; record pass/fail/named `n/a`.
+3. Measure browser, 320px/400% zoom, keyboard, theme contrast, reduced motion, and cold
+   load. On that load run `assets/gate-audit.js`, attach output, and manually inspect
+   shadow roots/iframes; script output supplements, never replaces, browser evidence.
+4. Audit phrase, tokens, refusals, and signature across surface/structure/verbal planes;
+   default template skeleton is a fail.
+5. Fix failed rows and rerun them. Pass only when every non-`n/a` row passes.
 
-## The report shape
+## The report has two linked layers
 
-```
-TASTECHECK PASS — <project> — <date>
-Spec: DESIGN-SYSTEM.md ("<one-line north star>")
+**Authoritative ledger:** one row per individual failure/measurement/skip; never merge
+contrast, cold-load, unsupported `n/a`, or structural findings. It stays deterministic
+until replacement execution evidence arrives.
 
-| Skill                | Self-check | Notes                              |
-|----------------------|-----------|-------------------------------------|
-| design-system-interview | ✓      | spec present, built-to              |
-| color-system         | ✓         | all pairs measured, worst 4.6:1     |
-| web-typography       | ✗ → ✓     | measure was 92ch; capped to 66ch    |
-| …                    |           |                                     |
-| deslop-ui            | ✓         | 0 tells; aesthetic = "<phrase>"     |
+**Readable execution report:** link ledger IDs, blockers, reruns, and changes without
+softening facts. Use failure queue for independent sequencing, evidence trace for source
+conflict, or release memo for the earliest credible ship decision; it is never authority.
 
-Gate: PASS (n checks, m fixed during gate)
-```
+## Report shape
+
+Name project/date/spec/north star, then provide the canonical ledger and deterministic
+verdict. On failure list blocking IDs plus why, repair/rerun, and still-needed evidence;
+those facts must resolve directly to the rows.
+
+## Linked execution protocol
+
+For every blocking ID provide owner/concrete action, evidence-producing rerun/artifact,
+acceptance rule, and predecessor. Group only when one artifact/rule resolves all rows;
+new evidence reopens affected rows with replacement provenance and reruns the gate.
+Intent, checkmarks, and ETA never change the verdict; surface the earliest unblocked path.
 
 ## Non-negotiables
 
-- **The gate outranks polish — budget for it.** In turn- or time-limited runs, reserve
-  capacity for this gate *before* spending on optional extras (additional screenshots,
-  embellishments, refactors). A first live pipeline run produced an excellent page and
-  then starved the gate at the turn limit — an ungated "done" is the exact honor-system
-  failure this skill exists to close. If you genuinely cannot finish the gate, say so
-  explicitly in the deliverable; never imply it ran.
-- **Never gate your own taste — gate the spec.** Disagreements with the committed
-  direction are interview feedback, not gate failures.
-- **Measure where a number exists** (contrast, target size, measure, zoom, duration);
-  eyeballing a measurable is a skipped check, and a ✓ on a measurable row whose Notes
-  column doesn't carry the measured value is a skipped check wearing a checkmark. A
-  table of bare checkmarks is the honor system with extra steps — cross-model runs
-  have produced plausible all-✓ tables over pages that opened visibly broken.
-- **A failed row is fixed or explicitly accepted by the user** — never silently waved
-  through.
-- **The report ships with the work.** "Gate passed" without the table is the same
-  honor system this skill exists to replace.
+- State when the gate cannot run; gate the spec, not personal taste.
+- Measure numeric claims; a failed row is fixed or explicitly user-accepted.
+- Ship the report with work and expose each distinct failure plus its next evidence action.
 
 ## Self-check (yes, the gate has one)
 
-1. Spec confirmed before checking anything against it?
-2. Every pipeline-relevant skill's self-check executed (not summarized from memory)?
-3. Measurable checks actually measured (auditor run, zoom tested, contrast numbers
-   recorded in the table, cold-load render verified)?
-4. Output audited against the *committed spec* (refusals honored, signature present)?
-5. Report table delivered with the work, failures fixed or explicitly accepted?
+1. Spec, real self-check execution, numeric/browser/cold-load measurements, and spec audit complete?
+2. Canonical rows preserve distinct facts and the report links them without release claim gaps?
+3. Every blocker has action/owner, rerun, acceptance rule, dependency, and no competing ledger?
+
+Emit these gate checks as evidence rows, never bare checkmarks.
 
 ## How to deliver
 
-- Run this as the last step of any build that used the pack, and any time the user
-  says "is this done?", "review this", or "ship it".
-- Keep it honest: the value of the gate is that it sometimes fails. A gate that
-  always passes on the first run isn't checking.
+Run last for pack-built work or a done/review/ship request. A credible gate may fail.
+
+<!-- contract:v1:start -->
+## Contract (generated)
+
+Canonical detail: [contract.json](contract.json).
+
+- Route: A finished frontend artifact needs an evidence-backed ship decision. (+1 in contract.json); avoid: The artifact is still at the direction or implementation stage. (+1 in contract.json)
+- Exclude: Never infer execution from a file existing or a claimed checkmark. (+2 in contract.json)
+- Stop / handoff: Fail when the required spec is absent or the artifact was not built to it. (+2 in contract.json); receives [a11y-pass, cognitive-a11y, i18n-ready, deslop-ui, humanize-copy] -> sends [none]
+- Output: fail-closed evidence ledger with a deterministic verdict and actionable gate report
+- Evidence: `ledger_with_verdict` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
+<!-- contract:v1:end -->

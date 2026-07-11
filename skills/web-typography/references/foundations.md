@@ -99,7 +99,7 @@ Practical guidance:
   personality second. Save personality for the display face.
 - **Limit to two families** (plus a mono for code). Each web font is a performance
   cost (see `font-loading.md`).
-- When in doubt, a great **system font stack** (see `assets/starter.css`) beats a
+- When in doubt, a great **system font stack** (see `../assets/starter.css`) beats a
   mediocre web font: zero load time, no layout shift, native feel.
 
 ## Alignment & rags

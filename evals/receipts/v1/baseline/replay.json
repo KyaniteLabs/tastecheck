@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "manifest_digest": "0745cf15c8fa78a18a6c0640dba50a7301ce609c4994501e439da35246c07b95",
+  "entry_count": 224,
+  "digest_verification_passed": true,
+  "verify_ok": 224,
+  "verify_fail": 0,
+  "npm_test_exit": 0,
+  "npm_test_output_hash": "8ecd1c335b36402fc60b8a6518c7f9e0b593d2f88051875dbdd320e779fb4e38",
+  "smoke_dry_run_exit": 0,
+  "smoke_dry_run_output_hash": "b21e458f0af00cf0a83960c96a3981fe35762fb8396840330fe300d3789d7ad9",
+  "passed": true,
+  "date_utc": "2026-07-11T08:07:24Z"
+}

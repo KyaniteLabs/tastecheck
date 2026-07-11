@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "record_type": "runtime_outage",
+  "worker_id": "redacted-dispatch-worker",
+  "executor": "codex",
+  "failure_class": "auth_failure",
+  "sub_errors": ["refresh_token_reused", "token_expired"],
+  "turns": 0,
+  "tokens": 0,
+  "execution_started": false,
+  "sanitized_at_write": true,
+  "paths_redacted": true,
+  "date_utc": "2026-07-11",
+  "consequence": "Zero execution artifacts produced. No skill or command files were edited by this worker. W1 cell remained unblocked — task was reassigned.",
+  "routing_note": "Codex OAuth refresh token was expired or had already been reused. Authentication failed before any task execution. No file system paths are included per sanitizer policy.",
+  "remediation": "Re-authenticate Codex CLI before next dispatch. Verify token freshness. Record new dispatch receipt before re-dispatching."
+}

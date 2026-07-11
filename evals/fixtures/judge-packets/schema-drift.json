@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "packet_id": "component-states-paired-lift-001",
+  "evaluator_type": "paired_lift",
+  "skill": "component-states",
+  "scenario_id": "component-states-async-destructive-control",
+  "prompt_hash": "269db917952179867529b505795a05c32aff9de1590948be9d5c04069161229e",
+  "calibration_ref": "evals/w1/rubric/calibration.json",
+  "candidates": {
+    "A": {
+      "label": "A",
+      "attempt_id": "component-states-upgraded-seed101-attempt-1",
+      "raw_output_hash": "1c9c68a98b6c2537fa82ee665acdb8aa85e834569d9d1665d98130027ac1f9bd",
+      "raw_output": "## Destructive action state contract"
+    },
+    "B": {
+      "label": "B",
+      "attempt_id": "component-states-baseline-seed101-attempt-1",
+      "raw_output_hash": "c084a5b17f5a3acd8bd3234bab5bce24dd0dbbd30f38602ac3501d23f8da3c3c",
+      "raw_output": "## Async destructive action contract"
+    }
+  },
+  "run_type": "baseline"
+}

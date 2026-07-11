@@ -1,0 +1,738 @@
+{
+  "schema_version": 1,
+  "scenario_count": 20,
+  "skills_covered": [
+    "a11y-pass",
+    "art-direction",
+    "cognitive-a11y",
+    "color-system",
+    "component-states",
+    "data-viz",
+    "design-system-interview",
+    "deslop-ui",
+    "empty-states",
+    "form-ux",
+    "humanize-copy",
+    "i18n-ready",
+    "improve-existing-website",
+    "micro-motion",
+    "responsive-layout",
+    "spacing-system",
+    "tastecheck-pass",
+    "theming",
+    "web-typography"
+  ],
+  "missing_skills": [],
+  "scenarios": [
+    {
+      "schema_version": 1,
+      "id": "a11y-pass-keyboard-zoom-dynamic",
+      "skill": "a11y-pass",
+      "class": "repair",
+      "prompt": "Repair a rendered dashboard with keyboard traps, weak focus, a dynamic error, a 400% zoom overflow, and a contrast failure. Preserve the product's visual direction and verify fixes with browser evidence.",
+      "assertions": [
+        "Findings converge on the same WCAG criterion, path, and severity across runs.",
+        "Fixes include measured contrast/zoom evidence, keyboard traversal, names, and dynamic announcement behavior.",
+        "Automated audit is supplemented with a real browser path.",
+        "Every finding has status, reason, remediation, evidence, and provenance; bare checkmarks and n/a without a subject-absence reason are rejected.",
+        "The skill's one authoritative self-check is used; three runs may vary structure, aesthetic, and voice but preserve the same repair truth."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "cognitive-a11y",
+        "handoff": "tastecheck-pass"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "truth_convergence": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (cognitive-a11y) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "art-direction-source-aware-treatment",
+      "skill": "art-direction",
+      "class": "generative",
+      "prompt": "Create an image/illustration/icon direction for a public-service field guide with no approved photo library, limited rights budget, and a need to work at narrow widths. Commit to a treatment, source plan, crop behavior, alt-text approach, and icon rules.",
+      "assertions": [
+        "Commits to a coherent treatment instead of placeholder imagery.",
+        "Names source, rights, alt text, crop, and responsive behavior; unsupported rights or missing alt text block release.",
+        "Keeps iconography consistent and does not use decorative imagery to carry missing meaning.",
+        "Every check has status, reason, remediation, evidence, and provenance.",
+        "Uses one authoritative self-check; three runs may vary structure, aesthetic treatment, and voice without changing rights, alt-text, or accessibility truth."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "data-viz",
+        "handoff": "a11y-pass"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (data-viz) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "cognitive-a11y-time-sensitive-recovery",
+      "skill": "cognitive-a11y",
+      "class": "repair",
+      "prompt": "Audit a dense time-sensitive intake flow that overwhelms users with ADHD, autistic, or dyslexic access needs. Prioritize predictable steps, memory support, error recovery, and preserved domain voice without diagnosing users.",
+      "assertions": [
+        "Separates observed friction from profile-informed hypotheses.",
+        "Prioritizes recovery, predictability, chunking, reading load, and time pressure with concrete evidence.",
+        "Preserves useful complexity and product voice where it is not the defect.",
+        "Every finding has status, reason, remediation, evidence, and provenance; n/a is used only when the subject is absent and the reason is recorded.",
+        "The output names one authoritative self-check and remains within the skill's context and referenced-resource budget across three structurally and stylistically distinct runs."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "a11y-pass",
+        "handoff": "a11y-pass"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "truth_convergence": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (a11y-pass) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "skill": "color-system",
+      "class": "generative",
+      "id": "color-system-brand-ramp-contrast-repair",
+      "prompt": "Create source color tokens for a civic flood-alert service that already owns a mineral teal wordmark and must work on paper-white emergency notices and low-light field tablets. Current pale-teal text fails contrast. Preserve the recognizable hue, provide a sharp alert accent, and give theming enough semantic roles for light and dark mappings.",
+      "assertions": [
+        "Derives OKLCH ramps and tinted neutrals from the brief instead of selecting a generic startup palette.",
+        "Names primitive and semantic roles separately and measures actual foreground/background pairs.",
+        "Repairs the contrast failure without using color as the sole error signal.",
+        "Hands source roles to theming with status, evidence, provenance, reason, and remediation fields; bare checkmarks and unsupported n/a are rejected.",
+        "Preserves the grounded P3-to-sRGB or hex fallback evidence while three runs vary structure, aesthetic treatment, and voice without changing the palette decision."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "theming",
+        "handoff": "theming"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (theming) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "skill": "component-states",
+      "class": "generative",
+      "id": "component-states-async-destructive-control",
+      "prompt": "Design the state contract for an async destructive action in a dense admin interface. Include keyboard, focus-visible, pressed, disabled, confirmation when warranted, loading, success, and error behavior. Use the existing semantic tokens and do not hide the only recovery path. Name the single semantic state owner, every entry guard, the shared pointer/keyboard route, and the success/failure focus destination.",
+      "assertions": [
+        "Separates visual state from semantic state, names the trigger for each, and identifies the single owner of every semantic transition.",
+        "Defines a complete destructive-action lifecycle with ready, confirmation when warranted, submitting, succeeded, and failed states; each has an entry guard, interaction rule, and exit or recovery path.",
+        "Includes focus-visible, keyboard parity, aria-busy/disabled semantics, a synchronous no-double-submit rule, local success confirmation, and a keyboard-reachable error retry.",
+        "Fails explicitly on a missing semantic token rather than inventing a fallback color, and does not invent page-level empty states.",
+        "Provides status, reason, remediation, evidence, and provenance rather than bare checkmarks.",
+        "Rejects a thin ledger-only answer and cosmetic heading variation: every run must make the lifecycle and implementation rules actionable while preserving the same semantic facts."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "form-ux",
+        "handoff": "a11y-pass"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "lifecycle_depth_requirement": "Each response must expose state ownership, transition guards, confirmation/cancel behavior when warranted, shared input routing, success confirmation, failure recovery, and focus disposition. A state-name table without those operational rules fails.",
+        "thin_ledger_rejection": "Reject outputs that only enumerate state rows, rename headings, reorder the same rows, or make unsupported style substitutions without a lifecycle, interaction contract, and recovery behavior.",
+        "response_architecture_requirement": "Across the three fresh runs, use genuinely different architectures such as a lifecycle map, event-to-transition trace, or implementation specification. Each change must preserve canonical semantic facts and introduce concrete token-backed visual decisions; heading-only variation is not diversity.",
+        "material_difference_requirement": "Accept diversity only when every compared run demonstrates a different response architecture plus at least two evidence-bound material decisions across structure, aesthetic treatment, and voice. A new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (form-ux) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "cross-skill-component-to-gate",
+      "class": "integration",
+      "prompt": "Run a component-state repair through component-states, form-ux where inputs are involved, a11y-pass, deslop-ui, humanize-copy where copy is changed, and tastecheck-pass. Skip absent subjects only with explicit reasons.",
+      "pipeline": [
+        "component-states",
+        "form-ux",
+        "empty-states",
+        "micro-motion",
+        "data-viz",
+        "art-direction",
+        "a11y-pass",
+        "cognitive-a11y",
+        "i18n-ready",
+        "deslop-ui",
+        "humanize-copy",
+        "tastecheck-pass"
+      ],
+      "assertions": [
+        "Each handoff names its evidence fields and preserves semantic tokens.",
+        "Absent skills are skipped with subject-absence reasons, never assumed executed.",
+        "Tastecheck-pass fails if any required evidence is missing or dishonest.",
+        "The final gate report distinguishes canonical rows from presentation treatment.",
+        "Command wrappers route to the matching skill and retain its stop conditions; the canonical evidence fields remain stable while presentation structure and voice may vary.",
+        "Accept diversity only when each compared run cites at least two material changes across structure, aesthetic treatment, or voice and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "Negative routing is explicit at every handoff: name the rejected adjacent skill, the absent or out-of-scope subject, and the receiving boundary."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "specialist stages outside this pipeline",
+        "handoff": "tastecheck-pass"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "truth_convergence": true,
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "Every specialist handoff must explicitly reject the adjacent skill when its subject is absent or out of scope."
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "data-viz-sparse-uncertain-series",
+      "skill": "data-viz",
+      "class": "generative",
+      "prompt": "Choose an honest web-native representation for a sparse monthly series with missing months, uncertainty bands, and a request for a dramatic 3D chart. Include table parity, accessible descriptions, and a refusal where the request would mislead.",
+      "assertions": [
+        "Starts from the comparison question and data quality, not the requested chart type.",
+        "Represents missingness and uncertainty without implying false precision.",
+        "Provides chart/table parity and accessible fallback.",
+        "Every check has status, reason, remediation, evidence, and provenance; n/a requires a real absent subject and a reason.",
+        "Keeps one authoritative self-check and preserves the chart/table fallback across three runs whose structure, aesthetic treatment, and voice differ."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "art-direction",
+        "handoff": "a11y-pass"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (art-direction) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "skill": "design-system-interview",
+      "class": "generative",
+      "id": "design-system-interview-vague-contradictory-resume",
+      "prompt": "A small coastal transit cooperative needs a public rider-support site. The sponsor says only ‘modern and trustworthy’, later asks for a warm handmade feel and a dense operational dashboard, then returns after an interruption with an existing wordmark and a need for English and Spanish. Do not build the site. Run the interview and leave an approval-ready artifact.",
+      "assertions": [
+        "Covers all nine required canonical dimensions, labels stated abstention defaults, and keeps optional motion conditional.",
+        "Rejects vague adjectives without turning worked examples into a menu.",
+        "Surfaces the warm-versus-dense tension, proposes a resolution, and waits for confirmation rather than silently averaging it.",
+        "Supports interruption/resume and emits DESIGN-SYSTEM.md fields, semantic tokens, readiness, and downstream handoff evidence.",
+        "Uses one authoritative self-check; three runs may vary structure, aesthetic treatment, and voice without replacing abstention or contradiction handling with a default."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "improve-existing-website",
+        "handoff": "color-system"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (improve-existing-website) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "skill": "deslop-ui",
+      "class": "repair",
+      "id": "deslop-ui-polished-generic-page",
+      "prompt": "Audit a polished marketing page that uses an indigo-violet gradient, pill CTA, centered hero, equal three-card grid, generic system typography, and plausible copy. The brief calls for a quiet field-research instrument with a left-anchored composition and one precise accent. Preserve the real product facts. Produce a severity-ranked repair specification with concrete type, color, shape, section-topology, and post-repair verification decisions.",
+      "assertions": [
+        "Records observed findings separately across surface, structure, and verbal planes, with the concrete selector, section, phrase, screenshot, or browser observation for each.",
+        "Ranks P0-P3 severity, preserves coherent product facts and deliberate brand signals, and does not substitute aesthetic preference for an observed defect.",
+        "Commits to a named, brief-compatible direction with concrete composition, color, type, shape, and section decisions rather than subtraction alone.",
+        "Defines the replacement topology, narrow-layout and keyboard-order check, and a post-repair checklist that re-runs the original observations.",
+        "Reports severity, evidence, remediation, and provenance for every finding.",
+        "Rejects a thin ledger-only answer and cosmetic heading variation: every run must be a buildable repair specification with distinct, evidence-bound visual decisions while retaining the same observed truth."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "design-system-interview",
+        "handoff": "humanize-copy"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "truth_convergence": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "repair_depth_requirement": "Each response must rank severity and specify applicable composition/section topology, color role and token boundary, type stance, shape/elevation role, verbal boundary, and post-repair verification. A finding ledger without those buildable decisions fails.",
+        "thin_ledger_rejection": "Reject outputs that stop at named tells, change headings, reorder identical rows, or offer an unsupported recolor without a severity-ranked repair specification and after-state checks.",
+        "response_architecture_requirement": "Across the three fresh runs, use genuinely different architectures such as severity-first triage, annotated page walk, or build-ready repair specification. Each must preserve observed facts and severity while making materially distinct brief-bound visual decisions; heading-only variation is not diversity.",
+        "material_difference_requirement": "Accept diversity only when every compared run demonstrates a different response architecture plus at least two evidence-bound material changes across composition, color, type, shape, and voice. A new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (design-system-interview) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "empty-states-data-region-recovery",
+      "skill": "empty-states",
+      "class": "generative",
+      "prompt": "Design first-use, no-results, permission-denied, loading, and outage states for a project list. Each state must explain the cause honestly and provide the next useful action.",
+      "assertions": [
+        "Distinguishes first-use, no-results, permission, loading, and outage.",
+        "Provides domain-specific recovery actions and accessible status communication.",
+        "Does not collapse a page state into a control state or use a spinner alone.",
+        "Every check has status, reason, remediation, evidence, and provenance; bare checkmarks and dishonest n/a are rejected.",
+        "Uses one authoritative self-check and keeps state truth stable while three runs vary structure, aesthetic treatment, and voice."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "component-states",
+        "handoff": "a11y-pass"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (component-states) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "form-ux-validation-recovery",
+      "skill": "form-ux",
+      "class": "generative",
+      "prompt": "Design a signup form with autofill, an async submit, a server-side duplicate-email error, interruption, and recovery. Optimize completion without hiding validation or inventing business rules.",
+      "assertions": [
+        "Labels and input semantics support autofill and keyboard completion.",
+        "Validation timing, precise errors, pending, success, interruption, and recovery are explicit.",
+        "No business rule or product fact is invented.",
+        "Every check has status, reason, remediation, evidence, and provenance; unsupported n/a and bare checkmarks fail the check.",
+        "Uses one authoritative self-check and preserves the field/state truth across three structurally, aesthetically, and vocally different runs."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "component-states",
+        "handoff": "a11y-pass"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (component-states) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "humanize-copy-fact-preserving-range",
+      "skill": "humanize-copy",
+      "class": "generative",
+      "prompt": "Revise landing, empty-state, and error copy for a small repair service. Preserve all facts and safety constraints, remove generic AI phrasing, and give three materially different but usable voice territories.",
+      "assertions": [
+        "Preserves a fact ledger and regulated/error meaning.",
+        "Removes cliché and hedge patterns through concrete rhythm and stance choices.",
+        "Three runs vary structure, voice, and design territory without synonym-only changes.",
+        "Every check has status, reason, remediation, evidence, and provenance; unsupported n/a and bare checkmarks are rejected.",
+        "Uses one authoritative self-check and keeps the source facts stable while varying report shape and voice."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "deslop-ui",
+        "handoff": "i18n-ready"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (deslop-ui) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "i18n-ready-expansion-bidi",
+      "skill": "i18n-ready",
+      "class": "repair",
+      "prompt": "Repair an English-first billing UI for English, Spanish, and an RTL stress fixture. Test long labels, dates, numbers, pluralization, bidi, wrapping, and locale-native copy while preserving the layout hierarchy.",
+      "assertions": [
+        "Uses locale-aware formatting and translation keys rather than concatenated strings.",
+        "Repairs expansion, wrapping, logical properties, bidi, and long-content behavior.",
+        "Separates layout findings from native voice and accessibility handoffs.",
+        "Every finding has status, reason, remediation, evidence, and provenance; bare checkmarks and n/a without subject-absence evidence are rejected.",
+        "Stops and requests supported locales when they are undefined; three runs vary structure, aesthetic treatment, and voice without changing locale truth."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "humanize-copy",
+        "handoff": "a11y-pass"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "truth_convergence": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (humanize-copy) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "skill": "improve-existing-website",
+      "class": "repair",
+      "id": "improve-existing-website-inspect-infer-approve",
+      "prompt": "Improve a regional repair shop site with a recognizable cobalt wordmark, repeated hand-drawn tool marks, 17 near-duplicate neutral colors, three competing button styles, clipped long service names at 390px, and an owner request to ‘make it feel premium’. The repair must preserve real identity and stop before a material redesign.",
+      "assertions": [
+        "Inspects first and labels every system claim EVIDENCE or INFERRED, never both or neither.",
+        "Writes INFERRED-SYSTEM.md with preserved signals, six readiness dimensions, a proposed scope, and a verification handoff.",
+        "Uses the no-question path when evidence is sufficient or asks no more than three questions with unresolved dimensions and implementation rationale.",
+        "Stops for material-identity approval before a redesign and separates deterministic findings and severity from the repair strategy, aesthetic remedy, and explanatory voice.",
+        "Uses one authoritative self-check; three runs may vary structure, aesthetic treatment, and voice without changing observed evidence or approval gates."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "design-system-interview",
+        "handoff": "a11y-pass"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "truth_convergence": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (design-system-interview) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "micro-motion-reduced-equivalence",
+      "skill": "micro-motion",
+      "class": "generative",
+      "prompt": "Define restrained motion for a keyboard-first task manager: save feedback, list insertion, destructive confirmation, and a route transition. Include interruption, duration/easing, performance, and a genuinely equivalent reduced-motion path.",
+      "assertions": [
+        "Every animation has a user-facing purpose and interruption rule.",
+        "Timing and easing are concrete and use existing tokens where available.",
+        "Reduced motion preserves comprehension and completion without merely hiding content, and the JS-disabled path remains usable.",
+        "Every check has status, reason, remediation, evidence, and provenance.",
+        "Uses one authoritative self-check; three runs may vary structure, aesthetic treatment, and voice without weakening reduced-motion or JS-disabled behavior."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "component-states",
+        "handoff": "a11y-pass"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (component-states) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "skill": "responsive-layout",
+      "class": "generative",
+      "id": "responsive-layout-narrow-zoom-long-content",
+      "prompt": "Repair a case-management layout with a two-column desktop shell, a long unbroken case identifier, optional evidence rail, and translated action labels that are 35% longer. It must hold at 320px, 400% zoom, and when the case card is embedded in a narrow sidebar. Do not choose breakpoints by device names.",
+      "assertions": [
+        "Uses content-led intrinsic layout and container behavior before justified breakpoints.",
+        "Preserves information hierarchy, long-content recovery, and keyboard-reachable controls at narrow and zoomed states.",
+        "Provides viewport, zoom, overflow, and container evidence instead of an untested responsive claim.",
+        "Hands resilient layout constraints to component-state and accessibility work with status, reason, remediation, evidence, and provenance; bare checkmarks and unsupported n/a fail.",
+        "Uses one authoritative self-check and preserves the layout truth across three runs with distinct structure, aesthetic treatment, and voice."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "spacing-system",
+        "handoff": "component-states"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (spacing-system) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "skill": "spacing-system",
+      "class": "generative",
+      "id": "spacing-system-dense-versus-editorial-rhythm",
+      "prompt": "Define spacing for one product with two valid contexts: a compact dispatcher console with repeated time-sensitive actions and a long-form post-incident account for the public. Existing CSS contains 13px, 17px, 19px, 24px, and arbitrary section margins. Preserve the different reading pressures without shipping two unrelated token systems.",
+      "assertions": [
+        "Derives a shared scale from content hierarchy and density rather than imposing uniform section cadence.",
+        "Specifies semantic proximity and rhythm decisions for both contexts with no unexplained off-scale values.",
+        "Uses meaningful structural variation, not a recolor or reordered checklist, across diversity runs.",
+        "Hands token and rhythm evidence to responsive-layout with status, reason, remediation, evidence, and provenance; bare checkmarks and unsupported n/a fail.",
+        "Uses one authoritative self-check and remains within the skill/resource context budget."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "responsive-layout",
+        "handoff": "responsive-layout"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (responsive-layout) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "skill": "tastecheck-pass",
+      "class": "gate",
+      "id": "tastecheck-pass-dishonest-evidence-bundle",
+      "prompt": "Gate a finished page with a present DESIGN-SYSTEM.md, specialist reports that claim all checks passed, missing contrast measurements, no cold-load browser trace, an error row marked n/a with no subject-absence reason, and a gate auditor output that finds a hidden error and a generic equal-card grid. Preserve each distinct failed check in the deterministic ledger, then provide a linked, actionable execution report that names every evidence-producing rerun.",
+      "assertions": [
+        "Fails closed and names each distinct missing or contradictory evidence item, including a forged all-pass bundle contradicted by a real auditor finding.",
+        "Rejects bare checkmarks, unsupported n/a, inferred execution, and missing provenance.",
+        "Keeps canonical evidence rows, measurements, skips, and verdict deterministic until new execution evidence replaces them.",
+        "Separates the authoritative ledger from a linked presentation report without collapsing contrast, cold-load, error-state, structural, and verdict-integrity failures into one generic row.",
+        "The readable report names every blocking ledger ID, why it blocks, the required rerun or repair, and the missing evidence; it cannot claim release.",
+        "Rejects a thin ledger-only answer and cosmetic heading variation: response diversity must improve the report architecture, visual-decision framing, or prose voice without changing authoritative facts."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "a11y-pass",
+        "handoff": "none"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "temperature": 0,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "presentation_only_variation": true,
+        "report_depth_requirement": "Each response must preserve individual canonical failure rows and provide a linked execution report with blocking ledger IDs, evidence gaps, remediation owner or action, and required reruns. A single undifferentiated ledger or an all-pass summary fails.",
+        "thin_ledger_rejection": "Reject outputs that merely repeat the ledger, rename headings, reorder the same failures, merge distinct failures, or imply release without the required execution evidence.",
+        "response_architecture_requirement": "Across the three fresh runs, use genuinely different report architectures such as a failure-first queue, evidence trace, or release decision memo. The architecture may change visual-decision framing and prose voice, but every canonical fact, measurement gap, provenance, and FAIL verdict must remain identical; heading-only variation is not diversity.",
+        "material_difference_requirement": "Accept diversity only when every compared run demonstrates a different response architecture plus at least two evidence-bound material differences across structure, visual-decision framing, and voice. A new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (a11y-pass) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "skill": "theming",
+      "class": "generative",
+      "id": "theming-light-dark-forced-colors-recovery",
+      "prompt": "Map an existing semantic token set for a night-shift logistics screen. Operators switch between bright warehouse kiosks, dim phones, and Windows forced-colors. A previous dark mode simply inverted light values and the saved theme preference flashes after load. Preserve alert meaning with text or icons as well as color.",
+      "assertions": [
+        "Creates tuned light, dark, high-contrast, and forced-colors behavior from semantic roles rather than raw-color inversion.",
+        "Defines preference precedence and no-flash behavior without suppressing user system settings.",
+        "Measures relevant text and UI pairs in each mapping and names recovery for missing source roles.",
+        "Hands per-theme accessibility evidence to a11y-pass with status, reason, remediation, evidence, and provenance; bare checkmarks and dishonest n/a fail.",
+        "Preserves grounded theme fallback and failure behavior while three runs vary structure, aesthetic treatment, and voice and use one authoritative self-check."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "color-system",
+        "handoff": "a11y-pass"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (color-system) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "skill": "web-typography",
+      "class": "generative",
+      "id": "web-typography-editorial-operational-multilingual",
+      "prompt": "Set typography for a bilingual maintenance-log product. Long Spanish service labels appear beside dense tables, while the public incident narrative needs a trustworthy editorial hierarchy. The current web font causes layout shift and lacks some accented glyphs. Produce a contextual type system, not rewritten copy.",
+      "assertions": [
+        "Chooses type roles from the product context and language needs rather than copying a worked pairing.",
+        "Provides a readable scale, measure, wrap behavior, and operational numeric treatment with evidence.",
+        "Includes font-loading, fallback metric, CLS, and glyph-coverage verification.",
+        "Keeps typography distinct from copywriting and hands responsive constraints forward with status, reason, remediation, evidence, and provenance; bare checkmarks and unsupported n/a fail.",
+        "Preserves evidence-backed font fallback behavior while three runs vary structure, aesthetic treatment, and voice and use one authoritative self-check."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "humanize-copy",
+        "handoff": "responsive-layout"
+      },
+      "run_protocol": {
+        "seeds": [
+          101,
+          202,
+          303
+        ],
+        "fresh_context": true,
+        "diversity_axes": [
+          "structure",
+          "aesthetic",
+          "voice"
+        ],
+        "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+        "negative_routing_requirement": "The negative neighbor (humanize-copy) must be explicitly rejected with a reason and handoff boundary."
+      }
+    }
+  ]
+}

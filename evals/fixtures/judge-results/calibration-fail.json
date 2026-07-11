@@ -1,0 +1,96 @@
+[
+  {
+    "schema_version": 1,
+    "result_id": "component-states-paired-lift-001-luna-1",
+    "packet_id": "component-states-paired-lift-001",
+    "evaluator_type": "paired_lift",
+    "judge_id": "luna-1",
+    "evaluator_family": "luna",
+    "evaluator_model": "gpt-5.6-luna",
+    "status": "complete",
+    "calibration_status": {
+      "passed": false,
+      "items_passed": 3,
+      "items": [
+        {
+          "calibration_id": "cal-001",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "pass",
+          "anchor_value": "pass"
+        },
+        {
+          "calibration_id": "cal-001",
+          "check": "total_within_threshold",
+          "passed": false,
+          "judge_value": 6,
+          "anchor_value": 10
+        },
+        {
+          "calibration_id": "cal-002",
+          "check": "verdict_correct",
+          "passed": false,
+          "judge_value": "pass",
+          "anchor_value": "fail"
+        },
+        {
+          "calibration_id": "cal-002",
+          "check": "total_within_threshold",
+          "passed": true,
+          "judge_value": 2,
+          "anchor_value": 2
+        },
+        {
+          "calibration_id": "cal-003",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "fail",
+          "anchor_value": "fail"
+        },
+        {
+          "calibration_id": "cal-003",
+          "check": "total_within_threshold",
+          "passed": false,
+          "judge_value": 9,
+          "anchor_value": 6
+        }
+      ]
+    },
+    "candidate_scores": {
+      "A": {
+        "domain_specificity": 2,
+        "evidence_completeness": 2,
+        "fail_closed": 2,
+        "handoff_readiness": 2,
+        "scope_discipline": 2,
+        "total": 10
+      },
+      "B": {
+        "domain_specificity": 1,
+        "evidence_completeness": 1,
+        "fail_closed": 1,
+        "handoff_readiness": 1,
+        "scope_discipline": 1,
+        "total": 5
+      }
+    },
+    "candidate_evidence": {
+      "A": "Destructive action state contract",
+      "B": "Async destructive action contract"
+    },
+    "preference": "A",
+    "deltas": {
+      "domain_specificity": 1,
+      "evidence_completeness": 1,
+      "fail_closed": 1,
+      "handoff_readiness": 1,
+      "scope_discipline": 1
+    },
+    "regression_flags": [],
+    "verdict": "A_better",
+    "rationale": "Label A provides explicit state machine with five semantic states and all required evidence fields; B has shorter coverage and missing provenance on some rows.",
+    "cited_evidence": [
+      "Destructive action state contract"
+    ]
+  }
+]

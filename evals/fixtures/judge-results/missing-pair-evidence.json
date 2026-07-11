@@ -1,0 +1,87 @@
+[
+  {
+    "schema_version": 1,
+    "result_id": "component-states-diversity-001-luna-1",
+    "packet_id": "component-states-diversity-001",
+    "evaluator_type": "diversity",
+    "judge_id": "luna-1",
+    "evaluator_family": "luna",
+    "evaluator_model": "gpt-5.6-luna",
+    "status": "complete",
+    "calibration_status": {
+      "passed": true,
+      "items_passed": 6,
+      "items": [
+        {
+          "calibration_id": "cal-001",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "pass",
+          "anchor_value": "pass"
+        },
+        {
+          "calibration_id": "cal-001",
+          "check": "total_within_threshold",
+          "passed": true,
+          "judge_value": 10,
+          "anchor_value": 10
+        },
+        {
+          "calibration_id": "cal-002",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "fail",
+          "anchor_value": "fail"
+        },
+        {
+          "calibration_id": "cal-002",
+          "check": "total_within_threshold",
+          "passed": true,
+          "judge_value": 2,
+          "anchor_value": 2
+        },
+        {
+          "calibration_id": "cal-003",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "fail",
+          "anchor_value": "fail"
+        },
+        {
+          "calibration_id": "cal-003",
+          "check": "total_within_threshold",
+          "passed": true,
+          "judge_value": 6,
+          "anchor_value": 6
+        }
+      ]
+    },
+    "pair_analyses": {
+      "C1-C2": {
+        "structural_evidence": "C1 uses a decision-sequence list; C2 uses a semantic-state-first framing.",
+        "aesthetic_evidence": "C1 uses pipes in table headers; C2 separates semantic/visual triggers explicitly.",
+        "voice_evidence": "C1 uses imperative second person; C2 uses declarative system voice.",
+        "coherence": "pass",
+        "usability": "pass",
+        "brief_fit": "pass",
+        "accessibility": "pass",
+        "skill_requirement": "pass"
+      },
+      "C2-C3": {
+        "structural_evidence": "C2 separates semantic/visual; C3 combines trigger and DOM state in one column.",
+        "aesthetic_evidence": "C2 is more concise per state; C3 adds DOM/ARIA state column explicitly.",
+        "voice_evidence": "C2 uses shorter rationale phrases; C3 uses fuller evidence sentences.",
+        "coherence": "pass",
+        "usability": "pass",
+        "brief_fit": "pass",
+        "accessibility": "pass",
+        "skill_requirement": "pass"
+      }
+    },
+    "verdict": "pass",
+    "rationale": "All three candidates cover the required states with distinct structural and voice approaches; sufficient diversity exists across pairs.",
+    "cited_evidence": [
+      "Destructive action state contract"
+    ]
+  }
+]

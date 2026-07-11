@@ -68,10 +68,3 @@ If the brand color can't hit contrast on dark even after tuning:
 - Disabled: lower, but it's exempt from contrast minimums (keep it perceivable).
 - Prefer explicit grays over `opacity` on text, because opacity over a tinted/raised
   surface shifts the effective color and can drop below contrast.
-
-## Self-check
-- [ ] Every accent desaturated + lightened vs light mode (recognizably same hue).
-- [ ] Body ≥ 4.5:1 and large/UI ≥ 3:1 on the *actual* surface (incl. raised cards).
-- [ ] State colors have dark-tuned variants; alert backgrounds tinted, not full-bright.
-- [ ] Secondary text verified ≥ 4.5:1; text tiers use explicit grays, not opacity.
-- [ ] No state conveyed by color alone.

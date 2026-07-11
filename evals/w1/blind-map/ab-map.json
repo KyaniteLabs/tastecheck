@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "wave": "W1",
+  "note": "Evaluators see A and B labels only. Run type (baseline/upgraded) is revealed in .omx/evidence/tastecheck-v1/ab-unmask.json after evaluation is complete. job_ids are redacted here — use ab-unmask.json for the full mapping.",
+  "assignments": {
+    "component-states": {
+      "A": null,
+      "B": null
+    },
+    "deslop-ui": {
+      "A": null,
+      "B": null
+    },
+    "tastecheck-pass": {
+      "A": null,
+      "B": null
+    }
+  }
+}

@@ -5,4 +5,12 @@ argument-hint: "[site/app/page path or URL]"
 
 Load and apply the **improve-existing-website** skill (`~/.agents/skills/improve-existing-website/SKILL.md`).
 
-Inspect the current site first, infer the intended design system from real evidence, ask at most three targeted questions only if they change the solution, then use the tastecheck skill chain to make the partial system fully true.
+Inspect before inference; label observations EVIDENCE and derivations INFERRED. Write
+`INFERRED-SYSTEM.md`; a material redesign waits for explicit approval.
+Run the skill's single authoritative self-check and emit status, reason, remediation, evidence, and provenance before claiming improvement.
+
+<!-- contract:v1:start -->
+## Brownfield inspection/interview contract (generated)
+
+Canonical detail: [../skills/improve-existing-website/references/interview-contract.generated.md](../skills/improve-existing-website/references/interview-contract.generated.md). Use the generated state machine; ask no more than 3 material questions and require approval for material redesign.
+<!-- contract:v1:end -->

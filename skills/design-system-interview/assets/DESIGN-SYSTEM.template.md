@@ -1,41 +1,38 @@
 # Design System — {Project Name}
 
-> **North star (one line):** {e.g. "1970s ski-lodge editorial — warm, dense, classic,
-> burnt-orange anchor, Fraunces display, sharp 4px corners, signature = oversized serif numerals."}
+## Design direction summary
 
-## Direction
-- **Reference(s):** {the site/brand/object whose feel we're borrowing}
-- **Aesthetic:** {named concrete phrase — NOT "modern/clean"}
-- **Personality (poles chosen):** {warm/cool} · {serious/playful} · {minimal/maximal} ·
-  {classic/experimental} · {refined/raw} · {dense/spacious}
-- **Signature move:** {the one memorable thing}
+> **North star (one line):** {a concrete, brief-derived direction}
 
-## Type (→ web-typography)
+- **Reference / anchor:** {source and what is being learned, not copied}
+- **Aesthetic territory:** {named concrete phrase; not "modern" or "clean"}
+- **Personality:** {chosen spectrum positions}
+- **Structure and rhythm:** {composition, spatial motif, and cadence}
+- **Signature:** {one distinctive, usable element}
+- **Imagery and iconography:** {treatment and one coherent icon convention}
+
+## Typography specimen (→ web-typography)
 - **Display:** {face} — {why}
 - **Body:** {face}
 - **Contrast intent:** {scale ratio, weight extremes}
 
-## Color (→ color-system)
+## Color palette (→ color-system)
 - **Dominant hue:** {name / approx OKLCH H}
 - **Accent:** {name / H}
 - **Neutrals:** tinted toward {hue}; no dead gray; never indigo→violet default
 - **Mode:** {light only / light+dark}
+- **Contrast notes:** {measured foreground/background pairs and any remediation}
 
-## Shape & density (→ components)
+## Spacing scale and shape (→ spacing-system, components)
 - **Density:** {spacious | dense}
 - **Corner radius:** controls {0–4|8–12|16+}px · cards {…}px (CTAs never pill)
 - **Elevation:** {flat+borders | layered shadow scale}
-
-## Imagery & iconography (→ art-direction)
-- **Imagery stance:** {photography + treatment | illustration + style | type/texture only | none}
-- **Icon set:** {named set} at {stroke weight} — one set, no emoji-as-icons
-- **Image-shaped holes:** {what fills hero/cards/empty states}
 
 ## Motion (→ micro-motion)
 - **Level:** {restrained | lively | none}
 
 ## Language (→ i18n-ready, if multilingual)
-- **Languages:** {e.g. EN + ES} · UI must hold at ~+25% string length
+- **Languages:** {e.g. EN + ES} · UI must hold the longest approved locale fixture
 
 ## Refusals (what we will NOT do)
 - No {Inter/Roboto/Arial} — using {our faces}
@@ -44,8 +41,19 @@
 - No pill CTAs / glassmorphism-by-default / shadow-2xl-on-everything
 - {project-specific refusals}
 
-## Tokens
-See `tokens.css` (primitive → semantic). Components reference semantic tokens only.
+## Token block
+
+```css
+:root {
+  /* Primitive tokens: color ramps, type values, space values, radii, elevation. */
+  /* Semantic tokens: components reference roles only. */
+}
+```
+
+## Component guidance notes
+
+- {how components express density, shape, elevation, and interaction hierarchy}
+- {responsive or accessibility constraint that downstream skills must preserve}
 
 ## Build order
 design-system-interview (this) → color-system + web-typography + theming +

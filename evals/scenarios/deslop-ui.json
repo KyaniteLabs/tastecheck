@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "skill": "deslop-ui",
+  "class": "repair",
+  "id": "deslop-ui-polished-generic-page",
+  "prompt": "Audit a polished marketing page that uses an indigo-violet gradient, pill CTA, centered hero, equal three-card grid, generic system typography, and plausible copy. The brief calls for a quiet field-research instrument with a left-anchored composition and one precise accent. Preserve the real product facts. Produce a severity-ranked repair specification with concrete type, color, shape, section-topology, and post-repair verification decisions.",
+  "assertions": [
+    "Records observed findings separately across surface, structure, and verbal planes, with the concrete selector, section, phrase, screenshot, or browser observation for each.",
+    "Ranks P0-P3 severity, preserves coherent product facts and deliberate brand signals, and does not substitute aesthetic preference for an observed defect.",
+    "Commits to a named, brief-compatible direction with concrete composition, color, type, shape, and section decisions rather than subtraction alone.",
+    "Defines the replacement topology, narrow-layout and keyboard-order check, and a post-repair checklist that re-runs the original observations.",
+    "Reports severity, evidence, remediation, and provenance for every finding.",
+    "Rejects a thin ledger-only answer and cosmetic heading variation: every run must be a buildable repair specification with distinct, evidence-bound visual decisions while retaining the same observed truth."
+  ],
+  "routing": {"positive": true, "negative_neighbor": "design-system-interview", "handoff": "humanize-copy"},
+  "run_protocol": {
+    "seeds": [101, 202, 303],
+    "fresh_context": true,
+    "truth_convergence": true,
+    "diversity_axes": ["structure", "aesthetic", "voice"],
+    "repair_depth_requirement": "Each response must rank severity and specify applicable composition/section topology, color role and token boundary, type stance, shape/elevation role, verbal boundary, and post-repair verification. A finding ledger without those buildable decisions fails.",
+    "thin_ledger_rejection": "Reject outputs that stop at named tells, change headings, reorder identical rows, or offer an unsupported recolor without a severity-ranked repair specification and after-state checks.",
+    "response_architecture_requirement": "Across the three fresh runs, use genuinely different architectures such as severity-first triage, annotated page walk, or build-ready repair specification. Each must preserve observed facts and severity while making materially distinct brief-bound visual decisions; heading-only variation is not diversity.",
+    "material_difference_requirement": "Accept diversity only when every compared run demonstrates a different response architecture plus at least two evidence-bound material changes across composition, color, type, shape, and voice. A new order, synonym, recolor, or unsupported style swap is not diversity.",
+    "negative_routing_requirement": "The negative neighbor (design-system-interview) must be explicitly rejected with a reason and handoff boundary."
+  }
+}

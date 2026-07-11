@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "packet_id": "component-states-paired-lift-001",
+  "evaluator_type": "paired_lift",
+  "skill": "component-states",
+  "scenario_id": "component-states-async-destructive-control",
+  "prompt_hash": "269db917952179867529b505795a05c32aff9de1590948be9d5c04069161229e",
+  "calibration_ref": "evals/w1/rubric/calibration.json",
+  "candidates": {
+    "baseline": {
+      "label": "baseline",
+      "attempt_id": "x",
+      "raw_output_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "upgraded": {
+      "label": "upgraded",
+      "attempt_id": "y",
+      "raw_output_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  }
+}

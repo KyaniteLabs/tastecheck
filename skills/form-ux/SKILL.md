@@ -8,116 +8,87 @@ description: >-
 
 # Form UX
 
-Every product has forms, and forms are where users quit. The failures are consistent
-and fixable: a field with no real label, an error that appears only after submit and
-just says "Invalid", a required field you discover by failing, a mobile keyboard that's
-the wrong type. None of that is a taste problem — it's a set of known rules. This skill
-is those rules, each checkable.
+A form is a completion path: reduce effort, prevent predictable errors, and make every
+failure truthful, repairable, and accessible.
 
-Governing principle: **a form's job is to be completed.** Reduce effort, prevent
-errors before they happen, and when an error does happen, make it instantly clear what
-to fix and how.
+## Model the task before styling fields
+
+Start with outcome, risk, and data authority—not an inherited input array. Remove,
+defer, or explain each field through this contract:
+
+| Field contract | What to decide |
+| --- | --- |
+| User value | What completing this field unlocks now, in the user's words |
+| Data rule | Required/optional condition, source of truth, and whether the rule is client- or server-owned |
+| Input affordance | Label, type, inputmode, autocomplete, format help, and a safe example |
+| Validation moment | What can be checked while editing, on blur, on submit, or only after a server request |
+| Recovery | Exact message, preserved value, focus destination, and next available action |
+| Sensitivity | Whether the field is personal, financial, irreversible, or must never be persisted locally |
+
+Unknown rule/ownership stays unresolved; never invent validation. Group by the user’s
+task, not database/API shape.
 
 ## Non-negotiables
 
-- **Every field has a visible, persistent `<label>`.** Placeholders are not labels —
-  they vanish on input, fail contrast, and hurt accessibility. If you use the floating-
-  label pattern, the label must remain visible after input. Associate with `for`/`id`.
-- **Validate at the right time:** on **blur** (when the user leaves a field) for format
-  checks, and again on **submit**. Don't validate on every keystroke (yelling while
-  they type) — *except* to relax: clear an existing error as soon as it's fixed.
-- **Error messages are specific, adjacent, and helpful.** Next to the field, not in a
-  far-off summary alone; say what's wrong AND how to fix it: "Enter a valid email like
-  name@example.com", not "Invalid input".
-- **Mark required vs optional explicitly.** Whichever is rarer, mark it. Don't make
-  users discover required fields by failing. `aria-required` + a visible marker.
-- **Right input type & autocomplete.** `type="email|tel|number|url|password"`,
-  `inputmode`, and `autocomplete="email|name|one-time-code|cc-number…"` so mobile shows
-  the right keyboard and browsers autofill. This alone raises completion noticeably.
-- **One column.** Multi-column forms break the vertical reading flow and cause skipped
-  fields. Single column, logically grouped. (Exception: short related pairs like
-  city/state, expiry/CVC.)
-- **Never disable the submit button silently.** A greyed-out submit with no reason is a
-  dead end; either keep it enabled and show errors on click, or clearly say what's
-  missing.
-- **Accessible by construction:** label association, `aria-invalid` on errored fields,
-  `aria-describedby` pointing to the message, errors announced (`role="alert"`), focus
-  moved to the first error on failed submit, visible `:focus-visible`.
+- Persistent associated label; visible required/optional state; correct type, inputmode,
+  autocomplete, and a one-column task flow (short related pairs excepted).
+- Validate format on blur and submit, clear errors on repair, and keep server truth server-owned.
+- Put specific, adjacent “what + fix” errors behind `aria-invalid`/`aria-describedby`;
+  announce and focus first error on failed submit.
+- Never silently disable submit; retain visible focus and explain what is missing.
 
 ## The error-message formula
 
-`[What's wrong] + [how to fix it] (+ example)`, in plain language, blameless.
+Use `[what is wrong] + [how to fix it] (+ example)`, plainly and without blame. Tie it
+visually/programmatically to the field; a top summary links to inline errors on long forms.
 
-- ✗ "Invalid input" → ✓ "Enter a valid email like name@example.com"
-- ✗ "Error" → ✓ "Password needs at least 8 characters"
-- ✗ "Field required" (generic) → ✓ "Enter your full name"
-- ✗ "Wrong" → ✓ "Card number should be 16 digits"
+## Validation is a conversation, not a trap
 
-Tie each message to its field visually and programmatically. On submit failure, also
-provide a summary at the top linking to each errored field (good for long forms and
-screen readers), but the inline message is the primary.
+Give feedback at the earliest truthful moment; browser checks never impersonate server
+truth. On submit distinguish field errors (focus/retain), conflict (correct branch),
+transient failure (preserved draft/safe retry), authorization (boundary/route), and
+irreversible payment (duplicate lock plus receipt/status). Pending work has an accessible
+label/status and rejects duplicates; failure restores a usable explained route.
 
-## Quick-start: an accessible field
+## Quick-start
 
-```html
-<div class="field" data-invalid="false">
-  <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
-  <input id="email" name="email" type="email" inputmode="email"
-         autocomplete="email" required aria-required="true"
-         aria-describedby="email-err" />
-  <p id="email-err" class="error" role="alert" hidden>
-    Enter a valid email like name@example.com
-  </p>
-</div>
-```
-```js
-const input = document.querySelector('#email');
-input.addEventListener('blur', validate);          // validate on leave
-input.addEventListener('input', () => { if (input.getAttribute('aria-invalid')==='true') validate(); }); // relax on fix
-function validate() {
-  const ok = input.validity.valid;
-  input.setAttribute('aria-invalid', String(!ok));
-  const err = document.querySelector('#email-err');
-  err.hidden = ok; input.closest('.field').dataset.invalid = String(!ok);
-}
-```
+Use `references/patterns.md` for markup/wiring; retain the field contract above.
 
 ## Reduce effort (completion-rate wins)
 
-- Ask for the **fewest fields possible**; every field costs completions. Defer optional
-  data to later.
-- **Smart defaults & autofill** — detect country/currency, prefill where safe, support
-  password managers and OTP autofill (`autocomplete="one-time-code"`).
-- **Format as they go** where helpful (card number spacing) but don't block typing.
-- **Show password-reveal toggles**; don't disable paste on password fields.
-- **Inline help** for unusual fields (why you need it, format hints) via
-  `aria-describedby`, not a tooltip-only.
-- **Preserve input on error** — never clear the form. (See `empty-states` for error
-  handling.)
-- **Save progress** on long/multi-step forms; show a step indicator.
+Ask only necessary fields; defer optional data. Use safe defaults/autofill, helpful
+nonblocking formatting, password reveal/paste, inline help, preserved input, and saved
+progress for long flows.
 
 ## Reference files
 
-- `references/patterns.md` — field types, label/validation patterns in depth, multi-
-  step forms, mobile specifics, autocomplete token reference, and a11y wiring.
-- `references/decision-records.md` — meta-patterns + ADR rules for novel cases.
+- `references/patterns.md` — types, validation, mobile/autofill, and a11y wiring.
+- `references/decision-records.md` — novel-case ADR rules.
+
+## Decision order and evidence
+
+Establish task, fields, rule owner, success/risk/interruption before styling. Record each
+field/state plus validation owner/recovery; `n/a` needs subject absence, never an unknown rule.
 
 ## Self-check (before shipping a form)
 
-1. Every field has a visible persistent label (no placeholder-as-label)?
-2. Required/optional marked explicitly (and `aria-required`)?
-3. Validation on blur + submit, relaxes on fix, not on every keystroke?
-4. Errors specific + adjacent + "how to fix", tied via `aria-describedby`, `role="alert"`?
-5. Correct `type`/`inputmode`/`autocomplete` on every field?
-6. Single column; minimal fields; input preserved on error?
-7. Submit never silently disabled; focus moves to first error on failed submit?
-8. `:focus-visible` rings; works by keyboard and screen reader?
+1. Field contract, labels, required state, types/autofill, and keyboard/screen-reader wiring complete?
+2. Blur/submit timing, repair relaxation, specific adjacent errors, first-error focus, and retained input work?
+3. No silent disabled submit; pending, duplicate, conflict, authorization, and irreversible outcomes differ?
 
 ## How to deliver
 
-- Build forms with validation, error states, and a11y wired from the start (these are
-  the exact things models skip — see `deslop-ui` "functional slop").
-- State what you did: "labels persistent, validate-on-blur, inline errors with fixes,
-  email/tel types + autocomplete, single column, focus-to-error on submit."
-- Pair with `empty-states` (submission error/success states), `humanize-copy` (error
-  wording), `micro-motion` (gentle error reveal, not jarring).
+Deliver one field/state matrix with source rule, affordance, owner/timing, recovery,
+pending behavior, evidence, and remaining risk; hand adjacent concerns to their skills.
+
+<!-- contract:v1:start -->
+## Contract (generated)
+
+Canonical detail: [contract.json](contract.json).
+
+- Route: A form has completion, validation, recovery, autofill, or interruption problems.; avoid: The issue is only a control's visual interaction state.
+- Exclude: Do not hide errors or validate only on blur without a recovery path. (+1 in contract.json)
+- Stop / handoff: Stop when validation rules or data ownership are unknown. (+1 in contract.json); receives [component-states, design-system-interview] -> sends [a11y-pass, i18n-ready, tastecheck-pass]
+- Output: completion-oriented form flow and evidence table
+- Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
+<!-- contract:v1:end -->
