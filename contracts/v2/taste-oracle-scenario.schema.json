@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/contracts/v2/taste-oracle-scenario.schema.json",
+  "title": "TasteCheck Taste Oracle Scenario v2",
+  "description": "One fixed deslop-ui scenario with canonical tri-arm browser renders.",
+  "type": "object",
+  "required": ["schema_version", "scenario_id", "skill", "tokens_path", "arms", "viewports"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "integer", "const": 2 },
+    "scenario_id": { "type": "string", "minLength": 1 },
+    "skill": { "type": "string", "const": "deslop-ui" },
+    "tokens_path": { "$ref": "#/definitions/repoRelativePath" },
+    "arms": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": [
+        { "$ref": "#/definitions/noSkillArm" },
+        { "$ref": "#/definitions/currentArm" },
+        { "$ref": "#/definitions/frozenArm" }
+      ],
+      "additionalItems": false
+    },
+    "viewports": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": [
+        { "$ref": "#/definitions/mobileViewport" },
+        { "$ref": "#/definitions/desktopViewport" }
+      ],
+      "additionalItems": false
+    }
+  },
+  "definitions": {
+    "repoRelativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/|~|[A-Za-z]:)(?!.*\\\\)(?!.*(^|/)\\.\\.?(/|$))[^:]+$"
+    },
+    "armBase": {
+      "type": "object",
+      "required": ["id", "fixture_path"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "fixture_path": { "$ref": "#/definitions/repoRelativePath" }
+      }
+    },
+    "noSkillArm": {
+      "allOf": [
+        { "$ref": "#/definitions/armBase" },
+        { "properties": { "id": { "const": "no-skill" } } }
+      ]
+    },
+    "currentArm": {
+      "allOf": [
+        { "$ref": "#/definitions/armBase" },
+        { "properties": { "id": { "const": "current" } } }
+      ]
+    },
+    "frozenArm": {
+      "allOf": [
+        { "$ref": "#/definitions/armBase" },
+        { "properties": { "id": { "const": "frozen" } } }
+      ]
+    },
+    "mobileViewport": {
+      "type": "object",
+      "required": ["id", "width", "height"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "const": "mobile" },
+        "width": { "const": 390 },
+        "height": { "const": 844 }
+      }
+    },
+    "desktopViewport": {
+      "type": "object",
+      "required": ["id", "width", "height"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "const": "desktop" },
+        "width": { "const": 1280 },
+        "height": { "const": 900 }
+      }
+    }
+  }
+}

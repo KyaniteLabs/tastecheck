@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en" data-oracle-arm="current">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Northstar workspace</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--canvas); color: var(--text); font: var(--weight-regular) var(--body-size)/var(--body-line-height) var(--font-family); }
+    header { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: var(--lg); width: min(1160px, calc(100% - 3rem)); margin: auto; padding: var(--lg) 0; border-bottom: 1px solid var(--border); }
+    .brand { font-weight: var(--weight-bold); letter-spacing: -.025em; }
+    nav { display: flex; gap: var(--lg); }
+    nav a { color: var(--text-muted); text-decoration: none; font-size: .9rem; }
+    main { width: min(1160px, calc(100% - 3rem)); margin: auto; padding: clamp(4rem, 11vh, 7.5rem) 0; }
+    section { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(19rem, .85fr); column-gap: clamp(3rem, 8vw, 7rem); row-gap: var(--lg); align-items: end; }
+    .badge { display: block; margin-bottom: var(--lg); color: var(--accent); font-size: .72rem; font-weight: var(--weight-bold); letter-spacing: .12em; text-transform: uppercase; }
+    h1 { max-width: 13ch; margin: 0 0 var(--lg); font-size: clamp(3.25rem, 7vw, 6.8rem); line-height: .91; letter-spacing: -.065em; }
+    .lede { max-width: 55ch; margin: 0 0 var(--xl); color: var(--text-muted); font-size: 1.05rem; }
+    .actions { display: flex; }
+    button { border: 1px solid var(--accent); border-radius: var(--radius-sm); padding: .8rem 1rem; background: var(--accent); color: white; font: inherit; font-weight: var(--weight-medium); }
+    .card { padding: var(--lg) 0 0; border-top: 3px solid var(--text); }
+    h2 { margin: 0 0 var(--md); font-size: 1.35rem; letter-spacing: -.025em; }
+    .card p { color: var(--text-muted); }
+    .status { display: inline-block; margin-top: var(--lg); padding-left: var(--md); border-left: 3px solid var(--accent); color: var(--text); font-weight: var(--weight-bold); }
+    @media (max-width: 720px) { header { width: calc(100% - 2rem); padding: var(--md) 0; } nav { gap: var(--md); } main { width: auto; padding: 2.5rem var(--md); } section { display: block; } .badge { margin-bottom: 2rem; } h1 { font-size: 3rem; } .lede { margin-bottom: var(--lg); font-size: 1rem; } button { width: 100%; } .card { margin-top: var(--xl); } }
+  </style>
+</head>
+<body data-oracle-probe="root">
+  <header>
+    <div class="brand">Northstar</div>
+    <nav aria-label="Primary"><a href="#overview">Overview</a><a href="#activity">Activity</a></nav>
+  </header>
+  <main>
+    <section aria-labelledby="page-heading">
+      <span class="badge">Weekly workspace</span>
+      <h1 id="page-heading" data-oracle-probe="heading">Make the next decision obvious.</h1>
+      <p class="lede">Northstar turns scattered project signals into one calm, accountable view of what needs attention now.</p>
+      <div class="actions"><button type="button" data-oracle-probe="primary-action">Review priorities</button></div>
+      <article class="card" id="overview" data-oracle-probe="summary-card">
+        <h2>Launch readiness</h2>
+        <p>Three reviews remain. The release brief is current, ownership is assigned, and no critical blockers are open.</p>
+        <span class="status" id="activity" data-oracle-probe="status">On track for Friday</span>
+      </article>
+    </section>
+  </main>
+  <script>
+    (() => { const t = globalThis.__ORACLE_TOKENS__; if (!t) throw new Error("Oracle tokens unavailable"); const r = document.documentElement.style; const values = { canvas:t.colors.canvas, surface:t.colors.surface, text:t.colors.text, "text-muted":t.colors.text_muted, accent:t.colors.accent, border:t.colors.border, "font-family":t.type.font_family, "body-size":t.type.body_size, "body-line-height":t.type.body_line_height, "weight-regular":t.type.weight_regular, "weight-medium":t.type.weight_medium, "weight-bold":t.type.weight_bold, xs:t.spacing.xs, sm:t.spacing.sm, md:t.spacing.md, lg:t.spacing.lg, xl:t.spacing.xl, "radius-sm":t.radii.sm }; for (const [k,v] of Object.entries(values)) r.setProperty(`--${k}`, String(v)); document.documentElement.dataset.oracleTokens = t.token_set_id; })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "schema_version": 2,
+  "kind": "taste-oracle-paired-observations",
+  "scenario_id": "deslop-ui-hard-001",
+  "target_arm": "current",
+  "comparator_arm": "frozen",
+  "release_scope": "milestone_only",
+  "provenance": {
+    "kind": "synthetic_fixture",
+    "notice": "SYNTHETIC FIXTURE — NOT RELEASE EVIDENCE"
+  },
+  "observations": [
+    { "observation_id": "observation-synthetic-a-01", "evaluator_family": "family-synthetic-a", "result_id": "result-synthetic-a1", "preference": "current" },
+    { "observation_id": "observation-synthetic-a-02", "evaluator_family": "family-synthetic-a", "result_id": "result-synthetic-a1", "preference": "current" },
+    { "observation_id": "observation-synthetic-a-03", "evaluator_family": "family-synthetic-a", "result_id": "result-synthetic-a2", "preference": "current" },
+    { "observation_id": "observation-synthetic-a-04", "evaluator_family": "family-synthetic-a", "result_id": "result-synthetic-a2", "preference": "tie" },
+    { "observation_id": "observation-synthetic-b-01", "evaluator_family": "family-synthetic-b", "result_id": "result-synthetic-b1", "preference": "current" },
+    { "observation_id": "observation-synthetic-b-02", "evaluator_family": "family-synthetic-b", "result_id": "result-synthetic-b1", "preference": "current" },
+    { "observation_id": "observation-synthetic-b-03", "evaluator_family": "family-synthetic-b", "result_id": "result-synthetic-b2", "preference": "current" },
+    { "observation_id": "observation-synthetic-b-04", "evaluator_family": "family-synthetic-b", "result_id": "result-synthetic-b2", "preference": "frozen" }
+  ]
+}

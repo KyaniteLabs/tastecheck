@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tools/verify.mjs && node tools/lint-skills.mjs && node tools/verify-landing.mjs && node tools/verify-integration.mjs && node tools/verify-gate-audit.mjs",
+    "test": "npm run test:oracle && node tools/verify.mjs && node tools/lint-skills.mjs && node tools/verify-landing.mjs && node tools/verify-integration.mjs && node tools/verify-gate-audit.mjs",
     "verify": "npm test",
     "verify:skills": "node tools/verify.mjs",
     "lint:skills": "node tools/lint-skills.mjs",
@@ -29,7 +29,7 @@
     "eval:adjudicate": "node tools/evals/adjudicate.mjs",
     "eval:aggregate": "node tools/evals/aggregate-receipts.mjs",
     "eval:sanitize": "node tools/evals/sanitize-receipts.mjs",
-    "test:contracts": "node tools/evals/test-lint-fixtures.mjs && node tools/contracts/test-contracts.mjs && node tools/contracts/test-scenarios.mjs && node tools/contracts/check-generated.mjs",
+    "test:contracts": "node tools/evals/test-lint-fixtures.mjs && node tools/contracts/test-contracts.mjs && node tools/contracts/test-scenarios.mjs && node tools/contracts/check-generated.mjs && node tools/taste-oracle/test-observations-schema.mjs",
     "test:eval-schema": "node tools/evals/test-sanitizer-fixtures.mjs && node tools/evals/evaluators/test-sanitizer.mjs",
     "test:browser": "node tools/release/check.mjs --mode=browser",
     "eval:interviews": "node tools/release/check.mjs --mode=interviews",
@@ -72,6 +72,20 @@
   "eval:remediation7:audit": "node tools/evals/remediation7-audit.mjs audit",
     "test:eval-remediation": "node tools/evals/test-semantic-diversity.mjs && node tools/evals/test-context-aware-anti-slop.mjs && node tools/evals/test-tastecheck-gate.mjs && node tools/evals/test-remediation7-replay.mjs && node tools/evals/test-remediation7-audit.mjs && node tools/evals/test-remediation7-blind-judge.mjs && node tools/evals/test-remediation7-v3-correction.mjs && node tools/evals/test-remediation7-v5-spacing-final.mjs",
     "eval:remediation7:v4:test": "node tools/evals/test-remediation7-v4-correction.mjs",
-    "eval:remediation7:v5:test": "node tools/evals/test-remediation7-v5-spacing-final.mjs"
-}
+    "eval:remediation7:v5:test": "node tools/evals/test-remediation7-v5-spacing-final.mjs",
+    "oracle:capture": "node tools/taste-oracle/capture.mjs",
+    "test:oracle-contracts": "node tools/taste-oracle/test-contracts.mjs",
+    "test:oracle-capture": "node tools/taste-oracle/test-evidence.mjs && node tools/taste-oracle/test-capture-regressions.mjs",
+    "oracle:collect": "node tools/taste-oracle/collect-observations.mjs",
+    "oracle:analyze": "node tools/taste-oracle/analyze.mjs",
+    "test:oracle-statistics": "node tools/taste-oracle/test-statistics.mjs && node tools/taste-oracle/test-observations-schema.mjs && node tools/taste-oracle/test-analysis-result-schema.mjs",
+    "oracle:judges": "node tools/taste-oracle/validate-judges.mjs",
+    "test:oracle-judges": "node tools/taste-oracle/test-judges.mjs",
+    "test:oracle-e2e": "node tools/taste-oracle/test-collector-e2e.mjs",
+    "test:oracle": "npm run test:oracle-contracts && npm run test:oracle-capture && npm run test:oracle-statistics && npm run test:oracle-judges && npm run test:oracle-e2e"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0",
+    "playwright": "1.61.1"
+  }
 }
