@@ -2,31 +2,31 @@
   "schema_version": 1,
   "kind": "clean-clone",
   "producer_id": "tastecheck.release.clean-clone.v1",
-  "source_tree_sha256": "8d19ec7cc066378474bd99580a8f5046914fba202d009118f07fcd1108533e04",
+  "source_tree_sha256": "02d310862f606aa0094967d3595be697a9238313c50baf082daeb234cf60394e",
   "nonce": "clean-clone-release-v1",
-  "started_at": "2026-07-12T02:40:29.464Z",
-  "finished_at": "2026-07-12T02:40:39.912Z",
+  "started_at": "2026-07-12T06:40:01.223Z",
+  "finished_at": "2026-07-12T06:40:11.174Z",
   "checks": [
     {
       "id": "npm-ci",
       "command": "npm ci --ignore-scripts",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "1768a48059dc03a7e1df200ad56c4c14826230fa975b993ca6bac01bdc945d6e"
+      "output_sha256": "9adb6ddeb6dc47393770a063dfb19146f719bf26c965bffe5ef870e3b549b020"
     },
     {
       "id": "test",
       "command": "npm test",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "33830e798f898963d1a0a4e42ad8007222ded74c39fa908a8e43a66d068dc012"
+      "output_sha256": "1bb965e1592bae70a6781c6b472ab63b7474469485ef7cfa7082ae8c16efe99a"
     },
     {
       "id": "contracts",
       "command": "npm run test:contracts",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "c71923afc79c303a9dbcd40199e06e806c878e52abe320d7758178f8e27535a6"
+      "output_sha256": "c5d394ec30f86010e00f65a8cf5f671b23635e7db3b93e8847456cbd4b3c4f3e"
     },
     {
       "id": "effectiveness-claims",
@@ -40,14 +40,14 @@
       "command": "internal HEAD source digest comparison",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "720c3d418a9e0ed069e3dd40fef424852db2f8b3cf851a699731bad7a374f42a"
+      "output_sha256": "3cbec28eae52b6a939cb9d1a7506655453c2fa4b15872f6514f2a10af8ed70f6"
     },
     {
       "id": "source-stability",
       "command": "internal source digest comparison",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "720c3d418a9e0ed069e3dd40fef424852db2f8b3cf851a699731bad7a374f42a"
+      "output_sha256": "3cbec28eae52b6a939cb9d1a7506655453c2fa4b15872f6514f2a10af8ed70f6"
     }
   ],
   "status": "pass",
