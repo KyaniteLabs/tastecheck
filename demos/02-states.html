@@ -80,7 +80,8 @@ body{font-family:system-ui;padding:2rem;display:flex;flex-direction:column;gap:1
 <div class=row><a href="#">A link</a></div>
 <div class=row>
   <label class=field for=demo-text><span>Text input</span><input id=demo-text class=input placeholder="text input"></label>
-  <label class=field for=demo-error><span>Error state</span><input id=demo-error class=input aria-invalid=true value="error state"></label>
+  <label class=field for=demo-error><span>Validation state</span><input id=demo-error class=input value="ready to validate"></label>
+  <button class=btn type=button onclick="const input=document.querySelector('#demo-error');input.setAttribute('aria-invalid','true');input.value='error state';input.focus()">Show error state</button>
 </div>
 <div class=row><button class=tab aria-selected=true>Selected tab</button><button class=tab>Tab</button></div>
 <div class=row><div class=switch aria-label="Notifications off" aria-checked=false role=switch tabindex=0></div><div class=switch aria-label="Notifications on" aria-checked=true role=switch tabindex=0></div></div>

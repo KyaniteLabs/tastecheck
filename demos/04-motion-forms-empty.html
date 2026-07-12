@@ -64,5 +64,5 @@
 <h1>motion / empty-states / form-ux demo</h1>
 <div><h2>Loading skeleton</h2><div class=skeleton style="width:60%"></div><div class=skeleton style="width:90%;margin-top:.5rem"></div></div>
 <div class=empty><h2>No projects yet</h2><p>Create your first project to start.</p><button class=btn style="padding:.6em 1.1em;border-radius:8px;border:0;background:#2563eb;color:#fff">New project</button></div>
-<form class=field><label for=email>Email *</label><input class=input id=email type=email aria-invalid=true aria-describedby=err><p class=error id=err>Enter a valid email like name@example.com</p></form>
+<form class=field novalidate onsubmit="event.preventDefault();const input=this.querySelector('#email');const error=this.querySelector('#err');input.setAttribute('aria-invalid','true');input.setAttribute('aria-describedby','err');error.hidden=false;input.focus()"><label for=email>Email *</label><input class=input id=email type=email required><p class=error id=err hidden>Enter a valid email like name@example.com</p><button class=btn type=submit>Validate email</button></form>
 </main></body></html>
