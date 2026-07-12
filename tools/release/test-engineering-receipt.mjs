@@ -35,6 +35,7 @@ try {
 
   assert.equal(isExcludedReceiptPath("evals/receipts/v1/browser.json"), true);
   assert.equal(isExcludedReceiptPath("evals/receipts/v1/artifacts/browser/proof.png"), true);
+  assert.equal(isExcludedReceiptPath("evals/receipts/v1/contracts/generated.json"), true);
   assert.equal(isExcludedReceiptPath("evals/receipts/v1/immutable/w1-effectiveness.json"), false);
 
   const passed = deriveReceipt({
