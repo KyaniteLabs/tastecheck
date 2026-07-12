@@ -15,6 +15,9 @@
 - Production has exactly 12 scenarios, two seeds, two arms, two evaluator families, two judge identities per family, 48 generations, 96 production judgments, and 16 anchor judgments. Each judgment is one fresh external call.
 - Incremental pay-per-call spend is `$0`; at most 160 external calls are admitted.
 - Retries are prohibited. Every attempted call reserves its unique ordinal before execution; any failed attempt terminates `production_incomplete`.
+- The frozen exclusion set is exactly `[]`; all 24 units, both arms, and every required viewport are mandatory. Missing evidence is `production_incomplete`, never denominator removal.
+- A secret-seed commitment is committed and bound into protocol, admission, run ID, and initial ledger root before the first external call. Its single opening occurs only after the committed synthesis reservation.
+- Packet cue handling is reject-only: accepted artifact bytes are never rewritten.
 - No human-calibration field or human-preference claim is permitted in the effectiveness-v2 namespace.
 - Both families must independently clear the frozen rule; pooled votes cannot rescue disagreement.
 - Historical failure, production failure, and inconclusive output remain publishable evidence and are never rerun for a preferred result.
@@ -30,6 +33,9 @@
 - Create: `contracts/v2/effectiveness/historical-authority.schema.json`
 - Create: `contracts/v2/effectiveness/synthesis-reservation.schema.json`
 - Create: `contracts/v2/effectiveness/generation-receipt.schema.json`
+- Create: `contracts/v2/effectiveness/randomization-commitment.schema.json`
+- Create: `contracts/v2/effectiveness/render-receipt.schema.json`
+- Create: `contracts/v2/effectiveness/unmask.schema.json`
 - Create: `contracts/v2/effectiveness/judge-result.schema.json`
 - Create: `contracts/v2/effectiveness/synthesis.schema.json`
 - Create: `contracts/v2/effectiveness/public-claim.schema.json`
@@ -47,8 +53,9 @@
 
 ```js
 import assert from "node:assert/strict";
-import { freezeProtocol, validateContract } from "./lib/contracts.mjs";
+import { freezeExecutionManifest, freezeProtocol, validateContract } from "./lib/contracts.mjs";
 import fixture from "../../../evals/v2/fixtures/protocol-valid.json" with { type: "json" };
+import manifest, { sameLineage } from "../../../evals/v2/fixtures/execution-manifest-valid.mjs";
 
 assert.equal(validateContract("protocol", fixture).valid, true);
 assert.throws(() => freezeProtocol({ ...fixture, max_external_calls: 161 }), /160/);
@@ -66,7 +73,7 @@ Expected: failure because `tools/evals/v2/lib/contracts.mjs` and the schemas do 
 
 - [ ] **Step 3: Implement closed schemas and contract helpers**
 
-Every schema uses `additionalProperties: false`. The protocol requires the exact source revisions, six named strata, two scenarios per stratum, seeds `[101,202]`, `comparison_units: 24`, `generation_calls: 48`, `production_judgments: 96`, `anchor_judgments: 16`, `max_external_calls: 160`, `incremental_spend_cap_usd: 0`, `retry_policy: "none"`, family quorum `2`, judge identities per family `2`, candidate preference floor `18`, scenario-majority floor `8`, absolute mean floor `4`, dimension floor `3`, and `human_calibration_claimed: false`. The execution manifest requires exact version strings and digests rather than mutable aliases.
+Every schema uses `additionalProperties: false`. The protocol requires the exact source revisions, six named strata, two scenarios per stratum, seeds `[101,202]`, `comparison_units: 24`, `generation_calls: 48`, `production_judgments: 96`, `anchor_judgments: 16`, `max_external_calls: 160`, `incremental_spend_cap_usd: 0`, `retry_policy: "none"`, `exclusions: []`, family quorum `2`, judge identities per family `2`, candidate preference floor `18`, scenario-majority floor `8`, absolute mean floor `4`, dimension floor `3`, and `human_calibration_claimed: false`. It also requires the admitted randomization-commitment digest and reject-only packet-validator version/digest. The execution manifest requires exact version strings and digests rather than mutable aliases.
 
 ```js
 export function freezeProtocol(protocol) {
@@ -78,6 +85,7 @@ export function freezeProtocol(protocol) {
     comparison_units: 24,
     max_external_calls: 160,
     incremental_spend_cap_usd: 0,
+    exclusions: [],
   };
   for (const [key, value] of Object.entries(expected)) {
     if (protocol[key] !== value) throw new TypeError(`${key} must equal ${value}`);
@@ -90,7 +98,7 @@ export function freezeProtocol(protocol) {
 
 Run: `node tools/evals/v2/test-contracts.mjs`
 
-Expected: `effectiveness-v2 contract tests passed` after tests mutate every frozen count, threshold, revision, unknown field, and human-related field and observe rejection.
+Expected: `effectiveness-v2 contract tests passed` after tests mutate every frozen count, threshold, revision, exclusion, commitment, validator, unknown field, and human-related field and observe rejection.
 
 - [ ] **Step 5: Add `test:effectiveness-v2` to `package.json` and commit**
 
@@ -120,6 +128,7 @@ Commit: `feat: freeze effectiveness v2 contracts`
 - Create: `evals/v2/scenario-registry.json`
 - Create: `evals/v2/protocol.json`
 - Create: `evals/v2/historical-authority.json`
+- Create before admission: `evals/v2/randomization-commitment.json`
 - Create: `evals/v2/anchors/tie-identical-a.json`
 - Create: `evals/v2/anchors/tie-identical-b.json`
 - Create: `evals/v2/anchors/broken-complete-a.json`
@@ -127,6 +136,7 @@ Commit: `feat: freeze effectiveness v2 contracts`
 - Create: `tools/evals/v2/lib/registry.mjs`
 - Create: `tools/evals/v2/lib/ledger.mjs`
 - Create: `tools/evals/v2/lib/historical-authority.mjs`
+- Create: `tools/evals/v2/lib/randomization.mjs`
 - Create: `tools/evals/v2/test-registry.mjs`
 
 **Interfaces:**
@@ -134,6 +144,8 @@ Commit: `feat: freeze effectiveness v2 contracts`
 - `validateCorpusSeparation(registry)` rejects duplicate hashes and normalized semantic-near duplicates across scenarios and anchors.
 - `appendEvent(path, previous, event)` returns a canonical hash-chained event and refuses deletion, reorder, or mismatched predecessor hashes.
 - `verifyHistoricalAuthority(root, manifest)` verifies the tracked V1 authority bytes and rejects their use as v2 inputs.
+- `commitRandomization(seed, domain)` returns a sealed commitment; `verifyOpening(commitment, opening)` accepts exactly one domain-bound opening.
+- `verifyHistoricalSeparation(inputs, authority)` resolves indirection and rejects exact or normalized historical content across every v2 scenario, anchor, fixture, artifact, render, packet, judgment, and synthesis input.
 
 - [ ] **Step 1: Write failing registry and ledger tests**
 
@@ -146,6 +158,13 @@ const first = appendEvent(undefined, null, { type: "protocol_frozen", at: "2026-
 assert.throws(() => appendEvent(undefined, { ...first, event_sha256: "0".repeat(64) }, { type: "production_admitted" }), /predecessor/);
 assert.throws(() => verifyHistoricalAuthority(mutatedRoot, authority), /historical authority/);
 assert.throws(() => validateV2InputPath("evals/receipts/v1/immutable/w1-effectiveness.json"), /historical/);
+for (const copied of [exactCopy, renamedCopy, wrappedCopy, normalizedNearCopy, symlinkCopy]) {
+  assert.throws(() => verifyHistoricalSeparation(copied, authority), /historical|overlap/);
+}
+assert.throws(() => admitWithoutCommitment(fixture), /randomization commitment/);
+assert.throws(() => replaceCommittedSeed(admitted), /immutable|replacement/);
+assert.throws(() => verifyOpening(commitment, invalidOpening), /opening/);
+assert.throws(() => verifyOpening(openedCommitment, validOpening), /already opened/);
 ```
 
 - [ ] **Step 2: Verify RED**
@@ -160,7 +179,9 @@ Each scenario declares `scenario_id`, `stratum`, `brief`, `starting_fixture`, `r
 
 - [ ] **Step 4: Implement deterministic registry hashing, semantic quarantine, historical authority, and hash-chain ledger**
 
-Normalization uses Unicode NFKC, lowercase, punctuation removal, whitespace collapse, and sorted token shingles. Exact hash equality or Jaccard similarity `>= 0.85` blocks corpus freeze. The historical manifest pins every tracked public V1/W1/full19/V5 authority file used by ADR 0001 and verifies before admission and closeout. The run ID is derived from protocol, corpus, source, and execution-manifest digests; its initial ledger root is committed before admission.
+Normalization uses Unicode NFKC, lowercase, punctuation removal, whitespace collapse, wrapper extraction, and sorted token shingles. Exact hash equality or Jaccard similarity `>= 0.85` blocks corpus freeze. The historical manifest pins every tracked public V1/W1/full19/V5 authority file used by ADR 0001. Admission and synthesis walk realpaths, resolve symlinks/indirection, and compare every v2 input against both exact historical hashes and normalized fingerprints.
+
+Before the first external call, `commit-randomization` creates a secret seed and a domain-separated commitment with exclusive creation. Only the commitment file is tracked. Its digest is bound into the frozen protocol, admission event, run ID, and initial ledger root alongside protocol, corpus, source, execution-manifest, and `exclusions: []` digests. Admission rejects late creation or replacement. Opaque IDs are derived from commitment plus stable unit coordinates, never arm order. The opening remains inaccessible until the committed synthesis reservation and can verify exactly once.
 
 - [ ] **Step 5: Verify GREEN and commit**
 
@@ -184,6 +205,7 @@ Commit: `feat: preregister effectiveness v2 corpus`
 - `admitCall(state, request)` atomically reserves the next never-reused ordinal before execution and returns the call receipt only when attempted calls remain `<=160`, incremental spend remains `0`, protocol/source/execution-manifest hashes match, and the exact provider/model/runtime tuple is frozen.
 - `classifyExecution(result)` returns `completed`, `transport_failed`, or `false_success`.
 - `buildArmJob({ scenario, seed, arm, revision, protocol_sha256 })` emits identical arm policies except for the source revision and skill-pack content.
+- Every attempted-call receipt closes over ordinal, cost classification (`flat-rate`, `already-provisioned`, or rejected `incremental`), and terminal status.
 
 - [ ] **Step 1: Write failing admission and false-success tests**
 
@@ -194,6 +216,9 @@ assert.throws(() => admitCall({ admitted: 0, spend_usd: 0.01 }, request), /incre
 assert.equal(failAttempt(reserveOrdinal(state, request)).run_status, "production_incomplete");
 assert.throws(() => reserveOrdinal(stateAfterFailure, request), /terminal|retry/);
 assert.deepEqual(stripArmIdentity(buildArmJob(current)), stripArmIdentity(buildArmJob(baseline)));
+assert.throws(() => omitUnit(admittedPlan), /24 mandatory units/);
+for (const scope of ["scenario", "unit", "arm", "viewport"]) assert.throws(() => addLateExclusion(admittedPlan, scope), /exclusion/);
+assert.throws(() => classifyCost({ kind: "incremental", usd: 0.01 }), /incremental spend/);
 ```
 
 - [ ] **Step 2: Verify RED**
@@ -202,7 +227,7 @@ Run: `node tools/evals/v2/test-generation.mjs`
 
 - [ ] **Step 3: Implement preflight and generation receipts**
 
-The CLI supports `preflight`, `plan`, and `run`. `plan` must show exactly 48 generation calls without starting a model. `run` refuses a dirty source tree, wrong revisions, absent or drifted execution manifest, or any pay-per-call requirement. Every attempt reserves and fsyncs its call ordinal first. A zero-turn/zero-token/no-artifact Dispatch result is persisted as `false_success`, consumes its ordinal, and terminates the run; transport failures behave identically. No replacement or retry exists.
+The CLI supports `preflight`, `plan`, and `run`. `plan` must show exactly 48 generation calls without starting a model. `run` refuses a dirty source tree, wrong revisions, absent or drifted execution manifest, or any pay-per-call requirement. Every attempt reserves and fsyncs its call ordinal first; its closed receipt records ordinal, cost classification, and terminal status. A zero-turn/zero-token/no-artifact Dispatch result is persisted as `false_success`, consumes its ordinal, and terminates the run; transport failures behave identically. No replacement or retry exists. All 24 units and both arms come from the admitted protocol; omission or any late scenario/unit/arm/viewport exclusion terminates `production_incomplete`.
 
 - [ ] **Step 4: Verify GREEN, including a fake executor E2E**
 
@@ -216,17 +241,57 @@ Commit: `feat: add sealed effectiveness generation runner`
 
 ---
 
-### Task 4: Blind packet builder, machine anchors, and judge validation
+### Task 4: Hash-bound render evidence capture
+
+**Files:**
+- Create: `tools/evals/v2/lib/render.mjs`
+- Create: `tools/evals/v2/render.mjs`
+- Create: `tools/evals/v2/test-render.mjs`
+- Create: `evals/v2/fixtures/render-success.json`
+
+**Interfaces:**
+- `captureRenders({ runId, artifact, manifest, requiredViewports })` captures local evidence and returns closed render receipts without consuming an external-call ordinal.
+- `verifyRenderReceipt(receipt, artifact, manifest, runId)` binds source artifact hash, screenshot/serialized-DOM/deterministic-computed-style hashes, viewport, Playwright, Chromium, font-set, renderer-adapter, render-host, and run identities.
+
+- [ ] **Step 1: Write failing receipt and adversarial lineage tests**
+
+```js
+assert.deepEqual(captureRenders(fixture).map((r) => r.viewport_id), ["mobile", "desktop"]);
+for (const mutation of [missingViewport, mismatchedArtifact, tamperedDom, tamperedStyles, tamperedScreenshot, wrongRenderer, wrongHost, staleReplay]) {
+  assert.throws(() => verifyRenderReceipt(mutation.receipt, mutation.artifact, manifest, runId), /render|viewport|hash|lineage|replay/);
+}
+```
+
+- [ ] **Step 2: Verify RED**
+
+Run: `node tools/evals/v2/test-render.mjs`
+
+- [ ] **Step 3: Implement deterministic local capture**
+
+Use the exact frozen Playwright/Chromium/font/host/adapter identities and both frozen viewports. Serialize DOM and the allowlisted computed-style projection deterministically before hashing. Bind every receipt to the generated artifact, unit, arm, viewport, and run. Any missing viewport, byte mutation, identity drift, cross-artifact reuse, or cross-run replay terminates `production_incomplete`. Rendering is local and does not change the exact 160 external-call count.
+
+- [ ] **Step 4: Verify GREEN and commit**
+
+Run: `node tools/evals/v2/test-render.mjs && node tools/evals/v2/test-generation.mjs`
+
+Commit: `feat: capture hash-bound render evidence`
+
+---
+
+### Task 5: Blind packet builder, machine anchors, and judge validation
 
 **Files:**
 - Create: `tools/evals/v2/lib/blind.mjs`
+- Create: `tools/evals/v2/lib/packet-policy.mjs`
 - Create: `tools/evals/v2/lib/judges.mjs`
 - Create: `tools/evals/v2/build-packets.mjs`
 - Create: `tools/evals/v2/validate-judges.mjs`
 - Create: `tools/evals/v2/test-judges.mjs`
 
 **Interfaces:**
-- `buildBlindPackets({ protocol, registry, generations, randomizationCommitment })` returns 24 opaque allowlisted packets and a separate hash-bound unmask map.
+- `buildBlindPackets({ protocol, registry, generations, renders, admittedCommitment })` returns 24 opaque allowlisted packets and a sealed unmask-map commitment; the opening is unavailable until reserved synthesis.
+- `validatePacketArtifact({ bytes, validatorVersion, validatorDigest })` is reject-only and returns the original bytes unchanged or rejects the unit.
+- `validateEvidenceCitation(citation, packetSet)` verifies deterministic codepoint offsets and an exact contiguous span in the named hash-verified artifact and viewport.
 - `validateJudgeBatch({ packetSet, anchorSet, results, families })` returns `{ valid, errors, admissible_results }`.
 - `anchorExpectedVerdict(anchor)` is private operator logic and never appears in production packets.
 
@@ -244,6 +309,8 @@ reject("duplicate invocation context", mutate(results, duplicateInvocation), "in
 reject("failed tie anchor", mutate(results, failTieAnchor), "anchor_batch_invalid");
 reject("missing exact evidence", mutate(results, dropCitation), "evidence_binding");
 reject("human field", mutate(results, (r) => { r.human_calibration = {}; }), "unknown field");
+for (const bad of [inventedSpan, paraphrasedSpan, wrongArm, wrongViewport, wrongLocator, staleHash, emptySpan, hashValidNonmatchingSpan]) reject("bad evidence", bad, "evidence_binding");
+for (const bad of [armOrderDependentId, absentAdmittedCommitment, transformedBytes, asymmetricAcceptance, validatorDrift, validatorCollision]) reject("mutable packet", bad, "packet_integrity");
 ```
 
 - [ ] **Step 2: Verify RED**
@@ -252,13 +319,15 @@ Run: `node tools/evals/v2/test-judges.mjs`
 
 - [ ] **Step 3: Implement deterministic label randomization, sealed unmasking, anchors, and validation**
 
-Packets contain only opaque packet/scenario/unit/artifact/viewport/label IDs, common brief and rubric, sanitized treatment-produced content, and content hashes. IDs derive independently of arm order from a committed randomization commitment. Revisions, versions, package/source/worktree/run paths, timestamps, logs, receipts, provider data, filesystem metadata, arm-specific identifiers, and asymmetric fields are rejected. Judge results bind exact frozen provider, verified foundation lineage, model version, identity tuple, unique context/invocation IDs, packet digest, citations that include both artifact hashes plus a locator and nonempty evidence span, five 1–5 scores for each opaque arm, pairwise preference, and hard-regression flags.
+Packets contain only opaque packet/scenario/unit/artifact/viewport/label IDs, common brief and rubric, exact unmodified treatment-produced bytes, verified render evidence, and content hashes. IDs derive from the admitted commitment and stable unit coordinates independently of arm order. Revisions, versions, package/source/worktree/run paths, timestamps, logs, receipts, provider data, filesystem metadata, arm-specific identifiers, and asymmetric fields are rejected.
+
+Packet cue enforcement is reject-only under the frozen validator version and digest: both arms are checked identically, accepted bytes are byte-for-byte preserved, and any forbidden cue rejects the whole unit. No cleanup, rewriting, normalization, or selective field removal is allowed. Judge results bind exact frozen provider, verified foundation lineage, model version, identity tuple, unique context/invocation IDs, packet digest, five 1–5 scores for each opaque arm, pairwise preference, and hard-regression flags. Each evidence citation names an artifact and viewport, its hash, start and exclusive end Unicode-codepoint offsets, and the exact nonempty contiguous span. Validation recomputes the hash and substring; invented, paraphrased, wrong-arm, wrong-viewport, stale, empty, or nonmatching evidence fails.
 
 - [ ] **Step 4: Verify GREEN and mutation coverage**
 
 Run: `node tools/evals/v2/test-judges.mjs`
 
-Expected: all identity-leak, family-collapse, anchor, evidence, unknown-field, replay, and packet-hash mutations fail.
+Expected: all identity-leak, family-collapse, anchor, exact-evidence, commitment, reject-only policy, unknown-field, replay, and packet/render-hash mutations fail.
 
 - [ ] **Step 5: Commit**
 
@@ -266,7 +335,7 @@ Commit: `feat: add machine-only blind judge protocol`
 
 ---
 
-### Task 5: One-time synthesis and scoped public claims
+### Task 6: One-time synthesis and scoped public claims
 
 **Files:**
 - Create: `tools/evals/v2/lib/synthesis.mjs`
@@ -281,6 +350,7 @@ Commit: `feat: add machine-only blind judge protocol`
 - `synthesize({ protocol, packets, unmask, validatedBatches, ledger })` returns the closed synthesis contract.
 - `reserveSynthesis({ runRoot, runId, ledgerRoot })` exclusively creates and fsyncs a terminal reservation; `verifyCommittedReservation(path, head)` requires those exact bytes in `HEAD` and a clean tree before unmask.
 - `projectPublicClaim(synthesis)` returns exact allowed copy and rejects human, universal, or skill-level promotion.
+- `openUnmask({ opening, map, packetSet, commitment, reservation, ledger })` verifies the one-time opening and binds the complete map digest to run ID, admitted commitment, complete packet-set digest, current reservation digest, and immediate ledger predecessor.
 
 - [ ] **Step 1: Write failing decision-rule tests**
 
@@ -297,8 +367,11 @@ assert.throws(() => synthesize(rerunFixture), /one-time|rerun/);
 assert.throws(() => verifyCommittedReservation(deletedLedger), /deletion|root/);
 assert.throws(() => verifyCommittedReservation(forkedLedger), /predecessor/);
 assert.throws(() => verifyCommittedReservation(copiedRun), /run id|root/);
-assert.match(projectPublicClaim(passSynthesis).claim, /frozen corpus/);
-assert.doesNotMatch(projectPublicClaim(passSynthesis).claim, /human|all skills|all models/i);
+assert.equal(projectPublicClaim(passSynthesis).claim, ALLOWED_POSITIVE_CLAIM);
+for (const promoted of promoteScopeAcrossUsersTasksGeneratorsFamiliesRuntimesRendersRevisionsAndSkills) assert.throws(() => projectPublicClaim(promoted), /claim scope/);
+for (const forged of [swappedArm, swappedUnit, wrongRun, missingEntry, extraEntry, recomputedMapHash, invalidOpening, postReservationReplacement]) {
+  assert.throws(() => openUnmask(forged), /unmask|opening|binding|packet|reservation/);
+}
 ```
 
 - [ ] **Step 2: Verify RED**
@@ -309,7 +382,7 @@ Run: `node tools/evals/v2/test-synthesis.mjs`
 
 Map each identity preference to candidate `1`, tie `0.5`, or baseline `0`; abstention/missing is incomplete. A family-unit score is the mean of exactly two identity scores. A family requires the sum of 24 unit scores `>=18`. A family-scenario score is the mean of its two seeded unit scores and counts candidate-majority only when `>0.5`; each family requires at least 8. Each identity scores both arms on five dimensions; average the two identities per family/unit/arm/dimension, then average the 24 equally weighted candidate units per dimension. Each candidate dimension mean must be `>=3` and their five-dimension mean `>=4`. Any admissible hard-regression flag blocks. `supported` requires both families; valid disagreement is `inconclusive`; hard regression or integrity invalidation is `blocked`; missing evidence is `production_incomplete`.
 
-`reserve` uses exclusive creation and fsync, then exits without unmasking. The operator commits the reservation. `synthesize` requires that exact reservation in `HEAD`, a clean tree, the committed initial ledger root, an intact hash chain, and no prior synthesis reservation/event. A crash after reservation is terminal and cannot resume. Ledger deletion, truncation, forks, copied roots, or repeated run IDs fail closed.
+`reserve` uses exclusive creation and fsync, then exits without unmasking. The operator commits the current reservation. `synthesize` requires that exact current reservation in `HEAD`, a clean tree, the committed initial ledger root, an intact hash chain, and no prior reservation for the run ID. The unmask opening is verified once and its complete mapping is bound to the admitted commitment, packet set, run ID, current reservation, and immediate ledger predecessor before candidate attribution. A crash after the current reservation is terminal and cannot resume. Ledger deletion, truncation, forks, copied roots, repeated run IDs, swapped or partial maps, invalid openings, or post-reservation replacement fail closed.
 
 - [ ] **Step 4: Verify GREEN and reconstruct from sealed fixtures**
 
@@ -321,7 +394,7 @@ Commit: `feat: synthesize scoped machine blind evidence`
 
 ---
 
-### Task 6: External model adapters and production rehearsal
+### Task 7: External model adapters and production rehearsal
 
 **Files:**
 - Create: `tools/evals/v2/lib/providers.mjs`
@@ -345,7 +418,9 @@ assert.throws(() => selectFamilies([singleFamily]), /two provider families/);
 assert.throws(() => selectFamilies([aliasA, sameLineageAliasB]), /foundation lineage/);
 assert.throws(() => selectFamilies([billableA, provisionedB]), /incremental spend/);
 assert.throws(() => admitResolvedModel({ ...frozenManifest, resolved_version: "drifted" }), /version drift/);
-assert.deepEqual(rehearse().counts, { generations: 48, production_judgments: 96, anchor_judgments: 16, external_calls: 160 });
+assert.deepEqual(rehearse().counts, { generations: 48, render_receipts: 96, production_judgments: 96, anchor_judgments: 16, external_calls: 160 });
+assert.equal(rehearse().all_render_viewports_bound, true);
+assert.equal(rehearse().randomization_commitment_precedes_external_calls, true);
 ```
 
 - [ ] **Step 2: Verify RED**
@@ -354,7 +429,7 @@ Run: `node tools/evals/v2/test-rehearsal.mjs`
 
 - [ ] **Step 3: Implement adapters and dry-run rehearsal**
 
-Dispatch is queried before executor/model selection during preflight. Preflight must verify two different providers and two different foundation-model lineages, resolve exact model versions, and freeze all generator, judge-identity, runtime, adapter, prompt, renderer, font, viewport, tool, and time identities. No post-admission fallback or substitution exists. Provider commands receive packet paths, not unmask data. The implementation never prints tokens, credentials, full environment values, or machine paths.
+Dispatch is queried before executor/model selection during preflight. Preflight must verify two different providers and two different foundation-model lineages, resolve exact model versions, and freeze all generator, judge-identity, runtime, adapter, prompt, renderer, font, viewport, tool, and time identities. It also verifies the precommitted randomization digest, exact empty exclusions, reject-only validator digest, historical content closure, and local render graph. No post-admission fallback or substitution exists. Provider commands receive packet paths, not unmask data. The implementation never prints tokens, credentials, full environment values, or machine paths.
 
 - [ ] **Step 4: Verify GREEN and run full fake-executor rehearsal**
 
@@ -366,6 +441,7 @@ Run: `node tools/evals/v2/test-rehearsal.mjs && npm run verify:v1`
 "eval:v2:preflight": "node tools/evals/v2/generate.mjs preflight",
 "eval:v2:rehearse": "node tools/evals/v2/rehearse.mjs",
 "eval:v2:generate": "node tools/evals/v2/generate.mjs run",
+"eval:v2:render": "node tools/evals/v2/render.mjs run",
 "eval:v2:judge": "node tools/evals/v2/run-judges.mjs",
 "eval:v2:synthesize": "node tools/evals/v2/synthesize.mjs",
 "verify:v2": "npm run test:effectiveness-v2 && node tools/evals/v2/rehearse.mjs"
@@ -375,7 +451,7 @@ Commit: `feat: add effectiveness v2 execution adapters`
 
 ---
 
-### Task 7: Production execution, evidence closeout, review, and QA
+### Task 8: Production execution, evidence closeout, review, and QA
 
 **Files:**
 - Create only after admission: `evals/v2/runs/<run-id>/...`
@@ -391,7 +467,7 @@ Run: `pushing-dispatch route --mode breakout --task "TasteCheck v2 machine-only 
 
 Run: `npm run eval:v2:preflight`
 
-Expected: exact source/corpus/protocol/execution-manifest/historical-authority hashes, two providers with different verified foundation-model lineages, exact generator/judge/runtime/render identities, `incremental_spend_cap_usd=0`, `retry_policy=none`, `planned_external_calls=160`, and no production event.
+Expected: exact source/corpus/protocol/execution-manifest/historical-authority/randomization-commitment/packet-validator hashes, `exclusions=[]`, two providers with different verified foundation-model lineages, exact generator/judge/runtime/render identities, `incremental_spend_cap_usd=0`, `retry_policy=none`, `planned_external_calls=160`, and no production event.
 
 - [ ] **Step 2: Execute generation once**
 
@@ -399,31 +475,37 @@ Run: `npm run eval:v2:generate`
 
 Expected: 48 completed arm receipts or a terminal `production_incomplete` ledger; every attempt has a unique pre-reserved ordinal and no retry.
 
-- [ ] **Step 3: Build packets and execute two-family judges once**
+- [ ] **Step 3: Capture and validate local render evidence**
+
+Run: `npm run eval:v2:render`
+
+Expected: both frozen viewports for every arm of every render-required unit, with hash-bound screenshot, DOM, computed-style, artifact-lineage, renderer, and host receipts; no external-call ordinal consumed. Any missing or stale receipt terminates `production_incomplete`.
+
+- [ ] **Step 4: Build packets and execute two-family judges once**
 
 Run: `node tools/evals/v2/build-packets.mjs && npm run eval:v2:judge`
 
 Expected: four valid judge identities with 112 isolated calls containing 96 production and 16 anchor judgments, or terminal incomplete/invalid evidence.
 
-- [ ] **Step 4: Reserve synthesis before unmask**
+- [ ] **Step 5: Reserve synthesis before unmask**
 
 Run: `node tools/evals/v2/synthesize.mjs reserve`
 
 Expected: exclusively created and fsynced `synthesis-reservation.json`; no unmask access and no synthesis output. Commit the reservation as `eval: reserve effectiveness v2 synthesis`, then require a clean worktree.
 
-- [ ] **Step 5: Unmask and synthesize exactly once**
+- [ ] **Step 6: Unmask and synthesize exactly once**
 
 Run: `npm run eval:v2:synthesize`
 
 Expected: `supported`, `inconclusive`, `blocked`, or `production_incomplete`; the command verifies the committed reservation and refuses every second, interrupted, forked, truncated, deleted, or copied synthesis attempt.
 
-- [ ] **Step 6: Verify, review, and adversarially QA**
+- [ ] **Step 7: Verify, review, and adversarially QA**
 
 Run: `npm run verify:v1 && npm run verify:v2 && npm run release:claims && git diff --check`
 
-Then run an independent code review requiring `APPROVE` and architectural `CLEAR`, followed by adversarial QA covering dirty trees, source drift, historical-byte mutation, alias/lineage/version/runtime/render drift, packet leaks through paths/versions/timestamps/metadata/asymmetry, failed anchors, split identities/seeds, exact ties, missing scores, contradictory regression flags, duplicate contexts/invocations, single-family output, missing citations, false-success dispatch, zero-cost cap, partial production, ledger deletion/truncation/forks/copies, interrupted reservation, and repeat synthesis.
+Then run an independent code review requiring `APPROVE` and architectural `CLEAR`, followed by adversarial QA covering dirty trees; source drift; exact, renamed, wrapped, normalized, symlinked, or indirect historical copies; late/replaced commitments and repeated/invalid openings; arm-order-dependent IDs; alias/lineage/version/runtime drift; missing viewport, mismatched artifact, tampered screenshot/DOM/styles, wrong renderer/host, and stale render replay; late scenario/unit/arm/viewport exclusions; reject-only validator drift, asymmetric acceptance, collision, or output transformation; packet leaks through paths/versions/timestamps/metadata/asymmetry; failed anchors; split identities/seeds; exact ties; missing scores; contradictory regression flags; duplicate contexts/invocations; single-family output; invented/paraphrased/wrong-arm/wrong-viewport/wrong-locator/stale/empty/nonmatching evidence; false-success dispatch; per-attempt cost classification and zero-cost cap; partial production; swapped-arm/swapped-unit/wrong-run/missing/extra/recomputed/post-reservation unmask maps; ledger deletion/truncation/forks/copies; interrupted reservation; and repeat synthesis.
 
-- [ ] **Step 7: Public leak audit and evidence commit**
+- [ ] **Step 8: Public leak audit and evidence commit**
 
 Scan staged textual output for credentials, local paths, usernames, emails, temporary paths, private hosts, environment values, and process-only evidence. Commit only public-safe artifacts.
 

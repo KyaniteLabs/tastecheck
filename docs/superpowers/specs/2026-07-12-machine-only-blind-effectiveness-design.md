@@ -23,6 +23,9 @@ that all users, models, tasks, or individual skills improve.
   `08591213f562073f9ddb0ff9012ec0e3f8ed09c2`.
 - Thresholds, corpus hashes, exclusions, retry rules, and the unmask procedure are frozen
   before production generation or judging.
+- The exclusion set is exactly `[]`. All 24 comparison units and every required arm and
+  viewport remain mandatory after admission; absence never changes a denominator and
+  yields `production_incomplete`.
 - A failed or inconclusive result is final for this protocol version. No selective rerun,
   threshold edit, judge substitution, or cherry-picking is allowed.
 
@@ -39,8 +42,9 @@ skills.
 - The same generator model, runtime, settings, task text, starting repository, tool policy,
   and time budget are used for baseline and candidate arms.
 - A/B labels are assigned only after generation and remain opaque until synthesis.
-- Renderable tasks are captured at mobile and desktop widths with content-addressed
-  screenshot, DOM, and computed-style evidence.
+- All 12 scenarios produce renderable frontend artifacts. Both arms of all 24 units are
+  captured at mobile and desktop widths, yielding 96 local content-addressed screenshot,
+  DOM, and computed-style render receipts.
 
 The scenario is the primary sampling unit. Multiple judge rows for one scenario are
 clustered observations and never inflate the effective sample size.
@@ -52,6 +56,19 @@ foundation-model lineages, exact model versions, identity tuples, runtime and ad
 digests, plus the Playwright and Chromium versions, font-set digest, viewport matrix, and
 render host contract. No alias, version, provider, runtime, adapter, or render substitution
 is allowed after admission. Drift produces `production_incomplete`.
+
+Before that same admission boundary, the operator creates a secret randomization seed and
+commits its domain-separated SHA-256 commitment. The protocol digest, admission event, run
+ID, and initial ledger root bind that commitment. The seed is opened only after the
+committed synthesis reservation; a late or replaced commitment, a second opening, or an
+opening that does not verify is terminally invalid.
+
+Render-required artifacts are captured locally at the frozen mobile and desktop viewports.
+Each closed render receipt binds the source artifact hash to screenshot, serialized DOM,
+and deterministic computed-style hashes, plus viewport, Playwright, Chromium, font-set,
+renderer-adapter, and render-host identities. Missing viewports, mismatched lineage,
+tampering, renderer drift, or replay from another artifact or run produces
+`production_incomplete`. Local render capture consumes no external-call ordinal.
 
 ## Machine judges and anchor qualification
 
@@ -83,12 +100,24 @@ Every production judgment must cite exact packet evidence. Results that leak arm
 omit evidence, share context with another judge, or fail schema validation are inadmissible.
 
 Packets use a closed allowlist: opaque packet, scenario, unit, artifact, viewport, and label
-IDs; the common brief and rubric; sanitized treatment-produced artifact content; and
+IDs; the common brief and rubric; unmodified treatment-produced artifact content; and
 content hashes. They never contain revisions, versions, package metadata, source paths,
 worktree/run paths, timestamps, logs, generator receipts, provider data, filesystem
 metadata, or asymmetric arm fields. Opaque IDs are derived independently of arm order from
 a committed randomization commitment. Judges may infer treatment from genuine output
 differences; the protocol claims only that direct provenance cues are absent.
+
+Packet construction is reject-only. A frozen validator version and digest applies the same
+closed forbidden-cue policy to both arms and either accepts the original artifact bytes or
+rejects the whole unit; it never deletes, rewrites, normalizes, or sanitizes output. Packet
+lineage binds those exact accepted bytes. Validator drift, asymmetric acceptance, or any
+transformation is invalid.
+
+Evidence citations use deterministic codepoint locators over a named, hash-verified packet
+artifact and viewport. Each citation records artifact ID, viewport ID, start and exclusive
+end codepoint offsets, exact span, and artifact hash. Validation recomputes the hash and
+requires the span to equal the exact contiguous substring at those offsets. Empty,
+paraphrased, invented, cross-arm, cross-viewport, stale, or nonmatching spans are invalid.
 
 ## Frozen decision rule
 
@@ -149,20 +178,33 @@ this evaluation’s evidence.
   pay-per-call spend is capped at $0; existing flat-rate or already-provisioned access is
   admissible. If either family requires new incremental spend, production stops for explicit
   budget approval rather than shrinking the corpus or weakening quorum.
+- Every attempted-call receipt closes over its ordinal, one of `flat-rate` or
+  `already-provisioned` cost classification (or a rejected `incremental` classification),
+  and its terminal status. Aggregate admission state cannot substitute for these receipts.
 - Partial results are published only as `production_incomplete`; they make no effectiveness
   claim.
 
 Admission verifies a committed historical-authority manifest before the first call and
-again at closeout. V1 paths are prohibited as v2 generation, packet, judgment, or synthesis
-inputs. The run ID is derived from the protocol, corpus, source, and execution-manifest
-digests, and its initial ledger root is committed before admission.
+again at closeout. Historical separation is content- and provenance-based, not path-based.
+Every v2 scenario, anchor, fixture, generated artifact, render, packet, judgment, and
+synthesis input is checked against historical exact hashes and normalized fingerprints;
+renames, wrappers, symlinks, and indirection cannot launder historical evidence. V1 paths
+remain prohibited. The run ID is derived from the protocol, corpus, source,
+execution-manifest, exact empty-exclusion-set, and randomization-commitment digests, and its
+initial ledger root is committed before admission.
 
-Before unmasking, `reserve` atomically creates `synthesis-reservation.json` with exclusive
-creation, fsyncs it, and exits. Synthesis is allowed only after that exact reservation is
+Before unmasking, `reserve` atomically creates the current `synthesis-reservation.json`
+with exclusive creation, fsyncs it, and exits. Synthesis is allowed only after that exact reservation is
 committed in `HEAD` and the worktree is clean. A reservation is terminal: an interrupted
 or crashed synthesis cannot resume or create another reservation for the same run ID. The
 validator rejects deletion, truncation, a forked predecessor, copied run directories with
-wrong roots, or any run ID/root that already contains a synthesis reservation.
+wrong roots, any reservation predating the current admitted ledger predecessor, or any
+prior reservation for the run ID.
+
+The one-time unmask file binds its digest and verified randomization opening to the admitted
+commitment, complete packet-set digest, run ID, current reservation digest, and immediately
+preceding ledger root. It contains exactly one mapping for every opaque unit and arm.
+Swapped, missing, extra, recomputed, wrong-run, or post-reservation replacement maps fail.
 
 ## Verification
 
@@ -174,6 +216,11 @@ ties, exact threshold equality, missing scores, contradictory regression flags, 
 lineage/context/invocation IDs, alias drift, renderer drift, historical-byte mutation,
 ledger deletion/truncation/forks/copies, interrupted synthesis, and packet leaks through
 revisions, versions, paths, timestamps, metadata, logs, ordering, or asymmetric structure.
+It also covers exact, renamed, wrapped, normalized, and indirect historical copies; late or
+replaced randomization commitments; invalid or repeated openings; arm-order-dependent IDs;
+missing or tampered render evidence; every late scenario/unit/arm/viewport exclusion;
+invented, paraphrased, cross-arm, cross-viewport, stale, empty, or nonmatching evidence
+spans; reject-only validator drift or transformation; and every unmask rebinding mutation.
 
 The final gate includes the complete existing TasteCheck suite, the new v2 contract and
 adversarial tests, clean-clone reconstruction, public leak audit, independent code review,
