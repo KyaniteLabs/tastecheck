@@ -23,6 +23,7 @@ assert(unsupported.status === 1, `unsupported claims exited ${unsupported.status
 assert(unsupported.stderr.includes("README.md:3"), "README claim was not reported with its line");
 assert(unsupported.stderr.includes("llms.txt:1"), "llms.txt claim was not reported with its line");
 assert(unsupported.stderr.includes("site/index.html:2"), "site claim was not reported with its line");
+assert(unsupported.stderr.includes("index.html:2"), "root index claim was not reported with its line");
 assert(unsupported.stderr.includes("docs/mixed.md:3"), "an unsupported claim after a qualified claim on the same line was missed");
 assert(unsupported.stderr.includes("skills/example/SKILL.md:3"), "skill claim was not reported with its line");
 assert(unsupported.stderr.includes("tastecheck is the fix"), "direct fix claim was not reported");
