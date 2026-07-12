@@ -31,7 +31,7 @@ function assertLandingSkillCoverage() {
   const covered = new Set([...html.matchAll(/data-skill="([^"]+)"/g)].map((match) => match[1]));
 
   for (const skill of landingSkills) {
-    if (!covered.has(skill)) fail(`${rel(page)} does not run ${skill} through the landing page`);
+    if (!covered.has(skill)) fail(`${rel(page)} does not represent the ${skill} concern`);
   }
   for (const skill of covered) {
     if (!landingSkills.includes(skill)) fail(`${rel(page)} claims data-skill="${skill}" not marked landing:true in skills.json`);
@@ -113,8 +113,8 @@ function assertLandingIsCanonicalProof() {
   if (/demos\/skill-integration\.html/.test(proof)) {
     fail(`${rel(page)} proof section still sends the primary proof journey to the side demo`);
   }
-  if (!/GitHub Pages homepage now runs every skill directly/.test(proof)) {
-    fail(`${rel(page)} proof section does not claim direct landing-page skill execution`);
+  if (!/GitHub Pages homepage represents every skill concern directly/.test(proof)) {
+    fail(`${rel(page)} proof section does not state direct landing-page concern coverage`);
   }
 }
 

@@ -14,7 +14,8 @@ remain tokenized, responsive, and accessible. Use specialist Tufte tooling when 
 ## The decision order
 
 1. State the comparison question, source/grain, missingness, and uncertainty.
-2. Use a table for roughly ≤20 numbers; otherwise choose genre before default bar/line/pie.
+2. Prefer a table when exact lookup matters and the value set is small; prefer a chart
+   when shape, change, or comparison is the task.
 3. Use honest encoding (zero-baseline bars; 1-D length/position; lie factor ≈1), direct
    labels, and no non-data ink.
 4. Provide tokenized responsive contrast-safe chart/table parity; interactive data is keyboard reachable.
@@ -41,7 +42,7 @@ and do not let a continuous area imply unobserved continuity.
 
 | Data shape | Use | Not |
 |---|---|---|
-| ≤ ~20 numbers total | **a table** (or supertable) | pie/bar |
+| Small set; exact lookup matters | **a table** (or supertable) | a chart that slows lookup |
 | 1 series over time | line / **sparkline** (inline) | 3D, area-fill-as-decoration |
 | Few categories, one value each | **bar from zero**, direct-labeled | pie (hard to compare angles) |
 | Part-to-whole, 2–4 parts | bar or stacked bar; a number + bar | pie/donut (avoid >3 slices) |
@@ -65,16 +66,20 @@ replacement must preserve the requested decision task where the data supports it
 
 ## Non-negotiables (checkable)
 
-- **≤20 numbers → table.** Don't chart what a table shows better.
-- **Bars start at zero.** Truncated value axes inflate differences — dishonest.
-- **One encoding per datum, 1-D = length/position.** Never encode a single quantity
-  with 2-D area or 3-D volume (that's how lie factor explodes). No 3-D charts. Ever.
+- **Table for lookup; chart for shape.** A 12-month trend may deserve a line despite
+  having only 12 values; a 40-cell audit may still belong in a sortable table.
+- **Bars start at zero when length encodes magnitude.** For floating ranges or deltas,
+  use an explicit interval/difference encoding instead of a conventional truncated bar.
+- **Use position or length for quantitative comparison.** Do not exaggerate one value
+  with area or volume. Redundant color-plus-shape, label, or pattern encoding is welcome
+  when it improves identification or accessibility; redundant channels must agree.
 - **Lie factor ≈ 1.0** (visual-change% ÷ data-change%, acceptable 0.95–1.05). Check it
   whenever a proportion looks dramatic.
 - **Direct labels, not a legend** where feasible — label the line end / the bar.
 - **Kill chartjunk:** no gridlines heavier than the data, no moiré fills/gradients
   carrying no data, no drop shadows, no decorative imagery, no borders that aren't data.
-- **≤ ~5 hues; color is never the only channel.** Distinguish series by position,
+- **Limit simultaneous hues to what can be distinguished; color is never the only
+  channel.** Distinguish series by position,
   direct label, or pattern too (color-blind + WCAG 1.4.1). Series colors come from
   `color-system` tokens and must hit ≥3:1 vs background and vs adjacent series.
 - **Works in dark mode** (axes/text re-checked for contrast on the dark surface).

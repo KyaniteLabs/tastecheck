@@ -8,8 +8,8 @@ description: >-
 
 # Empty States
 
-Every data region needs truthful loading, empty, and error states; absence and failure
-are different conditions with different safe next moves.
+Every reachable data state needs a truthful treatment; absence and failure are different
+conditions with different safe next moves.
 
 ## Start with a state contract, not a set of illustrations
 
@@ -27,17 +27,21 @@ Name the region and transition before copy or illustration. Record:
 First-use, zero results, and permission absence need different truth. Trusted cached data
 is stale content with progress—not a blank reset.
 
-## The minimum state set (always design all three)
+## Model the reachable state set
 
-Design loading (in flight), empty (successful zero plus why), and error (failed fetch)
-before shipping. Add stale, partial, awaiting-input, or pending-mutation only when the
-region can enter it; never render zero, unavailable, and loading as the same state.
+Design loading when work can be in flight, empty when a successful result can contain
+zero items, and error when the region can fail. A static or fully local region need not
+invent unreachable states. Add stale, partial, awaiting-input, or pending-mutation only
+when their entry condition exists; never render zero, unavailable, and loading as the same state.
 
-## Loading: skeleton over spinner
+## Loading: communicate the wait honestly
 
-Use a layout-matching skeleton for regions and reserve its final space; use a spinner
-only for short inline waits. Avoid a flash for very fast loads; use optimistic UI only
-when rollback/reconciliation is safe.
+Use a layout-matching skeleton when the final geometry is known and the placeholder will
+help orientation. Use determinate progress when progress is measurable, a compact status
+for short inline waits, and a spinner only as a supporting cue. Delay transient indicators
+when measured latency makes flashing likely, but keep slow work visibly alive. Never imply
+progress or shape the system cannot know. Use optimistic UI only when rollback and
+reconciliation are safe.
 
 ## Empty: the three flavors, each with a next step
 
@@ -56,7 +60,8 @@ a tone proportionate to the consequence.
 Retain position, prior content, filters, and drafts unless safety/integrity forbids it.
 Make in-flight retry visible without duplicating mutation; explain rollback and return
 focus to repair. Record idempotent, confirmation-required, or support-only retry—never
-promise retry can resolve permission or duplicate-money risk.
+promise retry can resolve permission or duplicate-money risk. Give each request an owner:
+late responses from an abandoned query or retry must not replace the current state.
 
 ## Quick-start pattern
 
@@ -77,10 +82,10 @@ behavior to `component-states`.
 
 ## Self-check (before shipping any data region)
 
-1. Loading, empty, and error are distinct and truthful?
+1. Every reachable loading, empty, and error state is distinct and truthful?
 2. Empty has heading/context/forward action; no-results has an exit?
-3. Errors explain/recover without raw internals; skeletons reserve space?
-4. Changes announce, preserve work, and state safe retry/cached/partial behavior?
+3. Errors explain/recover without raw internals; loading feedback matches what is actually known?
+4. Changes announce, preserve work, reject stale responses, and state safe retry/cached/partial behavior?
 
 ## How to deliver
 

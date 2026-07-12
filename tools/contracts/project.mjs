@@ -55,6 +55,9 @@ Canonical detail: [contract.json](contract.json).
 function greenfieldReference(contract) {
   const required = contract.dimensions.required.map((d) => `| ${d.id} | ${d.label} | ${d.question_group} | ${d.abstention_default} |`).join("\n");
   const optional = contract.dimensions.optional.map((d) => `| ${d.id} | ${d.label} | ${d.question_group} | ${d.abstention_default} |`).join("\n");
+  const statuses = Object.entries(contract.readiness.status_semantics)
+    .map(([status, meaning]) => `- \`${status}\`: ${meaning}`)
+    .join("\n");
   return `# Interview contract (generated)
 
 Canonical source: [\`contracts/v1/interviews/greenfield.json\`](../../../contracts/v1/interviews/greenfield.json). Edit the JSON, then re-project; do not hand-edit this file.
@@ -81,7 +84,9 @@ ${optional}
 
 ## Readiness and handoff
 
-Ready means every required dimension is answered or explicitly abstained with its evidence basis and confirmation state. Emit the completed token artifact only after that state is recorded.`;
+${statuses}
+
+Only \`approved\` may hand off to implementation. Every required dimension needs an answer or explicit abstention with its evidence basis and confirmation state.`;
 }
 
 function brownfieldReference(contract) {
@@ -112,7 +117,7 @@ function interviewCommandBlock(type, contract) {
     : "../skills/improve-existing-website/references/interview-contract.generated.md";
   const label = type === "greenfield" ? "Greenfield interview" : "Brownfield inspection/interview";
   const detail = type === "greenfield"
-    ? `Use ${contract.session_model.min_exchanges}–${contract.session_model.max_exchanges} exchanges; unresolved dimensions must be evidence-dependent recommendations or explicit abstentions.`
+    ? `Use ${contract.session_model.min_exchanges}–${contract.session_model.max_exchanges} exchanges; unresolved dimensions must be evidence-dependent recommendations or explicit abstentions, and implementation handoff requires explicit confirmation.`
     : `Use the generated state machine; ask no more than ${contract.question_constraints.max_material_questions} material questions and require approval for material redesign.`;
   return `## ${label} contract (generated)
 

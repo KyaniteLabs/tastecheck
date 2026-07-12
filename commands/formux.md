@@ -1,14 +1,13 @@
 ---
-description: Make a form people actually finish (labels, validation, a11y)
+description: Repair a form around completion, recovery, and trust
 argument-hint: "[file/path or text, optional]"
 ---
 
 Load and apply the **form-ux** skill (`~/.agents/skills/form-ux/SKILL.md`).
 
-Return the field/state matrix and evidence rows for completion, validation,
-recovery, interruption, and autofill; do not emit a polish-only checklist.
-
-Fix the form: persistent labels, validate-on-blur, specific inline errors, correct input types/autocomplete, single column, focus-to-error.
+Walk the form from entry through success, interruption, and error recovery. Fix field
+semantics, labels, validation timing, messages, autofill, focus, and preserved input.
+Return the field/state matrix, the repaired path, and any remaining blockers.
 
 Target: $ARGUMENTS (if empty, apply to the current file / most recent work in context).
 
