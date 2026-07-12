@@ -4,21 +4,25 @@
 identical feature cards, pill buttons, glassmorphism. You've seen it a thousand times
 because the model isn't designing — it's returning the statistical average of the web.
 
-**tastecheck is the fix.** It's a set of **19 craft skills for AI coding agents** that does
-two things no prompt does: it **grills you into a real design system *before* it writes any
-code**, then applies checkable craft skills so the output has a point of view
-instead of a purple gradient.
+**tastecheck makes design decisions explicit.** It's a set of **19 craft skills for AI
+coding agents**. Its headline workflow conducts a design-system interview before code is
+written; the remaining skills provide checkable guidance for specific frontend concerns.
 
 ![tastecheck — one landing-page pitch rendered as five committed design systems: Copper, Swiss, Maximal, Concrete and Clay](docs/hero/six-systems.png)
 
-*Five **real browser renders** — the same product story and core IA pushed through
-five committed design systems. That's the whole pitch: a committed design system beats the AI
-average. Open the [live gallery →](https://kyanitelabs.github.io/tastecheck/samples/)*
+*Five **real browser renders** — the same product story and core IA rendered through five
+committed design systems with different structures, type, color, and rhythm. Open the
+[live gallery →](https://kyanitelabs.github.io/tastecheck/samples/)*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-19-success.svg)](#whats-inside)
 [![Portable Markdown](https://img.shields.io/badge/plain%20markdown-portable-black.svg)](#portable-markdown)
 [![Verified](https://img.shields.io/badge/verified-npm%20test-brightgreen.svg)](docs/VERIFICATION.md)
+
+> **Release status:** 1.0 engineering readiness covers contracts, static checks, and
+> evidence plumbing. Effectiveness remains blocked and unsupported: the terminal blind
+> evaluation did not clear its release threshold. Samples and local checks demonstrate
+> the toolkit's structure; they are not effectiveness evidence.
 
 ```bash
 git clone https://github.com/KyaniteLabs/tastecheck
@@ -67,7 +71,7 @@ genuinely don't care, it **decides boldly and tells you** — never resolves to 
 average. The output is a committed `DESIGN-SYSTEM.md` + design tokens that every other
 skill builds from. Taste is the only moat against AI slop; this operationalizes it.
 
-## Proof: the GitHub Pages landing page runs the skills
+## Engineering demonstration: the GitHub Pages landing page runs the skills
 
 The homepage connected to GitHub Pages is not just a brochure. It is now the primary
 integration surface: the live landing page carries `data-skill` coverage for all 19 skills,

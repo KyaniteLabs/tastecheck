@@ -1,5 +1,18 @@
 # Verification
 
+## What verification does not establish
+
+Engineering readiness and effectiveness are separate. The checks below verify repository,
+contract, integration, and browser properties. They do not establish that the skills improve
+model output. Effectiveness remains blocked and unsupported because the terminal blind
+evaluation did not clear its release threshold.
+
+Public copy can be checked independently with:
+
+```bash
+node tools/release/check-effectiveness-claims.mjs
+```
+
 This repo has two verification layers:
 
 1. **Repeatable local gate:** `npm test`
@@ -84,6 +97,12 @@ Run this before publishing visual claims or screenshots:
 - Do a keyboard pass: skip link, nav, buttons, forms, toggles, and links must be reachable and visibly focused.
 - Check reduced motion with `prefers-reduced-motion: reduce`.
 - Spot-check dark and high-contrast theme mappings where a page exposes them.
+
+The 1.0 browser receipt automates this matrix for every committed sample and demo at
+390px, 768px, and 1280px. It records HTTP/render/overflow/console results, keyboard focus,
+reduced-motion state, the runnable accessibility and gate audits, and content-addressed
+screenshots. `verify:release` validates the complete check set, current source digest, and
+every referenced artifact byte/hash; a pinned `pass` field alone is insufficient.
 
 ## Evidence Format
 
