@@ -5,37 +5,33 @@ description: >-
   saved theme preferences without contrast or no-flash regressions.
 ---
 
-# Theming (light · dark · high-contrast, from one token source)
+# Theming
 
-A "dark mode" bolted onto a light site is half a design system. A real theme system has
-**one set of semantic tokens** (`--color-bg`, `--color-surface-1`, `--color-text`,
-`--color-accent`, …) and **many mappings** of them: light (the baseline), dark, and
-high-contrast. Components reference the *roles*, never raw colors, so switching themes
-is one swap and nothing drifts. The token names are the canonical tastecheck contract
-(defined in the `design-system-interview` skill's tokens reference); never rename
-them per project.
+A theme system keeps component roles stable while their values change. Components
+reference semantic tokens such as `--color-bg`, `--color-text`, and `--color-focus`;
+supported light, dark, or branded modes remap those roles without rewriting components.
 
-This skill builds that system. The hard part isn't the toggle — it's that **each theme
-is tuned, not flipped**: dark isn't inverted light (pure-black vibrates, saturated colors
-bloom, shadows vanish), and high-contrast isn't "more contrast everywhere" (it's
-forced-colors-aware). Every value here is checkable.
+This skill builds that system. The hard part isn't the control — it is tuning each
+supported mapping in context. Dark is not inverted light, an authored high-contrast theme
+is not forced colors, and no mode earns an accessibility claim without measurement.
 
 ## The decision order
 1. **Semantic tokens first.** Define roles (`--color-bg`, `--color-surface-1/2`,
    `--color-text`, `--color-text-muted`, `--color-border`, `--color-accent`,
    `--color-accent-ink`, `--color-focus` — the canonical contract names). Components
    use these only. (Palette comes from `color-system`.)
-2. **Light is the baseline** — design it first (most users, most contexts). Off-white,
-   not pure glare (helps dyslexia — see `cognitive-a11y`); real elevation.
-3. **Dark is a tuned mapping**, not an inversion — surface *ramp* (each elevation step
-   lighter, not shadowed), off-white text on near-black (never #fff on #000), accents
-   desaturated + lightened. (Depth in `references/surfaces-and-elevation.md` +
+2. **Choose the product baseline.** Start with the application's default supported mode;
+   it may be light, dark, or brand-specific. Set structure and role relationships there.
+3. **Tune every additional mapping**, never invert it — for dark, a surface *ramp* (each elevation step
+   lighter, not shadowed), comfortable text contrast on dark surfaces, and accents
+   retuned for the surrounding lightness. (Depth in `references/surfaces-and-elevation.md` +
    `color-and-contrast.md`.)
-4. **High-contrast theme** — a third mapping for `prefers-contrast: more` and
-   `forced-colors` (Windows High Contrast): max legibility, system colors honored, never
-   suppressed. (See `references/high-contrast.md`.)
-5. **Wire it up** — `prefers-color-scheme` default + a **persistent toggle** that wins;
-   `color-scheme` set so native controls follow.
+4. **Keep authored contrast and forced colors separate.** `prefers-contrast: more` may
+   select an authored higher-contrast mapping. `forced-colors` is a system-controlled
+   environment: honor system colors instead of treating it as another palette.
+5. **Resolve preferences deliberately.** Use `prefers-color-scheme` when applicable;
+   add a persistent user control when the product supports selectable themes. Set
+   `color-scheme` so native controls follow.
 6. **Verify each theme** — contrast on the *actual* surfaces of *each* theme.
 
 ## Vary the mappings, preserve the contract
@@ -51,13 +47,16 @@ inventing raw values in components.
 ## Non-negotiables
 - **One semantic-token source; components never hard-code colors.** Re-theming = remap
   tokens, nothing else.
-- **Light baseline ≠ pure #fff/#000.** Off-white ground, softened ink — max glare hurts
-  readability (dyslexia/sensory). Still meet WCAG.
-- **Dark is tuned, not inverted:** bg ≈ `#121212`–`#1a1a1a` (never `#000`); elevation by
-  **lighter** surfaces; text off-white ~`#ececec` (not `#fff`); accents desaturated +
-  lightened (OKLCH +L/−C).
-- **Ship a default AND a toggle.** `prefers-color-scheme` for the default; a persistent
-  override class (localStorage) that beats it. Don't trap users in OS preference.
+- **Choose light surfaces from context.** Pure or softened endpoints can both be valid;
+  test contrast, glare conditions, reading comfort, and user preferences rather than
+  attaching one palette recipe to a diagnosis.
+- **Dark is tuned, not inverted:** near-black surfaces are a reliable default, but pure
+  black can be intentional for OLED, projection, or a stark visual system. Express
+  elevation through distinguishable surfaces or borders, tune text below glare-inducing
+  white where appropriate, and remeasure every accent in context.
+- **Ship a defined default and resolution policy.** If users can select a theme, their
+  supported choice persists and outranks OS preference. A single-theme product does
+  not need a performative toggle.
 - **`color-scheme` declared** per theme (native controls/scrollbars follow).
 - **Respect `forced-colors`/high-contrast** — don't override system colors there; use
   `forced-color-adjust` only deliberately, keep focus visible.
@@ -70,8 +69,8 @@ Separate three decisions that are often accidentally merged: stable semantic rol
 the values each supported theme maps to those roles, and the policy that chooses a theme
 at render time. Document the precedence in plain language: system forced-colors takes
 authority; then an explicit supported user choice; then the operating-system preference;
-then the application default. A theme toggle is incomplete until its precedence, storage
-behavior, and no-preference fallback are known.
+then the application default. When a theme control exists, define its precedence,
+storage behavior, and no-preference fallback.
 
 Treat forced-colors as an environment, not another palette. Let system colors and native
 control behavior remain authoritative, and preserve warnings, errors, selections, and
@@ -79,38 +78,42 @@ focus with text, icons, state, or shape as well as color. If a semantic role is 
 record a failed recovery row and stop the mapping decision; reusing a convenient accent
 silently changes the role’s meaning.
 
-Prove no-flash behavior at the earliest theme application point. State what happens
+Minimize wrong-theme flash at the earliest theme application point. State what happens
 before the first paint, when a saved choice is unavailable, and how native controls
 receive the matching color-scheme. A preference plan is not a verified no-flash result
 until a cold-load observation names the theme, artifact, and timing.
 
 ## Quick-start
 
-Use `assets/theme-starter.css` for the complete mapping. Preserve the invariants:
-tuned dark surfaces, flat high-contrast media queries, `forced-colors` cooperation,
-semantic roles, and a no-flash preference applied before first paint.
+Use `assets/theme-starter.css` as a mapping example. Preserve the invariants that apply
+to the supported scope: semantic roles, tuned authored mappings, `forced-colors`
+cooperation, and early preference resolution when a saved choice exists.
 
-**No-flash toggle (the part everyone gets wrong):** the persistent override must be
-applied *before first paint* — an inline `<head>` script that reads localStorage and
-sets `data-theme` on `<html>`, not a deferred bundle (which flashes the wrong theme):
+**Early saved-theme resolution:** when a persistent control exists, apply the validated
+override before render. In a CSP-compatible implementation, this is commonly a small
+nonced or hashed `<head>` script rather than a deferred bundle:
 
 ```html
 <script>/* inline, in <head>, before CSS paint */
-  const t = localStorage.getItem("theme");
-  if (t === "dark" || t === "light") document.documentElement.dataset.theme = t;
+  try {
+    const t = localStorage.getItem("theme");
+    if (t === "dark" || t === "light") document.documentElement.dataset.theme = t;
+  } catch {
+    /* Storage is unavailable; CSS keeps the OS/application default authoritative. */
+  }
 </script>
 ```
 
-Also set `<meta name="theme-color">` per theme (browser chrome follows), and style
-`::selection` + scrollbars from the same tokens so no surface escapes the system.
+Update supported browser chrome where it materially improves the experience. Treat
+selection and custom scrollbar styling as optional polish, not completion gates.
 
 ## Reference files
 - `references/surfaces-and-elevation.md` — the **dark** surface ramp + elevation-by-
   lightness (Material overlay model), borders, why shadows fail on dark.
 - `references/color-and-contrast.md` — desaturating accents for dark, semantic state
   colors per theme, contrast re-testing, OKLCH conversions.
-- `references/light-and-contrast.md` — the **light** baseline (off-white not glare,
-  real elevation, accent contrast) + the dyslexia/sensory tie-in.
+- `references/light-and-contrast.md` — contextual light mappings, surface relationships,
+  accent contrast, and rendered checks.
 - `references/high-contrast.md` — `prefers-contrast` + `forced-colors`/Windows High
   Contrast: what to do and what NOT to override.
 - `references/decision-records.md` — meta-patterns + ADR rules.
@@ -123,16 +126,16 @@ name the environment or mode in Evidence.
 | Status | Reason | Remediation | Evidence | Provenance |
 | --- | --- | --- | --- | --- |
 |  | role-map — semantic roles across supported themes |  |  |  |
-|  | dark-map — tuned values rather than inversion |  |  |  |
+|  | supported-maps — each requested mode is tuned rather than inverted |  |  |  |
 |  | resolution — preference, no-flash, and native-control behavior |  |  |  |
 |  | forced-colors — high-contrast environmental behavior |  |  |  |
 |  | contrast-handoff — per-theme proof and accessibility boundary |  |  |  |
 
 ## How to deliver
 
-Report semantic roles, all mappings, resolution policy, no-flash behavior, and per-theme
-contrast. Include a task-level proof for each supported environment: a bright setting,
-a dim setting, and forced-colors where applicable. Hand source ramps, type, technical
+Report semantic roles, supported mappings, resolution policy, wrong-theme-flash behavior,
+and per-theme contrast. Include task-level proof for the environments in scope and
+forced-colors where applicable. Hand source ramps, type, technical
 a11y, and cognitive concerns to the adjacent skills. Provenance is credited and
 independent.
 
@@ -144,6 +147,6 @@ Canonical detail: [contract.json](contract.json).
 - Route: An interface needs coherent light, dark, high-contrast, or forced-colors mappings (+1 in contract.json); avoid: The request is to invent the source palette rather than map semantic roles (+1 in contract.json)
 - Exclude: Do not invert a light palette and call it dark mode (+1 in contract.json)
 - Stop / handoff: Pause when semantic roles are missing and theme values would be raw-color copies (+1 in contract.json); receives [design-system-interview, improve-existing-website, color-system] -> sends [a11y-pass, cognitive-a11y, responsive-layout]
-- Output: A semantic light, dark, and high-contrast theme map with preference behavior and measured pairs
+- Output: Semantic mappings for every supported theme, plus forced-colors behavior, preference policy, and measured pairs
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

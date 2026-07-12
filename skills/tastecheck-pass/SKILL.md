@@ -5,19 +5,36 @@ description: >-
   fail-closed release gate, or an actionable cross-skill verification report.
 ---
 
-# TasteCheck Pass (the ship gate)
+# TasteCheck Pass
 
-This is the fail-closed ship gate: execute relevant self-checks against finished work,
-then issue the evidence-backed verdict. “Done” requires execution evidence.
+Give finished frontend work an honest **SHIP** or **HOLD** decision. Run the checks on the
+real artifact, put the verdict first, and turn every failure into a concrete next action.
+Files, intentions, and checkmarks are not execution evidence.
 
-## Canonical ledger contract
+## The answer the user sees
+
+Lead with this compact release brief:
+
+```markdown
+# HOLD — 2 blockers
+What passed: <one-line scope>
+Ship blockers: TC-04 keyboard trap; TC-11 dark-theme contrast
+Fastest path: fix TC-04 → rerun keyboard path → fix TC-11 → remeasure pair
+Evidence: <ledger/report links>
+```
+
+Use **SHIP** only when every applicable row passes. Use **HOLD** when a required check
+fails, could not run, lacks a real artifact, or lacks evidence. Never make the user infer
+the verdict from a table.
+
+## Evidence table
 
 Create one authoritative row per applicable check: `skill`, `check_id`, `status`,
-`reason`, `remediation`, `evidence`, and `provenance`. `n/a` requires named subject
-absence, never unexecuted work. Keep rows, measurements, skip reasons, interpretation,
-and verdict stable; a readable report only links to—not rewrites—the ledger.
+`reason`, `remediation`, `evidence`, and `provenance`. `n/a` means the named subject is
+absent; it never means “not tested.” Keep measurements and skip reasons in this table.
+The release brief links to the rows instead of paraphrasing them into softer claims.
 
-## The canonical pipeline (the single source of truth for ordering)
+## What to check, in order
 
 1. Direction: `design-system-interview` (new) or `improve-existing-website` (existing).
 2. Foundations: `color-system`, `web-typography`, `spacing-system`, `theming`.
@@ -26,60 +43,40 @@ and verdict stable; a readable report only links to—not rewrites—the ledger.
 5. Verification/audit: `a11y-pass`, `cognitive-a11y`, `i18n-ready` if multilingual,
    `deslop-ui` against spec, and `humanize-copy`; then this gate.
 
-Only absent subjects skip; direction, foundations, structure, a11y, and deslop do not.
+Only absent subjects skip. Direction, foundations, structure, accessibility, and the
+against-spec `deslop-ui` audit are required.
 
-## How to run the gate
+## Run the gate
 
 1. Confirm `DESIGN-SYSTEM.md` or approved inferred-system statement and built-to-spec
    status; otherwise fail and return to direction.
 2. Run each relevant self-check on the real rendered artifact; record pass/fail/named `n/a`.
-3. Measure browser, 320px/400% zoom, keyboard, theme contrast, reduced motion, and cold
-   load. On that load run `assets/gate-audit.js`, attach output, and manually inspect
-   shadow roots/iframes; script output supplements, never replaces, browser evidence.
+3. Test browser rendering, 320px/400% zoom, keyboard, theme contrast, reduced motion,
+   and a cold load. On the cold load run `assets/gate-audit.js`, attach its output, and
+   inspect shadow roots/iframes manually. Automation supports the browser pass; it does
+   not replace it.
 4. Audit phrase, tokens, refusals, and signature across surface/structure/verbal planes;
    default template skeleton is a fail.
 5. Fix failed rows and rerun them. Pass only when every non-`n/a` row passes.
 
-## The report has two linked layers
+## Turn failures into a release path
 
-**Authoritative ledger:** one row per individual failure/measurement/skip; never merge
-contrast, cold-load, unsupported `n/a`, or structural findings. It stays deterministic
-until replacement execution evidence arrives.
+For every blocking ID, provide:
 
-**Readable execution report:** link ledger IDs, blockers, reruns, and changes without
-softening facts. Use failure queue for independent sequencing, evidence trace for source
-conflict, or release memo for the earliest credible ship decision; it is never authority.
+- the owner and concrete repair;
+- the rerun or artifact that will produce fresh evidence;
+- the measurable acceptance rule;
+- any predecessor blocking that work.
 
-## Report shape
+Keep separate facts in separate rows: contrast, cold-load behavior, structure, keyboard,
+and unsupported `n/a` are not one finding. New evidence replaces the affected row and
+reruns the verdict. An ETA never changes **HOLD** to **SHIP**.
 
-Name project/date/spec/north star, then provide the canonical ledger and deterministic
-verdict. On failure list blocking IDs plus why, repair/rerun, and still-needed evidence;
-those facts must resolve directly to the rows.
+## Gate self-check
 
-## Linked execution protocol
-
-For every blocking ID provide owner/concrete action, evidence-producing rerun/artifact,
-acceptance rule, and predecessor. Group only when one artifact/rule resolves all rows;
-new evidence reopens affected rows with replacement provenance and reruns the gate.
-Intent, checkmarks, and ETA never change the verdict; surface the earliest unblocked path.
-
-## Non-negotiables
-
-- State when the gate cannot run; gate the spec, not personal taste.
-- Measure numeric claims; a failed row is fixed or explicitly user-accepted.
-- Ship the report with work and expose each distinct failure plus its next evidence action.
-
-## Self-check (yes, the gate has one)
-
-1. Spec, real self-check execution, numeric/browser/cold-load measurements, and spec audit complete?
-2. Canonical rows preserve distinct facts and the report links them without release claim gaps?
-3. Every blocker has action/owner, rerun, acceptance rule, dependency, and no competing ledger?
-
-Emit these gate checks as evidence rows, never bare checkmarks.
-
-## How to deliver
-
-Run last for pack-built work or a done/review/ship request. A credible gate may fail.
+Add three final evidence rows confirming: the real artifact and spec were used; required
+browser/numeric checks actually ran; and every blocker has an owner, repair, rerun, and
+acceptance rule. Then deliver the release brief first and the evidence table second.
 
 <!-- contract:v1:start -->
 ## Contract (generated)

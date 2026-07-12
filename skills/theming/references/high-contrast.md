@@ -1,6 +1,7 @@
 # High-contrast & forced-colors
 
-Read when adding the high-contrast theme. Two distinct mechanisms — handle both.
+Read when adding authored higher contrast or verifying forced-colors behavior. These are
+distinct mechanisms; a product may support one without shipping a selectable authored mode.
 
 ## 1. `prefers-contrast: more` (a *your-tokens* high-contrast theme)
 A user-requested higher-contrast variant you control. Remap the same semantic tokens to
@@ -39,5 +40,5 @@ The OS replaces your palette with the user's system colors. **Do NOT fight it.**
 
 ## Why both
 `prefers-contrast` is *your* enhanced theme; `forced-colors` is the *OS* overriding you.
-A robust system handles both: a high-contrast token mapping for the former, and
-border/focus resilience + system-color keywords for the latter.
+A complete implementation handles the mechanisms in scope: a token mapping for authored
+higher contrast, and border/focus resilience plus system-color keywords for forced colors.
