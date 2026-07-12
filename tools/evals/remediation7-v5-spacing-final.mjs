@@ -482,8 +482,16 @@ export function synthesizeV5(root = ROOT, { namespace = DEFAULT_NAMESPACE } = {}
   return synthesis;
 }
 
+export function formatCliResult(result) {
+  return {
+    status: result.status ?? "validated",
+    release_eligible: result.release_eligible === true,
+    verdict: result.verdict ?? (result.release_eligible === true ? "release-eligible" : "validated-evidence-only"),
+  };
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const result = process.argv.includes("--synthesize") ? synthesizeV5() : validateCorrection();
   if (result.errors?.length) { console.error(result.errors.join("\n")); process.exitCode = 1; }
-  else console.log(JSON.stringify({ status: result.status ?? "validated", release_eligible: result.release_eligible ?? true, verdict: result.verdict ?? "validated" }, null, 2));
+  else console.log(JSON.stringify(formatCliResult(result), null, 2));
 }

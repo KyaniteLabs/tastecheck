@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "kind": "clean-clone",
+  "producer_id": "tastecheck.release.clean-clone.v1",
+  "source_tree_sha256": "8d19ec7cc066378474bd99580a8f5046914fba202d009118f07fcd1108533e04",
+  "nonce": "clean-clone-release-v1",
+  "started_at": "2026-07-12T02:40:29.464Z",
+  "finished_at": "2026-07-12T02:40:39.912Z",
+  "checks": [
+    {
+      "id": "npm-ci",
+      "command": "npm ci --ignore-scripts",
+      "passed": true,
+      "exit_code": 0,
+      "output_sha256": "1768a48059dc03a7e1df200ad56c4c14826230fa975b993ca6bac01bdc945d6e"
+    },
+    {
+      "id": "test",
+      "command": "npm test",
+      "passed": true,
+      "exit_code": 0,
+      "output_sha256": "33830e798f898963d1a0a4e42ad8007222ded74c39fa908a8e43a66d068dc012"
+    },
+    {
+      "id": "contracts",
+      "command": "npm run test:contracts",
+      "passed": true,
+      "exit_code": 0,
+      "output_sha256": "c71923afc79c303a9dbcd40199e06e806c878e52abe320d7758178f8e27535a6"
+    },
+    {
+      "id": "effectiveness-claims",
+      "command": "node tools/release/check-effectiveness-claims.mjs",
+      "passed": true,
+      "exit_code": 0,
+      "output_sha256": "7111a3cf1ef6f6844c6cd6b5fd49a9e8b015e38e4a3f183312c8d74e4d147be8"
+    },
+    {
+      "id": "head-source-match",
+      "command": "internal HEAD source digest comparison",
+      "passed": true,
+      "exit_code": 0,
+      "output_sha256": "720c3d418a9e0ed069e3dd40fef424852db2f8b3cf851a699731bad7a374f42a"
+    },
+    {
+      "id": "source-stability",
+      "command": "internal source digest comparison",
+      "passed": true,
+      "exit_code": 0,
+      "output_sha256": "720c3d418a9e0ed069e3dd40fef424852db2f8b3cf851a699731bad7a374f42a"
+    }
+  ],
+  "status": "pass",
+  "reproducible": true
+}

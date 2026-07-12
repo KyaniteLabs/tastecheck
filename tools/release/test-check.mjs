@@ -1,31 +1,206 @@
 #!/usr/bin/env node
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { checkReceiptManifest, checkReleaseManifest } from "./check.mjs";
+import Ajv2020 from "ajv/dist/2020.js";
+import {
+  EFFECTIVENESS_SOURCES,
+  ENGINEERING_PRODUCERS,
+  GENERIC_CHECKS,
+  checkEngineeringReadiness,
+  checkReleaseManifest,
+  deriveEffectivenessClaim,
+} from "./check.mjs";
 
 const root = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
-const valid = JSON.parse(readFileSync(join(root, "tools/release/fixtures/valid-manifest.json"), "utf8"));
-const missing = JSON.parse(readFileSync(join(root, "tools/release/fixtures/missing-cell.json"), "utf8"));
-const fixtureText = JSON.stringify({ ok: true });
-valid.required_receipts[0].sha256 = (await import("node:crypto")).createHash("sha256").update(fixtureText).digest("hex");
-const fake = { readText: () => fixtureText, hasFile: (path) => path === "fixture.json" };
-if (checkReceiptManifest(valid, fake).length) throw new Error("valid manifest fixture failed");
-if (!checkReceiptManifest(missing, fake).some((error) => error.includes("missing required receipt cell"))) throw new Error("missing-cell fixture did not fail closed");
+const hash = (text) => createHash("sha256").update(text).digest("hex");
+const SOURCE_SHA = "a".repeat(64);
+const ARTIFACT_PATH = "artifacts/proof.png";
+const ARTIFACT_BYTES = Buffer.from("proof");
+const w1Payload = JSON.stringify({
+  schema_version: 1,
+  kind: "immutable-w1-effectiveness-projection",
+  source_evidence_sha256: EFFECTIVENESS_SOURCES["w1-effectiveness"].source_evidence_sha256,
+  effectiveness_status: "blocked",
+  jobs: { complete: 12, required: 12 },
+  judgments: { complete: 27, required: 27 },
+  paired: { pass_count: 0, required_count: 3 },
+  diversity: { pass_count: 0, required_count: 3 },
+  immutable_stop_rule: true,
+});
+const v5Payload = JSON.stringify({
+  schema_version: 1,
+  kind: "immutable-terminal-v5-effectiveness-projection",
+  source_evidence_sha256: EFFECTIVENESS_SOURCES["terminal-v5-effectiveness"].source_evidence_sha256,
+  effectiveness_status: "blocked",
+  release_eligible: false,
+  mean_delta: 0.3,
+  threshold: 0.6,
+  preference: { current: 11, total: 12 },
+  immutable_stop_rule: true,
+});
 
-const release = JSON.parse(readFileSync(join(root, "contracts/v1/release-receipts.json"), "utf8"));
-const terminal = release.required_receipts.find((receipt) => receipt.id === "terminal-v5-synthesis");
-if (!terminal) throw new Error("release contract does not pin the terminal V5 synthesis");
-if (terminal.path !== "evals/replays/remediation7-v5-spacing-final-2026-07-11/blind-judge/synthesis.json") throw new Error("terminal V5 synthesis path drifted");
-if (terminal.assertions?.release_eligible !== true) throw new Error("terminal V5 synthesis must require release_eligible=true");
-const releaseErrors = checkReleaseManifest(release);
-if (!releaseErrors.some((error) => error.startsWith("terminal-v5-synthesis: release_eligible=false"))) {
-  throw new Error("terminal V5 blocked state did not fail the release contract");
+function receiptFixture(id) {
+  if (id === "context-budget") return { schema_version: 1, source_tree_sha256: SOURCE_SHA, skills: Array.from({ length: 19 }, (_, index) => ({ skill: `skill-${index}`, checks: { within_growth_cap: true }, pass: true })), overall_pass: true };
+  if (id === "browser" || id === "e2e") return {
+    schema_version: 1,
+    kind: id,
+    producer_id: "tastecheck.release.live-execution.v1",
+    producer: { id: "tastecheck-live-execution", version: 1 },
+    source_tree_sha256: SOURCE_SHA,
+    nonce: "fixture-release-0001",
+    runtime: { node: "v26.0.0", playwright: "1.61.1", browser: "fixture", platform: "other" },
+    started_at: "2026-07-11T00:00:00.000Z",
+    finished_at: "2026-07-11T00:00:01.000Z",
+    executed: true,
+    reproducible: true,
+    artifacts: [{ id: "proof", path: ARTIFACT_PATH, sha256: hash(ARTIFACT_BYTES), bytes: ARTIFACT_BYTES.length }],
+    checks: [{ id: "fixture-check", passed: true, detail: "Fixture passed" }],
+    status: "pass",
+  };
+  return {
+    schema_version: 1,
+    kind: id,
+    producer_id: `tastecheck.release.${id}.v1`,
+    source_tree_sha256: SOURCE_SHA,
+    nonce: "fixture-release-0001",
+    started_at: "2026-07-11T00:00:00.000Z",
+    finished_at: "2026-07-11T00:00:01.000Z",
+    checks: GENERIC_CHECKS[id].map(([checkId, command]) => ({ id: checkId, command, passed: true, exit_code: 0, output_sha256: "b".repeat(64) })),
+    status: "pass",
+    reproducible: true,
+  };
 }
 
-const historical = structuredClone(valid);
-historical.required_receipts[0].path = "evals/replays/full19-v1rc-2026-07-11/results/old.json";
-if (!checkReleaseManifest(historical, { readText: () => fixtureText, hasFile: () => true }).some((error) => error.includes("historical full19-v1rc"))) {
-  throw new Error("historical full19-v1rc evidence was accepted as current release proof");
+function manifestFixture() {
+  const payloads = Object.fromEntries(Object.keys(ENGINEERING_PRODUCERS).map((id) => [id, JSON.stringify(receiptFixture(id))]));
+  return {
+    schema_version: 2,
+    target_release: "1.0.0",
+    engineering_readiness: {
+      required_cells: Object.entries(ENGINEERING_PRODUCERS).map(([id, producer]) => ({
+        id,
+        path: producer.path,
+        sha256: hash(payloads[id]),
+        producer_id: id,
+        assertions: structuredClone(producer.assertions),
+      })),
+    },
+    effectiveness_claim: {
+      claimed_status: "blocked",
+      sources: [
+        { id: "w1-effectiveness", path: EFFECTIVENESS_SOURCES["w1-effectiveness"].path, sha256: hash(w1Payload) },
+        { id: "terminal-v5-effectiveness", path: EFFECTIVENESS_SOURCES["terminal-v5-effectiveness"].path, sha256: hash(v5Payload) },
+      ],
+    },
+  };
 }
 
-console.log("release checker fixtures passed (valid + missing-cell + terminal-V5 fail-closed)");
+const texts = new Map([
+  ...Object.entries(ENGINEERING_PRODUCERS).map(([id, { path }]) => [path, JSON.stringify(receiptFixture(id))]),
+  [EFFECTIVENESS_SOURCES["w1-effectiveness"].path, w1Payload],
+  [EFFECTIVENESS_SOURCES["terminal-v5-effectiveness"].path, v5Payload],
+]);
+const io = {
+  hasFile: (path) => texts.has(path) || path === ARTIFACT_PATH,
+  readText: (path) => texts.get(path),
+  readBytes: (path) => path === ARTIFACT_PATH ? ARTIFACT_BYTES : Buffer.from(texts.get(path)),
+  hasCommand: () => true,
+  sourceTreeSha256: () => SOURCE_SHA,
+  contextBudgetReport: () => receiptFixture("context-budget"),
+  requiredLiveCheckIds: () => ["fixture-check"],
+  requiredLiveArtifactIds: () => ["proof"],
+};
+const valid = manifestFixture();
+
+const ajv = new Ajv2020({ allErrors: true, strict: true });
+const releaseSchema = JSON.parse(readFileSync(join(root, "contracts/v1/release-receipts.schema.json"), "utf8"));
+const w1Schema = JSON.parse(readFileSync(join(root, "contracts/v1/release-effectiveness-w1.schema.json"), "utf8"));
+const v5Schema = JSON.parse(readFileSync(join(root, "contracts/v1/release-effectiveness-terminal-v5.schema.json"), "utf8"));
+if (!ajv.compile(releaseSchema)(valid)) throw new Error("valid manifest fixture failed JSON Schema");
+if (!ajv.compile(w1Schema)(JSON.parse(w1Payload))) throw new Error("valid W1 projection failed JSON Schema");
+if (!ajv.compile(v5Schema)(JSON.parse(v5Payload))) throw new Error("valid terminal V5 projection failed JSON Schema");
+
+const engineering = checkEngineeringReadiness(valid, io);
+if (engineering.errors.length || engineering.status !== "ready") throw new Error(`valid engineering fixture failed: ${engineering.errors.join("; ")}`);
+const effectiveness = deriveEffectivenessClaim(valid, io);
+if (effectiveness.errors.length || effectiveness.status !== "blocked") throw new Error(`immutable red evidence did not derive blocked: ${JSON.stringify(effectiveness)}`);
+if (checkReleaseManifest(valid, io).length) throw new Error(`valid split release manifest failed: ${checkReleaseManifest(valid, io).join("; ")}`);
+
+function reject(label, mutate, expected) {
+  const candidate = structuredClone(valid);
+  mutate(candidate);
+  const errors = checkReleaseManifest(candidate, io);
+  if (!errors.some((error) => error.includes(expected))) throw new Error(`${label} did not fail with ${expected}: ${errors.join("; ")}`);
+}
+
+reject("unknown root field", (m) => { m.surprise = true; }, "unknown field");
+reject("unknown engineering field", (m) => { m.engineering_readiness.note = "trust me"; }, "unknown field");
+reject("unknown cell field", (m) => { m.engineering_readiness.required_cells[0].manual = true; }, "unknown field");
+reject("manual producer", (m) => { m.engineering_readiness.required_cells[0].producer_id = "manual"; }, "unregistered producer");
+reject("orphan path", (m) => { m.engineering_readiness.required_cells[0].path = "tmp/manual.json"; }, "registered path");
+reject("missing producer", (m) => { m.engineering_readiness.required_cells.pop(); }, "missing registered producer");
+reject("duplicate producer", (m) => { m.engineering_readiness.required_cells.push(structuredClone(m.engineering_readiness.required_cells[0])); }, "duplicate cell id");
+reject("placeholder engineering hash", (m) => { m.engineering_readiness.required_cells[0].sha256 = "0".repeat(64); }, "placeholder SHA-256");
+reject("stale engineering hash", (m) => { m.engineering_readiness.required_cells[0].sha256 = "f".repeat(64); }, "pinned SHA-256");
+reject("unsupported effective status", (m) => { m.effectiveness_claim.claimed_status = "effective"; }, "claimed_status must be blocked");
+reject("missing effectiveness source", (m) => { m.effectiveness_claim.sources.pop(); }, "missing immutable effectiveness source");
+reject("placeholder effectiveness hash", (m) => { m.effectiveness_claim.sources[0].sha256 = "0".repeat(64); }, "placeholder SHA-256");
+reject("stale effectiveness hash", (m) => { m.effectiveness_claim.sources[0].sha256 = "f".repeat(64); }, "pinned SHA-256");
+
+const forgedTexts = new Map(texts);
+forgedTexts.set(EFFECTIVENESS_SOURCES["terminal-v5-effectiveness"].path, JSON.stringify({ ...JSON.parse(v5Payload), release_eligible: true }));
+const forgedIo = { ...io, hasFile: (path) => forgedTexts.has(path), readText: (path) => forgedTexts.get(path) };
+if (!deriveEffectivenessClaim(valid, forgedIo).errors.some((error) => error.includes("pinned SHA-256"))) throw new Error("forged effective evidence bypassed immutable hash binding");
+
+function rejectProjection(label, id, mutate, expected) {
+  const candidate = structuredClone(valid);
+  const candidateTexts = new Map(texts);
+  const source = candidate.effectiveness_claim.sources.find((item) => item.id === id);
+  const payload = JSON.parse(candidateTexts.get(source.path));
+  mutate(payload);
+  const text = JSON.stringify(payload);
+  candidateTexts.set(source.path, text);
+  source.sha256 = hash(text);
+  const candidateIo = { ...io, hasFile: (path) => candidateTexts.has(path), readText: (path) => candidateTexts.get(path) };
+  const errors = deriveEffectivenessClaim(candidate, candidateIo).errors;
+  if (!errors.some((error) => error.includes(expected))) throw new Error(`${label} did not fail with ${expected}: ${errors.join("; ")}`);
+}
+
+rejectProjection("forged W1 source binding", "w1-effectiveness", (value) => { value.source_evidence_sha256 = "0".repeat(64); }, "canonical source evidence hash mismatch");
+rejectProjection("forged W1 effectiveness", "w1-effectiveness", (value) => { value.effectiveness_status = "effective"; }, "effectiveness_status must remain blocked");
+rejectProjection("forged W1 completion", "w1-effectiveness", (value) => { value.jobs.complete = 11; }, "completed jobs must remain 12/12");
+rejectProjection("forged V5 source binding", "terminal-v5-effectiveness", (value) => { value.source_evidence_sha256 = "0".repeat(64); }, "canonical source evidence hash mismatch");
+rejectProjection("weakened V5 threshold", "terminal-v5-effectiveness", (value) => { value.threshold = 0.3; }, "historical delta 0.3 and threshold 0.6 must be preserved");
+rejectProjection("promoted V5 verdict", "terminal-v5-effectiveness", (value) => { value.release_eligible = true; value.effectiveness_status = "effective"; }, "immutable release_eligible must remain false");
+
+function rejectReceipt(label, id, mutate, expected, ioMutate = (candidateIo) => candidateIo) {
+  const candidate = structuredClone(valid);
+  const candidateTexts = new Map(texts);
+  const cell = candidate.engineering_readiness.required_cells.find((entry) => entry.id === id);
+  const receipt = JSON.parse(candidateTexts.get(cell.path));
+  mutate(receipt);
+  const text = JSON.stringify(receipt);
+  candidateTexts.set(cell.path, text);
+  cell.sha256 = hash(text);
+  const candidateIo = ioMutate({ ...io, readText: (path) => candidateTexts.get(path), hasFile: (path) => candidateTexts.has(path) || path === ARTIFACT_PATH });
+  const errors = checkEngineeringReadiness(candidate, candidateIo).errors;
+  if (!errors.some((error) => error.includes(expected))) throw new Error(`${label} did not fail with ${expected}: ${errors.join("; ")}`);
+}
+
+rejectReceipt("stale source", "mechanical", (value) => { value.source_tree_sha256 = "c".repeat(64); }, "source_tree_sha256 is stale");
+rejectReceipt("forged duplicate context rows", "context-budget", (value) => { value.skills = Array.from({ length: 19 }, () => structuredClone(value.skills[0])); }, "does not exactly match recomputed");
+rejectReceipt("forged context metric", "context-budget", (value) => { value.skills[0].skill_md_tokens = 1; }, "does not exactly match recomputed");
+rejectReceipt("stale context source", "context-budget", (value) => { value.source_tree_sha256 = "c".repeat(64); }, "source_tree_sha256 is stale");
+rejectReceipt("forged minimal receipt", "mechanical", (value) => { for (const key of Object.keys(value)) delete value[key]; Object.assign(value, ENGINEERING_PRODUCERS.mechanical.assertions); }, "generic receipt identity mismatch");
+rejectReceipt("missing live artifact", "browser", () => {}, "missing artifact", (candidateIo) => ({ ...candidateIo, hasFile: (path) => path !== ARTIFACT_PATH && candidateIo.hasFile(path) }));
+rejectReceipt("tampered live artifact", "browser", () => {}, "artifact SHA-256 mismatch", (candidateIo) => ({ ...candidateIo, readBytes: (path) => path === ARTIFACT_PATH ? Buffer.from("tampered") : candidateIo.readBytes(path) }));
+rejectReceipt("incomplete live check set", "browser", (value) => { value.checks[0].id = "wrong-check"; }, "live check set");
+rejectReceipt("absolute command leak", "security", (value) => { value.checks[0].command = "/private/node checker.mjs"; }, "absolute executable path");
+rejectReceipt("forged generic command", "mechanical", (value) => { value.checks[0].command = "printf trust-me"; }, "command does not match the registered producer");
+
+const current = JSON.parse(readFileSync(join(root, "contracts/v1/release-receipts.json"), "utf8"));
+const currentEffectiveness = deriveEffectivenessClaim(current);
+if (currentEffectiveness.status !== "blocked") throw new Error("current immutable effectiveness claim must remain blocked");
+
+console.log("release checker v2 tests passed (registered engineering cells + immutable blocked effectiveness)");

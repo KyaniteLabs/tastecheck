@@ -7,6 +7,8 @@ jobs:
     runs-on: docker
     steps:
       - uses: actions/checkout@v4
+      - name: Install frozen dependencies
+        run: npm ci --ignore-scripts
       - name: Verify skill pack (structure + skill lint + landing + integration)
         run: npm test
       - name: Validate HTML

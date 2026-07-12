@@ -7,6 +7,11 @@
 > the output has a point of view. Plain Markdown, no runtime, portable to agents that can
 > read skill files or directories. MIT.
 
+Release status: 1.0 engineering readiness covers contracts, static verification, and
+evidence plumbing. Effectiveness remains blocked and unsupported because the terminal
+blind evaluation did not clear its release threshold. Do not present samples, historical
+results, or failed evidence as current effectiveness proof.
+
 Install via install.sh (always symlinks skills into ~/.agents/skills and mirrors them into
 detected agent skill dirs). Auto-loading depends on the agent; Claude Code also gets slash
 commands.

@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "kind": "e2e",
+  "producer_id": "tastecheck.release.live-execution.v1",
+  "producer": {
+    "id": "tastecheck-live-execution",
+    "version": 1
+  },
+  "source_tree_sha256": "8d19ec7cc066378474bd99580a8f5046914fba202d009118f07fcd1108533e04",
+  "nonce": "e2e-release-v1-0001",
+  "runtime": {
+    "node": "v26.0.0",
+    "playwright": "1.61.1",
+    "browser": "149.0.7827.55",
+    "platform": "darwin"
+  },
+  "started_at": "2026-07-12T02:40:21.551Z",
+  "finished_at": "2026-07-12T02:40:23.531Z",
+  "executed": true,
+  "reproducible": true,
+  "artifacts": [
+    {
+      "id": "operator-desktop",
+      "path": "evals/receipts/v1/artifacts/e2e/operator-desktop-89f1608dcec79bdae3ee645d8e234c0883900573b0d006534ab1b9a740741c8b.png",
+      "sha256": "89f1608dcec79bdae3ee645d8e234c0883900573b0d006534ab1b9a740741c8b",
+      "bytes": 607357
+    },
+    {
+      "id": "operator-mobile",
+      "path": "evals/receipts/v1/artifacts/e2e/operator-mobile-08bff55e442c6a3622d50169bc982a97cc04595bcff66c673c624c3bd56aa0ec.png",
+      "sha256": "08bff55e442c6a3622d50169bc982a97cc04595bcff66c673c624c3bd56aa0ec",
+      "bytes": 490552
+    }
+  ],
+  "checks": [
+    {
+      "id": "install-command-completed",
+      "passed": true,
+      "detail": "Installer completed non-interactively"
+    },
+    {
+      "id": "install-canonical-skills",
+      "passed": true,
+      "detail": "19 canonical skill links verified"
+    },
+    {
+      "id": "install-operator-commands",
+      "passed": true,
+      "detail": "20 operator command links verified"
+    },
+    {
+      "id": "operator-desktop-http",
+      "passed": true,
+      "detail": "Integration surface loaded"
+    },
+    {
+      "id": "operator-skill-coverage",
+      "passed": true,
+      "detail": "All 19 skills exposed by browser contract"
+    },
+    {
+      "id": "operator-theme-paths",
+      "passed": true,
+      "detail": "Dark and high-contrast paths executed"
+    },
+    {
+      "id": "operator-component-state",
+      "passed": true,
+      "detail": "Loading component state executed"
+    },
+    {
+      "id": "operator-invalid-form",
+      "passed": true,
+      "detail": "Invalid form path executed"
+    },
+    {
+      "id": "operator-valid-form",
+      "passed": true,
+      "detail": "Valid form path executed"
+    },
+    {
+      "id": "operator-empty-state",
+      "passed": true,
+      "detail": "Empty state executed"
+    },
+    {
+      "id": "operator-error-state",
+      "passed": true,
+      "detail": "Error state executed"
+    },
+    {
+      "id": "operator-retry-state",
+      "passed": true,
+      "detail": "Retry recovery executed"
+    },
+    {
+      "id": "operator-desktop-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "operator-desktop-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "operator-mobile-http",
+      "passed": true,
+      "detail": "Integration surface loaded"
+    },
+    {
+      "id": "operator-mobile-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "operator-mobile-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    }
+  ],
+  "status": "pass"
+}

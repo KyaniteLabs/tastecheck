@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "baseline_release": "0.1.0",
+  "skills": {
+    "a11y-pass": 1945,
+    "art-direction": 1394,
+    "cognitive-a11y": 1561,
+    "color-system": 1749,
+    "component-states": 2050,
+    "data-viz": 2146,
+    "design-system-interview": 3067,
+    "deslop-ui": 2672,
+    "empty-states": 1661,
+    "form-ux": 1567,
+    "humanize-copy": 1888,
+    "i18n-ready": 1330,
+    "improve-existing-website": 1088,
+    "micro-motion": 1926,
+    "responsive-layout": 1494,
+    "spacing-system": 1284,
+    "tastecheck-pass": 1810,
+    "theming": 1925,
+    "web-typography": 2799
+  }
+}

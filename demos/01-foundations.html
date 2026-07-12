@@ -81,11 +81,11 @@ a            { color: var(--accent); }
 */
 /* typography subset */
 body{font-family:system-ui,sans-serif;line-height:1.55;margin:0;padding:2rem}h1{font-size:clamp(2rem,1.5rem + 2.5vw,3.5rem);line-height:1.1;text-wrap:balance}p{max-width:66ch;text-wrap:pretty}
-</style></head><body>
+</style></head><body><main>
 <h1>Foundations demo — color, dark mode, type</h1>
 <p class=lead>This paragraph tests measure (max 66ch), fluid heading, and themed token surfaces. Toggle below flips data-theme.</p>
 <div class=card style="padding:1rem;margin:1rem 0">card on --surface-1</div>
 <div class="card raised" style="padding:1rem;margin:1rem 0">raised on --surface-2</div>
 <p class=muted>Muted secondary text (contrast-checked).</p>
 <button class=btn onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'" style="padding:.6em 1.1em;border-radius:8px;border:0;background:var(--accent);color:#fff">Toggle theme</button>
-</body></html>
+</main></body></html>
