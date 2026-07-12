@@ -20,6 +20,11 @@ average. Open the [live gallery →](https://kyanitelabs.github.io/tastecheck/sa
 [![Portable Markdown](https://img.shields.io/badge/plain%20markdown-portable-black.svg)](#portable-markdown)
 [![Verified](https://img.shields.io/badge/verified-npm%20test-brightgreen.svg)](docs/VERIFICATION.md)
 
+> **Release status:** 1.0 engineering readiness covers contracts, static checks, and
+> evidence plumbing. Effectiveness remains blocked and unsupported: the terminal blind
+> evaluation did not clear its release threshold. Samples and local checks demonstrate
+> the toolkit's structure; they are not effectiveness evidence.
+
 ```bash
 git clone https://github.com/KyaniteLabs/tastecheck
 ./tastecheck/install.sh
@@ -67,7 +72,7 @@ genuinely don't care, it **decides boldly and tells you** — never resolves to 
 average. The output is a committed `DESIGN-SYSTEM.md` + design tokens that every other
 skill builds from. Taste is the only moat against AI slop; this operationalizes it.
 
-## Proof: the GitHub Pages landing page runs the skills
+## Engineering demonstration: the GitHub Pages landing page runs the skills
 
 The homepage connected to GitHub Pages is not just a brochure. It is now the primary
 integration surface: the live landing page carries `data-skill` coverage for all 19 skills,
