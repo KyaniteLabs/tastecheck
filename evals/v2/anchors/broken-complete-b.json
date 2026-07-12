@@ -1,0 +1,1 @@
+{"anchor_id":"broken-complete-b","kind":"broken-complete-reversed","expected":"slot-0","label_order":[1,0],"broken":"Keyboard-inaccessible dialog without a close action.","complete":"Keyboard-operable dialog with focus management and explicit close action."}
