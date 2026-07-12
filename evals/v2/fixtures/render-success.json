@@ -1,0 +1,37 @@
+{
+  "runId": "run-fixture-001",
+  "artifact": {
+    "artifact_id": "artifact-fixture-001",
+    "unit_id": "unit-fixture-001",
+    "arm": "baseline",
+    "bytes": "<!doctype html><html><body><main class=\"card\">Tastecheck</main></body></html>",
+    "render_evidence": {
+      "mobile": {
+        "screenshot": "local-png-fixture-mobile",
+        "dom": "<!doctype html><html><body><main class=\"card\">Tastecheck</main></body></html>",
+        "styles": [{ "selector": "main.card", "properties": { "color": "rgb(0, 0, 0)", "display": "block", "font-family": "Inter" } }]
+      },
+      "desktop": {
+        "screenshot": "local-png-fixture-desktop",
+        "dom": "<!doctype html><html><body><main class=\"card\">Tastecheck</main></body></html>",
+        "styles": [{ "selector": "main.card", "properties": { "color": "rgb(0, 0, 0)", "display": "block", "font-family": "Inter" } }]
+      }
+    }
+  },
+  "manifest": {
+    "playwright_version": "1.61.1",
+    "chromium_version": "141.0.0.0",
+    "font_set_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "renderer_adapter_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "render_host_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "viewports": [
+      { "viewport_id": "mobile", "width": 390, "height": 844 },
+      { "viewport_id": "desktop", "width": 1440, "height": 900 }
+    ]
+  },
+  "requiredViewports": [
+    { "viewport_id": "mobile", "width": 390, "height": 844 },
+    { "viewport_id": "desktop", "width": 1440, "height": 900 }
+  ],
+  "admissionState": { "admitted": 0 }
+}
