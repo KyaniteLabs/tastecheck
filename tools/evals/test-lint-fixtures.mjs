@@ -139,7 +139,6 @@ const receipt = {
   fixture_count: FIXTURE_SPECS.length,
   all_passed: allPassed,
   results,
-  date_utc: new Date().toISOString().replace(/\.\d{3}Z$/, "Z"),
 };
 
 const receiptsDir = join(root, "evals/receipts/v1/contracts");
