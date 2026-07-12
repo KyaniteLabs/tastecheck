@@ -64,10 +64,3 @@ This is the part the pure-Tufte plugin doesn't cover.
   </table>
 </figure>
 ```
-
-## Self-check
-- [ ] Series colors from tokens; ≥3:1 vs bg and adjacent; ≤5 hues.
-- [ ] Dark-mode contrast re-checked; no pure-white grid on dark.
-- [ ] SVG viewBox + fluid; legible/reflows at 320px; labels in rem ≥0.8rem.
-- [ ] figcaption states the takeaway; data table present; role/aria-label set.
-- [ ] Not color-alone; interactive bits keyboard + reduced-motion safe.

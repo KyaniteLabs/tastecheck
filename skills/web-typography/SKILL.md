@@ -1,9 +1,9 @@
 ---
 name: web-typography
 description: >-
-  Front-end web typography. Use for font choice, type pairing, type scales,
-  readable body text, headings, clamp() fluid type, measure, line-height, rhythm,
-  font loading/CLS, text wrapping, OpenType features, and accessible text.
+  Use when a web product needs a contextual type system, resilient font loading,
+  multilingual glyph or wrap coverage, or readable hierarchy across operational and
+  editorial surfaces.
 ---
 
 # Web Typography
@@ -53,6 +53,17 @@ Make these decisions in sequence. Each one constrains the next.
 7. **Accessibility pass** — Contrast, zoom to 200%, the WCAG 1.4.12 text-spacing
    overrides, never disable zoom, never justify body text.
 
+## Derive a type stance from use, not a sample pairing
+
+The quick-start faces and scales demonstrate constraints; they are not default answers.
+Start from the reading task, information density, language coverage, brand direction,
+and loading budget. A public narrative, a data-dense operational surface, and a
+multilingual transactional flow may all require different hierarchy and fallback
+decisions. Record the intended reading behavior, then show computed-size, wrap/measure,
+glyph-coverage, and loading evidence. Variation is meaningful only when it changes the
+type system’s structure, territory, and explanatory approach without weakening those
+checks.
+
 ## Non-negotiables (the rules that prevent the common failures)
 
 These are the mistakes that show up again and again. Internalize the *why* so you
@@ -76,62 +87,32 @@ can apply them in novel situations, not just copy them.
   a **metric-matched fallback** (`size-adjust` + `ascent/descent/line-gap-override`)
   so swapping the real font in causes zero reflow. This is the fix for font-driven CLS.
 
-## Quick-start CSS
+## Role map and metric budget
 
-A sane, accessible baseline you can drop into product UI. It uses a system font
-stack (zero download) and a fluid scale. For brand/landing work, keep the scale
-and loading rules but swap in the type stance chosen by `design-system-interview`.
+Build a role map before naming faces. It distinguishes scanning work from sustained
+reading while keeping both recognizably part of one product: operational labels,
+identifiers, and tables need stable width, clear wraps, and numeric behavior; public
+narrative needs a calmer measure, stronger editorial hierarchy, and a reading rhythm
+that does not leak into dense controls. The role map records each role’s reading job,
+size and measure, language coverage, numeric feature, fallback, and verification path.
 
-```css
-:root {
-  /* Canonical token names (design-system-interview contract). System stack as the
-     DEFAULT VALUE for product UI — swap in the interview's faces for brand work. */
-  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
-               "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
-  --font-display: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
-  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+Test language coverage with a real longest translation, accented characters, punctuation,
+and the dense labels that create wrapping pressure. Test numeric tables with the values
+users compare, including tabular figures where alignment carries meaning. A declared
+font family is only a hypothesis until the loaded font and fallback both render those
+specimens without clipping, substitution, or an unstable hierarchy.
 
-  /* Fluid type scale (≈ Major Third 1.25 at desktop). Generate real projects with Utopia.fyi */
-  --step--1: clamp(0.833rem, 0.80rem + 0.17vw, 0.9rem);
-  --step-0:  clamp(1rem,    0.95rem + 0.25vw, 1.125rem);   /* body */
-  --step-1:  clamp(1.25rem, 1.15rem + 0.50vw, 1.5rem);
-  --step-2:  clamp(1.563rem,1.40rem + 0.80vw, 1.953rem);
-  --step-3:  clamp(1.953rem,1.70rem + 1.25vw, 2.441rem);
-  --step-4:  clamp(2.441rem,2.00rem + 2.00vw, 3.052rem);
+For every loaded face, keep a metric budget: chosen fallback, size or metric overrides,
+critical text that may reflow, and the observed layout-shift result. A system stack is a
+valid final choice when it suits the role; a custom face is a valid choice when its
+coverage and metric proof justify its cost. In either case, phrase missing measurements
+as a verification gate, never as a zero-CLS claim.
 
-  --measure: 66ch;
-}
+## Quick-start
 
-html { font-size: 100%; -webkit-text-size-adjust: 100%; }
-
-body {
-  font-family: var(--font-body);
-  font-size: var(--step-0);
-  line-height: 1.5;
-  font-synthesis: none;            /* don't fake bold/italic */
-}
-
-h1, h2, h3, h4 { line-height: 1.15; text-wrap: balance; }   /* tight + even line lengths */
-h1, h2 { letter-spacing: -0.02em; }   /* display sizes tighten −0.01…−0.03em; never track body negative */
-h1 { font-size: var(--step-4); }
-h2 { font-size: var(--step-3); }
-h3 { font-size: var(--step-2); }
-h4 { font-size: var(--step-1); }
-
-p, li, blockquote { max-width: var(--measure); text-wrap: pretty; }  /* measure + no orphans */
-p + p { margin-block-start: 1em; }                                   /* space, don't indent */
-
-:is(h1, h2, h3, h4) + * { margin-block-start: 0.5em; }
-
-/* Data/figures align in columns */
-table, .tabular-nums { font-variant-numeric: tabular-nums; }
-```
-
-(Reduced-motion handling belongs to one owner — the `micro-motion` skill defines the
-project's `prefers-reduced-motion` contract; don't add a second copy here.)
-
-A more complete, commented starter — including a metric-matched web-font example —
-is in `assets/starter.css`. Read it when scaffolding a project's type from scratch.
+Use `assets/starter.css` for the complete scale and metric-matched font example. Keep
+the operating constraints here: contextual roles, readable measure, fluid sizing,
+language coverage, measured loading/CLS, and no duplicate reduced-motion contract.
 
 ## Reference files — read the one you need
 
@@ -169,26 +150,29 @@ Keep this file in context; pull a reference in when the task calls for it.
 
 ## How to deliver
 
-- When you change type, **explain the decision, not just the code** — "body bumped
-  to 1.125rem and measure capped at 66ch so lines aren't 120 characters wide."
-  Typography is judged by feel; tell the user what to look at.
-- Prefer editing the project's existing tokens/scale over inventing a parallel one.
-  If the project uses Tailwind, set the scale in `theme.fontSize` / CSS variables
-  rather than scattering arbitrary values.
-- Browser-support-sensitive features (flagged in `modern-css.md`) go in as
-  **progressive enhancement** — the page must still read correctly without them.
-- After non-trivial changes, do the **accessibility pass** (`references/accessibility.md`)
-  before declaring done. Verify contrast and that the layout survives 200% zoom and
-  the text-spacing overrides.
-- For multilingual surfaces, pair with `i18n-ready`: confirm the chosen faces cover the
-  target languages' glyphs (Spanish diacritics at minimum), and that line-height/measure
-  hold for ~25% longer strings.
+Explain the type decision, edit existing tokens, and keep unsupported features progressive. Report contrast, 200% zoom, text-spacing, loading, and glyph evidence; pair multilingual work with `i18n-ready`.
 
-## Self-check
+## Completion evidence
 
-- [ ] Body text ≥ 1rem (16px); measure capped ~66ch; line-height unitless (~1.5 body, tighter headings)
-- [ ] Type scale is a real ratio (not arbitrary px); headings get negative letter-spacing
-- [ ] Every `clamp()`/`calc()` has **spaces around `+`/`−`** (`1rem + 3vw`) — and you **measured the computed size**, not eyeballed it
-- [ ] Web fonts: woff2, `font-display: swap`/`optional`, preloaded, metric-matched fallback → no CLS
-- [ ] Contrast ≥ 4.5:1 (3:1 large); survives 200% zoom and the text-spacing override
-- [ ] Explained the decision, not just the code
+Close with a five-field evidence ledger. Put the check ID at the start of Reason, then
+record either an observed result or an explicit verification gate.
+
+| Status | Reason | Remediation | Evidence | Provenance |
+| --- | --- | --- | --- | --- |
+|  | role-map — contextual type stance and language coverage |  |  |  |
+|  | reading-behavior — scale, measure, wrap, and numeric behavior |  |  |  |
+|  | metrics — loading and fallback measurement |  |  |  |
+|  | accessibility — zoom, text-spacing, and contrast result |  |  |  |
+|  | handoff — responsive-layout boundary |  |  |  |
+
+<!-- contract:v1:start -->
+## Contract (generated)
+
+Canonical detail: [contract.json](contract.json).
+
+- Route: A web interface needs a contextual type stance, scale, readable measure, or font-loading plan (+1 in contract.json); avoid: The request is to write or rewrite product copy (+1 in contract.json)
+- Exclude: Do not choose a font from examples instead of the brief (+1 in contract.json)
+- Stop / handoff: Pause when a requested font lacks required language coverage and no fallback is agreed (+1 in contract.json); receives [design-system-interview, improve-existing-website] -> sends [responsive-layout, i18n-ready, a11y-pass]
+- Output: A contextual type system with tokens, loading plan, and tested reading constraints
+- Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
+<!-- contract:v1:end -->

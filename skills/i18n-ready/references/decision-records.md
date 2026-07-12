@@ -2,7 +2,7 @@
 
 ## Meta-patterns
 
-- **MP-1 · Structure before translation.** A UI that survives +30% strings and mirrors
+- **MP-1 · Structure before translation.** A UI that survives the longest approved locale fixture and mirrors
   via logical properties makes every future language cheap; translating into a rigid
   UI makes every language a renovation.
 - **MP-2 · Languages are voices, not encodings.** The deliverable per language is the
@@ -33,6 +33,6 @@ physical CSS is churn. *Apply:* lint new diffs for `-left/-right` spacing; conve
 code when you touch it anyway.
 
 **ADR-5 — Pseudo-localization before real localization.**
-*Why (MP-1):* expansion bugs are cheaper to find with `[!!! Ŝávé čháñgéš !!!]`-style
-pseudo-strings than with a paid translation round. *Apply:* run a pseudo-pass (+30%,
-accented, bracketed) over key screens before commissioning translations.
+*Why (MP-1):* expansion bugs are cheaper to find with accented, bracketed pseudo-strings
+than with a paid translation round. *Apply:* run a pseudo-pass using the longest approved
+locale fixture over key screens before commissioning translations.

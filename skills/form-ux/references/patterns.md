@@ -80,11 +80,3 @@ hidden behind the keyboard.
   fields.
 - Visible `:focus-visible`; full keyboard operability; don't trap focus.
 - Sufficient contrast on labels, borders (≥3:1), and error text (≥4.5:1).
-
-## Self-check
-- [ ] Persistent visible labels; placeholders only for examples.
-- [ ] Validate on blur + submit; relax on fix; never nag on first keystroke.
-- [ ] Specific adjacent errors with fixes, wired via aria, announced.
-- [ ] Correct type/inputmode/autocomplete everywhere.
-- [ ] Single column, minimal fields, progress saved on long forms.
-- [ ] Submit never silently dead; focus to first error on submit.

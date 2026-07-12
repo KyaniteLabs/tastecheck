@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>tastecheck — stop AI shipping the same generic website | anti-slop skills for AI coding agents</title>
-<meta name="description" content="tastecheck is an open-source set of 15 craft skills for AI coding agents (Claude Code, Codex, Gemini, Cursor) that stops them building the same generic 'AI slop' website. It interviews or audits you into a real design system first, then applies checkable typography, OKLCH color, accessibility and anti-slop rules. MIT.">
+<meta name="description" content="tastecheck is an open-source set of 19 craft skills for AI coding agents (Claude Code, Codex, Gemini, Cursor) that stops them building the same generic 'AI slop' website. It interviews or audits you into a real design system first, then applies checkable typography, OKLCH color, accessibility and anti-slop rules. MIT.">
 <meta name="keywords" content="AI slop, AI website design, AI coding agent skills, Claude Code skills, design system, design-system-interview, deslop, web typography, OKLCH color, WCAG accessibility, anti-slop, AI landing page, Codex, Gemini CLI, Cursor, frontend design">
 <meta name="author" content="Kyanite Labs">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
@@ -46,7 +46,7 @@
       "applicationCategory": "DeveloperApplication",
       "applicationSubCategory": "AI coding-agent skills",
       "operatingSystem": "Claude Code, Codex, Gemini CLI, Cursor, Kilocode, Kimi",
-      "description": "An open-source set of 15 frontend craft skills for AI coding agents that stops them building the same generic 'AI slop' website. The headline skills interview you or audit an existing site into a committed design system before changes; the rest apply checkable typography, OKLCH color, theming, responsive layout, component states, forms, motion, accessibility and de-slopping.",
+      "description": "An open-source set of 19 frontend craft skills for AI coding agents that stops them building the same generic 'AI slop' website. The headline skills interview you or audit an existing site into a committed design system before changes; the rest apply checkable typography, OKLCH color, theming, responsive layout, component states, forms, motion, accessibility and de-slopping.",
       "url": "https://kyanitelabs.github.io/tastecheck/",
       "codeRepository": "https://github.com/KyaniteLabs/tastecheck",
       "license": "https://opensource.org/licenses/MIT",
@@ -60,7 +60,7 @@
       "@id": "https://kyanitelabs.github.io/tastecheck/#faq",
       "mainEntity": [
         { "@type": "Question", "name": "What is tastecheck?",
-          "acceptedAnswer": { "@type": "Answer", "text": "tastecheck is a free, open-source (MIT) set of 15 craft skills for AI coding agents. Its headline skills interview you into a committed design system or infer one from an existing site before changes, then the other skills apply checkable rules for typography, color, accessibility and removing AI 'slop' tells, so the output has a point of view instead of the generic average." } },
+          "acceptedAnswer": { "@type": "Answer", "text": "tastecheck is a free, open-source (MIT) set of 19 craft skills for AI coding agents. Its headline skills interview you into a committed design system or infer one from an existing site before changes, then the other skills apply checkable rules for typography, color, accessibility and removing AI 'slop' tells, so the output has a point of view instead of the generic average." } },
         { "@type": "Question", "name": "Why do AI-generated websites all look the same?",
           "acceptedAnswer": { "@type": "Answer", "text": "With no design direction, a language model fills every blank with the most probable token: a purple/indigo gradient, the Inter font, a centered hero, three identical feature cards, pill buttons and glassmorphism. It is returning the statistical average of the web rather than designing. tastecheck fixes this by removing the blanks — making the real design decisions before the model gets to guess." } },
         { "@type": "Question", "name": "Which AI coding agents does tastecheck work with?",
@@ -291,8 +291,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 </style>
 </head>
 <body>
-<div class="tc-bar"><a class="tc-home" href="./">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="samples/copper/" aria-current="page">Copper</a><a href="samples/swiss/">Swiss</a><a href="samples/maximal/">Maximal</a><a href="samples/concrete/">Concrete</a><a href="samples/clay/">Clay</a><a href="samples/">Gallery</a></nav><div class="tc-theme" data-skill="theming" aria-label="Theme"><span>Theme</span><button type="button" data-test="theme-dark" aria-pressed="true">Dark</button><button type="button" data-test="theme-light" aria-pressed="false">Light</button><button type="button" data-test="theme-contrast" aria-pressed="false">Contrast</button></div></div>
 <a class="skip" href="#main">Skip to content</a>
+<div class="tc-bar"><a class="tc-home" href="./">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="samples/copper/" aria-current="page">Copper</a><a href="samples/swiss/">Swiss</a><a href="samples/maximal/">Maximal</a><a href="samples/concrete/">Concrete</a><a href="samples/clay/">Clay</a><a href="samples/">Gallery</a></nav><div class="tc-theme" data-skill="theming" aria-label="Theme"><span>Theme</span><button type="button" data-test="theme-dark" aria-pressed="true">Dark</button><button type="button" data-test="theme-light" aria-pressed="false">Light</button><button type="button" data-test="theme-contrast" aria-pressed="false">Contrast</button></div></div>
 <header class="nav"><div class="wrap">
   <span class="brand">taste<b>check</b></span>
   <nav class="menu" aria-label="Primary"><a href="#skills">Skills</a><a href="#why">What it refuses</a><a href="#proof">Proof</a><a href="#install">Install</a></nav>
@@ -406,7 +406,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
       <p class="cap">Consistent spacing &amp; vertical cadence from one ramp.</p></div>
 
     <div class="cell w3" data-skill="i18n-ready"><div class="lab"><span class="n">16</span><h3>i18n-ready</h3></div>
-      <div class="stage" style="gap:.45rem"><div class="hzb" lang="en">Get started</div><div class="hzg" lang="es">Comienza ahora mismo</div><span class="note">EN/ES first-class · +30% expansion · logical properties</span></div>
+      <div class="stage" style="gap:.45rem"><div class="hzb" lang="en">Get started</div><div class="hzg" lang="es">Comienza ahora mismo</div><span class="note">EN/ES first-class · longest approved locale fixture · logical properties</span></div>
       <p class="cap">Multilingual-resilient: text expansion, <code>Intl</code>, native voice per language.</p></div>
 
     <div class="cell" data-skill="art-direction"><div class="lab"><span class="n">17</span><h3>art-direction</h3></div>

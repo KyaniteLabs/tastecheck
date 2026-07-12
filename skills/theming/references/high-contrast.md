@@ -41,9 +41,3 @@ The OS replaces your palette with the user's system colors. **Do NOT fight it.**
 `prefers-contrast` is *your* enhanced theme; `forced-colors` is the *OS* overriding you.
 A robust system handles both: a high-contrast token mapping for the former, and
 border/focus resilience + system-color keywords for the latter.
-
-## Self-check
-- [ ] `prefers-contrast: more` mapping exists (max-contrast variant of the tokens).
-- [ ] `forced-colors: active` handled: borders on buttons/cards so they don't vanish;
-      focus visible; system color keywords used; meaningful SVG kept legible.
-- [ ] Nothing relies on a removed background or on color alone in either mode.

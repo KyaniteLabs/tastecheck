@@ -1,0 +1,86 @@
+{
+  "schema_version": 2,
+  "kind": "taste-oracle-judge-packet",
+  "packet_id": "deslop-ui-hard-001-render-v1",
+  "scenario_id": "deslop-ui-hard-001",
+  "status": "pending",
+  "release_evidence": false,
+  "notice": "PENDING BLINDED EVALUATION — NOT RELEASE EVIDENCE",
+  "evidence_manifest": {
+    "path": ".omx/taste-oracle/task2-final/manifest.json",
+    "file_sha256": "9b8fc5f2e299caa2f6e2794823bcebafa482ef08a297b22de678e29052074190",
+    "canonical_sha256": "4f3c69ef676ed8c9939204264a2b1a1534835a7cbd93d5d147556c815d4289b7"
+  },
+  "viewports": [
+    { "id": "mobile", "width": 390, "height": 844 },
+    { "id": "desktop", "width": 1280, "height": 900 }
+  ],
+  "blinded_arms": [
+    {
+      "opaque_label": "option-amber",
+      "artifacts": [
+        {
+          "viewport_id": "mobile",
+          "screenshot_sha256": "f23b457cf207c3aa97b74afbf7c937800f9dba578ce13a2f355f12f332bc8954",
+          "dom_sha256": "f741cc0665344cae51df9f8fe817178496fc198b37f558d60b7b348155ae2f9b",
+          "style_sha256": "a5f8140a26b0d030b0aee3cbe67088cca7a18ed5986b7c9ab3f5786be79d76d8"
+        },
+        {
+          "viewport_id": "desktop",
+          "screenshot_sha256": "88d9790860d7c832a2b1f0fa7bbbe87ee122722fc5a9259d6406c31494f15d4f",
+          "dom_sha256": "1372d278ef6d7ff6b2a3be15a24b7483dbb570d59c46ef040e11599b53838482",
+          "style_sha256": "6c17206f124168f0d4733bd62d0e377ab22309b05dd15d8ac211e6cb2b94b75b"
+        }
+      ]
+    },
+    {
+      "opaque_label": "option-birch",
+      "artifacts": [
+        {
+          "viewport_id": "mobile",
+          "screenshot_sha256": "46a3dea14c3cccb5350cd2cf61e2a90f70cca8271f95d5d36689da7abf4388c1",
+          "dom_sha256": "5aec51b1f8b0f4bde938802934ca87ac28842eb85ddacc3958f2b531c4202571",
+          "style_sha256": "bd2021bddc9a118f486e850f63f379cdc8e8844e47e40584c35dc44746c8783b"
+        },
+        {
+          "viewport_id": "desktop",
+          "screenshot_sha256": "de6882c8cc5f64e63653589699981879bd39a0882a6bcd30381e984ab251a75a",
+          "dom_sha256": "bae02d37c4c85d020d56f7fdd5a2ca4b259205896dea09c6000564475a82e1dc",
+          "style_sha256": "476b692a0300ac22adc84c7f07d3ddcb1359453ed42583a2af65349b50ee5928"
+        }
+      ]
+    },
+    {
+      "opaque_label": "option-cobalt",
+      "artifacts": [
+        {
+          "viewport_id": "mobile",
+          "screenshot_sha256": "3694e92127ab7aa3cbd2989b41ccd6227bfd1029617cf2f743acca0d408b9ef1",
+          "dom_sha256": "e2aa467b6eba1cb35562428df345b04ee20a905c0a367545c1d7068df1d1fc32",
+          "style_sha256": "5e548a3499f4469bc87b0ec0c4135732c106fd0bf6ac1c69a0701f3356171113"
+        },
+        {
+          "viewport_id": "desktop",
+          "screenshot_sha256": "1db0a2e6024408b33426e919b22da6a86103676fe0d34179046d693cace2394f",
+          "dom_sha256": "f47e9465e51891914c6fe4fc01a73035cbfc24400eeea0116971d6c6a250abab",
+          "style_sha256": "a69e2bdbcaafd58feaaa21fa75ee5d2d0ba79edefbff001397ff5cfc8d01bd45"
+        }
+      ]
+    }
+  ],
+  "rubric": {
+    "instruction": "Assess every artifact, then compare every opaque pair at each viewport. Cite supplied hashes and explain each preference, tie, or abstention.",
+    "dimensions": ["hierarchy", "legibility", "coherence", "specificity", "interaction clarity"]
+  },
+  "submission_contract": {
+    "result_schema_path": "contracts/v2/taste-oracle-judge-result.schema.json",
+    "minimum_distinct_evaluator_families": 2,
+    "minimum_distinct_judge_identities": 2,
+    "requires_all_artifacts": true,
+    "requires_all_pairwise_comparisons": true,
+    "requires_evidence_citations": true,
+    "allows_tie": true,
+    "allows_abstention": true,
+    "human_calibration_claimed": false
+  }
+}

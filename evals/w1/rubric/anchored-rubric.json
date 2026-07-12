@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "wave": "W1",
+  "description": "Anchored scoring rubric for W1 pilot evaluations. Each dimension is scored 1-5: 1 materially fails, 2 has major gaps, 3 is a competent baseline, 4 is strong and specific, and 5 is exceptional with cited evidence. Numeric impressions without anchor citation are rejected.",
+  "scoring_scale": {
+    "1": "Materially fails the brief or requirement.",
+    "2": "Has major gaps in required evidence, specificity, or execution.",
+    "3": "Competent baseline: addresses the requirement without a strong, cited distinction.",
+    "4": "Strong and specific: concrete, brief-grounded, and supported by cited evidence.",
+    "5": "Exceptional: unusually precise and complete with cited evidence that materially improves implementation confidence."
+  },
+  "universal_evidence_requirement": {
+    "description": "Every finding row must carry all five fields. A missing field is a material failure on the evidence dimension (score 1), regardless of other content.",
+    "required_fields": ["status", "reason", "remediation", "evidence", "provenance"]
+  },
+  "dimensions": [
+    {
+      "id": "domain_specificity",
+      "label": "Domain-specific commitment vs generic output",
+      "anchors": {
+        "1": "Generic placeholder values or a restatement of the brief replaces a decision.",
+        "2": "Some specific values appear, but key decisions remain generic or hedged.",
+        "3": "Competent, brief-relevant decisions with some generic framing remaining.",
+        "4": "Concrete, brief-specific values, ratios, or token roles support nearly every decision.",
+        "5": "Every decision is traceable to a cited product constraint or observed artifact; no template residue remains."
+      }
+    },
+    {
+      "id": "evidence_completeness",
+      "label": "Evidence completeness (all 5 required fields present per finding)",
+      "anchors": {
+        "1": "A finding has no evidence fields, or status alone is a bare checkmark.",
+        "2": "Several fields are missing or cannot be tied to an artifact.",
+        "3": "Most findings include usable evidence fields, with some thin or missing provenance.",
+        "4": "Every finding has status, reason, remediation, evidence, and provenance.",
+        "5": "All fields are present and evidence is measured or directly cited with traceable provenance."
+      }
+    },
+    {
+      "id": "fail_closed",
+      "label": "Fail-closed behavior (does not pass ambiguous or missing evidence)",
+      "anchors": {
+        "1": "Passes ambiguous evidence or accepts an unsupported n/a.",
+        "2": "Names uncertainty but still permits a material unchecked assumption.",
+        "3": "Usually fails closed, with one weakly justified boundary.",
+        "4": "Missing measurements and unsupported skips produce explicit failures.",
+        "5": "Every ambiguity is isolated, evidenced, and routed without inference; all n/a rows name a genuinely absent subject."
+      }
+    },
+    {
+      "id": "handoff_readiness",
+      "label": "Handoff fields — downstream skill can consume without re-deriving",
+      "anchors": {
+        "1": "No handoff exists, or it is a placeholder.",
+        "2": "Handoff exists but leaves major values for downstream re-derivation.",
+        "3": "A downstream worker can proceed, but some evidence references are thin.",
+        "4": "All required handoff fields have concrete values and evidence references.",
+        "5": "Handoff is implementation-ready, including constraints, unresolved decisions, and directly usable evidence."
+      }
+    },
+    {
+      "id": "scope_discipline",
+      "label": "Scope discipline — stays in lane, no invented scope or out-of-skill work",
+      "anchors": {
+        "1": "Performs out-of-skill work or invents unsupported product rules.",
+        "2": "Substantial adjacent-skill drift is present without a handoff.",
+        "3": "Mostly in scope; one boundary is weakly handled.",
+        "4": "Strictly in scope; adjacent work is named and handed off.",
+        "5": "Boundaries improve the result: each adjacent concern is precisely deferred with the information needed to continue."
+      }
+    }
+  ],
+  "assertion_mapping": {
+    "note": "Map each scenario assertion to one or more scoring dimensions. A score of 1 indicates a material failure for its mapped assertion.",
+    "component-states": {
+      "assertion_0": ["domain_specificity", "scope_discipline"],
+      "assertion_1": ["domain_specificity", "fail_closed"],
+      "assertion_2": ["scope_discipline", "fail_closed"],
+      "assertion_3": ["evidence_completeness"],
+      "assertion_4": ["domain_specificity", "scope_discipline"]
+    },
+    "deslop-ui": {
+      "assertion_0": ["domain_specificity", "fail_closed"],
+      "assertion_1": ["scope_discipline", "fail_closed"],
+      "assertion_2": ["domain_specificity", "handoff_readiness"],
+      "assertion_3": ["evidence_completeness"],
+      "assertion_4": ["domain_specificity", "scope_discipline"]
+    },
+    "tastecheck-pass": {
+      "assertion_0": ["fail_closed", "evidence_completeness"],
+      "assertion_1": ["fail_closed", "evidence_completeness"],
+      "assertion_2": ["fail_closed", "domain_specificity"],
+      "assertion_3": ["scope_discipline", "handoff_readiness"],
+      "assertion_4": ["scope_discipline", "fail_closed"]
+    }
+  },
+  "passing_threshold": {
+    "minimum_dimension_score": 3,
+    "minimum_total_score": 15,
+    "maximum_total_score": 25,
+    "paired_release": {
+      "upgraded_mean_delta": 0.6,
+      "upgraded_preference_count": 2,
+      "mandatory_dimension_mean_delta_floor": -0.25,
+      "hard_regressions": ["safety", "accessibility", "contract"]
+    },
+    "note": "A single candidate is competent at >=3 on every dimension and >=15/25; a paired release claim additionally requires the blind corpus thresholds."
+  }
+}

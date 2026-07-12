@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "wave": "W1",
+  "total_jobs": 12,
+  "complete": 12,
+  "pending": 0,
+  "error": 0,
+  "all_required_complete": true,
+  "missing_jobs": [],
+  "skill_summaries": [
+    {
+      "skill": "component-states",
+      "baseline_complete": true,
+      "upgraded_complete": true,
+      "upgraded_seeds_complete": [
+        101,
+        202,
+        303
+      ],
+      "diversity_pass": false,
+      "anti_slop_pass": true,
+      "adjudication_needed": true
+    },
+    {
+      "skill": "deslop-ui",
+      "baseline_complete": true,
+      "upgraded_complete": true,
+      "upgraded_seeds_complete": [
+        101,
+        202,
+        303
+      ],
+      "diversity_pass": false,
+      "anti_slop_pass": true,
+      "adjudication_needed": true
+    },
+    {
+      "skill": "tastecheck-pass",
+      "baseline_complete": true,
+      "upgraded_complete": true,
+      "upgraded_seeds_complete": [
+        101,
+        202,
+        303
+      ],
+      "diversity_pass": false,
+      "anti_slop_pass": true,
+      "adjudication_needed": true
+    }
+  ],
+  "evaluator_verdicts": {
+    "paired_lift": {
+      "summary": {
+        "total": 3,
+        "pass": 0,
+        "fail": 3
+      }
+    },
+    "diversity": {
+      "summary": {
+        "total": 3,
+        "pass": 0,
+        "fail": 3
+      }
+    },
+    "anti_slop": {
+      "summary": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0
+      }
+    }
+  },
+  "judge_corpus": {
+    "packets": 9,
+    "result_slots": 27,
+    "valid_complete_judgments": 27,
+    "synthesized_ready_packets": 9,
+    "valid": true
+  },
+  "date_utc": "2026-07-11T13:27:06Z"
+}

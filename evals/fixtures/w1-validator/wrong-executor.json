@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "job_id": "component-states-baseline-seed101",
+  "attempt_id": "component-states-baseline-seed101-fixture-wrong-executor",
+  "executor": "gpt-4o",
+  "requested_seed": 101,
+  "observed_seed": null,
+  "requested_temperature": 0.7,
+  "observed_temperature": null,
+  "skill_source_path": ".omx/tmp/tastecheck-v1-baseline-replay/skills/component-states/SKILL.md",
+  "skill_source_sha256": "4d85a14d643bfe3c1d714872db1b065ca4c8622160c409fae186ccc0c72e13ab",
+  "status": "complete",
+  "skill": "component-states",
+  "scenario_id": "component-states-async-destructive-control",
+  "run_type": "baseline",
+  "skill_version": "baseline",
+  "raw_output": "synthetic output for w1 validator adversarial test",
+  "raw_output_hash": "6d817fb0943d1cb76339925e9e627637f30fef46d1a0014106479932337ef991",
+  "assertions_result": [
+    {
+      "assertion_index": 0,
+      "assertion_text": "Separates visual state from semantic state and names the trigger for each.",
+      "met": true
+    },
+    {
+      "assertion_index": 1,
+      "assertion_text": "Includes focus-visible, keyboard parity, aria-busy/disabled semantics, and a no-double-submit rule.",
+      "met": true
+    },
+    {
+      "assertion_index": 2,
+      "assertion_text": "Includes success and error recovery without inventing page-level empty states.",
+      "met": true
+    },
+    {
+      "assertion_index": 3,
+      "assertion_text": "Provides status, reason, remediation, evidence, and provenance rather than bare checkmarks.",
+      "met": true
+    }
+  ],
+  "evidence_fields_present": {
+    "status": true,
+    "reason": true,
+    "remediation": true,
+    "evidence": true,
+    "provenance": true
+  },
+  "external_source": true,
+  "external_source_lane": "terra"
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "job_id": "component-states-upgraded-seed202",
+  "scenario_id": "component-states-async-destructive-control",
+  "skill": "component-states",
+  "run_type": "upgraded",
+  "requested_seed": 202,
+  "observed_seed": null,
+  "executor": "gpt-5.6-terra",
+  "fresh_context": true,
+  "requested_temperature": 0.7,
+  "observed_temperature": null,
+  "skill_version": "current",
+  "skill_source_path": "skills/component-states/SKILL.md",
+  "skill_source_sha256": "ea573d110cde42bb256b98fb886af56fddd9d21e3e8de1d453e821d6d14c0776",
+  "system_prompt": "You are the component-states skill from TasteCheck.\nUsing current upgraded skill version. This run measures improvements over the baseline.\nApply the skill exactly as defined. Do not skip assertions. Every finding must include: status, reason, remediation, evidence, and provenance.\nSeed instruction: Approach this task from the aesthetic angle: ground your response in the visual and sensory qualities of the design decisions.",
+  "user_prompt": "Design the state contract for an async destructive action in a dense admin interface. Include keyboard, focus-visible, pressed, disabled, loading, success, and error behavior. Use the existing semantic tokens and do not hide the only recovery path.",
+  "assertions": [
+    "Separates visual state from semantic state and names the trigger for each.",
+    "Includes focus-visible, keyboard parity, aria-busy/disabled semantics, and a no-double-submit rule.",
+    "Fails explicitly on a missing semantic token rather than inventing a fallback color, and includes success and error recovery without inventing page-level empty states.",
+    "Provides status, reason, remediation, evidence, and provenance rather than bare checkmarks.",
+    "Uses one authoritative self-check; three runs may vary structure, aesthetic treatment, and voice without dropping focus, busy, or token-gap behavior."
+  ],
+  "diversity_axes": [
+    "structure",
+    "aesthetic",
+    "voice"
+  ],
+  "expected_evidence_fields": [
+    "status",
+    "reason",
+    "remediation",
+    "evidence",
+    "provenance"
+  ],
+  "packet_sha256": "be1f7338367bb50d4e36ca41694aacc1a9fb43a7a73dc22938f118b20074d185",
+  "source_revision": {
+    "revision": "attempt-3-live",
+    "validation": "live",
+    "sha256": "ea573d110cde42bb256b98fb886af56fddd9d21e3e8de1d453e821d6d14c0776",
+    "source_path": "skills/component-states/SKILL.md",
+    "provenance": "frozen final source replay"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/evals/w1/schemas/judge-packet-schema.json",
+  "title": "W1 Judge Packet v1 (lane-agnostic)",
+  "description": "Immutable blinded evaluation packet shared by all judges. Contains no evaluator lane, family, model, or source/version cues. Candidate keys must be opaque labels only (A, B, C1, C2, C3). Judgments are in separate result files — not inside this packet.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "packet_id",
+    "evaluator_type",
+    "skill",
+    "scenario_id",
+    "prompt_hash",
+    "calibration_ref",
+    "candidates"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "packet_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]+-(?:paired-lift|diversity|anti-slop)-\\d+$",
+      "description": "Opaque packet identifier. Pattern: {skill}-{evaluator_type}-{index}. No lane in the packet ID."
+    },
+    "evaluator_type": {
+      "type": "string",
+      "enum": ["paired_lift", "diversity", "anti_slop"],
+      "description": "paired_lift: A vs B single upgraded seed. diversity: C1/C2/C3 upgraded seeds. anti_slop: C1/C2/C3 checked for slop patterns."
+    },
+    "skill": {
+      "type": "string"
+    },
+    "scenario_id": {
+      "type": "string"
+    },
+    "prompt_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the user_prompt from the job packet. Allows verifiers to confirm the scenario prompt has not drifted."
+    },
+    "calibration_ref": {
+      "type": "string",
+      "description": "Repo-relative path to calibration file. All judges must review calibration before grading."
+    },
+    "candidates": {
+      "type": "object",
+      "description": "Blinded output candidates. Keys must be opaque labels only: A, B (paired_lift) or C1, C2, C3 (diversity/anti_slop). No run_type, job_id, skill_version, executor, or source cues in keys or values.",
+      "minProperties": 2,
+      "maxProperties": 3,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["label", "raw_output_hash", "raw_output"],
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "type": "string",
+            "pattern": "^[ABC][123]?$",
+            "description": "Opaque label matching the parent key."
+          },
+          "raw_output_hash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "SHA-256 of raw_output for integrity verification."
+          },
+          "raw_output": {
+            "type": "string",
+            "description": "Full model output text. Present in private packets only. Must be absent in public index files."
+          }
+        }
+      }
+    }
+  }
+}

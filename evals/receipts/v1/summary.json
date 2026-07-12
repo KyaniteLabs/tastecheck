@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "aggregated_at_utc": "2026-07-11T04:11:50Z",
+  "pilot_skills": [
+    "component-states",
+    "deslop-ui",
+    "tastecheck-pass"
+  ],
+  "receipts": {
+    "pilot-manifest": {
+      "present": true,
+      "pass": true
+    },
+    "paired-check": {
+      "present": true,
+      "pass": false
+    },
+    "diversity-check": {
+      "present": true,
+      "pass": false
+    },
+    "anti-slop": {
+      "present": true,
+      "pass": true
+    }
+  },
+  "paired": {
+    "overall_pass": false,
+    "skills": [
+      {
+        "skill": "component-states",
+        "baseline_count": 0,
+        "upgraded_count": 0,
+        "pass": false
+      },
+      {
+        "skill": "deslop-ui",
+        "baseline_count": 0,
+        "upgraded_count": 0,
+        "pass": false
+      },
+      {
+        "skill": "tastecheck-pass",
+        "baseline_count": 0,
+        "upgraded_count": 0,
+        "pass": false
+      }
+    ]
+  },
+  "lift": {
+    "skills": [
+      {
+        "skill": "component-states",
+        "status": "awaiting_judged_receipt"
+      },
+      {
+        "skill": "deslop-ui",
+        "status": "awaiting_judged_receipt"
+      },
+      {
+        "skill": "tastecheck-pass",
+        "status": "awaiting_judged_receipt"
+      }
+    ],
+    "lifted_count": 0,
+    "not_lifted_count": 0,
+    "awaiting_count": 3,
+    "all_lifted": false,
+    "note": "3 skill(s) awaiting human judged receipt — lift verdict pending"
+  },
+  "diversity": {
+    "overall_pass": false,
+    "skills": [
+      {
+        "skill": "component-states",
+        "upgraded_count": 0,
+        "pass": false,
+        "pairs": [
+          {
+            "pair": "A-B"
+          },
+          {
+            "pair": "A-C"
+          },
+          {
+            "pair": "B-C"
+          }
+        ]
+      },
+      {
+        "skill": "deslop-ui",
+        "upgraded_count": 0,
+        "pass": false,
+        "pairs": [
+          {
+            "pair": "A-B"
+          },
+          {
+            "pair": "A-C"
+          },
+          {
+            "pair": "B-C"
+          }
+        ]
+      },
+      {
+        "skill": "tastecheck-pass",
+        "upgraded_count": 0,
+        "pass": false,
+        "pairs": [
+          {
+            "pair": "A-B"
+          },
+          {
+            "pair": "A-C"
+          },
+          {
+            "pair": "B-C"
+          }
+        ]
+      }
+    ]
+  },
+  "anti_slop": {
+    "heuristic_pass": true,
+    "corpus_size": 0,
+    "finding_count": 0,
+    "hard_flag_count": 0,
+    "semantic_verdict_required": true
+  },
+  "overall_pass": false,
+  "blocking_errors": [
+    "PAIRED FAIL: 6 blocking gaps — evidence incomplete. Do not proceed to blinding or judging.",
+    "DIVERSITY FAIL: 12 blocking gaps — diversity evidence incomplete."
+  ]
+}

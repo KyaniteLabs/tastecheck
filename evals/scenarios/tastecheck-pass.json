@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "skill": "tastecheck-pass",
+  "class": "gate",
+  "id": "tastecheck-pass-dishonest-evidence-bundle",
+  "prompt": "Gate a finished page with a present DESIGN-SYSTEM.md, specialist reports that claim all checks passed, missing contrast measurements, no cold-load browser trace, an error row marked n/a with no subject-absence reason, and a gate auditor output that finds a hidden error and a generic equal-card grid. Preserve each distinct failed check in the deterministic ledger, then provide a linked, actionable execution report that names every evidence-producing rerun.",
+  "assertions": [
+    "Fails closed and names each distinct missing or contradictory evidence item, including a forged all-pass bundle contradicted by a real auditor finding.",
+    "Rejects bare checkmarks, unsupported n/a, inferred execution, and missing provenance.",
+    "Keeps canonical evidence rows, measurements, skips, and verdict deterministic until new execution evidence replaces them.",
+    "Separates the authoritative ledger from a linked presentation report without collapsing contrast, cold-load, error-state, structural, and verdict-integrity failures into one generic row.",
+    "The readable report names every blocking ledger ID, why it blocks, the required rerun or repair, and the missing evidence; it cannot claim release.",
+    "Rejects a thin ledger-only answer and cosmetic heading variation: response diversity must improve the report architecture, visual-decision framing, or prose voice without changing authoritative facts."
+  ],
+  "routing": {"positive": true, "negative_neighbor": "a11y-pass", "handoff": "none"},
+  "run_protocol": {
+    "seeds": [101, 202, 303],
+    "fresh_context": true,
+    "temperature": 0,
+    "diversity_axes": ["structure", "aesthetic", "voice"],
+    "presentation_only_variation": true,
+    "report_depth_requirement": "Each response must preserve individual canonical failure rows and provide a linked execution report with blocking ledger IDs, evidence gaps, remediation owner or action, and required reruns. A single undifferentiated ledger or an all-pass summary fails.",
+    "thin_ledger_rejection": "Reject outputs that merely repeat the ledger, rename headings, reorder the same failures, merge distinct failures, or imply release without the required execution evidence.",
+    "response_architecture_requirement": "Across the three fresh runs, use genuinely different report architectures such as a failure-first queue, evidence trace, or release decision memo. The architecture may change visual-decision framing and prose voice, but every canonical fact, measurement gap, provenance, and FAIL verdict must remain identical; heading-only variation is not diversity.",
+    "material_difference_requirement": "Accept diversity only when every compared run demonstrates a different response architecture plus at least two evidence-bound material differences across structure, visual-decision framing, and voice. A new order, synonym, recolor, or unsupported style swap is not diversity.",
+    "negative_routing_requirement": "The negative neighbor (a11y-pass) must be explicitly rejected with a reason and handoff boundary."
+  }
+}

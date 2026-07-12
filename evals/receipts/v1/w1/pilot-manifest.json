@@ -1,0 +1,396 @@
+{
+  "schema_version": 1,
+  "description": "Pilot job manifest for W1 behavioral evaluation — 3 skills × 4 runs = 12 cells.",
+  "pilot_skills": [
+    "component-states",
+    "deslop-ui",
+    "tastecheck-pass"
+  ],
+  "cell_count": 12,
+  "baseline_count": 3,
+  "upgraded_count": 9,
+  "acceptance_quorum": 3,
+  "collect_command": "node tools/evals/evaluators/collect-attempt.mjs <raw-attempt.json>",
+  "run_instructions": [
+    "1. Run each baseline cell against UNMODIFIED (pre-W1) skill files using the frozen prompt exactly.",
+    "2. Run each upgraded cell against upgraded skill files in a fresh, isolated context.",
+    "3. Pass each raw output to: node tools/evals/evaluators/collect-attempt.mjs <raw-attempt.json>",
+    "4. External Codex/Terra/Luna workers: write unique raw output files per run; collector deduplicates by content hash.",
+    "5. After all 12 cells collected: node tools/evals/evaluators/blind-corpus.mjs generate",
+    "6. Evaluators grade via: node tools/evals/evaluators/blind-corpus.mjs view <scenario_id>",
+    "7. After judging: node tools/evals/evaluators/check-paired.mjs && node tools/evals/evaluators/check-diversity.mjs",
+    "8. Final gate: node tools/evals/evaluators/aggregate-receipts.mjs"
+  ],
+  "cells": [
+    {
+      "cell_id": "component-states-async-destructive-control:baseline:101",
+      "skill": "component-states",
+      "scenario_id": "component-states-async-destructive-control",
+      "variant": "baseline",
+      "seed": 101,
+      "temperature": 0.7,
+      "fresh_context": true,
+      "tool_policy": "read-only",
+      "prompt_hash": "269db917952179867529b505795a05c32aff9de1590948be9d5c04069161229e",
+      "run_constraints": {
+        "max_output_tokens": 8000,
+        "retry_cap": 2,
+        "invalid_run_classes": [
+          "transport",
+          "truncation",
+          "schema_corruption"
+        ]
+      },
+      "assertions": [
+        "Separates visual state from semantic state and names the trigger for each.",
+        "Includes focus-visible, keyboard parity, aria-busy/disabled semantics, and a no-double-submit rule.",
+        "Includes success and error recovery without inventing page-level empty states.",
+        "Provides status, reason, remediation, evidence, and provenance rather than bare checkmarks."
+      ],
+      "note": "Frozen baseline: run against unmodified skill files. Record model_runtime and provider_request_id."
+    },
+    {
+      "cell_id": "component-states-async-destructive-control:upgraded:101",
+      "skill": "component-states",
+      "scenario_id": "component-states-async-destructive-control",
+      "variant": "upgraded",
+      "seed": 101,
+      "temperature": 0.7,
+      "fresh_context": true,
+      "tool_policy": "read-only",
+      "prompt_hash": "269db917952179867529b505795a05c32aff9de1590948be9d5c04069161229e",
+      "run_constraints": {
+        "max_output_tokens": 8000,
+        "retry_cap": 2,
+        "invalid_run_classes": [
+          "transport",
+          "truncation",
+          "schema_corruption"
+        ]
+      },
+      "assertions": [
+        "Separates visual state from semantic state and names the trigger for each.",
+        "Includes focus-visible, keyboard parity, aria-busy/disabled semantics, and a no-double-submit rule.",
+        "Includes success and error recovery without inventing page-level empty states.",
+        "Provides status, reason, remediation, evidence, and provenance rather than bare checkmarks."
+      ],
+      "diversity_axes": [
+        "structure",
+        "aesthetic",
+        "voice"
+      ],
+      "note": "Upgraded run: use upgraded skill files in a fresh isolated context. Do not reuse baseline session."
+    },
+    {
+      "cell_id": "component-states-async-destructive-control:upgraded:202",
+      "skill": "component-states",
+      "scenario_id": "component-states-async-destructive-control",
+      "variant": "upgraded",
+      "seed": 202,
+      "temperature": 0.7,
+      "fresh_context": true,
+      "tool_policy": "read-only",
+      "prompt_hash": "269db917952179867529b505795a05c32aff9de1590948be9d5c04069161229e",
+      "run_constraints": {
+        "max_output_tokens": 8000,
+        "retry_cap": 2,
+        "invalid_run_classes": [
+          "transport",
+          "truncation",
+          "schema_corruption"
+        ]
+      },
+      "assertions": [
+        "Separates visual state from semantic state and names the trigger for each.",
+        "Includes focus-visible, keyboard parity, aria-busy/disabled semantics, and a no-double-submit rule.",
+        "Includes success and error recovery without inventing page-level empty states.",
+        "Provides status, reason, remediation, evidence, and provenance rather than bare checkmarks."
+      ],
+      "diversity_axes": [
+        "structure",
+        "aesthetic",
+        "voice"
+      ],
+      "note": "Upgraded run: use upgraded skill files in a fresh isolated context. Do not reuse baseline session."
+    },
+    {
+      "cell_id": "component-states-async-destructive-control:upgraded:303",
+      "skill": "component-states",
+      "scenario_id": "component-states-async-destructive-control",
+      "variant": "upgraded",
+      "seed": 303,
+      "temperature": 0.7,
+      "fresh_context": true,
+      "tool_policy": "read-only",
+      "prompt_hash": "269db917952179867529b505795a05c32aff9de1590948be9d5c04069161229e",
+      "run_constraints": {
+        "max_output_tokens": 8000,
+        "retry_cap": 2,
+        "invalid_run_classes": [
+          "transport",
+          "truncation",
+          "schema_corruption"
+        ]
+      },
+      "assertions": [
+        "Separates visual state from semantic state and names the trigger for each.",
+        "Includes focus-visible, keyboard parity, aria-busy/disabled semantics, and a no-double-submit rule.",
+        "Includes success and error recovery without inventing page-level empty states.",
+        "Provides status, reason, remediation, evidence, and provenance rather than bare checkmarks."
+      ],
+      "diversity_axes": [
+        "structure",
+        "aesthetic",
+        "voice"
+      ],
+      "note": "Upgraded run: use upgraded skill files in a fresh isolated context. Do not reuse baseline session."
+    },
+    {
+      "cell_id": "deslop-ui-polished-generic-page:baseline:101",
+      "skill": "deslop-ui",
+      "scenario_id": "deslop-ui-polished-generic-page",
+      "variant": "baseline",
+      "seed": 101,
+      "temperature": 0.2,
+      "fresh_context": true,
+      "tool_policy": "read-only",
+      "prompt_hash": "d70e1f3bba571a2cab2f13b3c001826b01bef0ba8595e7e99f244d59d363ae30",
+      "run_constraints": {
+        "max_output_tokens": 8000,
+        "retry_cap": 2,
+        "invalid_run_classes": [
+          "transport",
+          "truncation",
+          "schema_corruption"
+        ]
+      },
+      "assertions": [
+        "Records observed findings separately across surface, structure, and verbal planes.",
+        "Preserves coherent product facts and deliberate brand signals.",
+        "Commits to a named, brief-compatible direction with concrete repairs, not subtraction alone.",
+        "Reports severity, evidence, remediation, and provenance for every finding."
+      ],
+      "note": "Frozen baseline: run against unmodified skill files. Record model_runtime and provider_request_id."
+    },
+    {
+      "cell_id": "deslop-ui-polished-generic-page:upgraded:101",
+      "skill": "deslop-ui",
+      "scenario_id": "deslop-ui-polished-generic-page",
+      "variant": "upgraded",
+      "seed": 101,
+      "temperature": 0.2,
+      "fresh_context": true,
+      "tool_policy": "read-only",
+      "prompt_hash": "d70e1f3bba571a2cab2f13b3c001826b01bef0ba8595e7e99f244d59d363ae30",
+      "run_constraints": {
+        "max_output_tokens": 8000,
+        "retry_cap": 2,
+        "invalid_run_classes": [
+          "transport",
+          "truncation",
+          "schema_corruption"
+        ]
+      },
+      "assertions": [
+        "Records observed findings separately across surface, structure, and verbal planes.",
+        "Preserves coherent product facts and deliberate brand signals.",
+        "Commits to a named, brief-compatible direction with concrete repairs, not subtraction alone.",
+        "Reports severity, evidence, remediation, and provenance for every finding."
+      ],
+      "diversity_axes": [
+        "structure",
+        "aesthetic",
+        "voice"
+      ],
+      "note": "Upgraded run: use upgraded skill files in a fresh isolated context. Do not reuse baseline session."
+    },
+    {
+      "cell_id": "deslop-ui-polished-generic-page:upgraded:202",
+      "skill": "deslop-ui",
+      "scenario_id": "deslop-ui-polished-generic-page",
+      "variant": "upgraded",
+      "seed": 202,
+      "temperature": 0.2,
+      "fresh_context": true,
+      "tool_policy": "read-only",
+      "prompt_hash": "d70e1f3bba571a2cab2f13b3c001826b01bef0ba8595e7e99f244d59d363ae30",
+      "run_constraints": {
+        "max_output_tokens": 8000,
+        "retry_cap": 2,
+        "invalid_run_classes": [
+          "transport",
+          "truncation",
+          "schema_corruption"
+        ]
+      },
+      "assertions": [
+        "Records observed findings separately across surface, structure, and verbal planes.",
+        "Preserves coherent product facts and deliberate brand signals.",
+        "Commits to a named, brief-compatible direction with concrete repairs, not subtraction alone.",
+        "Reports severity, evidence, remediation, and provenance for every finding."
+      ],
+      "diversity_axes": [
+        "structure",
+        "aesthetic",
+        "voice"
+      ],
+      "note": "Upgraded run: use upgraded skill files in a fresh isolated context. Do not reuse baseline session."
+    },
+    {
+      "cell_id": "deslop-ui-polished-generic-page:upgraded:303",
+      "skill": "deslop-ui",
+      "scenario_id": "deslop-ui-polished-generic-page",
+      "variant": "upgraded",
+      "seed": 303,
+      "temperature": 0.2,
+      "fresh_context": true,
+      "tool_policy": "read-only",
+      "prompt_hash": "d70e1f3bba571a2cab2f13b3c001826b01bef0ba8595e7e99f244d59d363ae30",
+      "run_constraints": {
+        "max_output_tokens": 8000,
+        "retry_cap": 2,
+        "invalid_run_classes": [
+          "transport",
+          "truncation",
+          "schema_corruption"
+        ]
+      },
+      "assertions": [
+        "Records observed findings separately across surface, structure, and verbal planes.",
+        "Preserves coherent product facts and deliberate brand signals.",
+        "Commits to a named, brief-compatible direction with concrete repairs, not subtraction alone.",
+        "Reports severity, evidence, remediation, and provenance for every finding."
+      ],
+      "diversity_axes": [
+        "structure",
+        "aesthetic",
+        "voice"
+      ],
+      "note": "Upgraded run: use upgraded skill files in a fresh isolated context. Do not reuse baseline session."
+    },
+    {
+      "cell_id": "tastecheck-pass-dishonest-evidence-bundle:baseline:101",
+      "skill": "tastecheck-pass",
+      "scenario_id": "tastecheck-pass-dishonest-evidence-bundle",
+      "variant": "baseline",
+      "seed": 101,
+      "temperature": 0,
+      "fresh_context": true,
+      "tool_policy": "read-only",
+      "prompt_hash": "33db8f1eb647d4b3a7d3b4c213eace833404d2ba6a3336c243064af13c0fa31e",
+      "run_constraints": {
+        "max_output_tokens": 8000,
+        "retry_cap": 2,
+        "invalid_run_classes": [
+          "transport",
+          "truncation",
+          "schema_corruption"
+        ]
+      },
+      "assertions": [
+        "Fails closed and names missing or contradictory evidence.",
+        "Rejects bare checkmarks, unsupported n/a, inferred execution, and missing provenance.",
+        "Keeps canonical evidence rows, measurements, skips, and verdict deterministic.",
+        "Separates the authoritative ledger from a presentation report."
+      ],
+      "note": "Frozen baseline: run against unmodified skill files. Record model_runtime and provider_request_id."
+    },
+    {
+      "cell_id": "tastecheck-pass-dishonest-evidence-bundle:upgraded:101",
+      "skill": "tastecheck-pass",
+      "scenario_id": "tastecheck-pass-dishonest-evidence-bundle",
+      "variant": "upgraded",
+      "seed": 101,
+      "temperature": 0,
+      "fresh_context": true,
+      "tool_policy": "read-only",
+      "prompt_hash": "33db8f1eb647d4b3a7d3b4c213eace833404d2ba6a3336c243064af13c0fa31e",
+      "run_constraints": {
+        "max_output_tokens": 8000,
+        "retry_cap": 2,
+        "invalid_run_classes": [
+          "transport",
+          "truncation",
+          "schema_corruption"
+        ]
+      },
+      "assertions": [
+        "Fails closed and names missing or contradictory evidence.",
+        "Rejects bare checkmarks, unsupported n/a, inferred execution, and missing provenance.",
+        "Keeps canonical evidence rows, measurements, skips, and verdict deterministic.",
+        "Separates the authoritative ledger from a presentation report."
+      ],
+      "diversity_axes": [
+        "structure",
+        "aesthetic",
+        "voice"
+      ],
+      "note": "Upgraded run: use upgraded skill files in a fresh isolated context. Do not reuse baseline session."
+    },
+    {
+      "cell_id": "tastecheck-pass-dishonest-evidence-bundle:upgraded:202",
+      "skill": "tastecheck-pass",
+      "scenario_id": "tastecheck-pass-dishonest-evidence-bundle",
+      "variant": "upgraded",
+      "seed": 202,
+      "temperature": 0,
+      "fresh_context": true,
+      "tool_policy": "read-only",
+      "prompt_hash": "33db8f1eb647d4b3a7d3b4c213eace833404d2ba6a3336c243064af13c0fa31e",
+      "run_constraints": {
+        "max_output_tokens": 8000,
+        "retry_cap": 2,
+        "invalid_run_classes": [
+          "transport",
+          "truncation",
+          "schema_corruption"
+        ]
+      },
+      "assertions": [
+        "Fails closed and names missing or contradictory evidence.",
+        "Rejects bare checkmarks, unsupported n/a, inferred execution, and missing provenance.",
+        "Keeps canonical evidence rows, measurements, skips, and verdict deterministic.",
+        "Separates the authoritative ledger from a presentation report."
+      ],
+      "diversity_axes": [
+        "structure",
+        "aesthetic",
+        "voice"
+      ],
+      "note": "Upgraded run: use upgraded skill files in a fresh isolated context. Do not reuse baseline session."
+    },
+    {
+      "cell_id": "tastecheck-pass-dishonest-evidence-bundle:upgraded:303",
+      "skill": "tastecheck-pass",
+      "scenario_id": "tastecheck-pass-dishonest-evidence-bundle",
+      "variant": "upgraded",
+      "seed": 303,
+      "temperature": 0,
+      "fresh_context": true,
+      "tool_policy": "read-only",
+      "prompt_hash": "33db8f1eb647d4b3a7d3b4c213eace833404d2ba6a3336c243064af13c0fa31e",
+      "run_constraints": {
+        "max_output_tokens": 8000,
+        "retry_cap": 2,
+        "invalid_run_classes": [
+          "transport",
+          "truncation",
+          "schema_corruption"
+        ]
+      },
+      "assertions": [
+        "Fails closed and names missing or contradictory evidence.",
+        "Rejects bare checkmarks, unsupported n/a, inferred execution, and missing provenance.",
+        "Keeps canonical evidence rows, measurements, skips, and verdict deterministic.",
+        "Separates the authoritative ledger from a presentation report."
+      ],
+      "diversity_axes": [
+        "structure",
+        "aesthetic",
+        "voice"
+      ],
+      "note": "Upgraded run: use upgraded skill files in a fresh isolated context. Do not reuse baseline session."
+    }
+  ],
+  "generated_at_utc": "2026-07-11T04:11:07Z"
+}

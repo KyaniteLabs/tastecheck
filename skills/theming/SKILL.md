@@ -1,9 +1,8 @@
 ---
 name: theming
 description: >-
-  Semantic theme system for light, dark, and high contrast. Use for dark mode,
-  theme toggles, prefers-color-scheme, forced-colors, accessible contrast,
-  surface/elevation tokens, persistent user choice, and re-themeable components.
+  Use when semantic roles must map coherently across light, dark, forced-colors, or
+  saved theme preferences without contrast or no-flash regressions.
 ---
 
 # Theming (light · dark · high-contrast, from one token source)
@@ -39,6 +38,16 @@ forced-colors-aware). Every value here is checkable.
    `color-scheme` set so native controls follow.
 6. **Verify each theme** — contrast on the *actual* surfaces of *each* theme.
 
+## Vary the mappings, preserve the contract
+
+The starter values demonstrate role mapping and preference order, not a dark-theme
+recipe. Derive each mapping from the supplied semantic roles, ambient conditions,
+brand direction, and platform constraints. A credible theme system may use quiet
+surfaces, high-information field surfaces, or a more editorial reading surface, but it
+must keep role names, forced-colors respect, preference precedence, and measured pairs
+intact. When source roles are missing, stop and name the recovery needed rather than
+inventing raw values in components.
+
 ## Non-negotiables
 - **One semantic-token source; components never hard-code colors.** Re-theming = remap
   tokens, nothing else.
@@ -55,42 +64,31 @@ forced-colors-aware). Every value here is checkable.
 - **Contrast re-verified per theme** (body ≥4.5, large/UI ≥3) against that theme's
   surfaces — a color that passes in light often fails in dark, and vice-versa.
 
-## Quick-start: tokens + 3 themes + toggle
-The full starter (light + dark + high-contrast, `prefers-color-scheme`, persistent
-toggle, `forced-colors`, dim-media-on-dark) is in `assets/theme-starter.css`. Shape:
+## Theme resolution and recovery
 
-```css
-/* Values below are EXAMPLE light/dark mappings — yours come from your DESIGN-SYSTEM.md
-   and color-system ramp. The TOKEN NAMES are the contract; keep them exactly. */
-:root{ color-scheme:light;
-  --color-bg:#f7f4ee; --color-surface-1:#fffdf9; --color-surface-2:#efebe2;  /* off-white, not #fff glare */
-  --color-text:#211d18; --color-text-muted:#5d574f; --color-border:#ddd6c9;
-  --color-accent:var(--accent-500); --color-accent-ink:#fff;
-  --color-focus:var(--color-accent);
-}
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  color-scheme:dark;
-  --color-bg:#121212;                                                  /* never #000 */
-  --color-surface-1:color-mix(in oklab,#fff 6%,var(--color-bg));       /* elevation = lighter */
-  --color-surface-2:color-mix(in oklab,#fff 9%,var(--color-bg));
-  --color-text:#ececec; --color-text-muted:#a0a0a6;
-  --color-border:color-mix(in oklab,#fff 14%,var(--color-bg));
-  --color-accent:var(--accent-300);                                    /* dark accent = +L, −C */
-}}
-:root[data-theme="dark"]{ /* same dark block, as an explicit override */ }
+Separate three decisions that are often accidentally merged: stable semantic role names,
+the values each supported theme maps to those roles, and the policy that chooses a theme
+at render time. Document the precedence in plain language: system forced-colors takes
+authority; then an explicit supported user choice; then the operating-system preference;
+then the application default. A theme toggle is incomplete until its precedence, storage
+behavior, and no-preference fallback are known.
 
-/* High contrast: keep the media queries FLAT (one condition each) — nested
-   media queries are valid CSS but easy to break when editing. */
-@media (prefers-contrast: more){
-  :root{ --color-bg:#fff; --color-text:#000; --color-border:#000; --color-text-muted:#1a1a1a; }
-  :root[data-theme="dark"]{ --color-bg:#000; --color-text:#fff; --color-border:#fff; --color-text-muted:#e6e6e6; }
-}
-@media (prefers-contrast: more) and (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){ --color-bg:#000; --color-text:#fff; --color-border:#fff; --color-text-muted:#e6e6e6; }
-}
-@media (forced-colors: active){ :root{ /* let system colors win; keep focus visible */ } }
-body{ background:var(--color-bg); color:var(--color-text); }
-```
+Treat forced-colors as an environment, not another palette. Let system colors and native
+control behavior remain authoritative, and preserve warnings, errors, selections, and
+focus with text, icons, state, or shape as well as color. If a semantic role is absent,
+record a failed recovery row and stop the mapping decision; reusing a convenient accent
+silently changes the role’s meaning.
+
+Prove no-flash behavior at the earliest theme application point. State what happens
+before the first paint, when a saved choice is unavailable, and how native controls
+receive the matching color-scheme. A preference plan is not a verified no-flash result
+until a cold-load observation names the theme, artifact, and timing.
+
+## Quick-start
+
+Use `assets/theme-starter.css` for the complete mapping. Preserve the invariants:
+tuned dark surfaces, flat high-contrast media queries, `forced-colors` cooperation,
+semantic roles, and a no-flash preference applied before first paint.
 
 **No-flash toggle (the part everyone gets wrong):** the persistent override must be
 applied *before first paint* — an inline `<head>` script that reads localStorage and
@@ -117,17 +115,35 @@ Also set `<meta name="theme-color">` per theme (browser chrome follows), and sty
   Contrast: what to do and what NOT to override.
 - `references/decision-records.md` — meta-patterns + ADR rules.
 
-## Self-check
-1. One semantic-token set; components reference roles only (no hard-coded colors)?
-2. Light baseline off-white (not #fff glare); ink softened (not pure #000)?
-3. Dark tuned not inverted: bg≥#121212, elevation by lightness, off-white text, accents +L/−C?
-4. High-contrast / `forced-colors` handled; system colors not suppressed; focus visible?
-5. `prefers-color-scheme` default + persistent toggle that wins; `color-scheme` set?
-6. Contrast re-verified on each theme's real surfaces (body ≥4.5, large/UI ≥3)?
+## Completion evidence
+
+Close with a five-field evidence ledger. Put the check ID at the start of Reason and
+name the environment or mode in Evidence.
+
+| Status | Reason | Remediation | Evidence | Provenance |
+| --- | --- | --- | --- | --- |
+|  | role-map — semantic roles across supported themes |  |  |  |
+|  | dark-map — tuned values rather than inversion |  |  |  |
+|  | resolution — preference, no-flash, and native-control behavior |  |  |  |
+|  | forced-colors — high-contrast environmental behavior |  |  |  |
+|  | contrast-handoff — per-theme proof and accessibility boundary |  |  |  |
 
 ## How to deliver
-- State the token roles and the three mappings; report contrast per theme.
-- Pair with `color-system` (ramp), `web-typography`, `a11y-pass` (run its audit per
-  theme), `cognitive-a11y` (off-white/calm).
-- Provenance: distills Material dark-theme guidance + WCAG + forced-colors practice;
-  credited, expressed independently.
+
+Report semantic roles, all mappings, resolution policy, no-flash behavior, and per-theme
+contrast. Include a task-level proof for each supported environment: a bright setting,
+a dim setting, and forced-colors where applicable. Hand source ramps, type, technical
+a11y, and cognitive concerns to the adjacent skills. Provenance is credited and
+independent.
+
+<!-- contract:v1:start -->
+## Contract (generated)
+
+Canonical detail: [contract.json](contract.json).
+
+- Route: An interface needs coherent light, dark, high-contrast, or forced-colors mappings (+1 in contract.json); avoid: The request is to invent the source palette rather than map semantic roles (+1 in contract.json)
+- Exclude: Do not invert a light palette and call it dark mode (+1 in contract.json)
+- Stop / handoff: Pause when semantic roles are missing and theme values would be raw-color copies (+1 in contract.json); receives [design-system-interview, improve-existing-website, color-system] -> sends [a11y-pass, cognitive-a11y, responsive-layout]
+- Output: A semantic light, dark, and high-contrast theme map with preference behavior and measured pairs
+- Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
+<!-- contract:v1:end -->

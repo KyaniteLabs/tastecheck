@@ -1,0 +1,1 @@
+{"schema_version":1,"target_release":"1.0.0","required_receipts":[{"id":"fixture","path":"fixture.json","sha256":"fixture-hash","assertions":{"ok":true}}]}

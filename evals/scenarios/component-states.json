@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "skill": "component-states",
+  "class": "generative",
+  "id": "component-states-async-destructive-control",
+  "prompt": "Design the state contract for an async destructive action in a dense admin interface. Include keyboard, focus-visible, pressed, disabled, confirmation when warranted, loading, success, and error behavior. Use the existing semantic tokens and do not hide the only recovery path. Name the single semantic state owner, every entry guard, the shared pointer/keyboard route, and the success/failure focus destination.",
+  "assertions": [
+    "Separates visual state from semantic state, names the trigger for each, and identifies the single owner of every semantic transition.",
+    "Defines a complete destructive-action lifecycle with ready, confirmation when warranted, submitting, succeeded, and failed states; each has an entry guard, interaction rule, and exit or recovery path.",
+    "Includes focus-visible, keyboard parity, aria-busy/disabled semantics, a synchronous no-double-submit rule, local success confirmation, and a keyboard-reachable error retry.",
+    "Fails explicitly on a missing semantic token rather than inventing a fallback color, and does not invent page-level empty states.",
+    "Provides status, reason, remediation, evidence, and provenance rather than bare checkmarks.",
+    "Rejects a thin ledger-only answer and cosmetic heading variation: every run must make the lifecycle and implementation rules actionable while preserving the same semantic facts."
+  ],
+  "routing": {"positive": true, "negative_neighbor": "form-ux", "handoff": "a11y-pass"},
+  "run_protocol": {
+    "seeds": [101, 202, 303],
+    "fresh_context": true,
+    "diversity_axes": ["structure", "aesthetic", "voice"],
+    "lifecycle_depth_requirement": "Each response must expose state ownership, transition guards, confirmation/cancel behavior when warranted, shared input routing, success confirmation, failure recovery, and focus disposition. A state-name table without those operational rules fails.",
+    "thin_ledger_rejection": "Reject outputs that only enumerate state rows, rename headings, reorder the same rows, or make unsupported style substitutions without a lifecycle, interaction contract, and recovery behavior.",
+    "response_architecture_requirement": "Across the three fresh runs, use genuinely different architectures such as a lifecycle map, event-to-transition trace, or implementation specification. Each change must preserve canonical semantic facts and introduce concrete token-backed visual decisions; heading-only variation is not diversity.",
+    "material_difference_requirement": "Accept diversity only when every compared run demonstrates a different response architecture plus at least two evidence-bound material decisions across structure, aesthetic treatment, and voice. A new order, synonym, recolor, or unsupported style swap is not diversity.",
+    "negative_routing_requirement": "The negative neighbor (form-ux) must be explicitly rejected with a reason and handoff boundary."
+  }
+}

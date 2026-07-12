@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/contracts/v2/taste-oracle-analysis-result.schema.json",
+  "title": "TasteCheck Taste Oracle Analysis Result v2",
+  "type": "object",
+  "required": ["schema_version", "kind", "scenario_id", "target_arm", "comparator_arm", "release_scope", "provenance", "evidence_notice", "counts", "samples_by_family", "family_statistics", "family_disagreement", "preference_rate", "tie_rate", "abstention_rate", "preference_margin", "bootstrap", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 2 },
+    "kind": { "const": "taste-oracle-analysis-result" },
+    "scenario_id": { "const": "deslop-ui-hard-001" },
+    "target_arm": { "enum": ["no-skill", "current", "frozen"] },
+    "comparator_arm": { "enum": ["no-skill", "current", "frozen"] },
+    "release_scope": { "const": "milestone_only" },
+    "provenance": { "oneOf": [{ "$ref": "taste-oracle-observations.schema.json#/definitions/syntheticProvenance" }, { "$ref": "taste-oracle-observations.schema.json#/definitions/collectedProvenance" }] },
+    "evidence_notice": { "type": "string", "minLength": 1 },
+    "counts": {
+      "type": "object",
+      "required": ["samples", "analyzed", "families", "wins", "losses", "ties", "abstentions"],
+      "additionalProperties": false,
+      "properties": {
+        "samples": { "type": "integer", "minimum": 8 }, "analyzed": { "type": "integer", "minimum": 0 },
+        "families": { "type": "integer", "minimum": 2 }, "wins": { "type": "integer", "minimum": 0 },
+        "losses": { "type": "integer", "minimum": 0 }, "ties": { "type": "integer", "minimum": 0 },
+        "abstentions": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "samples_by_family": { "type": "object", "patternProperties": { "^family-[a-z0-9]+(?:-[a-z0-9]+)*$": { "type": "integer", "minimum": 1 } }, "additionalProperties": false },
+    "family_statistics": { "type": "object", "patternProperties": { "^family-[a-z0-9]+(?:-[a-z0-9]+)*$": { "$ref": "#/definitions/familyStatistics" } }, "additionalProperties": false },
+    "family_disagreement": { "type": "boolean" },
+    "preference_rate": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "tie_rate": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "abstention_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+    "preference_margin": { "type": ["number", "null"], "minimum": -1, "maximum": 1 },
+    "bootstrap": {
+      "type": "object",
+      "required": ["method", "confidence_level", "seed", "iterations", "interval", "minimum_clusters_per_family", "enough_independent_clusters"],
+      "additionalProperties": false,
+      "properties": {
+        "method": { "const": "family_balanced_cluster_percentile" }, "confidence_level": { "const": 0.95 },
+        "seed": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+        "iterations": { "type": "integer", "minimum": 200, "maximum": 1000000 },
+        "interval": { "oneOf": [{ "type": "null" }, { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number", "minimum": -1, "maximum": 1 } }] },
+        "minimum_clusters_per_family": { "const": 2 }, "enough_independent_clusters": { "type": "boolean" }
+      }
+    },
+    "status": { "enum": ["supported", "not_supported", "insufficient_evidence"] }
+  },
+  "definitions": {
+    "familyStatistics": { "type": "object", "required": ["samples", "analyzed", "clusters", "analyzed_clusters", "wins", "losses", "ties", "abstentions", "margin", "cluster_margins"], "additionalProperties": false, "properties": { "samples": { "type": "integer", "minimum": 1 }, "analyzed": { "type": "integer", "minimum": 0 }, "clusters": { "type": "integer", "minimum": 1 }, "analyzed_clusters": { "type": "integer", "minimum": 0 }, "wins": { "type": "integer", "minimum": 0 }, "losses": { "type": "integer", "minimum": 0 }, "ties": { "type": "integer", "minimum": 0 }, "abstentions": { "type": "integer", "minimum": 0 }, "margin": { "type": ["number", "null"], "minimum": -1, "maximum": 1 }, "cluster_margins": { "type": "array", "items": { "type": "number", "minimum": -1, "maximum": 1 } } } }
+  }
+}

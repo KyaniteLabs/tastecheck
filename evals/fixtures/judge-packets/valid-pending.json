@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "packet_id": "component-states-paired-lift-001",
+  "evaluator_type": "paired_lift",
+  "skill": "component-states",
+  "scenario_id": "component-states-async-destructive-control",
+  "prompt_hash": "269db917952179867529b505795a05c32aff9de1590948be9d5c04069161229e",
+  "calibration_ref": "evals/w1/rubric/calibration.json",
+  "candidates": {
+    "A": {
+      "label": "A",
+      "attempt_id": "component-states-upgraded-seed101-attempt-1",
+      "raw_output_hash": "1c9c68a98b6c2537fa82ee665acdb8aa85e834569d9d1665d98130027ac1f9bd",
+      "raw_output": "## Destructive action state contract\n\n### Decision sequence\n\n1. **Availability first.** Determine whether the selected record may be deleted and expose the reason and corrective action when it may not.\n2. **Input feedback second.** Pointer hover, keyboard focus, and press are visual feedback only; they never change deletion eligibility or operation state.\n3. **Commit atomically.** On the first valid activation, set `isSubmitting` before starting the request.\n4. **Resolve locally.** Success removes or marks only the affected record; failure keeps its context and exposes an adjacent retry path.\n\n| state and trigger | status | reason | remediation | evidence | provenance |\n| --- | --- | --- | --- | --- | --- |\n| `ready` semantic state; selection is deletable and no request is active | pass | The action is available without implying it is harmless. | Render the native destructive `<button>` with its existing destructive token treatment. | `disabled` is absent; the activation handler accepts input only while `isSubmitting === false`. | Native button semantics; existing destructive semantic tokens. |\n"
+    },
+    "B": {
+      "label": "B",
+      "attempt_id": "component-states-baseline-seed101-attempt-1",
+      "raw_output_hash": "c084a5b17f5a3acd8bd3234bab5bce24dd0dbbd30f38602ac3501d23f8da3c3c",
+      "raw_output": "## Async destructive action contract\n\nUse one real `<button type=\"button\">` for the destructive action. Its visual state is a presentation of the semantic state; it must never be the source of truth.\n\n| Semantic state | Trigger and ownership | Visual state | Behavior and semantics | Exit / recovery |\n|---|---|---|---|---|\n| Ready | The item is eligible and no request is in flight. | Destructive button at rest. | Pointer click and `Enter`/`Space` invoke the same guarded submit function. | Submit begins only after the guard accepts it. |\n"
+    }
+  }
+}

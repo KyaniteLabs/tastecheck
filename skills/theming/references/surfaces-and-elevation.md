@@ -62,10 +62,3 @@ surface; never rely on shadow alone for elevation on dark.
 --shadow-float: 0 8px 30px rgb(0 0 0 / .5);   /* darker/larger than light-mode shadow */
 .modal { background: var(--color-surface-3); box-shadow: var(--shadow-float); }
 ```
-
-## Self-check
-- [ ] Background is not `#000`; it's ~`#121212`–`#1a1a1a` with optional slight tint.
-- [ ] Each elevation step is *lighter* than the one below (not just shadowed).
-- [ ] Top surface stays dark enough to keep text contrast ≥ 4.5:1.
-- [ ] Subtle borders provide separation where shadows would in light mode.
-- [ ] Shadows reserved for floating elements, softened and enlarged.

@@ -1,0 +1,24 @@
+{
+  "schema_version": 2,
+  "scenario_id": "deslop-ui-hard-001",
+  "skill": "deslop-ui",
+  "tokens_path": "evals/taste-oracle/deslop-ui-hard-001/tokens.json",
+  "arms": [
+    {
+      "id": "no-skill",
+      "fixture_path": "evals/taste-oracle/deslop-ui-hard-001/fixtures/no-skill.html"
+    },
+    {
+      "id": "current",
+      "fixture_path": "evals/taste-oracle/deslop-ui-hard-001/fixtures/current.html"
+    },
+    {
+      "id": "frozen",
+      "fixture_path": "evals/taste-oracle/deslop-ui-hard-001/fixtures/frozen.html"
+    }
+  ],
+  "viewports": [
+    { "id": "mobile", "width": 390, "height": 844 },
+    { "id": "desktop", "width": 1280, "height": 900 }
+  ]
+}

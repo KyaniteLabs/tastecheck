@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "revision_id": "remediation7-v2-2026-07-11",
+  "kind": "smallest-honest-remediation-replay",
+  "executor": "gpt-5.6-terra",
+  "evaluator_executor": "gpt-5.6-luna",
+  "seeds": [101, 202, 303],
+  "neutral_pairing": {
+    "instruction": "Apply the supplied skill source to the supplied scenario. This is a neutral quality comparison. Do not mention baseline, current, seed, diversity, or evaluator treatment. Preserve the scenario facts and provide the required evidence contract.",
+    "presentation_only": false
+  },
+  "diversity_lane": {
+    "instruction": "This is a current-only diversity lane. Preserve the scenario's authoritative facts and use semantic_variation_evidence to name evidence-bound material changes. An axis may use {label,evidence}, {claim,evidence}, or an exact-output evidence string; tastecheck-pass may use material_axes [{axis,evidence}]. Do not claim a change unless its evidence is an exact substring of the response, and do not use variation IDs or headings as product-quality evidence.",
+    "semantic_evidence_field": "semantic_variation_evidence",
+    "semantic_evidence_shapes": ["labeled-evidence", "claim-evidence", "string-evidence", "material-axes"]
+  },
+  "skills": [
+    {
+      "skill": "a11y-pass",
+      "scenario_path": "evals/scenarios/a11y-pass.json",
+      "semantic_diversity": {
+        "required_axes": ["structure", "evidence", "voice"],
+        "minimum_material_axes_per_pair": 2,
+        "required_invariants": ["keyboard", "focus", "contrast", "zoom"]
+      },
+      "fixture_contract_path": "evals/scenarios/fixtures/a11y-pass-artifact-contract.json"
+    },
+    {
+      "skill": "responsive-layout",
+      "scenario_path": "evals/scenarios/responsive-layout.json",
+      "semantic_diversity": {
+        "required_axes": ["structure", "evidence", "voice"],
+        "minimum_material_axes_per_pair": 2,
+        "required_invariants": ["320px", "400%", "container", "overflow"]
+      },
+      "fixture_contract_path": "evals/scenarios/fixtures/responsive-layout-artifact-contract.json"
+    },
+    {
+      "skill": "component-states",
+      "scenario_path": "evals/scenarios/component-states.json",
+      "semantic_diversity": {
+        "required_axes": ["structure", "evidence", "voice"],
+        "minimum_material_axes_per_pair": 2,
+        "required_invariants": ["focus-visible", "keyboard", "submitting", "recovery"]
+      },
+      "fixture_contract_path": "evals/scenarios/fixtures/component-states-artifact-contract.json"
+    },
+    {
+      "skill": "micro-motion",
+      "scenario_path": "evals/scenarios/micro-motion.json",
+      "semantic_diversity": {
+        "required_axes": ["structure", "decision", "voice"],
+        "minimum_material_axes_per_pair": 2,
+        "required_invariants": ["reduced motion", "interruption", "duration"]
+      }
+    },
+    {
+      "skill": "spacing-system",
+      "scenario_path": "evals/scenarios/spacing-system.json",
+      "semantic_diversity": {
+        "required_axes": ["structure", "token_decision", "voice"],
+        "minimum_material_axes_per_pair": 2,
+        "required_invariants": ["compact dispatcher", "long-form", "shared scale"]
+      }
+    },
+    {
+      "skill": "design-system-interview",
+      "scenario_path": "evals/scenarios/design-system-interview.json",
+      "semantic_diversity": {
+        "required_axes": ["structure", "decision", "voice"],
+        "minimum_material_axes_per_pair": 2,
+        "required_invariants": ["warm handmade", "dense operational dashboard", "English and Spanish"]
+      }
+    },
+    {
+      "skill": "tastecheck-pass",
+      "scenario_path": "evals/scenarios/tastecheck-pass.json",
+      "semantic_diversity": {
+        "required_axes": ["structure", "evidence", "voice"],
+        "minimum_material_axes_per_pair": 2,
+        "required_invariants": ["FAIL", "contrast", "cold-load"]
+      },
+      "deterministic_gate": {
+        "expected_verdict": "FAIL",
+        "required_ledger_ids": ["contrast:body-on-surface", "cold-load:initial-render", "error-state:invalid-skip", "a11y:hidden-error", "structural:equal-card-grid"],
+        "required_evidence_fields": ["status", "reason", "remediation", "evidence", "provenance"],
+        "preference_lift_required": false
+      }
+    }
+  ]
+}

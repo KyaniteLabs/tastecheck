@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/evals/w1/schemas/w1-receipt-schema.json",
+  "title": "W1 Pilot Receipt",
+  "description": "Schema for the aggregated W1 pilot evaluation receipt. Release-blocking: the aggregate tool exits 1 if any required_jobs are not in status=complete.",
+  "type": "object",
+  "required": ["schema_version", "wave", "total_jobs", "complete", "pending", "error", "all_required_complete", "skill_summaries", "date_utc"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "wave": { "type": "string", "const": "W1" },
+    "total_jobs": { "type": "integer", "const": 12 },
+    "complete": { "type": "integer" },
+    "pending": { "type": "integer" },
+    "error": { "type": "integer" },
+    "all_required_complete": {
+      "type": "boolean",
+      "description": "true only when all 12 jobs have at least one complete attempt. Release gate fails when this is false."
+    },
+    "missing_jobs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Job IDs with no complete attempt. Non-empty when all_required_complete=false."
+    },
+    "skill_summaries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["skill", "baseline_complete", "upgraded_complete", "upgraded_seeds_complete", "diversity_pass", "anti_slop_pass"],
+        "properties": {
+          "skill": { "type": "string" },
+          "baseline_complete": { "type": "boolean" },
+          "upgraded_complete": { "type": "boolean" },
+          "upgraded_seeds_complete": {
+            "type": "array",
+            "items": { "type": "integer" }
+          },
+          "diversity_pass": { "type": ["boolean", "null"], "description": "null when upgraded runs are not all complete yet" },
+          "anti_slop_pass": { "type": ["boolean", "null"] },
+          "lift_score": { "type": ["number", "null"], "description": "Paired lift score when both baseline and upgraded complete" },
+          "adjudication_needed": { "type": "boolean" }
+        }
+      }
+    },
+    "evaluator_verdicts": {
+      "type": "object",
+      "description": "Per-evaluator aggregate verdicts",
+      "properties": {
+        "paired_lift": { "type": "object" },
+        "diversity": { "type": "object" },
+        "anti_slop": { "type": "object" }
+      }
+    },
+    "date_utc": { "type": "string", "format": "date-time" }
+  }
+}

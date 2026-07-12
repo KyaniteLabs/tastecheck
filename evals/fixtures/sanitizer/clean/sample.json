@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "skill": "color-system",
+  "scenario_id": "color-system-brand-ramp-contrast-repair",
+  "variant": "upgraded",
+  "run_id": "color-system-upgraded-101-fixture",
+  "prompt_hash": "0000000000000000000000000000000000000000000000000000000000000001",
+  "context_hash": "0000000000000000000000000000000000000000000000000000000000000002",
+  "tool_policy": "read-only",
+  "model_runtime": "claude-sonnet (family: anthropic)",
+  "seed": 101,
+  "temperature": 0.7,
+  "output_ref": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "rubric": {
+    "brief_fit": 4,
+    "specificity": 4,
+    "actionability": 4,
+    "coherence": 4,
+    "usability": 4,
+    "non_generic_judgment": 4,
+    "skill_requirements": 4
+  },
+  "evidence": [
+    "Derived OKLCH teal ramp from the wordmark hue: oklch(45% 0.14 195)",
+    "Semantic roles: --color-alert-text, --color-surface-notice, --color-border-alert",
+    "Measured contrast: alert-text on paper-white = 7.1:1 (WCAG AAA)"
+  ],
+  "regressions": [],
+  "verdict": "improved",
+  "reviewer_provenance": "claude-sonnet / rubric-v1 / calibration-passed"
+}

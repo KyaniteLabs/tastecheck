@@ -5,8 +5,12 @@ argument-hint: "[file/path or text, optional]"
 
 Load and apply the **micro-motion** skill (`~/.agents/skills/micro-motion/SKILL.md`).
 
-Apply tasteful motion: transform/opacity only, 150-300ms ease-out, the 30% rule, staggered load, full reduced-motion contract.
+For every motion, name purpose, trigger, duration, interruption, performance
+evidence, and the equivalent reduced-motion behavior.
+
+Choose motion for purpose, not a house recipe: compositor-safe behavior, a tested reduced
+path, and a JS-disabled readable path are required.
 
 Target: $ARGUMENTS (if empty, apply to the current file / most recent work in context).
 
-Follow the skill's decision order and run its self-check before reporting. Report what you changed and why, in the skill's terms.
+Run the skill's self-check before reporting.

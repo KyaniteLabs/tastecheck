@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "wave": "W1",
+  "note": "Public index only. Contains packet hashes and status. Raw outputs and result files are private evidence.",
+  "total": 9,
+  "packets": [
+    {
+      "packet_id": "component-states-anti-slop-001",
+      "skill": "component-states",
+      "evaluator_type": "anti_slop",
+      "scenario_id": "component-states-async-destructive-control",
+      "status": "pending",
+      "result_count": 0,
+      "packet_hash": "ee1372ec8d27e408dbc72d72917b2f449b417a93d4385ef71c25bb5e02de618c"
+    },
+    {
+      "packet_id": "component-states-diversity-001",
+      "skill": "component-states",
+      "evaluator_type": "diversity",
+      "scenario_id": "component-states-async-destructive-control",
+      "status": "pending",
+      "result_count": 0,
+      "packet_hash": "eb37ae7af13c18fde386f92300c9c17610a7ec665b3b5cb783d11caa1abcc34f"
+    },
+    {
+      "packet_id": "component-states-paired-lift-001",
+      "skill": "component-states",
+      "evaluator_type": "paired_lift",
+      "scenario_id": "component-states-async-destructive-control",
+      "status": "pending",
+      "result_count": 0,
+      "packet_hash": "cb2d2c66c3a44ccc772d53a98a46fdf851b22e9cc50d6f92074d79048a803ef5"
+    },
+    {
+      "packet_id": "deslop-ui-anti-slop-001",
+      "skill": "deslop-ui",
+      "evaluator_type": "anti_slop",
+      "scenario_id": "deslop-ui-polished-generic-page",
+      "status": "pending",
+      "result_count": 0,
+      "packet_hash": "691a11a55aef6a08629e9d51005770284c4c80da8712f79b163f171cfc53df14"
+    },
+    {
+      "packet_id": "deslop-ui-diversity-001",
+      "skill": "deslop-ui",
+      "evaluator_type": "diversity",
+      "scenario_id": "deslop-ui-polished-generic-page",
+      "status": "pending",
+      "result_count": 0,
+      "packet_hash": "8056e827b66fa7c901891c8596d5abc2ad9edf408a4e1d89cdb0166c9d0054ba"
+    },
+    {
+      "packet_id": "deslop-ui-paired-lift-001",
+      "skill": "deslop-ui",
+      "evaluator_type": "paired_lift",
+      "scenario_id": "deslop-ui-polished-generic-page",
+      "status": "pending",
+      "result_count": 0,
+      "packet_hash": "6f11361943f57192360cac2017c9854be5e8fc7a7ee48f9764bd90d642a45929"
+    },
+    {
+      "packet_id": "tastecheck-pass-anti-slop-001",
+      "skill": "tastecheck-pass",
+      "evaluator_type": "anti_slop",
+      "scenario_id": "tastecheck-pass-dishonest-evidence-bundle",
+      "status": "pending",
+      "result_count": 0,
+      "packet_hash": "1475653b23e8ca427d080f567cf18a9e9a58a3fc8d5f50e3fbefc538e28f9c5a"
+    },
+    {
+      "packet_id": "tastecheck-pass-diversity-001",
+      "skill": "tastecheck-pass",
+      "evaluator_type": "diversity",
+      "scenario_id": "tastecheck-pass-dishonest-evidence-bundle",
+      "status": "pending",
+      "result_count": 0,
+      "packet_hash": "1fabed259b6001a0deecabad129314ec36bd68bc8c2c1e63b2e47ebcb55690c1"
+    },
+    {
+      "packet_id": "tastecheck-pass-paired-lift-001",
+      "skill": "tastecheck-pass",
+      "evaluator_type": "paired_lift",
+      "scenario_id": "tastecheck-pass-dishonest-evidence-bundle",
+      "status": "pending",
+      "result_count": 0,
+      "packet_hash": "109b7b52a2b1969a7d149f1f750c6857a0496fda01d874a02e7b8ed7563367d6"
+    }
+  ]
+}

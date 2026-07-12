@@ -4,4 +4,8 @@ node_modules/
 *.log
 .omx/
 .omc/
-.omx/
+.kilo/
+.worktrees/
+evals/replays/
+evals/receipts/v1/contracts/sanitizer.json
+evals/receipts/v1/contracts/sanitizer-fixtures.json
