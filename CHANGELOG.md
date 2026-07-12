@@ -5,6 +5,13 @@ All notable changes to the tastecheck skill pack. Format follows
 
 ## [Unreleased]
 
+### Release status
+
+- 1.0 engineering readiness and effectiveness are separate gates. Contract, static, and
+  evidence-pipeline readiness can pass while effectiveness remains blocked and unsupported.
+  The terminal blind evaluation remains below its release threshold; historical or failed
+  evidence cannot be presented as current effectiveness proof.
+
 The "the gate actually runs, and it caught us" pass — findings from a cross-model audit
 (one build brief through 7 model lanes) shipped back into the pack, then the pack held to
 its own standard on its own surfaces.
