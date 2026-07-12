@@ -1,6 +1,6 @@
 {
-  "$comment": "Manifest of the tastecheck skill pack. `landing` marks skills exercised end-to-end on the GitHub Pages landing page (verify-landing.mjs enforces coverage for those). Stages mirror the canonical pipeline in skills/tastecheck-pass/SKILL.md.",
-  "version": "1.0.0",
+  "$comment": "Manifest of the TasteCheck skill pack. `landing` marks concerns represented on the GitHub Pages integration surface (verify-landing.mjs enforces marker parity). Stages mirror the canonical pipeline in skills/tastecheck-pass/SKILL.md.",
+  "version": "1.1.0",
   "skills": [
     { "name": "design-system-interview", "stage": "direction", "landing": true },
     { "name": "improve-existing-website", "stage": "direction", "landing": true },

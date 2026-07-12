@@ -258,9 +258,10 @@ export function deriveEffectivenessClaim(manifest, ioOverrides = {}) {
 
 export function checkReleaseManifest(manifest, io = {}) {
   const errors = [];
+  const targetRelease = io.targetRelease ?? load("package.json").version;
   strictKeys(manifest, ["schema_version", "target_release", "engineering_readiness", "effectiveness_claim"], "release manifest", errors);
   if (manifest?.schema_version !== 2) errors.push("release receipt manifest schema_version must be 2");
-  if (manifest?.target_release !== "1.0.0") errors.push("release receipt manifest target_release must be 1.0.0");
+  if (manifest?.target_release !== targetRelease) errors.push(`release receipt manifest target_release must be ${targetRelease}`);
   errors.push(...checkEngineeringReadiness(manifest, io).errors);
   errors.push(...deriveEffectivenessClaim(manifest, io).errors);
   return errors;
@@ -277,8 +278,7 @@ function claims() {
   const manifest = load("skills.json");
   const dirs = readdirSync(join(root, "skills")).filter((name) => statSync(join(root, "skills", name)).isDirectory());
   const commandCount = readdirSync(join(root, "commands")).filter((name) => name.endsWith(".md")).length;
-  if (pkg.version !== "1.0.0") errors.push(`package.json version is ${pkg.version}; expected 1.0.0`);
-  if (manifest.version !== "1.0.0") errors.push(`skills.json version is ${manifest.version}; expected 1.0.0`);
+  if (manifest.version !== pkg.version) errors.push(`skills.json version is ${manifest.version}; expected package version ${pkg.version}`);
   const manifestNames = new Set(manifest.skills.map((skill) => skill.name));
   if (new Set(dirs).size !== 19 || dirs.some((name) => !manifestNames.has(name)) || manifestNames.size !== new Set(dirs).size) errors.push(`skill inventory is not an exact 19-entry manifest parity`);
   if (commandCount !== 20) errors.push(`command inventory is ${commandCount}; expected 20`);

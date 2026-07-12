@@ -1,16 +1,17 @@
-# Light theme — the baseline (off-white, not glare)
+# Light-theme mapping
 
-Read when building the light theme (it's the baseline — design it first). Dark and
-high-contrast are *mappings* of the same tokens; light is where you set the structure.
+Read when light is a supported mode. Establish the semantic structure in the product's
+default mode, then map the same roles here.
 
-## Off-white, not pure white
-Pure `#fff` ground + pure `#000` text maxes contrast (21:1) — which reads as glare and
-*increases* visual stress, especially for dyslexia, migraine, and light sensitivity (see
-`cognitive-a11y`). Soften both ends:
-- **Ground:** off-white, e.g. `#faf7f0` / `#f7f6f2` (warm or cool to match the brand hue;
-  tint toward the brand, not dead gray).
-- **Ink:** near-black, not `#000`, e.g. `#1a1714` / `#15171a`.
-- Still meet WCAG: this is ~15:1, not 21:1 — high but not maximal. Comfortable AND compliant.
+## Choose endpoints from context
+Pure white/black gives maximum nominal contrast. Softer endpoints can reduce glare in
+some environments and support a warmer or quieter art direction; pure endpoints can be
+appropriate for stark systems or user-selected high contrast. Test real text at target
+brightness and preference settings instead of assigning one palette to a diagnosis.
+
+- **Ground:** choose pure or softened white from brand, ambient use, and display context.
+- **Ink:** choose black or near-black, then measure every real pair.
+- **Neutrals:** true and hue-biased neutrals are both valid when their role is explicit.
 
 ## Elevation in light = shadow + slightly-darker/whiter surfaces
 Opposite of dark. In light, raised surfaces can be pure white over an off-white ground,
@@ -27,10 +28,8 @@ floating UI.
   accent than you'd use on dark (e.g. OKLCH L≈0.50–0.55, higher chroma).
 - Accent **fills** (buttons): the label on the fill must hit ≥4.5:1 — white on a mid
   accent, or dark ink on a light accent. Verify the pair, not the color.
-- Neutrals tinted toward the brand hue (warm grays for a warm brand), never `#888`.
+- Choose neutral temperature from the content; do not import a stock gray without a role.
 
 ## Light → dark relationship (one token set)
-Define the roles once; the dark mapping (see `surfaces-and-elevation.md` +
-`color-and-contrast.md`) raises lightness of accents and inverts the elevation logic
-(lighter = higher). The light values here are the canonical names; dark/high-contrast
-only remap them.
+Define roles once. Other authored modes remap them; forced colors lets system colors take
+authority. Do not assume every product needs every authored mode.

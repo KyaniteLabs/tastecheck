@@ -1,15 +1,15 @@
 ---
-description: Build an honest, Tufte-informed, accessible web chart (genre-first, no chartjunk)
+description: Turn a comparison question into an honest, accessible chart or table
 argument-hint: "[the data / chart request]"
 ---
 
 Load and apply the **data-viz** skill (`~/.agents/skills/data-viz/SKILL.md`).
 
-Start from the comparison question and data quality. Report chart choice,
-uncertainty, table parity, accessibility, and provenance with evidence.
-
-Decide genre first (≤20 numbers → table; many series → small multiples; for time-series trends choose a line or sparkline from the comparison question, density, and reading surface; etc.), kill chartjunk, keep proportions honest (zero baselines, lie factor ≈1), direct-label not legend, use color-system tokens, verify theming + contrast, and ship a caption + accessible data table. If specialist Tufte assessment/rendering skills are available, use them for deep critique or publication SVGs.
+State the comparison question and data limitations first. Choose the form from the task,
+reading surface, density, and uncertainty—not a numeric shortcut. Keep geometry honest,
+label directly where practical, use theme tokens, and provide an equivalent accessible
+table plus a useful caption.
 
 Request: $ARGUMENTS
 
-Run the skill's single authoritative self-check and emit status, reason, remediation, evidence, and provenance for each applicable row.
+Run the skill's self-check and return the comparison, chosen form, measurements, and remaining failures.

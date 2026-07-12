@@ -102,6 +102,7 @@ const texts = new Map([
   [EFFECTIVENESS_SOURCES["terminal-v5-effectiveness"].path, v5Payload],
 ]);
 const io = {
+  targetRelease: "1.0.0",
   hasFile: (path) => texts.has(path) || path === ARTIFACT_PATH,
   readText: (path) => texts.get(path),
   readBytes: (path) => path === ARTIFACT_PATH ? ARTIFACT_BYTES : Buffer.from(texts.get(path)),

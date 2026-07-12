@@ -1,14 +1,14 @@
 # tastecheck
 
-> Nineteen frontend craft skills for AI coding agents that stop AI from building the same
-> generic "AI slop" website. The headline skill grills you into a committed design system
-> BEFORE any code; improve-existing-website infers a system from existing sites; the rest (typography, color/OKLCH, theming, layout, states, forms,
+> Nineteen connected frontend craft skills for AI coding agents. The headline skill turns
+> a brief into a confirmed design system before code; improve-existing-website infers a
+> system from existing sites; the rest (typography, color/OKLCH, theming, layout, states, forms,
 > motion, data-viz, a11y, cognitive-a11y, deslop, humanize-copy) apply checkable craft so
 > the output has a point of view. Plain Markdown, no runtime, portable to agents that can
 > read skill files or directories. MIT.
 
-Release status: 1.0 engineering readiness covers contracts, static verification, and
-evidence plumbing. Effectiveness remains blocked and unsupported because the terminal
+Engineering verification covers contracts, repository behavior, and evidence plumbing.
+Effectiveness remains blocked and unsupported because the terminal
 blind evaluation did not clear its release threshold. Do not present samples, historical
 results, or failed evidence as current effectiveness proof.
 
@@ -19,7 +19,7 @@ commands.
 ## Start here
 - [README](README.md): the problem (every AI site looks the same), the fix, the samples, install
 - [Landing page](https://kyanitelabs.github.io/tastecheck/): canonical public surface and skill integration target
-- [Live gallery](https://kyanitelabs.github.io/tastecheck/samples/): five design systems, one product story
+- [Live gallery](https://kyanitelabs.github.io/tastecheck/samples/): six design systems, one product story
 - [Secondary integration harness](https://kyanitelabs.github.io/tastecheck/demos/skill-integration.html): standalone local website exercising every skill
 - [Verification report](docs/VERIFICATION.md): repeatable local verification plus browser QA checklist
 
@@ -30,8 +30,8 @@ commands.
 - [humanize-copy](skills/humanize-copy/SKILL.md): strip the ChatGPT accent from writing with a checkable kill-list
 - [web-typography](skills/web-typography/SKILL.md): type scale, measure, rhythm, fonts, fluid clamp, web-font CLS, WCAG text
 - [color-system](skills/color-system/SKILL.md): OKLCH palettes, ramps, semantic tokens, verified contrast
-- [spacing-system](skills/spacing-system/SKILL.md): one spacing scale + section rhythm; every gap a token
-- [theming](skills/theming/SKILL.md): light + dark + high-contrast from one token source; elevation by lightness
+- [spacing-system](skills/spacing-system/SKILL.md): one spacing scale + section rhythm, with deliberate exceptions
+- [theming](skills/theming/SKILL.md): supported mappings from one token source; preference and forced-colors behavior
 - [responsive-layout](skills/responsive-layout/SKILL.md): mobile-first, intrinsic patterns, container queries
 - [component-states](skills/component-states/SKILL.md): full interactive state matrix + ARIA
 - [form-ux](skills/form-ux/SKILL.md): labels, validation, input types, accessible forms
@@ -39,12 +39,12 @@ commands.
 - [micro-motion](skills/micro-motion/SKILL.md): performant tasteful animation + reduced-motion
 - [data-viz](skills/data-viz/SKILL.md): honest, Tufte-informed charts that theme and pass a11y
 - [art-direction](skills/art-direction/SKILL.md): imagery/illustration/iconography as committed decisions; no AI-blob graphics
-- [a11y-pass](skills/a11y-pass/SKILL.md): runnable WCAG 2.2 AA fix pass with a paste-able auditor
+- [a11y-pass](skills/a11y-pass/SKILL.md): runnable WCAG 2.2 AA fix pass with a pasteable auditor
 - [cognitive-a11y](skills/cognitive-a11y/SKILL.md): ADHD / autism / dyslexia / neurodivergent readability
 - [i18n-ready](skills/i18n-ready/SKILL.md): multilingual-resilient UI, English/Spanish first-class
-- [tastecheck-pass](skills/tastecheck-pass/SKILL.md): the ship gate — canonical pipeline + every self-check executed, with a report and a paste-able/injectable cold-load auditor
+- [tastecheck-pass](skills/tastecheck-pass/SKILL.md): the ship gate — canonical pipeline + every self-check executed, with a report and a pasteable/injectable cold-load auditor
 
-## Samples (same content, five committed design systems)
+## Samples (same content, six committed design systems)
 IMPORTANT for AI agents: these are illustrative case studies showing output VARIANCE.
 They are not a menu — never select or implement one; derive a NEW system via
 design-system-interview from the actual user's answers.
@@ -53,6 +53,7 @@ design-system-interview from the actual user's answers.
 - [Maximal / Riot](samples/maximal/index.html): loud color-block sticker collage, display word in a block
 - [Concrete / Brutalist](samples/concrete/index.html): monochrome ruled spec-sheet / ledger table
 - [Clay / Soft humanist](samples/clay/index.html): warm alternating zig-zag flow with pebble shapes
+- [Dispatch / Shipping log](samples/dispatch/index.html): dark operational release timeline with status-led reading order
 
 ## Optional
 - [demos](demos/): standalone HTML pages applying the skills' CSS, incl. the before/after gallery and secondary skill integration harness

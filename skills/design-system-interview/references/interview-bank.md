@@ -8,14 +8,23 @@ it must not become a second dimension specification.
 
 - Start with the strongest signal already supplied. Reflect it back before asking for
   more; this proves that the interview is narrowing rather than collecting trivia.
-- Ask grouped prompts in the canonical group order. Every prompt should include a
-  reasoned recommendation and a way to reject it.
+- Follow the canonical group order, but ask one question at a time unless one answer
+  truly resolves neighboring dimensions. Every prompt includes a recommendation, its
+  product consequence, and a clear way to redirect it.
 - Record the answer against its canonical dimension ID immediately. If the user
   abstains, record the evidence-dependent recommendation or explicit abstention and say it aloud.
 - When a reply affects several IDs, mark each affected ID with the same evidence rather
   than inventing a new category. Do not ask the same thing twice in different language.
 
 ## Useful prompt shapes
+
+Use this response shape throughout:
+
+```markdown
+I’m reading <signal>, so I recommend A because <consequence>.
+A gives you <observable outcome>; B gives you <different observable outcome>.
+Which direction should I commit?
+```
 
 ### `reference` and `personality`
 
@@ -49,8 +58,9 @@ define a reduced-motion equivalent at the same time.
 
 ## Recovery techniques
 
-- **Vague answer:** explain why the answer does not yet change a design decision, then
-  offer two brief-specific consequences to react to.
+- **Vague answer:** translate it immediately: “If ‘clean’ means faster scanning, I’d use
+  compact editorial hierarchy; if it means lower visual intensity, I’d use fewer layers
+  and more space. Which consequence do you mean?”
 - **Contradiction:** name both statements, show the implementation tradeoff, and ask
   which constraint wins. Do not quietly average them.
 - **Abstention:** state the evidence basis, leave the choice pending confirmation, and make it easy to revise; never resolve toward the mean.

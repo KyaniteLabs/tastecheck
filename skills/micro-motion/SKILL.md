@@ -13,44 +13,49 @@ those, cut it.
 
 ## Non-negotiables (the rules that keep motion feeling good)
 
-- **Use `transform` and `opacity`.** Avoid geometric properties; use transforms, FLIP,
-  or View Transitions for real size or position changes.
+- **Prefer compositor-safe properties.** Start with `transform` and `opacity`. Color,
+  filter, SVG, or measured layout transitions are valid when the purpose requires them
+  and a performance trace shows the target device can sustain the interaction.
 - **Ease by direction.** Ease-out enters, ease-in exits, ease-in-out moves; linear is
   for a purposeful continuous loop only.
 - **Design reduced motion as an equivalent state.** Keep labels, choices, focus, and
   final content; remove spatial movement.
-- **Gate waiting states behind a JS-added root hook.** Static CSS must not leave content
-  at `opacity: 0` when JavaScript fails, in reader mode, crawlers, or captures.
+- **Let JavaScript opt individual elements into waiting states only after the observer
+  is ready.** Static CSS must not leave content hidden when JavaScript fails, initializes
+  late, or restores from the back-forward cache.
 - **Make looping motion controllable and never scroll-jack.**
 
 ## Easing & duration tokens
 
 Use semantic duration/easing tokens: acknowledgement `120–160ms`, insertion/menu
-`160–220ms`, confirmation/route `220–320ms`. Motion never delays committed state, focus,
-or the next keyboard action.
+`160–220ms`, confirmation/route `220–320ms`. Treat these as starting bands and test on
+the target device. Motion never delays committed state, focus, or the next keyboard action.
 
-## Settlement policy
+## Settle before styling
 
-For replaceable Save, assign monotonic ids: `N+1` invalidates `N`; only the latest request may
-set status or own its live announcement. Replay stale `N` as both success and error after
-`N+1` starts; neither may change status or announce. Only `N+1` settles. Cancel superseded
-motion without changing the usable state.
+Define the usable end state and interruption policy before choosing an entrance. A
+superseded save, route, insertion, or dismissal must converge on the newest state without
+a stale overlay, announcement, focus jump, or success message. Motion reflects state
+ownership; it does not decide it. If ownership or focus recovery is unknown, hand off to
+`component-states` before choreographing.
 
-## The reduced-motion contract (always include)
+## The reduced-motion contract
 
-**This skill owns reduced-motion for the whole project** — define it once here, not
-per-skill. The primary pattern: gate the *movement* behind `no-preference`, so
-reduced-motion users still get a (motionless) fade and never a broken layout:
+Define the project-level reduced-motion policy once, then let components reference it.
+For progressive reveals, content starts visible. After the observer is attached,
+JavaScript marks only offscreen pending elements; never hide an element already
+intersecting the viewport. It removes the marker on reveal and on page restoration.
+Gate spatial movement behind `no-preference`:
 
 ```css
-/* PRIMARY: design the reduced variant — keep a gentle fade, drop the movement.
-   The waiting state hangs off a .js hook the boot script adds to <html>
-   (document.documentElement.classList.add('js')) — so when the script never
-   runs, nothing was ever hidden and the page still reads complete. */
+/* JavaScript marks only non-intersecting elements after the observer is ready. */
+.reveal[data-reveal="pending"] { opacity: 0; }
+.reveal:not([data-reveal="pending"]) { opacity: 1; }
 @media (prefers-reduced-motion: no-preference) {
-  html.js .reveal { opacity: 0; transform: translateY(12px); transition:
-            opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out); }
-  html.js .reveal.in { opacity: 1; transform: none; }
+  .reveal[data-reveal="pending"] { transform: translateY(12px); }
+  .reveal { transition: opacity var(--dur-base) var(--ease-out),
+                        transform var(--dur-base) var(--ease-out); }
+  .reveal:not([data-reveal="pending"]) { transform: none; }
 }
 ```
 
@@ -58,60 +63,37 @@ For a legacy retrofit only, the emergency global kill switch in
 `references/principles.md` is permitted after documenting why the primary pattern cannot
 be used; it removes useful transitions, so it is not the default.
 
+## Decision order
+
+1. Name the user-facing purpose: acknowledgement, continuity, spatial origin, or attention.
+2. Name trigger, settled state, focus timing, and what wins when interrupted.
+3. Choose the smallest property, duration, and easing that communicate that purpose.
+4. Define reduced-motion and no-JS/restoration equivalents.
+5. Replay rapid repeat, cancellation, navigation, and stale async completion.
+
+For async feedback, tag each request and let only the current owner update status or its
+live announcement. For routes and overlays, cancel superseded animation and make the
+destination DOM and focus authoritative. For list changes, preserve readable DOM order
+even when visual movement is interrupted.
+
 ## How to deliver
 
-- State purpose, tokens, interruption, reduced path, and JS-disabled behavior.
-- Default to CSS; use a motion library only for gestures, springs, or layout animation.
-- Verify compositor-only properties, reduced motion, no scroll-jacking, and <800ms load motion.
-
-## Decision order and evidence contract
-
-Identify purpose, trigger, interruption, and token; define the reduced equivalent; then record
-replayable evidence before decorative detail. Do not hide meaning, trap focus, or withhold content.
-
-## Interruption, evidence, and completion contract
-
-Define the settled usable state before choosing an entrance. For each interaction, state
-the trigger, observable end state, supersession rule, and when focus or the next keyboard
-action becomes available. A motion plan is incomplete until its interrupted path reaches
-the same usable state without a stale overlay, old save confirmation, misplaced list item,
-or delayed destructive confirmation.
-
-For a Save, insertion, destructive confirmation, and route transition, emit one distinct
-evidence row for each; emit one fifth global row for reduced motion and JS-disabled safety.
-Do not merge them into a generic ledger. Each interaction row names its causal order (committed
-state/focus before optional feedback), duration band, interruption that converges on the same
-usable state, and replay. The global row proves movement is gated by
-`prefers-reduced-motion: no-preference` and reveal waiting states by `html.js`, so reduced
-motion retains meaning and a JS-disabled page is complete.
-
-| Required row | Replay proof |
-| --- | --- |
-| Save | Start `N`, start `N+1`, then settle `N` once as success and once as error; only `N+1` may change status or announce. |
-| Insertion | Insert, sort or navigate before feedback ends; final DOM order remains readable. |
-| Destructive confirmation | Open, then Escape/Cancel/repeat delete/navigate; every exit reaches the same closed, focused state. |
-| Route | Start a second navigation before the first settles; destination DOM and heading focus win without a stale layer. |
-| Global safety | Check compositor-only properties, reduced motion, and JS-disabled reveal; no essential content depends on animation. |
-
-Reject `component-states` as the primary route when the state model already exists: it owns
-which states exist, not their timing, causal order, or interruption convergence. Keep this
-boundary narrow: this skill choreographs those behaviors around an already-defined component
-state. If the state, focus policy, or request ownership is unknown, stop for
-`component-states` or the owning interaction specification rather than inventing it here;
-handoff final focus and live-region verification to `a11y-pass`.
+Deliver a compact choreography table: interaction, purpose, trigger, duration/easing,
+settled state, interruption rule, and reduced equivalent. Add one global safety row for
+JS-disabled and restoration behavior. Default to CSS; use a library when gestures,
+springs, or layout coordination justify its runtime and ownership complexity.
 
 ## Self-check
 
-- [ ] Animate only `transform`/`opacity` (compositor) — nothing animates layout props
+- [ ] Properties are compositor-safe, or an intentional alternative has a target-device trace
 - [ ] Durations/easings are tokens (`--dur-*`/`--ease-*`); entrances ~200–300ms ease-out (custom curve, not linear)
 - [ ] `prefers-reduced-motion` path tested (motion off or cross-fade) — content never depends on it
-- [ ] Page reads complete with JS disabled — no content left at stylesheet opacity 0 waiting for a reveal that never comes
-- [ ] Save replay covers stale success and stale error; only the latest request owns status and its single live announcement
-- [ ] Five distinct replayable rows cover Save, insertion, destructive confirmation, route, and global reduced-motion/JS-disabled safety
-- [ ] Each row states causal order, a duration band, and interruption convergence on the usable state
-- [ ] `component-states` is explicitly rejected as the primary route with its state-model boundary stated
-- [ ] No scroll-jacking; total page-load motion < ~800ms; nothing flashes > 3×/s
-- [ ] Stated the tokens used and what to look at
+- [ ] Page reads complete with JS disabled, delayed initialization, and bfcache restore;
+      pending markers are added only to offscreen elements after observer ownership and cleared on `pageshow`
+- [ ] Rapid repeat, cancellation, stale completion, and navigation converge on the
+      current usable state without stale focus, status, or layers
+- [ ] No scroll-jacking or uncontrolled loops; flashing stays below the safety threshold
+- [ ] Evidence names the tokens, settled state, reduced equivalent, and replay result
 
 <!-- contract:v1:start -->
 ## Contract (generated)
