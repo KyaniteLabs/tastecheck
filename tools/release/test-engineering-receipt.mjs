@@ -7,6 +7,7 @@ import { execFileSync } from "node:child_process";
 
 import {
   computeSourceTreeSha256,
+  computeHeadSourceTreeSha256,
   deriveReceipt,
   isExcludedReceiptPath,
 } from "./engineering-receipt.mjs";
@@ -25,13 +26,16 @@ try {
   writeFileSync(join(temp, "src", "input.txt"), "alpha\n");
   writeFileSync(join(temp, "evals", "receipts", "v1", "mechanical.json"), "{}\n");
   git(temp, "add", ".");
+  git(temp, "commit", "-qm", "fixture");
 
   const first = computeSourceTreeSha256(temp);
+  assert.equal(computeHeadSourceTreeSha256(temp), first);
   writeFileSync(join(temp, "evals", "receipts", "v1", "mechanical.json"), "{\"changed\":true}\n");
   assert.equal(computeSourceTreeSha256(temp), first, "generated release receipts must not affect the source digest");
 
   writeFileSync(join(temp, "src", "input.txt"), "beta\n");
   assert.notEqual(computeSourceTreeSha256(temp), first, "tracked source changes must invalidate the source digest");
+  assert.equal(computeHeadSourceTreeSha256(temp), first, "HEAD digest must remain bound to the archived tree");
 
   assert.equal(isExcludedReceiptPath("evals/receipts/v1/browser.json"), true);
   assert.equal(isExcludedReceiptPath("evals/receipts/v1/artifacts/browser/proof.png"), true);
