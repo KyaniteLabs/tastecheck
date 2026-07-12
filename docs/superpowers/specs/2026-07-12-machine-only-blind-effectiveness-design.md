@@ -122,7 +122,7 @@ separate reported properties and cannot silently substitute for effectiveness.
    claim projection under `contracts/v2/effectiveness/`.
 2. A frozen scenario registry, source/corpus manifest, execution manifest, and committed
    SHA-256 authority manifest for tracked V1/W1/full19/V5 public evidence under `evals/v2/`.
-3. A generation runner that enforces arm parity and records failure/retry lineage.
+3. A generation runner that enforces arm parity and records every attempted-call lineage.
 4. A blind packet builder with a separate hash-bound unmask map.
 5. Provider adapters that record model/version, packet digest, isolated execution, and
    declared family without exposing credentials.
