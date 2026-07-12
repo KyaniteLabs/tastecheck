@@ -5,6 +5,8 @@ All notable changes to the tastecheck skill pack. Format follows
 
 ## [Unreleased]
 
+## [1.0.0] — 2026-07-11
+
 ### Release status
 
 - 1.0 engineering readiness and effectiveness are separate gates. Contract, static, and
