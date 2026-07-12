@@ -111,6 +111,8 @@ const io = {
   readBytes: (path) => path === ARTIFACT_PATH ? ARTIFACT_BYTES : Buffer.from(texts.get(path)),
   hasCommand: () => true,
   sourceTreeSha256: () => SOURCE_SHA,
+  requiredLiveCheckIds: () => ["fixture-check"],
+  requiredLiveArtifactIds: () => ["proof"],
 };
 const valid = manifestFixture();
 
@@ -193,6 +195,7 @@ rejectReceipt("stale source", "mechanical", (value) => { value.source_tree_sha25
 rejectReceipt("forged minimal receipt", "mechanical", (value) => { for (const key of Object.keys(value)) delete value[key]; Object.assign(value, ENGINEERING_PRODUCERS.mechanical.assertions); }, "generic receipt identity mismatch");
 rejectReceipt("missing live artifact", "browser", () => {}, "missing artifact", (candidateIo) => ({ ...candidateIo, hasFile: (path) => path !== ARTIFACT_PATH && candidateIo.hasFile(path) }));
 rejectReceipt("tampered live artifact", "browser", () => {}, "artifact SHA-256 mismatch", (candidateIo) => ({ ...candidateIo, readBytes: (path) => path === ARTIFACT_PATH ? Buffer.from("tampered") : candidateIo.readBytes(path) }));
+rejectReceipt("incomplete live check set", "browser", (value) => { value.checks[0].id = "wrong-check"; }, "live check set");
 rejectReceipt("absolute command leak", "security", (value) => { value.checks[0].command = "/private/node checker.mjs"; }, "absolute executable path");
 
 const current = JSON.parse(readFileSync(join(root, "contracts/v1/release-receipts.json"), "utf8"));
