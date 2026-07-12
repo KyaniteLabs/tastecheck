@@ -4,9 +4,16 @@ import {
   DIMENSIONS,
   MIN_UPGRADED_MEAN_DELTA,
   aggregateV5,
+  formatCliResult,
   validateCorrection,
   validateJudgeBatchResults,
 } from "./remediation7-v5-spacing-final.mjs";
+
+assert.deepEqual(formatCliResult({ status: "validated" }), {
+  status: "validated",
+  release_eligible: false,
+  verdict: "validated-evidence-only",
+});
 
 const report = validateCorrection();
 assert.deepEqual(report.errors, [], report.errors.join("\n"));
