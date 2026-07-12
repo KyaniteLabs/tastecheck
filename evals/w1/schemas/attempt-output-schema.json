@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/evals/w1/schemas/attempt-output-schema.json",
+  "title": "W1 Attempt Output",
+  "description": "Schema for a single model attempt output in the W1 eval pipeline. Raw files written by external gpt-5.6-terra desktop threads must conform to this schema.",
+  "type": "object",
+  "required": ["schema_version", "job_id", "attempt_id", "executor", "requested_seed", "observed_seed", "status", "skill", "scenario_id", "run_type", "raw_output", "assertions_result", "evidence_fields_present"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "job_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]+-(?:baseline|upgraded)-seed\\d+$" },
+    "attempt_id": { "type": "string", "description": "Unique per attempt; include job_id + attempt index, e.g. component-states-baseline-seed101-attempt-0" },
+    "executor": {
+      "type": "string",
+      "const": "gpt-5.6-terra",
+      "description": "Production runtime model ID. Must be gpt-5.6-terra for both baseline and upgraded cells."
+    },
+    "requested_seed": {
+      "type": ["integer", "null"],
+      "enum": [101, 202, 303, null],
+      "description": "Seed value requested in the job packet. Desktop threads do not guarantee seed isolation; use observed_seed to record what was actually observable."
+    },
+    "observed_seed": {
+      "type": "null",
+      "description": "Always null — desktop threads do not expose seed controls."
+    },
+    "requested_temperature": {
+      "type": ["number", "null"],
+      "description": "Temperature requested in the job packet. Desktop threads do not expose temperature controls."
+    },
+    "observed_temperature": {
+      "type": "null",
+      "description": "Always null — desktop threads do not expose temperature controls."
+    },
+    "skill_source_path": {
+      "type": "string",
+      "description": "Repo-relative path to the skill file loaded for this run. Baseline: .omx/tmp/tastecheck-v1-baseline-replay/skills/<skill>/SKILL.md. Upgraded: skills/<skill>/SKILL.md."
+    },
+    "skill_source_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 digest of the skill file at skill_source_path. Collector enforces match."
+    },
+    "status": { "type": "string", "enum": ["complete", "error", "truncated"] },
+    "skill": { "type": "string" },
+    "scenario_id": { "type": "string" },
+    "run_type": { "type": "string", "enum": ["baseline", "upgraded"] },
+    "skill_version": { "type": "string", "enum": ["baseline", "current"] },
+    "raw_output": {
+      "type": "string",
+      "description": "Full text output from the model. Must not be truncated except when status=truncated."
+    },
+    "raw_output_hash": {
+      "type": "string",
+      "description": "SHA-256 of raw_output for integrity verification."
+    },
+    "assertions_result": {
+      "type": "array",
+      "description": "One entry per assertion in the scenario.",
+      "items": {
+        "type": "object",
+        "required": ["assertion_index", "assertion_text", "met"],
+        "properties": {
+          "assertion_index": { "type": "integer" },
+          "assertion_text": { "type": "string" },
+          "met": { "type": "boolean" },
+          "evidence": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "evidence_fields_present": {
+      "type": "object",
+      "description": "For each required evidence field, whether it appeared in the output.",
+      "required": ["status", "reason", "remediation", "evidence", "provenance"],
+      "properties": {
+        "status": { "type": "boolean" },
+        "reason": { "type": "boolean" },
+        "remediation": { "type": "boolean" },
+        "evidence": { "type": "boolean" },
+        "provenance": { "type": "boolean" }
+      }
+    },
+    "self_check_shape_observed": {
+      "type": "string",
+      "enum": ["checklist_with_evidence", "table_with_evidence", "ledger_with_verdict", "unknown"]
+    },
+    "error_detail": {
+      "type": "string",
+      "description": "Present when status=error. Sanitized error message."
+    },
+    "external_source": {
+      "type": "boolean",
+      "description": "true when this file was written by an external desktop thread, not the pilot runner."
+    },
+    "external_source_lane": {
+      "type": "string",
+      "description": "Which lane wrote this file (e.g. 'terra') when external_source=true."
+    },
+    "date_utc": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

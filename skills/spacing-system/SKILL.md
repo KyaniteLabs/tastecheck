@@ -1,95 +1,100 @@
 ---
 name: spacing-system
 description: >-
-  Spacing scale and section rhythm for web UI. Use for inconsistent margins and
-  padding, page rhythm, whitespace decisions, density, gap choices, vertical
-  cadence between sections, and emitting the --space-* tokens other skills consume.
+  Use when layout rhythm, density, or gaps feel arbitrary or inconsistent, or when one
+  product needs different reading pressures without splitting into unrelated spacing
+  systems.
 ---
 
 # Spacing System (the scale nobody owns)
 
-Type has a scale, color has a ramp — and then spacing is 17px here, 24px there, 19px
-there, because nobody owned it. Random spacing is invisible as a cause and obvious as
-an effect: the page feels "off," cramped in one section and gappy in the next. This
-skill owns the `--space-*` tokens the canonical contract promises and the **section
-rhythm** that makes a page feel composed rather than stacked.
-
-Governing rule: **every gap on the page is a token from one scale.** If you type a
-margin that isn't a `--space-*` value, you're freelancing.
+Every gap uses one `--space-*` scale; named semantic relationships create composition
+instead of arbitrary margins.
 
 ## The decision order
 
-1. **Pick the base and ratio from the density choice.** The interview's
-   spacious/dense pole sets it: dense UIs ~`4px` base, spacious/marketing ~`8px`.
-   Build a geometric-ish scale, not a linear crawl: e.g.
-   `4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 (/ 96 / 128)`.
-2. **Name them as the contract tokens.** `--space-1` … `--space-8` (primitives) +
-   `--space-section` (semantic: the default vertical gap between page sections,
-   typically the 48–128px end, fluid via `clamp()`).
-3. **Apply by proximity rule.** Related things get small steps, unrelated things get
-   big ones — hierarchy is *made of* spacing differences. Label-to-input: 1–2 steps;
-   field-to-field: 2–3; group-to-group: 4–5; section-to-section: `--space-section`.
-   The jump between levels must be visible (≥1.5×), or grouping reads as noise.
-4. **Set the section rhythm — metronomic or syncopated, on purpose.** Equal
-   `--space-section` everywhere is calm but template-adjacent; varying it (and section
-   *density*) with intent is the structure-and-rhythm move from the interview. Either
-   is fine; **decide**, and let `deslop-ui`'s structural audit hold you to it.
-5. **Prefer `gap` and one-direction margins.** Layout containers space children with
-   `gap`; prose flows with `margin-block-start` on the *following* element. Mixed
-   top+bottom margins are where collapse bugs and double-gaps breed.
+1. Publish one 4px-base ladder: `4/8/12/16/24/32/48/64/96px` as `--space-1` through
+   `--space-9`, plus `--space-section: clamp(48px, 32px + 4vw, 96px)`.
+2. Map attachment, control, task, group, region, and chapter relationships to visibly different steps
+   (roughly ≥1.5× between levels).
+3. Choose metronomic or intentional syncopated section rhythm from content pressure.
+4. Use `gap` and one-direction logical margins; do not stack arbitrary margins.
+
+## Let content set the rhythm
+
+Map repeated operational tasks to compact predictability and editorial/narrative content
+to deliberate breathing room; retain one system and state why named roles differ. Use the
+role map before picking a value:
+
+| Relationship | Shared token | Compact operational rhythm | Long-form editorial rhythm |
+| --- | --- | --- | --- |
+| attachment | `--space-1` (4px) | icon/state to its label | inline metadata pair |
+| control | `--space-2/3` (8/12px) | label-to-control / inside a control | claim-to-citation / tight evidence pair |
+| task | `--space-4` (16px) | repeated queue item | adjacent paragraph or evidence group |
+| group | `--space-5` (24px) | task-group break | discrete finding |
+| region | `--space-6/7/8` (32/48/64px) | console-region break | narrative subsection or causal pivot |
+| chapter | `--space-section` (fluid) | major workflow view | major account transition |
+
+The console may be metronomic; an account may widen only at finding, subsection, and
+chapter boundaries. That is one vocabulary with different relationships, not two scales.
 
 ## Non-negotiables
 
-- **One scale; no off-scale values.** Grep the CSS for `margin|padding|gap` values
-  that aren't tokens (or `0`/`auto`/`1em`-relative prose spacing) — each is a defect.
-- **Spacing communicates grouping** (proximity beats borders): if two elements are
-  closer to each other than to their own labels, the grouping is lying.
-- **`--space-section` is fluid**: `clamp()` between its mobile and desktop values —
-  sections breathe on desktop without leaving phone users scrolling through voids.
-- **Density is consistent per context.** Marketing pages and the app shell may run
-  different bases, but each context uses ONE — never per-component vibes.
-- **Whitespace is structure, not leftover.** Asymmetric/intentional emptiness (an
-  offset column, a wide left margin) is a committed move; accidental emptiness from
-  inconsistent gaps is drift.
+- Audit `margin`/`padding`/`gap` for tokens (except legitimate `0`/`auto`/relative prose).
+- Proximity must tell the truth; `--space-section` is fluid and each context has one base.
+- Whitespace is an intentional structural move, never inconsistent leftover space.
 
-## Quick-start
+## Migration and honest audit boundary
 
-```css
-:root {
-  /* Canonical contract names; values for an 8px-base spacious system */
-  --space-1: 0.25rem;  /*  4px — icon-to-label, tight pairs */
-  --space-2: 0.5rem;   /*  8px — label-to-input            */
-  --space-3: 0.75rem;  /* 12px — within a control           */
-  --space-4: 1rem;     /* 16px — field-to-field             */
-  --space-5: 1.5rem;   /* 24px — card padding, group gaps   */
-  --space-6: 2rem;     /* 32px — group-to-group             */
-  --space-7: 3rem;     /* 48px — subsection breaks          */
-  --space-8: 4rem;     /* 64px — large breaks               */
-  --space-section: clamp(3rem, 2rem + 5vw, 7rem);  /* between page sections */
-}
+Classify every literal by its relationship before replacement: `13px` becomes `12px`
+(`--space-3`), `17px` becomes `16px` (`--space-4`), and a bare `24px` layout value becomes
+`var(--space-5)`. Treat `19px` as failed until its observed selector establishes task (16px)
+or group (24px); do not silently round it. The sole prose exception is documented following-
+paragraph `1em` spacing, because it is relative to type rather than a layout primitive.
 
-.stack > * + * { margin-block-start: var(--space-4); }   /* one-direction flow */
-.cards { display: grid; gap: var(--space-5); }
-section + section { margin-block-start: var(--space-section); }
-```
+Without a CSS fixture, mark the audit `PENDING`, name it and the next audit action; never claim
+that residual off-scale values are gone. The ladder, map, and migration rules remain required.
 
-## Self-check (before claiming the spacing is a system)
+## Completion evidence
 
-1. A stated base + scale, emitted as `--space-1…8` + `--space-section`?
-2. Zero off-scale `margin/padding/gap` values in the CSS (grep, don't vibe)?
-3. Proximity audit: related < unrelated, with visible (≥1.5×) jumps between levels?
-4. `--space-section` fluid via `clamp()`; rhythm decision (even vs syncopated) stated?
-5. Layout spacing via `gap`/one-direction margins — no top+bottom margin soup?
-6. Density consistent within each context (marketing vs app may differ; inside, one base)?
+Audit the source before describing it and map each value to a role. Handoff one completed
+Markdown table with `status`, `reason`, `remediation`, `evidence`, and `provenance`, covering
+`scale`, `off-scale`, `proximity`, `rhythm`, and `handoff`. `PENDING` names its missing source
+and next action; it blocks that check rather than acting as placeholder proof.
+
+## Semantic rhythm map
+
+Name attachment, control, task, group, region, and chapter relationships, then show how
+compact/editorial contexts select them without parallel scales. Each arbitrary value is
+replaced, justified as an observed exception, or left PENDING with a source and next action.
+
+## Authoritative self-check
+
+Include exactly one labeled **Authoritative self-check** in the delivery. It confirms the
+complete ladder and exact section clamp, all six relationships, operational versus editorial
+role selection, the `13/17/19/bare-24` migration decision, and the honest fixture boundary.
+This check is evidence-based, not a length target or a duplicate summary.
 
 ## How to deliver
 
-- State it like the other foundations: "8px-base scale, 9 steps, section rhythm
-  syncopated (hero tight, proof section wide), all gaps tokenized."
-- This skill *emits* the `--space-*` contract tokens; `responsive-layout` consumes
-  them in patterns, `component-states`/`form-ux` use the small steps, the interview's
-  density pole sets the base, and `deslop-ui` audits the rhythm plane.
+Deliver base, token scale, role map, context rhythm, off-scale audit, and the one authoritative
+self-check. Reject `responsive-layout` as the primary route because it owns breakpoint reflow,
+not the scale, proximity, or reading-pressure decisions; hand it `--space-*` and the completed
+evidence table. Send control and form relationships to `component-states` or `form-ux`, rather
+than re-deciding their behavior.
 
 ## Reference files
 
-- `references/decision-records.md` — meta-patterns + ADR rules for novel cases.
+- `references/decision-records.md` — novel-case ADR rules.
+
+<!-- contract:v1:start -->
+## Contract (generated)
+
+Canonical detail: [contract.json](contract.json).
+
+- Route: An interface needs a spacing scale, content-derived rhythm, or gap consistency (+1 in contract.json); avoid: The request is only responsive reflow or component state behavior (+1 in contract.json)
+- Exclude: Do not impose one uniform cadence across dissimilar content (+1 in contract.json)
+- Stop / handoff: Pause when content hierarchy is absent and spacing would be arbitrary (+1 in contract.json); receives [design-system-interview, improve-existing-website, web-typography] -> sends [responsive-layout, component-states, form-ux]
+- Output: A tokenized spacing scale and stated section-rhythm strategy tied to content hierarchy
+- Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
+<!-- contract:v1:end -->

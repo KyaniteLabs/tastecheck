@@ -38,7 +38,7 @@ actually reaches the code.
 
 ### DR-1 · Interview before building, on vague requests
 - **Why (MP-1):** kill blanks upstream. **Apply:** "build me a site" with no direction →
-  run the 6–7 question interview first; say why.
+  run the 4–10 exchange interview first; say why.
 
 ### DR-2 · Recommend-then-react, not open questions
 - **Why (MP-3):** speed + real answers. **Apply:** each question carries a default +

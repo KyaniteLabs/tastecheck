@@ -1,87 +1,66 @@
 ---
 name: improve-existing-website
 description: >-
-  Improve an existing website by auditing what is already there, inferring the
-  intended design system, asking only a few ambiguity-clearing questions, then
-  using the other tastecheck skills to make the partial system fully true.
+  Use when improving an existing website or codebase while retaining its recognizable
+  identity, especially when evidence, scope, or redesign approval is uncertain.
 ---
 
 # Improve Existing Website
 
-Most redesign requests should not start from a blank canvas. Existing sites already contain
-signals: the business model, audience, hierarchy, brand residues, content priorities,
-component habits, and accidental drift. This skill turns that partial reality into a coherent
-system without erasing what is working.
+Improve an observed system without erasing its recognizable identity or mistaking drift
+for a new brand decision.
 
-## The Loop
+## The state machine
 
-1. **Inspect the real site first.** Open the running page or files. Capture desktop and mobile
-   screenshots when possible. Read the DOM, CSS tokens, typography, nav, repeated components,
-   CTAs, content voice, forms, empty/error states, and any analytics/business cues available.
-2. **Separate signal from drift.**
-   - Signal: repeated choices that seem intentional, business-critical hierarchy, brand colors,
-     useful interaction patterns, domain-specific language, recognisable layout grammar.
-   - Drift: one-off hex values, inconsistent radii, mixed type systems, accidental spacing,
-     copied template sections, inaccessible contrast, unlabelled controls, stale content.
-3. **Infer the intended design system.** Write a compact "likely system" with:
-   - audience and job-to-be-done
-   - aesthetic territory
-   - type stance
-   - color and surface logic
-   - layout/rhythm grammar
-   - component/state conventions
-   - copy voice
-   - accessibility obligations
-4. **Ask only questions that change the solution.** If ambiguity remains, ask at most three
-   targeted questions. Prefer multiple-choice defaults with a recommendation. Do not interview
-   the user about things the site already answers.
-5. **Make the partial reality true.** Apply the smallest coherent set of changes that turns the
-   inferred system into an actual system. Preserve strong existing signals; remove drift.
+Run `inspect → infer → score → ask_or_skip → approve → execute → verify`. Label direct
+observations **EVIDENCE** and derivations **INFERRED**, record preserved signals, and use
+`references/inspection-state-machine.md` for incomplete/resumed decisions. Inspect rendered
+and source hierarchy, tokens, components, voice, and business cues; use
+`references/signal-vs-drift.md` for ambiguity. `assets/INFERRED-SYSTEM.template.md` covers audience,
+territory, type, color, layout, components, voice, and accessibility; score/ask/approve per
+the reference before execution.
 
-## Handoff Chain
+## Handoff chain
 
-Use the other tastecheck skills as the repair toolkit:
+After approval, use `references/repair-handoffs.md` for evidence-justified specialists
+and valid subject-absence skips.
 
-- `design-system-interview` only for unresolved direction decisions.
-- `deslop-ui` to remove template/generic tells without flattening the existing identity.
-- `color-system` and `theming` to consolidate colors into semantic tokens.
-- `web-typography` for type scale, measure, font loading, and wrapping.
-- `responsive-layout` for structure and overflow.
-- `component-states`, `form-ux`, and `empty-states` for interaction and non-happy paths.
-- `micro-motion` for restrained motion and reduced-motion behavior.
-- `data-viz` when metrics/charts are present.
-- `a11y-pass` and `cognitive-a11y` before calling the result done.
-- `humanize-copy` when the site's voice is generic or machine-written.
+## Output shape
 
-## Output Shape
+Before editing, write `INFERRED-SYSTEM.md` with labels, preserved signals, readiness,
+scope, and question rationale. Afterward report preserved signal, removed drift, skills,
+browser/static proof, and deferred ambiguity.
 
-Before editing, state the inferred system in five to eight bullets and list any targeted
-questions. If no questions are needed, say so and proceed.
+## Repair authorization packet
 
-After editing, report:
-
-- what existing signals were preserved
-- what drift was removed
-- which tastecheck skills were applied
-- what was verified in-browser and by static checks
-- any remaining ambiguity or deliberately deferred work
+For each candidate, record the smallest safe edit/proof and source/approved provenance.
+Classify **preserve** (recognizable identity), **normalize** (accidental variation), or
+**approval needed** (new language/hierarchy/palette/material redesign); never queue the
+last class without owner agreement.
 
 ## Reference files
 
-- `references/audit-procedure.md` — exactly what to extract and in what order
-  (rendered reality → de-facto tokens with counts → component habits → voice →
-  business signals). Read before inspecting.
-- `references/signal-vs-drift.md` — the tests that separate identity from accident,
-  a worked example (the bakery), and the cardinal sins (erasing identity, formalizing
-  the accident, the stealth redesign). Read before deciding what to change.
-- `references/decision-records.md` — meta-patterns + ADR rules (what to fix without
-  asking, what always gets asked, scope visibility).
-- `assets/improve-checklist.md` — the run checklist (before / during / done).
+- `references/audit-procedure.md` — extraction order.
+- `references/signal-vs-drift.md` — identity versus accident.
+- `references/decision-records.md` — scope ADR rules.
+- `references/inspection-state-machine.md` — readiness and approval.
+- `assets/improve-checklist.md` — completion ledger.
+- `references/repair-handoffs.md` — routing and skip rules.
+- `references/interview-contract.generated.md` — canonical state/question authority.
 
-## Self-Check
+## Self-check
 
-1. Did I inspect the actual rendered site or files before prescribing changes?
-2. Did I preserve the strongest existing identity signals?
-3. Did I ask no more than three questions, and only where the answer changes implementation?
-4. Did I convert repeated choices into tokens/components instead of polishing one-off CSS?
-5. Did I verify responsive layout, interaction states, contrast, keyboard focus, and copy clarity?
+`assets/improve-checklist.md` is the completion authority for inspection, labels,
+approval, handoffs, and evidence.
+
+<!-- contract:v1:start -->
+## Contract (generated)
+
+Canonical detail: [contract.json](contract.json).
+
+- Route: An existing site or codebase needs improvement while preserving its intended identity (+1 in contract.json); avoid: A greenfield project needs direction before anything exists to inspect (+1 in contract.json)
+- Exclude: Do not prescribe or edit before inspecting evidence (+1 in contract.json)
+- Stop / handoff: Pause when evidence is insufficient for a safe inference (+2 in contract.json); receives [none] -> sends [deslop-ui, color-system, web-typography, theming, responsive-layout, a11y-pass, cognitive-a11y, i18n-ready]
+- Output: An evidence-labelled inferred system, readiness decision, and scoped repair plan or implementation report
+- Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
+<!-- contract:v1:end -->

@@ -20,9 +20,9 @@ duration is wrong." Fix the property first.
 Crisp 150–300ms motion feels premium; sluggish 600ms+ feels laggy and amateur.
 **Consequence:** when in doubt, faster. Exits faster than entrances.
 
-### MP-4 · Restraint is the difference between elegant and busy
-The eye can follow one thing. Everything animating at once = chaos. **Consequence:**
-the 30% rule; one orchestrated moment over scattered micro-effects.
+### MP-4 · Restraint follows causality
+The eye can follow a causal sequence. **Consequence:** animate only changes that explain
+the current action or state; a numeric element ratio is not evidence of restraint.
 
 ### MP-5 · Motion is opt-out by the user, always
 Vestibular disorders make large motion physically harmful. **Consequence:**
@@ -38,9 +38,9 @@ Vestibular disorders make large motion physically harmful. **Consequence:**
 - **Why (MP-3):** premium feel. **Apply:** hover 150, entrance 220, modal 300; ease-out
   in, ease-in out; linear only for loops.
 
-### DR-3 · The 30% rule
-- **Why (MP-4):** avoid busy. **Apply:** ≤30% of interactive elements animate; one
-  staggered hero load.
+### DR-3 · Stage one causal sequence
+- **Why (MP-4):** avoid busy. **Apply:** name the user-facing change each transition
+  explains; remove unrelated fidgets.
 
 ### DR-4 · Reduced-motion contract
 - **Why (MP-5):** accessibility. **Apply:** gate movement behind `no-preference`; keep a

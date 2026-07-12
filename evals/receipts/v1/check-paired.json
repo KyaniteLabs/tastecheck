@@ -1,0 +1,231 @@
+{
+  "schema_version": 1,
+  "check": "all",
+  "receipt_count": 0,
+  "skill_count": 19,
+  "all_pass": false,
+  "results": {
+    "paired": {
+      "check": "paired",
+      "pass": false,
+      "present_count": 0,
+      "missing_count": 19,
+      "missing": [
+        {
+          "skill": "design-system-interview",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "improve-existing-website",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "color-system",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "web-typography",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "spacing-system",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "theming",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "responsive-layout",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "component-states",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "form-ux",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "empty-states",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "micro-motion",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "data-viz",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "art-direction",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "a11y-pass",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "cognitive-a11y",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "i18n-ready",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "deslop-ui",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "humanize-copy",
+          "has_baseline": false,
+          "has_upgraded": false
+        },
+        {
+          "skill": "tastecheck-pass",
+          "has_baseline": false,
+          "has_upgraded": false
+        }
+      ],
+      "requirement": ">=1 baseline and >=1 upgraded record per skill (19 skills required)"
+    },
+    "lift": {
+      "check": "lift",
+      "pass": true,
+      "improved_count": 0,
+      "no_material_lift": [],
+      "regressed": [],
+      "blocked_skills": [],
+      "requirement": "Each skill must have >=1 'improved' paired verdict. 'no_material_lift' or 'regressed' returns skill to rework."
+    },
+    "diversity": {
+      "check": "diversity",
+      "pass": false,
+      "passed_count": 0,
+      "missing_count": 19,
+      "missing": [
+        {
+          "skill": "design-system-interview",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "improve-existing-website",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "color-system",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "web-typography",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "spacing-system",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "theming",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "responsive-layout",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "component-states",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "form-ux",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "empty-states",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "micro-motion",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "data-viz",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "art-direction",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "a11y-pass",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "cognitive-a11y",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "i18n-ready",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "deslop-ui",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "humanize-copy",
+          "upgraded_count": 0,
+          "required": 3
+        },
+        {
+          "skill": "tastecheck-pass",
+          "upgraded_count": 0,
+          "required": 3
+        }
+      ],
+      "requirement": "Each skill needs >=3 upgraded runs and 3 diversity pair records (A-B, A-C, B-C), each citing structural/aesthetic/voice differences."
+    },
+    "anti_slop": {
+      "check": "anti-slop",
+      "pass": true,
+      "note": "No upgraded receipts with evidence text yet — anti-slop checks will run when receipts are present"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "fixture_id": "responsive-layout-sealed-artifact-contract-v1",
+  "skill": "responsive-layout",
+  "kind": "sealed-artifact-contract",
+  "sealed": true,
+  "fail_closed_if_missing": true,
+  "required_artifacts": [
+    {"id": "rendered-target", "kind": "rendered-target", "required_fields": ["path", "sha256", "captured_at"]},
+    {"id": "browser-trace", "kind": "browser-trace", "required_fields": ["path", "sha256", "captured_at"]},
+    {"id": "viewport-measurements", "kind": "viewport-measurements", "required_fields": ["path", "sha256", "captured_at"]}
+  ]
+}

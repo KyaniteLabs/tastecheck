@@ -43,6 +43,20 @@ real), **H** 0–360 hue. Benefits that matter:
    opacity.
 6. **Verify contrast** for every text/bg pair you'll actually use.
 
+## Derive from the brief, not this file
+
+The sample demonstrates ramp mechanics, not a palette menu. Start from brand evidence,
+audience, ambient light, and semantic roles; state why hue, neutral temperature, and
+accent energy fit. If evidence is missing, record the approved assumption rather than
+defaulting to fashionable blue, violet, or “accessible” green.
+
+## Build a token system, not a swatch sheet
+
+Keep three layers separate: **primitives** are named OKLCH stops; **semantic roles**
+name jobs such as text, surface, focus, and danger; **component aliases** reference one
+role, never a raw value. Define a focus role, non-color status cue, and rendered
+foreground/background pair for each semantic status.
+
 ## Non-negotiables
 
 - **Build ramps in OKLCH with constant hue and stepped lightness.** Don't eyeball hex.
@@ -58,62 +72,18 @@ real), **H** 0–360 hue. Benefits that matter:
 - **Chroma tapers at lightness extremes.** Max chroma lives in the mid L range; near-
   white and near-black stops must drop C or they look neon/muddy.
 
-## Quick-start: a generated palette
+## Measure the rendered pair, including gamut and state
 
-```css
-:root {
-  /* Brand ramp — constant hue 250, stepped L, chroma peaking mid */
-  --brand-50:  oklch(0.97 0.02 250);
-  --brand-100: oklch(0.93 0.04 250);
-  --brand-200: oklch(0.86 0.07 250);
-  --brand-300: oklch(0.78 0.10 250);
-  --brand-400: oklch(0.70 0.14 250);
-  --brand-500: oklch(0.62 0.16 250);   /* base */
-  --brand-600: oklch(0.54 0.16 250);
-  --brand-700: oklch(0.46 0.14 250);
-  --brand-800: oklch(0.38 0.11 250);
-  --brand-900: oklch(0.30 0.08 250);
+Measure each rendered text, icon/UI, focus, and error pair in every supported theme and
+state; a passing body pair does not prove disabled or hover. For P3, retain hierarchy in
+the sRGB fallback and record gamut compression. If a brand hue cannot carry a legible
+role, use it as a mark/large accent and assign a darker semantic ink.
 
-  /* Neutrals = brand hue at tiny chroma (not dead gray) */
-  --neutral-50:  oklch(0.98 0.005 250);
-  --neutral-100: oklch(0.95 0.006 250);
-  --neutral-200: oklch(0.90 0.008 250);
-  --neutral-500: oklch(0.62 0.012 250);
-  --neutral-800: oklch(0.32 0.010 250);
-  --neutral-900: oklch(0.22 0.010 250);
-  --neutral-950: oklch(0.18 0.008 250);
+## Quick-start
 
-  /* Semantic — matched L/C so they’re a family */
-  --color-success: oklch(0.62 0.15 150);
-  --color-error:   oklch(0.60 0.20 25);
-  --color-warning: oklch(0.75 0.15 85);
-  --color-info:    oklch(0.65 0.14 230);
-
-  /* Semantic aliases (the canonical contract names — what components reference) */
-  --color-bg: var(--neutral-50);
-  --color-surface-1: var(--neutral-100);
-  --color-surface-2: var(--neutral-200);
-  --color-text: var(--neutral-900);
-  --color-text-muted: var(--neutral-500);
-  --color-border: var(--neutral-200);
-  --color-primary: var(--brand-600);
-  --color-primary-hover: var(--brand-700);
-  --color-primary-ink: var(--neutral-50);
-  --color-focus: var(--brand-600);
-
-  /* Data-viz categorical series (consumed by data-viz; ≥3:1 vs bg AND vs neighbors,
-     ordered so series 1–2 alone remain distinguishable for color-blind readers) */
-  --series-1: var(--brand-600);
-  --series-2: oklch(0.62 0.14 110);   /* ~hue-shifted, matched L/C */
-  --series-3: oklch(0.62 0.14 350);
-  --series-4: var(--neutral-500);
-  --chart-grid: var(--neutral-200);
-  --chart-label: var(--neutral-500);
-}
-```
-
-A generator script (`assets/oklch-ramp.md`) shows the exact math so you can produce a
-ramp for any hue and emit hex fallbacks.
+Use `assets/oklch-ramp.md` for the generator and the semantic-token skeleton. Keep
+primitives separate from semantic roles; measure real text/UI pairs and emit hex
+fallbacks when legacy targets are in scope.
 
 ## Reference files
 
@@ -125,19 +95,22 @@ ramp for any hue and emit hex fallbacks.
 
 ## How to deliver
 
-- State the system: "dominant hue 250, accent at 25 (complementary), neutrals tinted
-  toward 250, 10-step ramp, all text pairs ≥ 4.5:1."
-- Emit **semantic tokens** components reference (`--color-primary`), not raw ramp stops
-  scattered through markup.
-- Always run the contrast check on the actual pairs and report the numbers.
-- Pair with `theming` (the dark palette reuses these hues with +L/−C) and `deslop-ui`
-  (commit to one dominant color — avoid the timid even palette).
+State the brief-derived hue/neutral strategy, semantic tokens, measured pairs, gamut
+fallbacks, and unresolved gaps; hand role mappings to `theming`.
 
-## Self-check
+## Completion evidence
 
-- [ ] One dominant hue stated; accents intentional — not an even, timid, five-color spread
-- [ ] Ramp built in OKLCH with chroma taper at the light/dark ends; P3 with sRGB fallback
-- [ ] Semantic tokens (`--color-primary`…) referenced by components — not raw ramp stops in markup
-- [ ] Every text pair **measured** ≥ 4.5:1 (3:1 large/UI), and the numbers reported
-- [ ] Meaning never by color alone; palette is color-blind safe
-- [ ] Not the indigo→violet (or wine-red) default — committed to a real direction
+Record brief fit, primitive/role map, real contrast, non-color cues/gamut fallback, and
+theming handoff with evidence, reason, and remediation.
+
+<!-- contract:v1:start -->
+## Contract (generated)
+
+Canonical detail: [contract.json](contract.json).
+
+- Route: A design needs a cohesive palette, color ramp, semantic tokens, or contrast repair (+1 in contract.json); avoid: The request is only to map existing semantic tokens between light, dark, or forced-colors themes (+1 in contract.json)
+- Exclude: Do not deliver an unmeasured palette (+1 in contract.json)
+- Stop / handoff: Pause when the required foreground-background roles are unknown (+1 in contract.json); receives [design-system-interview, improve-existing-website] -> sends [theming, data-viz, a11y-pass]
+- Output: A brief-derived OKLCH ramp and semantic color-token system with measured pair evidence
+- Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
+<!-- contract:v1:end -->

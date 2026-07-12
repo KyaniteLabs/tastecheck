@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "interview_type": "greenfield",
+  "skill": "design-system-interview",
+  "description": "Canonical greenfield design-system interview state machine. All surfaces must agree with this file.",
+  "projected_surfaces": [
+    "skills/design-system-interview/SKILL.md",
+    "skills/design-system-interview/references/interview-bank.md",
+    "skills/design-system-interview/references/interview-contract.generated.md",
+    "skills/design-system-interview/assets/DESIGN-SYSTEM.template.md",
+    "commands/designsystem.md"
+  ],
+  "existing_direction_shortcut": {
+    "condition": "User supplies a sufficiently specific direction covering >=5 of the 9 core dimensions",
+    "behavior": "Confirm the committed direction and emit the token block without running the full interview",
+    "required_confirmation": true
+  },
+  "dimensions": {
+    "required": [
+      {
+        "id": "reference",
+        "label": "Visual reference / personality anchor",
+        "question_group": "orientation",
+        "abstention_default": "No direction committed; derive a recommendation from audience, task, domain, and supplied references, then mark it pending confirmation",
+        "trust_critical": false
+      },
+      {
+        "id": "personality",
+        "label": "Brand personality spectrum",
+        "question_group": "orientation",
+        "abstention_default": "Do not choose a personality pole without evidence; recommend the least-risk credible stance and mark it pending confirmation",
+        "trust_critical": false
+      },
+      {
+        "id": "aesthetic",
+        "label": "Aesthetic territory",
+        "question_group": "aesthetic",
+        "abstention_default": "Do not select a visual territory by convention; derive one from content, audience, domain, and evidence, or abstain pending confirmation",
+        "trust_critical": false
+      },
+      {
+        "id": "type",
+        "label": "Typography stance",
+        "question_group": "aesthetic",
+        "abstention_default": "Do not prescribe a font pairing without language, reading, brand, and performance evidence; record the unresolved choice",
+        "trust_critical": false
+      },
+      {
+        "id": "color_mode",
+        "label": "Color and mode",
+        "question_group": "aesthetic",
+        "abstention_default": "Do not assume a hue or mode; derive semantic roles from brand, contrast, theme, and content evidence, or abstain",
+        "trust_critical": false
+      },
+      {
+        "id": "density_shape",
+        "label": "Density and shape language",
+        "question_group": "composition",
+        "abstention_default": "Derive density and shape from content, interaction, platform, and brand evidence; do not import a token recipe",
+        "trust_critical": false
+      },
+      {
+        "id": "structure_rhythm",
+        "label": "Layout structure and rhythm",
+        "question_group": "composition",
+        "abstention_default": "Derive structure and rhythm from content hierarchy and container evidence; do not assume a column count or base unit",
+        "trust_critical": false
+      },
+      {
+        "id": "signature",
+        "label": "Signature element or distinctive touch",
+        "question_group": "distinctiveness",
+        "abstention_default": "Do not erase distinctiveness by default; identify a credible signature from the brief or record an explicit abstention",
+        "trust_critical": false
+      },
+      {
+        "id": "imagery_iconography",
+        "label": "Imagery and iconography approach",
+        "question_group": "distinctiveness",
+        "abstention_default": "Do not choose an imagery or icon recipe without subject, rights, accessibility, and brand evidence; record the open decision",
+        "trust_critical": false
+      }
+    ],
+    "optional": [
+      {
+        "id": "motion",
+        "label": "Motion and transition character",
+        "question_group": "motion",
+        "skip_condition": "User says motion is out of scope, site is purely static, or budget excludes it",
+        "abstention_default": "Do not add motion by convention; derive purpose, interruption tolerance, and reduced-motion behavior from evidence, or abstain",
+        "trust_critical": false
+      }
+    ]
+  },
+  "question_groups": ["orientation", "aesthetic", "composition", "distinctiveness", "motion"],
+  "session_model": {
+    "min_exchanges": 4,
+    "max_exchanges": 10,
+    "skip_on_existing_direction": true,
+    "interruption_resume": {
+      "supported": true,
+      "resume_signal": "User supplies previously unanswered dimensions mid-session",
+      "behavior": "Resume from the unanswered dimension; do not restart"
+    },
+    "contradiction_handling": {
+      "behavior": "Surface the contradiction, propose a resolution, confirm before committing",
+      "never": "Silently pick one side"
+    },
+    "abstention_handling": {
+      "behavior": "Apply the dimension's abstention_default and state what was decided",
+      "trust_critical_behavior": "When trust_critical=true, select a credibility-appropriate default and explain why"
+    },
+    "sample_menu_trap": {
+      "behavior": "Refuse to offer samples as a menu. Samples are illustrative case studies, not choices. Derive a new system via the interview."
+    },
+    "headless_behavior": {
+      "behavior": "Surface all forcing questions with recommended defaults. Do not commit the system without user confirmation unless the brief already supplies sufficient direction."
+    }
+  },
+  "artifact": {
+    "file": "DESIGN-SYSTEM.md",
+    "template": "skills/design-system-interview/assets/DESIGN-SYSTEM.template.md",
+    "required_sections": [
+      "Design direction summary",
+      "Token block (complete, with canonical CSS custom property names)",
+      "Typography specimen",
+      "Color palette (with contrast notes)",
+      "Spacing scale",
+      "Component guidance notes"
+    ],
+    "optional_sections": ["Motion tokens"],
+    "completion_criteria": "All 9 required dimensions decided, token block complete, artifact written or explicitly approved"
+  },
+  "readiness": {
+    "not_ready_signals": [
+      "Fewer than 5 dimensions answered",
+      "Contradiction unresolved",
+      "Trust-critical domain with no credibility rationale"
+    ],
+    "ready_signal": "All required dimensions decided (by answer or explicit abstention with stated default)"
+  },
+  "handoff": {
+    "downstream": ["color-system", "web-typography", "spacing-system", "theming", "component-states", "art-direction", "micro-motion"],
+    "downstream_notes": {
+      "art-direction": "imagery_iconography dimension feeds directly into art-direction source-and-rights decisions",
+      "micro-motion": "optional motion dimension feeds into micro-motion token plan"
+    },
+    "handoff_artifact": "DESIGN-SYSTEM.md token block"
+  }
+}

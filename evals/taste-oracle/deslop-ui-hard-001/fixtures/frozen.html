@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" data-oracle-arm="frozen">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Northstar workspace</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--canvas); color: var(--text); font: var(--weight-regular) var(--body-size)/var(--body-line-height) var(--font-family); }
+    header { display: flex; align-items: center; justify-content: space-between; gap: var(--lg); padding: var(--lg) max(var(--lg), calc((100vw - 1080px) / 2)); background: var(--surface); border-bottom: 1px solid var(--border); }
+    .brand { font-weight: var(--weight-bold); }
+    nav { display: flex; gap: var(--lg); }
+    nav a { color: var(--text); text-decoration: none; font-size: .9rem; font-weight: var(--weight-medium); }
+    main { width: min(1080px, calc(100% - 3rem)); margin: auto; padding: 6rem 0; }
+    section { max-width: 820px; }
+    .badge { display: inline-block; margin-bottom: var(--lg); padding: var(--xs) var(--sm); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-muted); font-size: .78rem; font-weight: var(--weight-medium); }
+    h1 { max-width: 14ch; margin: 0 0 var(--lg); font-size: clamp(3rem, 6vw, 5rem); line-height: 1; letter-spacing: -.04em; }
+    .lede { max-width: 60ch; margin: 0 0 var(--xl); color: var(--text-muted); font-size: 1.08rem; }
+    button { border: 0; border-radius: var(--radius-sm); padding: .8rem 1.2rem; background: var(--text); color: var(--surface); font: inherit; font-weight: var(--weight-medium); }
+    .card { margin-top: 4.5rem; padding: var(--xl); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); }
+    h2 { margin: 0 0 var(--sm); font-size: 1.4rem; }
+    .card p { max-width: 62ch; color: var(--text-muted); }
+    .status { display: inline-block; margin-top: var(--md); color: var(--accent); font-weight: var(--weight-bold); }
+    @media (max-width: 560px) { header { padding: var(--md); } nav { gap: var(--md); } main { width: auto; padding: 4rem var(--md); } h1 { font-size: 3.35rem; } button { width: 100%; } .card { margin-top: 3rem; padding: var(--lg); } }
+  </style>
+</head>
+<body data-oracle-probe="root">
+  <header>
+    <div class="brand">Northstar</div>
+    <nav aria-label="Primary"><a href="#overview">Overview</a><a href="#activity">Activity</a></nav>
+  </header>
+  <main>
+    <section aria-labelledby="page-heading">
+      <span class="badge">Weekly workspace</span>
+      <h1 id="page-heading" data-oracle-probe="heading">Make the next decision obvious.</h1>
+      <p class="lede">Northstar turns scattered project signals into one calm, accountable view of what needs attention now.</p>
+      <div class="actions"><button type="button" data-oracle-probe="primary-action">Review priorities</button></div>
+      <article class="card" id="overview" data-oracle-probe="summary-card">
+        <h2>Launch readiness</h2>
+        <p>Three reviews remain. The release brief is current, ownership is assigned, and no critical blockers are open.</p>
+        <span class="status" id="activity" data-oracle-probe="status">On track for Friday</span>
+      </article>
+    </section>
+  </main>
+  <script>
+    (() => { const t = globalThis.__ORACLE_TOKENS__; if (!t) throw new Error("Oracle tokens unavailable"); const r = document.documentElement.style; const values = { canvas:t.colors.canvas, surface:t.colors.surface, text:t.colors.text, "text-muted":t.colors.text_muted, accent:t.colors.accent, border:t.colors.border, "font-family":t.type.font_family, "body-size":t.type.body_size, "body-line-height":t.type.body_line_height, "weight-regular":t.type.weight_regular, "weight-medium":t.type.weight_medium, "weight-bold":t.type.weight_bold, xs:t.spacing.xs, sm:t.spacing.sm, md:t.spacing.md, lg:t.spacing.lg, xl:t.spacing.xl, "radius-sm":t.radii.sm, "radius-md":t.radii.md }; for (const [k,v] of Object.entries(values)) r.setProperty(`--${k}`, String(v)); document.documentElement.dataset.oracleTokens = t.token_set_id; })();
+  </script>
+</body>
+</html>

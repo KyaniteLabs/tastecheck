@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "skills": [
+    {
+      "skill": "component-states",
+      "upgraded_count": 0,
+      "pairs": [
+        {
+          "pair": "A-B",
+          "status": "missing"
+        },
+        {
+          "pair": "A-C",
+          "status": "missing"
+        },
+        {
+          "pair": "B-C",
+          "status": "missing"
+        }
+      ],
+      "checks": {
+        "has_three_runs": false,
+        "all_pairs_present": false,
+        "all_pairs_valid": true
+      },
+      "pass": false
+    },
+    {
+      "skill": "deslop-ui",
+      "upgraded_count": 0,
+      "pairs": [
+        {
+          "pair": "A-B",
+          "status": "missing"
+        },
+        {
+          "pair": "A-C",
+          "status": "missing"
+        },
+        {
+          "pair": "B-C",
+          "status": "missing"
+        }
+      ],
+      "checks": {
+        "has_three_runs": false,
+        "all_pairs_present": false,
+        "all_pairs_valid": true
+      },
+      "pass": false
+    },
+    {
+      "skill": "tastecheck-pass",
+      "upgraded_count": 0,
+      "pairs": [
+        {
+          "pair": "A-B",
+          "status": "missing"
+        },
+        {
+          "pair": "A-C",
+          "status": "missing"
+        },
+        {
+          "pair": "B-C",
+          "status": "missing"
+        }
+      ],
+      "checks": {
+        "has_three_runs": false,
+        "all_pairs_present": false,
+        "all_pairs_valid": true
+      },
+      "pass": false
+    }
+  ],
+  "overall_pass": false,
+  "missing_evidence_message": "12 blocking gaps — diversity evidence incomplete."
+}

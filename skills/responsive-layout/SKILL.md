@@ -1,117 +1,76 @@
 ---
 name: responsive-layout
 description: >-
-  Responsive layout pass for web pages and components. Use for mobile breakage,
-  overflow, grids, sidebars, navigation, cards, heroes, zoom/reflow, container
-  queries, intrinsic sizing, mobile-first CSS, and breakpoint decisions.
+  Use when a page or component must survive narrow containers, long or translated
+  content, zoom, reflow, or overflow without device-name breakpoints.
 ---
 
 # Responsive Layout
 
-A responsive layout isn't "three breakpoints for phone/tablet/desktop." Devices come
-in every size; designing for named devices guarantees it breaks on the ones you didn't
-name. Modern responsive design is about **letting content reflow intrinsically** and
-adding breakpoints **only where the content itself breaks** — plus, in 2026,
-**container queries** so a component adapts to *its own* space, not just the window.
-
-This skill is the method and the patterns that make a layout survive any width, zoom,
-and device — each checkable.
+Responsive layout is intrinsic reflow plus content-led breakpoints and container queries,
+not named-device CSS.
 
 ## The decision order
 
-1. **Mobile-first.** Write the base styles for the smallest screen, then *add*
-   complexity upward with `min-width` queries. This forces content priority and
-   produces simpler CSS than stripping a desktop layout down.
-2. **Make it intrinsic before you reach for breakpoints.** Use Grid/Flex with
-   `minmax()`, `auto-fit`, `clamp()`, and `%`/`fr` so the layout flexes *without* any
-   media query. Many layouts need zero breakpoints.
-3. **Add breakpoints where the content breaks, not at device sizes.** Resize the
-   window; the moment the layout looks wrong is your breakpoint — whatever px that is.
-4. **Use container queries for reusable components.** A card in a sidebar vs. a wide
-   column should adapt to its container, not the viewport.
-5. **Verify the extremes** — 320px wide, 200–400% zoom, and very wide — no horizontal
-   scroll, no overflow, no collapse.
+1. Start mobile-first and use Grid/Flex intrinsic sizing (`minmax`, `auto-fit`, `clamp`, `%`/`fr`).
+2. Add breakpoints only where observed content breaks; reusable components use container queries.
+3. Verify 320px, 200–400% zoom, long/translated content, narrow embeds, and wide views without overflow/collapse.
+
+## Preserve hierarchy under pressure
+
+Start with non-disappearing content, reading order, and narrowest real container; decide
+stack/reorder/progressive reveal/rail from observed pressure and test long content, locale,
+zoom, and embedded cases before calling it responsive.
 
 ## Non-negotiables
 
-- **Mobile-first (`min-width`), not desktop-first (`max-width`).** Base = smallest;
-  enhance up. Mixing both directions is where responsive bugs breed.
-- **No fixed pixel widths on layout containers.** Use `max-width` + `%`/`fr`/`auto`,
-  `min()/max()/clamp()`. A `width: 1200px` container overflows a 360px phone.
-- **Breakpoints come from content, not devices.** Don't hardcode 768/1024 because
-  "tablet"; break where *your* content needs it. Devices change; content logic doesn't.
-- **Prevent overflow at the source.** `min-width: 0` on flex/grid children (they
-  default to `min-content` and refuse to shrink → overflow), `max-width: 100%` on
-  media, wrap long text (`overflow-wrap: anywhere` where needed).
-- **Reflow, don't shrink-to-unusable.** Multi-column → single column on small screens;
-  don't just scale a desktop grid down until it's illegible (WCAG 1.4.10 reflow: usable
-  at 320px / 400% zoom with no 2-D scrolling).
-- **Container queries for components meant to be reused** in different-width slots.
-- **Test 320px + zoom.** If it needs horizontal scrolling at 320px or 400% zoom, it
-  fails reflow.
+- Mobile-first `min-width`; no fixed layout widths or device-name breakpoints.
+- Prevent overflow with `min-width: 0`, bounded media, and wrapping; reflow rather than shrink to unusable.
+- Reusable components use container queries; 320px/400% zoom cannot require 2-D scrolling.
 
-## Quick-start patterns (mostly breakpoint-free)
+## Quick-start patterns
 
-```css
-/* 1. Auto-responsive grid — wraps with NO media queries.
-      Cards are ≥ 16rem; fit as many per row as space allows. */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
-  gap: 1.5rem;
-}
-
-/* 2. Sidebar + content that collapses on its own (the "sidebar" pattern) */
-.with-sidebar { display: flex; flex-wrap: wrap; gap: 1.5rem; }
-.with-sidebar > .sidebar { flex: 1 1 16rem; }     /* sidebar basis */
-.with-sidebar > .content { flex: 999 1 60%; min-width: 0; }  /* takes the rest; min-width:0 prevents overflow */
-
-/* 3. Fluid container — never wider than the viewport, capped, centered */
-.container { width: min(100% - 2rem, 72rem); margin-inline: auto; }
-
-/* 4. A breakpoint ONLY where content breaks (mobile-first, min-width) */
-.layout { display: grid; gap: 1rem; }                 /* base: stacked */
-@media (min-width: 48em) {                            /* where 2-col starts to make sense */
-  .layout { grid-template-columns: 2fr 1fr; }
-}
-```
-
-### Container query (component adapts to its slot, not the window)
-```css
-.card-wrap { container-type: inline-size; }
-.card { display: grid; gap: 1rem; }
-@container (min-width: 28rem) {          /* when the CARD's container is wide enough */
-  .card { grid-template-columns: 8rem 1fr; }   /* go horizontal */
-}
-```
-Container queries are supported in all current evergreen browsers. Prefer them for
-anything you'll drop into multiple layout contexts.
+Use `references/patterns.md` for the intrinsic grid, sidebar, stack, cluster, and
+container-query patterns. Start with `minmax(min(16rem, 100%), 1fr)`, `min-width: 0`,
+logical container sizing, and a breakpoint only where content actually breaks.
 
 ## Reference files
 
-- `references/patterns.md` — the core intrinsic patterns (auto-grid, sidebar, switcher,
-  cluster, stack), Grid-vs-Flex decision rules, breakpoint strategy, units (`fr`,
-  `min/max/clamp`, `dvh`/`svh`), nav patterns, images (`srcset`/`sizes`, aspect-ratio),
-  and overflow debugging. Read when building a specific layout.
-- `references/decision-records.md` — meta-patterns + ADR rules for novel cases.
+- `assets/layout-patterns.css` — intrinsic examples after pressure evidence.
+- `references/patterns.md` — patterns, units, images, and overflow debugging.
+- `references/decision-records.md` — novel-case ADR rules.
 
-## Self-check (before claiming responsive)
+## Completion evidence
 
-1. Base styles are smallest-screen; enhancements use `min-width` (mobile-first)?
-2. No fixed px widths on containers; using `max-width`/`clamp`/`fr`/`%`?
-3. Did the layout flex intrinsically *before* you added breakpoints?
-4. Breakpoints placed where content breaks (not at device names)?
-5. `min-width: 0` on flex/grid children that contain long content/media?
-6. Reusable components use container queries, not viewport queries?
-7. At **320px** and **400% zoom**: no horizontal scroll, nothing clipped, usable?
-8. Tested an in-between width (e.g. 600px, 900px), not just phone/desktop?
+Use the five-field ledger; start Reason with the check ID.
+
+| Status | Reason | Remediation | Evidence | Provenance |
+| --- | --- | --- | --- | --- |
+|  | layout-strategy — content hierarchy and intrinsic composition |  |  |  |
+|  | containment — breakpoint and container-query rationale |  |  |  |
+|  | narrow-reflow — 320px, long-content, and overflow result |  |  |  |
+|  | zoom-interaction — zoom and keyboard-reachable interaction result |  |  |  |
+|  | handoff — component and accessibility boundary |  |  |  |
+
+## Pressure-test protocol
+
+Each row names real longest-pressure fixture, available width/zoom, expected and observed
+result (or fail-closed missing evidence). Test full shell, narrow, 400%, and narrow embed;
+record what stays first/stacks/folds and why. No rendered build means a plan, not pass.
 
 ## How to deliver
 
-- State the approach: "mobile-first, intrinsic auto-fit grid (zero breakpoints), one
-  `min-width: 48em` break where the hero needed two columns, container query on the
-  card so it works in the sidebar too."
-- Prefer the breakpoint-free pattern when it exists — fewer breakpoints = fewer bugs.
-- Verify the 320px and zoom extremes and report it.
-- Pair with `web-typography` (fluid type), `deslop-ui` (break the rigid equal-grid),
-  `component-states` (states must hold at every width).
+Deliver content-led layout/breakpoints and rerunnable narrow/long/container/zoom/keyboard
+evidence; hand type, rhythm, and state concerns onward.
+
+<!-- contract:v1:start -->
+## Contract (generated)
+
+Canonical detail: [contract.json](contract.json).
+
+- Route: A layout needs intrinsic reflow, responsive hierarchy, container behavior, or overflow repair (+1 in contract.json); avoid: The request is only to choose a spacing scale or type system (+1 in contract.json)
+- Exclude: Do not choose breakpoints from device names (+1 in contract.json)
+- Stop / handoff: Pause when content priority is unknown and reflow would silently hide required information (+1 in contract.json); receives [design-system-interview, improve-existing-website, web-typography, spacing-system, theming] -> sends [component-states, form-ux, a11y-pass, deslop-ui]
+- Output: An intrinsic layout strategy with justified breakpoints and responsive verification evidence
+- Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
+<!-- contract:v1:end -->

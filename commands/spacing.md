@@ -5,7 +5,9 @@ argument-hint: "[file/path or area, optional]"
 
 Load and apply the **spacing-system** skill (`~/.agents/skills/spacing-system/SKILL.md`).
 
-Pick the base from the density choice, emit the canonical `--space-1…8` + `--space-section` tokens, apply the proximity rule (related close, unrelated far, visible jumps), decide the section rhythm on purpose, and grep out every off-scale margin/padding/gap.
+Pick the base from content density, emit the canonical `--space-1…9` +
+`--space-section: clamp(48px, 32px + 4vw, 96px)` tokens, apply proximity rules, state the content-derived section
+rhythm, and check every off-scale margin/padding/gap with evidence.
 
 Target: $ARGUMENTS (if empty, apply to the current file / most recent work in context).
 

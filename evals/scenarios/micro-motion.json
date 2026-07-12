@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "id": "micro-motion-reduced-equivalence",
+  "skill": "micro-motion",
+  "class": "generative",
+  "prompt": "Define restrained motion for a keyboard-first task manager: save feedback, list insertion, destructive confirmation, and a route transition. Include causal order, duration/easing, interruption, performance, a genuinely equivalent reduced-motion path, and JS-disabled safe reveal.",
+  "assertions": [
+    "Every animation has a user-facing purpose; committed state and focus precede optional feedback, with an interruption that converges on the usable state.",
+    "Timing and easing use concrete token-backed duration bands for Save, insertion, destructive confirmation, and route continuity.",
+    "Produces five distinct replayable evidence rows: Save, insertion, destructive confirmation, route, and global reduced-motion/JS-disabled safety; each has status, reason, remediation, evidence, and provenance.",
+    "Save proves latest-request-only settlement by replaying both stale success and stale error after a newer request begins; only the latest request owns visible status and its single live announcement.",
+    "Reduced motion preserves comprehension and completion without merely hiding content; spatial movement is gated by no-preference and JS-disabled content remains revealed.",
+    "Explicitly rejects component-states as the negative neighbor because it owns the state model rather than motion timing, causal order, or interruption; hands final focus/live-region verification to a11y-pass."
+  ],
+  "required_evidence": [
+    "Save replay: N then N+1; settle stale N as success and error without a status change or live announcement.",
+    "Insertion replay: insert then sort or navigate; final DOM order stays readable.",
+    "Destructive-confirmation replay: Escape, Cancel, repeat delete, and navigation converge on the closed focused state.",
+    "Route replay: a second navigation wins without a stale layer; destination DOM and heading focus are ready.",
+    "Global safety replay: compositor-only properties, reduced motion, and JS-disabled reveal are checked."
+  ],
+  "routing": {
+    "positive": true,
+    "negative_neighbor": "component-states",
+    "handoff": "a11y-pass"
+  },
+  "run_protocol": {
+    "seeds": [101, 202, 303],
+    "fresh_context": true,
+    "diversity_axes": ["structure", "aesthetic", "voice"],
+    "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+    "negative_routing_requirement": "The negative neighbor (component-states) must be explicitly rejected with a reason and handoff boundary."
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "description": "Canonical command -> skill map for TasteCheck. 20 command files, 19 skills, 1 approved alias.",
+  "commands": [
+    { "file": "commands/a11y.md",           "command": "/a11y",           "skill": "a11y-pass",                 "type": "canonical", "domain": "B" },
+    { "file": "commands/artdirection.md",   "command": "/artdirection",   "skill": "art-direction",             "type": "canonical", "domain": "B" },
+    { "file": "commands/cognitive.md",      "command": "/cognitive",      "skill": "cognitive-a11y",            "type": "canonical", "domain": "B" },
+    { "file": "commands/colorsystem.md",    "command": "/colorsystem",    "skill": "color-system",              "type": "canonical", "domain": "A" },
+    { "file": "commands/darkmode.md",       "command": "/darkmode",       "skill": "theming",                   "type": "alias",     "domain": "A", "alias_note": "Sole approved alias of theming. Synopsis block projected from theming entry." },
+    { "file": "commands/dataviz.md",        "command": "/dataviz",        "skill": "data-viz",                  "type": "canonical", "domain": "B" },
+    { "file": "commands/designsystem.md",   "command": "/designsystem",   "skill": "design-system-interview",   "type": "canonical", "domain": "A" },
+    { "file": "commands/deslop.md",         "command": "/deslop",         "skill": "deslop-ui",                 "type": "canonical", "domain": "B" },
+    { "file": "commands/emptystates.md",    "command": "/emptystates",    "skill": "empty-states",              "type": "canonical", "domain": "B" },
+    { "file": "commands/formux.md",         "command": "/formux",         "skill": "form-ux",                   "type": "canonical", "domain": "B" },
+    { "file": "commands/humanize.md",       "command": "/humanize",       "skill": "humanize-copy",             "type": "canonical", "domain": "B" },
+    { "file": "commands/i18n.md",           "command": "/i18n",           "skill": "i18n-ready",                "type": "canonical", "domain": "B" },
+    { "file": "commands/improvesite.md",    "command": "/improvesite",    "skill": "improve-existing-website",  "type": "canonical", "domain": "A" },
+    { "file": "commands/motion.md",         "command": "/motion",         "skill": "micro-motion",              "type": "canonical", "domain": "B" },
+    { "file": "commands/responsive.md",     "command": "/responsive",     "skill": "responsive-layout",         "type": "canonical", "domain": "A" },
+    { "file": "commands/spacing.md",        "command": "/spacing",        "skill": "spacing-system",            "type": "canonical", "domain": "A" },
+    { "file": "commands/states.md",         "command": "/states",         "skill": "component-states",          "type": "canonical", "domain": "B" },
+    { "file": "commands/tastecheckpass.md", "command": "/tastecheckpass", "skill": "tastecheck-pass",           "type": "canonical", "domain": "B" },
+    { "file": "commands/theming.md",        "command": "/theming",        "skill": "theming",                   "type": "canonical", "domain": "A" },
+    { "file": "commands/typography.md",     "command": "/typography",     "skill": "web-typography",            "type": "canonical", "domain": "A" }
+  ],
+  "invariants": {
+    "total_command_files": 20,
+    "total_skills": 19,
+    "approved_alias_files": ["commands/darkmode.md"],
+    "duplicate_target_skill": "theming",
+    "duplicate_target_count": 2
+  }
+}

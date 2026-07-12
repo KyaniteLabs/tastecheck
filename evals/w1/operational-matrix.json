@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "wave": "W1",
+  "description": "Approved (skill × scenario × run_type × executor) combinations for the W1 pilot evaluation.",
+  "production_executor": "gpt-5.6-terra",
+  "evaluator_executor": "gpt-5.6-luna",
+  "approved_executors": [
+    "gpt-5.6-terra"
+  ],
+  "approved_evaluator_executors": [
+    "gpt-5.6-luna"
+  ],
+  "seed_temperature_policy": "Desktop threads do not expose seed or temperature controls. Packets record requested_seed and requested_temperature for intent; observed_seed and observed_temperature are always null. Isolation is achieved via fresh isolated threads and explicit run-angle prompts in system_prompt.",
+  "run_budget_per_scenario": {
+    "baseline": 1,
+    "upgraded": 3
+  },
+  "baseline_seed": 101,
+  "upgraded_seeds": [101, 202, 303],
+  "pilot_skills": [
+    {
+      "skill": "component-states",
+      "scenario_id": "component-states-async-destructive-control",
+      "class": "generative",
+      "requested_temperature": 0.7,
+      "executor": "gpt-5.6-terra",
+      "total_jobs": 4
+    },
+    {
+      "skill": "deslop-ui",
+      "scenario_id": "deslop-ui-polished-generic-page",
+      "class": "repair",
+      "requested_temperature": 0.2,
+      "executor": "gpt-5.6-terra",
+      "total_jobs": 4
+    },
+    {
+      "skill": "tastecheck-pass",
+      "scenario_id": "tastecheck-pass-dishonest-evidence-bundle",
+      "class": "gate",
+      "requested_temperature": 0.0,
+      "executor": "gpt-5.6-terra",
+      "total_jobs": 4
+    }
+  ],
+  "total_jobs": 12,
+  "external_output_policy": {
+    "description": "Raw model output files are written by external gpt-5.6-terra desktop threads. All raw artifacts go to .omx/evidence/tastecheck-v1/raw/<skill>/<scenario_id>/ exclusively. The evals/ tree contains only authored schemas, config, job packets, and sanitized receipts.",
+    "raw_output_base": ".omx/evidence/tastecheck-v1/raw/",
+    "unique_filename_required": true,
+    "filename_convention": "<skill>-<scenario_id>-<variant>-<seed>-<unique>.json",
+    "outage_receipt_ref": "evals/receipts/v1/codex-outage.json"
+  }
+}

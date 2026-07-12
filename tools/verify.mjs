@@ -66,6 +66,43 @@ function assertSkillStructure() {
   }
 }
 
+function resourceTarget(sourcePath, token) {
+  const clean = token.trim().split(/[?#]/)[0].replace(/[),.;]+$/, "");
+  if (!clean || /^(?:https?:|mailto:|#|data:)/i.test(clean)) return null;
+  if (clean.startsWith("skills/") || clean.startsWith("contracts/") || clean.startsWith("commands/")) return join(root, clean);
+  if (/^[A-Za-z0-9_-]+\/(?:assets|references)\//.test(clean)) return join(root, "skills", clean);
+  if (clean.startsWith("./") || clean.startsWith("../") || clean.startsWith("assets/") || clean.startsWith("references/")) return join(dirname(sourcePath), clean);
+  return null;
+}
+
+function assertNestedSkillResources() {
+  const docs = [...files(join(root, "skills"), [".md"]), ...files(join(root, "commands"), [".md"])].map((path) => ({ path, text: readFileSync(path, "utf8") }));
+  const inbound = new Set();
+  for (const { path: sourcePath, text } of docs) {
+    const tokens = [
+      ...[...text.matchAll(/\[[^\]]+\]\((?!https?:|mailto:|#)([^)#]+)(?:#[^)]+)?\)/g)].map((m) => m[1]),
+      ...[...text.matchAll(/`([^`]+)`/g)].map((m) => m[1]),
+    ];
+    for (const token of tokens) {
+      const target = resourceTarget(sourcePath, token);
+      if (!target) continue;
+      if ((token.includes("assets/") || token.includes("references/")) && !existsSync(target)) {
+        fail(`${rel(sourcePath)} references missing resource ${token}`);
+      } else if (existsSync(target)) {
+        inbound.add(target);
+      }
+    }
+  }
+
+  for (const resource of files(join(root, "skills"), [".md", ".css", ".js", ".html"])) {
+    const match = resource.match(/(?:^|\/)skills\/([^/]+)\/(assets|references)\/(.+)$/);
+    if (!match) continue;
+    const resourceRel = `${match[2]}/${match[3]}`;
+    const referencedByText = docs.some(({ text }) => text.includes(resourceRel) || text.includes(`skills/${match[1]}/${resourceRel}`));
+    if (!inbound.has(resource) && !referencedByText) fail(`${rel(resource)} is an orphan resource; reference it or remove it`);
+  }
+}
+
 function assertCommandTargets() {
   const skillNames = new Set(readdirSync(join(root, "skills")));
   for (const path of files(join(root, "commands"), [".md"])) {
@@ -290,7 +327,34 @@ function assertGateAuditParses() {
   if (!/light DOM only/.test(text)) fail(`${rel(path)} lost the light-DOM scope caveat`);
 }
 
+function assertSkipLinksLeadFocusOrder() {
+  const pages = [
+    "index.html",
+    "samples/copper/index.html",
+    "samples/swiss/index.html",
+    "samples/maximal/index.html",
+    "samples/concrete/index.html",
+    "samples/clay/index.html",
+    "samples/dispatch/index.html",
+  ];
+  const focusableTag = /<(a|button|input|select|textarea|summary)\b[^>]*>/gi;
+  for (const page of pages) {
+    const text = readFileSync(join(root, page), "utf8");
+    const body = text.slice(text.search(/<body\b[^>]*>/i));
+    const first = [...body.matchAll(focusableTag)].map((match) => match[0]).find((tag) => {
+      if (/\bhidden\b|\bdisabled\b|\btabindex\s*=\s*["']?-1/i.test(tag)) return false;
+      if (/^<a\b/i.test(tag)) return /\bhref\s*=/i.test(tag);
+      if (/^<input\b/i.test(tag)) return !/\btype\s*=\s*["']?hidden/i.test(tag);
+      return true;
+    });
+    if (!first || !/\bclass\s*=\s*["'][^"']*\bskip\b/i.test(first) || !/\bhref\s*=\s*["']#main["']/i.test(first)) {
+      fail(`${page} first focusable control must be the skip link to #main`);
+    }
+  }
+}
+
 assertSkillStructure();
+assertNestedSkillResources();
 assertCommandTargets();
 assertInstallSmoke();
 assertNoBadClampMath();
@@ -303,6 +367,7 @@ assertDataVizTablesCoverData();
 assertNoStaleSkillAliases();
 assertA11yAuditModernColorPath();
 assertGateAuditParses();
+assertSkipLinksLeadFocusOrder();
 
 if (failures.length) {
   console.error(`tastecheck verification failed (${failures.length})`);

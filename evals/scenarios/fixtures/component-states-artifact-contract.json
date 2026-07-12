@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "fixture_id": "component-states-sealed-artifact-contract-v1",
+  "skill": "component-states",
+  "kind": "sealed-artifact-contract",
+  "sealed": true,
+  "fail_closed_if_missing": true,
+  "required_artifacts": [
+    {"id": "component-source", "kind": "component-source", "required_fields": ["path", "sha256", "captured_at"]},
+    {"id": "token-inventory", "kind": "token-inventory", "required_fields": ["path", "sha256", "captured_at"]},
+    {"id": "state-test", "kind": "state-test", "required_fields": ["path", "sha256", "captured_at"]}
+  ]
+}

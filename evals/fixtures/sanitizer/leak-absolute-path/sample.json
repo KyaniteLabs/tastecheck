@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "skill": "color-system",
+  "scenario_id": "color-system-brand-ramp-contrast-repair",
+  "variant": "upgraded",
+  "run_id": "color-system-upgraded-101-leak-path",
+  "prompt_hash": "0000000000000000000000000000000000000000000000000000000000000003",
+  "context_hash": "0000000000000000000000000000000000000000000000000000000000000004",
+  "tool_policy": "read-only",
+  "model_runtime": "claude-sonnet (family: anthropic)",
+  "seed": 101,
+  "temperature": 0.7,
+  "output_ref": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "rubric": {
+    "brief_fit": 4,
+    "specificity": 4,
+    "actionability": 4,
+    "coherence": 4,
+    "usability": 4,
+    "non_generic_judgment": 4,
+    "skill_requirements": 4
+  },
+  "evidence": [
+    "Output written to /Users/REDACTED/tastecheck/output.md"
+  ],
+  "regressions": [],
+  "verdict": "improved",
+  "reviewer_provenance": "claude-sonnet / rubric-v1 / calibration-passed"
+}

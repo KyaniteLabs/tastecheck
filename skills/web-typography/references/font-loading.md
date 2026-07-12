@@ -9,7 +9,7 @@ issues. Fonts are usually the heaviest typography decision for performance and t
 
 A good **system font stack** downloads nothing, renders instantly, never causes CLS,
 and feels native to each OS. Make this the default and only reach for a web font when
-the brand genuinely needs it. (Stacks are in `assets/starter.css`; see also
+the brand genuinely needs it. (Stacks are in `../assets/starter.css`; see also
 [modernfontstacks.com](https://modernfontstacks.com).)
 
 ## Format & delivery

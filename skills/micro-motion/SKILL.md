@@ -1,72 +1,40 @@
 ---
 name: micro-motion
 description: >-
-  Web micro-motion guidance. Use for hover/press feedback, page reveals, modals,
-  drawers, loading states, list reordering, toasts, polish, cheap/janky animation,
-  easing/duration choices, transform/opacity, and reduced-motion fallbacks.
+  Use when an interface needs purposeful feedback, transitions, or reduced-motion
+  behavior, especially when animation risks jank, interruption bugs, or hidden
+  no-JS content.
 ---
 
 # Micro-Motion
 
-Good motion is felt, not noticed. It confirms actions, shows where things come from
-and go, and guides the eye — in well under half a second. Bad motion is the opposite:
-slow, everywhere at once, bouncy where it should be crisp, and animating the wrong
-properties so it stutters. The line between "premium" and "cheap/annoying" is mostly
-**duration, easing, restraint, and which property you animate** — all checkable.
-
-The governing idea: **motion has meaning.** Every animation should answer "what just
-happened / where did this come from / what should I look at?" If it answers nothing,
-cut it.
+Motion confirms a change, its origin, or what to notice next. If it answers none of
+those, cut it.
 
 ## Non-negotiables (the rules that keep motion feeling good)
 
-- **Animate `transform` and `opacity`, basically nothing else.** These are GPU-
-  composited and don't trigger layout/paint, so they stay 60fps. Animating `width`,
-  `height`, `top/left`, `margin` causes layout thrash and jank. Need a size/position
-  change? Use `transform: scale()/translate()` (or the FLIP technique / View
-  Transitions API), not the layout properties.
-- **Durations: 150–300ms for most UI.** Hovers/small state ~150ms; entrances/modals
-  ~200–300ms; larger/page transitions ~300–500ms max. Under ~100ms isn't perceived;
-  over ~500ms feels slow. Exits are often slightly faster than entrances.
-- **Easing: never linear for UI.** Real things accelerate and decelerate. Use
-  ease-out for entrances (fast→settle), ease-in for exits, ease-in-out for moves.
-  Linear is only for continuous loops (spinners, marquees).
-- **Restraint — the 30% rule.** No more than ~30% of interactive elements on a screen
-  should be animating. Don't animate everything; one well-orchestrated moment beats
-  scattered fidgets.
-- **Always provide a `prefers-reduced-motion` fallback.** Replace movement/scale with
-  a simple opacity fade (or nothing). This is an accessibility requirement, not a
-  nicety — large motion can trigger vestibular illness.
-- **Reveal-on-scroll must not hide content from a no-JS reader.** If the static
-  stylesheet sets the waiting state (`.reveal { opacity: 0 }`), the content is
-  invisible whenever the script doesn't run — broken JS, reader mode, some crawlers
-  and full-page captures. Gate the hidden state behind a JS-added hook (e.g. a class
-  the script adds to `<html>` on boot) or apply it from the same script that registers
-  the observer. A reduced-motion block alone doesn't cover this: motion-tolerant
-  users with failed JS still get blank sections — the `tastecheck-pass` auditor flags
-  text sitting at computed opacity 0 on a fresh load.
-- **Never animate on a loop without reason, never scroll-jack.** Auto-playing infinite
-  motion and hijacked scrolling are the top "annoying" complaints and can fail WCAG
-  2.2.2 (pause/stop/hide).
+- **Use `transform` and `opacity`.** Avoid geometric properties; use transforms, FLIP,
+  or View Transitions for real size or position changes.
+- **Ease by direction.** Ease-out enters, ease-in exits, ease-in-out moves; linear is
+  for a purposeful continuous loop only.
+- **Design reduced motion as an equivalent state.** Keep labels, choices, focus, and
+  final content; remove spatial movement.
+- **Gate waiting states behind a JS-added root hook.** Static CSS must not leave content
+  at `opacity: 0` when JavaScript fails, in reader mode, crawlers, or captures.
+- **Make looping motion controllable and never scroll-jack.**
 
-## Easing & duration tokens (use these)
+## Easing & duration tokens
 
-```css
-:root {
-  --dur-fast: 150ms;     /* hover, small toggles */
-  --dur-base: 220ms;     /* entrances, dropdowns */
-  --dur-slow: 320ms;     /* modals, drawers, page reveals */
+Use semantic duration/easing tokens: acknowledgement `120–160ms`, insertion/menu
+`160–220ms`, confirmation/route `220–320ms`. Motion never delays committed state, focus,
+or the next keyboard action.
 
-  --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);    /* entrances — snappy then settle */
-  --ease-in:   cubic-bezier(0.7, 0, 0.84, 0);     /* exits */
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);  /* moves between two states */
-}
-.btn { transition: transform var(--dur-fast) var(--ease-out),
-                    background var(--dur-fast) var(--ease-out); }
-.btn:active { transform: scale(0.97); }            /* press feedback, transform only */
-```
-The custom ease-out above ("the expensive one") starts fast and decelerates into
-place — it's what makes motion read as crafted versus the mushy default `ease`.
+## Settlement policy
+
+For replaceable Save, assign monotonic ids: `N+1` invalidates `N`; only the latest request may
+set status or own its live announcement. Replay stale `N` as both success and error after
+`N+1` starts; neither may change status or announce. Only `N+1` settles. Cancel superseded
+motion without changing the usable state.
 
 ## The reduced-motion contract (always include)
 
@@ -86,53 +54,51 @@ reduced-motion users still get a (motionless) fade and never a broken layout:
 }
 ```
 
-Only as an *emergency baseline* (retrofitting a site you can't redesign motion for),
-the global kill switch — note it nukes useful transitions too, so prefer the gated
-pattern above for anything you're building:
-
-```css
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-```
-
-## Patterns that read as premium
-
-- **Orchestrated page load:** one staggered reveal of hero elements via
-  `animation-delay` (or stagger index), each 200–300ms ease-out, total under ~800ms.
-  Far more delight than scattered hover effects (this is straight from Anthropic's
-  frontend guidance).
-- **Press feedback:** `transform: scale(0.97)` on `:active`, 120–150ms. Cheap,
-  universal, satisfying.
-- **Entrance from origin:** menus/popovers scale+fade *from* their trigger
-  (`transform-origin`) so they feel connected, not teleported.
-- **Skeletons over spinners** for content loading (see `empty-states`): a subtle
-  shimmer communicates structure; spinners communicate "stuck."
-- **List changes:** animate reorder/add/remove with FLIP or the View Transitions API,
-  not by animating layout properties.
-
-## Reference files
-
-- `references/principles.md` — performance (compositor, transform/opacity, will-change,
-  FLIP, View Transitions), the 12-principles-applied (easing, anticipation, follow-
-  through), stagger, choreography, and what to animate per interaction type.
-- `references/decision-records.md` — meta-patterns + ADR rules for novel cases.
+For a legacy retrofit only, the emergency global kill switch in
+`references/principles.md` is permitted after documenting why the primary pattern cannot
+be used; it removes useful transitions, so it is not the default.
 
 ## How to deliver
 
-- State the tokens used: "entrances 220ms ease-out (custom 0.16,1,0.3,1), press
-  scale 0.97 at 150ms, one staggered hero load, full reduced-motion fallback."
-- Default to **CSS** for HTML/components; reach for the Motion library (React) only
-  when you need spring physics, gestures, or layout animations CSS can't do.
-- Verify: nothing animates layout props; reduced-motion path tested; under the 30%
-  rule; no scroll-jacking; total page-load motion < ~800ms.
-- Pairs with `empty-states` (loading/skeleton), `deslop-ui` (one signature moment,
-  not blob animations), `form-ux` (validation feedback motion).
+- State purpose, tokens, interruption, reduced path, and JS-disabled behavior.
+- Default to CSS; use a motion library only for gestures, springs, or layout animation.
+- Verify compositor-only properties, reduced motion, no scroll-jacking, and <800ms load motion.
+
+## Decision order and evidence contract
+
+Identify purpose, trigger, interruption, and token; define the reduced equivalent; then record
+replayable evidence before decorative detail. Do not hide meaning, trap focus, or withhold content.
+
+## Interruption, evidence, and completion contract
+
+Define the settled usable state before choosing an entrance. For each interaction, state
+the trigger, observable end state, supersession rule, and when focus or the next keyboard
+action becomes available. A motion plan is incomplete until its interrupted path reaches
+the same usable state without a stale overlay, old save confirmation, misplaced list item,
+or delayed destructive confirmation.
+
+For a Save, insertion, destructive confirmation, and route transition, emit one distinct
+evidence row for each; emit one fifth global row for reduced motion and JS-disabled safety.
+Do not merge them into a generic ledger. Each interaction row names its causal order (committed
+state/focus before optional feedback), duration band, interruption that converges on the same
+usable state, and replay. The global row proves movement is gated by
+`prefers-reduced-motion: no-preference` and reveal waiting states by `html.js`, so reduced
+motion retains meaning and a JS-disabled page is complete.
+
+| Required row | Replay proof |
+| --- | --- |
+| Save | Start `N`, start `N+1`, then settle `N` once as success and once as error; only `N+1` may change status or announce. |
+| Insertion | Insert, sort or navigate before feedback ends; final DOM order remains readable. |
+| Destructive confirmation | Open, then Escape/Cancel/repeat delete/navigate; every exit reaches the same closed, focused state. |
+| Route | Start a second navigation before the first settles; destination DOM and heading focus win without a stale layer. |
+| Global safety | Check compositor-only properties, reduced motion, and JS-disabled reveal; no essential content depends on animation. |
+
+Reject `component-states` as the primary route when the state model already exists: it owns
+which states exist, not their timing, causal order, or interruption convergence. Keep this
+boundary narrow: this skill choreographs those behaviors around an already-defined component
+state. If the state, focus policy, or request ownership is unknown, stop for
+`component-states` or the owning interaction specification rather than inventing it here;
+handoff final focus and live-region verification to `a11y-pass`.
 
 ## Self-check
 
@@ -140,6 +106,21 @@ pattern above for anything you're building:
 - [ ] Durations/easings are tokens (`--dur-*`/`--ease-*`); entrances ~200–300ms ease-out (custom curve, not linear)
 - [ ] `prefers-reduced-motion` path tested (motion off or cross-fade) — content never depends on it
 - [ ] Page reads complete with JS disabled — no content left at stylesheet opacity 0 waiting for a reveal that never comes
-- [ ] Under the ~30% rule; one signature moment, not blob soup
+- [ ] Save replay covers stale success and stale error; only the latest request owns status and its single live announcement
+- [ ] Five distinct replayable rows cover Save, insertion, destructive confirmation, route, and global reduced-motion/JS-disabled safety
+- [ ] Each row states causal order, a duration band, and interruption convergence on the usable state
+- [ ] `component-states` is explicitly rejected as the primary route with its state-model boundary stated
 - [ ] No scroll-jacking; total page-load motion < ~800ms; nothing flashes > 3×/s
 - [ ] Stated the tokens used and what to look at
+
+<!-- contract:v1:start -->
+## Contract (generated)
+
+Canonical detail: [contract.json](contract.json).
+
+- Route: An interface needs purposeful transition, feedback, choreography, or reduced-motion behavior.; avoid: The request is only static visual styling or decorative animation without an interaction purpose.
+- Exclude: Do not add motion without a user-facing purpose. (+2 in contract.json)
+- Stop / handoff: Stop when no purpose or interruption policy exists. (+1 in contract.json); receives [component-states, design-system-interview] -> sends [a11y-pass, tastecheck-pass]
+- Output: purposeful motion choreography and token plan
+- Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
+<!-- contract:v1:end -->

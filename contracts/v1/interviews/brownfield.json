@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "interview_type": "brownfield",
+  "skill": "improve-existing-website",
+  "description": "Canonical brownfield improve-existing-website interview/inspection state machine.",
+  "projected_surfaces": [
+    "skills/improve-existing-website/SKILL.md",
+    "skills/improve-existing-website/references/interview-contract.generated.md",
+    "commands/improvesite.md"
+  ],
+  "state_machine": {
+    "states": ["inspect", "infer", "score", "ask_or_skip", "approve", "execute", "verify"],
+    "transitions": [
+      { "from": "inspect",      "to": "infer",        "condition": "Evidence collected from existing site" },
+      { "from": "infer",        "to": "score",        "condition": "System inferred from evidence" },
+      { "from": "score",        "to": "ask_or_skip",  "condition": "Ambiguity scored; questions identified" },
+      { "from": "ask_or_skip",  "to": "approve",      "condition": "Questions resolved or skipped (<=3 total)" },
+      { "from": "ask_or_skip",  "to": "ask_or_skip",  "condition": "Another unresolved dimension remains (up to limit)" },
+      { "from": "approve",      "to": "execute",      "condition": "User approves scope; material redesign explicitly approved" },
+      { "from": "execute",      "to": "verify",       "condition": "Work complete" }
+    ],
+    "interruption_resume": {
+      "supported": true,
+      "behavior": "Resume from last completed state; re-read preserved signals before continuing"
+    }
+  },
+  "evidence_inference": {
+    "evidence_label": "EVIDENCE",
+    "inference_label": "INFERRED",
+    "rule": "Every claim about the existing system must carry exactly one label: EVIDENCE (directly observed) or INFERRED (derived from patterns). Never omit the label.",
+    "preserved_signals": {
+      "description": "Brand signals that must survive improvement — do not erase without user approval",
+      "examples": ["logo mark", "primary brand color", "established typographic voice", "domain-specific terminology"]
+    }
+  },
+  "readiness_scoring": {
+    "dimensions": [
+      "brand_coherence",
+      "visual_consistency",
+      "content_clarity",
+      "accessibility_baseline",
+      "performance_signals",
+      "navigation_clarity"
+    ],
+    "scale": { "min": 0, "max": 10, "pass_threshold": 6 },
+    "readiness_outputs": {
+      "high": "Proceed with targeted improvements; no material redesign",
+      "medium": "Ask at most 3 clarifying questions before proceeding",
+      "low": "Surface a scope decision; material redesign requires explicit approval"
+    }
+  },
+  "question_constraints": {
+    "max_material_questions": 3,
+    "question_rationale_required": true,
+    "question_format": "Each question must name the unresolved dimension and explain why the answer changes the implementation",
+    "no_question_path": {
+      "condition": "Evidence + inferences are sufficient to proceed without ambiguity",
+      "behavior": "Proceed directly to approve state; state what was inferred"
+    }
+  },
+  "material_redesign": {
+    "definition": "Changes that alter the visual identity, structural layout, or brand voice beyond incremental improvement",
+    "requires_explicit_approval": true,
+    "approval_format": "State the proposed scope change, present alternatives, wait for user confirmation before proceeding"
+  },
+  "inferred_system_artifact": {
+    "file": "INFERRED-SYSTEM.md",
+    "required_sections": [
+      "Evidence summary (EVIDENCE-labeled observations)",
+      "Inferred brand signals (INFERRED-labeled derivations)",
+      "Preserved signals (must not be erased)",
+      "Readiness score",
+      "Proposed improvement scope"
+    ]
+  },
+  "handoff": {
+    "downstream": ["a11y-pass", "cognitive-a11y", "i18n-ready", "deslop-ui", "color-system", "web-typography"],
+    "handoff_artifact": "INFERRED-SYSTEM.md"
+  }
+}

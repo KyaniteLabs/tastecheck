@@ -1,0 +1,54 @@
+{
+  "_fixture": "sanitizer-leakage",
+  "_purpose": "Negative fixture — must be REJECTED by sanitize-receipts.mjs. Contains patterns banned by the public-receipt policy.",
+  "cases": [
+    {
+      "id": "abs-unix-path",
+      "field": "output_ref",
+      "banned_value": "/Users/REDACTED/tastecheck/evals/receipts/v1/something.json",
+      "expected": "rejected"
+    },
+    {
+      "id": "tilde-home-path",
+      "field": "evidence",
+      "banned_value": "~/workspaces/tastecheck/evals",
+      "expected": "rejected"
+    },
+    {
+      "id": "email-address",
+      "field": "reviewer_provenance",
+      "banned_value": "graded by reviewer@example.test on 2026-07-11",
+      "expected": "rejected"
+    },
+    {
+      "id": "api-key-pattern",
+      "field": "model_runtime",
+      "banned_value": "anthropic api_key=REDACTED_TEST_VALUE",
+      "expected": "rejected"
+    },
+    {
+      "id": "windows-path",
+      "field": "output_ref",
+      "banned_value": "C:\\Users\\username\\tastecheck\\output.txt",
+      "expected": "rejected"
+    },
+    {
+      "id": "non-public-host",
+      "field": "model_runtime",
+      "banned_value": "http://internal.lan/model-runtime",
+      "expected": "rejected"
+    },
+    {
+      "id": "internal-thread-metadata",
+      "field": "direct_luna_fallback_thread_id",
+      "banned_value": "redacted-internal-run-reference",
+      "expected": "rejected"
+    },
+    {
+      "id": "raw-system-prompt",
+      "field": "system_prompt",
+      "banned_value": "internal system prompt text",
+      "expected": "rejected"
+    }
+  ]
+}

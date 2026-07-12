@@ -8,125 +8,93 @@ description: >-
 
 # Empty States
 
-The states with no happy-path data are the most-skipped and most-noticed parts of any
-app. LLMs and rushed builds render the populated view and stop — so the first thing a
-*new* user sees (an empty dashboard) and the thing a *frustrated* user hits (no
-results, an error) get a blank void or a raw error. These states are where trust is
-won or lost, because they're exactly when the user is uncertain.
+Every data region needs truthful loading, empty, and error states; absence and failure
+are different conditions with different safe next moves.
 
-Core principle: **there is no such thing as "no state."** Every data region has at
-least three non-happy states — **loading, empty, error** — and each needs a designed
-answer. This skill makes each one checkable.
+## Start with a state contract, not a set of illustrations
 
-## The three states (always design all three)
+Name the region and transition before copy or illustration. Record:
 
-For any region that fetches or holds data, answer all three before shipping:
+| Question | Decision to record |
+| --- | --- |
+| User goal | What they came to find, create, compare, or finish in this region |
+| Data authority | Network source, local draft, cached result, permission boundary, or user-entered filter |
+| Entry condition | The observable event that enters loading, zero-result, error, stale, or partial state |
+| Continuity | What remains visible and editable while the state is active |
+| Recovery | The action that can change the state, its owner, and whether retry is safe to repeat |
+| Exit proof | The event that replaces the state and the announcement/visual confirmation the user receives |
 
-1. **Loading** — what shows while data is in flight.
-2. **Empty** — what shows when the fetch succeeds but there's nothing (and *why*:
-   first-run vs. user-cleared vs. no-results-from-filter — these are different).
-3. **Error** — what shows when the fetch fails (network, permission, server, offline).
+First-use, zero results, and permission absence need different truth. Trusted cached data
+is stale content with progress—not a blank reset.
 
-A frequent bug is conflating them: showing "No data" (empty) when the request actually
-*failed* (error), or a spinner forever when it errored. Distinguish: zero-as-value vs.
-not-available vs. loading are three different things and must look different.
+## The minimum state set (always design all three)
+
+Design loading (in flight), empty (successful zero plus why), and error (failed fetch)
+before shipping. Add stale, partial, awaiting-input, or pending-mutation only when the
+region can enter it; never render zero, unavailable, and loading as the same state.
 
 ## Loading: skeleton over spinner
 
-- **Use a skeleton** (gray placeholder matching the real layout) for content areas —
-  it communicates structure, reduces perceived wait, and **prevents layout shift**
-  because it reserves the real dimensions. (See `micro-motion` for the shimmer.)
-- **Use a spinner** only for short, indeterminate, in-place waits (a button submitting,
-  a small inline action) — not for whole pages. A full-page spinner reads as "stuck."
-- **Reserve space** so content arriving doesn't shove the layout (CLS). The skeleton
-  should occupy the same box the data will.
-- For very fast loads (<~300ms) show nothing rather than a flash of skeleton/spinner.
-- Optimistic UI: for user actions, show the result immediately and reconcile, instead
-  of a spinner, when the action is very likely to succeed.
+Use a layout-matching skeleton for regions and reserve its final space; use a spinner
+only for short inline waits. Avoid a flash for very fast loads; use optimistic UI only
+when rollback/reconciliation is safe.
 
 ## Empty: the three flavors, each with a next step
 
-An empty state is a **moment to onboard or guide**, never a dead end. Always include:
-a short heading, one line of context, and **a primary action**. The three flavors:
-
-- **First-run / never-had-data** — the highest-value empty state. New user, empty
-  dashboard/list. Teach the value and give the first action: "No projects yet — create
-  your first to start tracking." Big primary CTA. Optionally a sample/template.
-- **User-cleared** — they completed/deleted everything. Affirm it: "Inbox zero. You're
-  all caught up." Lighter, positive.
-- **No results (search/filter)** — their query/filter matched nothing. This is the most
-  botched one. Don't just say "No results." Say what was searched, and offer a way
-  out: clear filters, broaden, check spelling, or a "create '<query>'" action.
-
-Every empty state = **heading + one-line context + a way forward**. If there's no
-action possible, at least explain why it's empty and what would fill it.
+Every empty state has heading, context, and a safe way forward. First-run teaches the
+first action; user-cleared affirms completion; no-results names the query/filter and
+offers clear/broaden/correct/create. If no action exists, say what will fill it.
 
 ## Error: explain, reassure, offer recovery
 
-- **Say what happened in plain language** — never a raw stack trace or code alone
-  ("Error 500"). "We couldn't load your orders."
-- **Don't blame the user.** Neutral, blameless tone. Avoid "You did X wrong."
-- **Offer recovery:** a Retry button, a link to a working area, or contact/support.
-  Most transient errors just need Retry.
-- **Distinguish error types** where it helps: offline ("You're offline — reconnect to
-  continue"), permission ("You don't have access — request it"), not-found, server.
-- **Preserve user work** — never wipe a half-filled form on error.
-- Keep brand voice but match gravity — a payment failure isn't the place for a joke.
+Use plain, blameless language; distinguish offline, permission, not-found, and server
+when recovery differs. Preserve work and offer retry, a working route, or support with
+a tone proportionate to the consequence.
+
+## Preserve continuity through transitions
+
+Retain position, prior content, filters, and drafts unless safety/integrity forbids it.
+Make in-flight retry visible without duplicating mutation; explain rollback and return
+focus to repair. Record idempotent, confirmation-required, or support-only retry—never
+promise retry can resolve permission or duplicate-money risk.
 
 ## Quick-start pattern
 
-```html
-<!-- region renders ONE of these based on state -->
-<section data-state="loading">  <!-- skeleton matching real layout -->
-  <div class="skeleton" style="height:1.25rem;width:60%"></div>
-  <div class="skeleton" style="height:1rem;width:90%;margin-top:.5rem"></div>
-</section>
-
-<section data-state="empty">    <!-- first-run flavor -->
-  <img src="/illustrations/empty-projects.svg" alt="" role="presentation" width="120">
-  <h2>No projects yet</h2>
-  <p>Create your first project to start tracking work.</p>
-  <button class="btn-primary">New project</button>
-</section>
-
-<section data-state="no-results">
-  <h2>No results for “<span data-query>widget</span>”</h2>
-  <p>Try a different term or clear your filters.</p>
-  <button>Clear filters</button>
-</section>
-
-<section data-state="error">
-  <h2>We couldn’t load your projects</h2>
-  <p>Something went wrong on our end. Your work is safe.</p>
-  <button class="btn-primary" data-retry>Try again</button>
-</section>
-```
-Keep all four boxed in the same container dimensions so switching states doesn't shift
-layout.
+Use `references/patterns.md` for state-specific markup and copy. Render one explicit
+state per region, reserve the same container space, announce changes, and preserve
+user work across errors.
 
 ## Reference files
 
-- `references/patterns.md` — per-surface playbook (list, table, search, dashboard,
-  feed, detail), skeleton construction, copy templates for each state, illustration
-  guidance, and accessibility (announce state changes to screen readers).
-- `references/decision-records.md` — meta-patterns + ADR rules for novel cases.
+- `references/patterns.md` — surface patterns, copy, skeletons, and announcements.
+- `references/decision-records.md` — novel-case ADR rules.
+
+## Decision order and evidence
+
+For each applicable state, record cause, retained context, next action, retry semantics,
+exit proof, and accessible recovery; `n/a` requires subject absence. Hand control
+behavior to `component-states`.
 
 ## Self-check (before shipping any data region)
 
-1. Are **loading, empty, and error** all designed (not just the populated view)?
-2. Is **empty distinguished from error** (success-but-zero vs. fetch-failed)?
-3. Does the empty state have a **heading + context + a next action**?
-4. Is "no results" a guided exit, not a dead "No results"?
-5. Does the error **explain + reassure + offer Retry**, with no raw stack trace?
-6. Does loading use a **skeleton that reserves space** (no layout shift on arrival)?
-7. Are state changes **announced** to assistive tech (`aria-live`/`role="status"`)?
-8. Is user work **preserved** across errors?
+1. Loading, empty, and error are distinct and truthful?
+2. Empty has heading/context/forward action; no-results has an exit?
+3. Errors explain/recover without raw internals; skeletons reserve space?
+4. Changes announce, preserve work, and state safe retry/cached/partial behavior?
 
 ## How to deliver
 
-- When you build any list/table/search/dashboard, deliver all three states by default
-  and say so: "added loading skeleton, first-run empty with CTA, and a retryable error."
-- Keep the states in one fixed-size container to avoid CLS.
-- Pair with `micro-motion` (skeleton shimmer, gentle state cross-fade), `form-ux`
-  (inline errors), and `deslop-ui` (these states are exactly the "functional slop"
-  models skip).
+Deliver a region matrix: entry, truthful message, retained context, recovery, exit,
+announcement, and layout-shift evidence. Keep containers stable; hand adjacent scope off.
+
+<!-- contract:v1:start -->
+## Contract (generated)
+
+Canonical detail: [contract.json](contract.json).
+
+- Route: A data region needs first-use, no-results, loading, permission, or error states.; avoid: The issue is only a button or field state.
+- Exclude: Do not use a spinner as the only loading communication. (+1 in contract.json)
+- Stop / handoff: Stop when the cause of absence cannot be distinguished. (+1 in contract.json); receives [design-system-interview, improve-existing-website] -> sends [component-states, a11y-pass, humanize-copy, tastecheck-pass]
+- Output: domain-specific data-region state plan
+- Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
+<!-- contract:v1:end -->

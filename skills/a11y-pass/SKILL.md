@@ -8,126 +8,65 @@ description: >-
 
 # Accessibility Pass (WCAG 2.2 AA)
 
-Accessibility isn't a feature you add — it's whether people can actually use what you
-built: with a keyboard, a screen reader, low vision, color blindness, a motor
-impairment, or just a phone in bright sun. It's also law in many places (ADA, EN 301
-549, AODA, and the EU's European Accessibility Act — enforceable since June 2025 for
-most consumer-facing digital products) and the same work that makes a UI usable for
-everyone. Most of it is cheap if
-done as you build and painful if bolted on.
+Accessibility is whether a person can finish a real task without an avoidable barrier. Repair the failing path, then prove the repair in the rendered interface.
 
-This skill is a **prioritized fix pass to WCAG 2.2 AA**: the issues that actually occur,
-ordered by impact, each with the concrete fix. It's the focused *do-the-fixes* companion
-to a review skill.
+## Triage one rendered user path
 
-## The fastest high-impact checks (do these first)
+Write one path before opening a checker: **entry → action → result/recovery**. Name the user-facing outcome, the affected UI, and the smallest viewport or assistive setup that can expose the failure.
 
-These four catch the majority of real-world barriers:
+| Path point | Inspect | Repair when it fails |
+| --- | --- | --- |
+| Entry | landmark, page title, reading order, skip link | give the page a named, reachable start |
+| Action | visible focus, native semantics, keyboard order, target size | repair the control before adding ARIA |
+| Change | errors, loading, dialogs, live updates, motion | announce the meaningful change without stealing focus |
+| Recovery | error copy, focus destination, retained input, retry | return the person to a specific next action |
+| Layout | 200% and 400% zoom, reflow, narrow viewport | remove horizontal loss and clipped controls |
 
-1. **Keyboard:** Tab through the whole page. Can you reach and operate **everything**
-   (links, buttons, inputs, menus, modals) with keyboard only, in a sensible order,
-   with a **visible focus indicator** at every stop? If not, that's the top priority.
-2. **Names:** Does every control have an accessible name? Every `<img>` an `alt`; every
-   input a `<label>`; every icon-only button an `aria-label`; every link meaningful text
-   (not "click here").
-3. **Contrast:** Text ≥ 4.5:1 (large ≥ 3:1); UI/icons/focus rings ≥ 3:1. Nothing
-   conveyed by **color alone**.
-4. **Structure:** One `<h1>` (best practice — WCAG doesn't strictly require it, but
-   screen-reader navigation benefits), heading levels not skipped, real landmarks
-   (`<header>` `<nav>` `<main>` `<footer>`), and semantic elements (`<button>`, not a
-   clickable `<div>`).
+Start with native HTML. Use ARIA only to express a relationship or live behavior native elements cannot supply. Never use a role, audit score, or automated pass as proof that the path works.
 
-## Non-negotiables (the fixes that matter most)
+## Prove the path in the interface
 
-- **Everything works by keyboard.** All interactive elements reachable and operable via
-  Tab/Enter/Space/Arrows; logical focus order; no keyboard traps. Modals trap focus
-  *inside* while open and return it on close.
-- **Visible focus, always.** A clear `:focus-visible` indicator ≥3:1; never
-  `outline:none` without a replacement (WCAG 2.4.7 / 2.4.11).
-- **Semantic HTML first, ARIA second.** Use the right element (`<button>`, `<a href>`,
-  `<nav>`, `<label>`). "No ARIA is better than bad ARIA" — a native `<button>` beats
-  `<div role="button">` + manual key handlers. Reach for ARIA only when HTML can't.
-- **Every image/control has an accessible name.** Informative images: descriptive
-  `alt`. Decorative: `alt=""`. Icon buttons: `aria-label`. Inputs: associated `<label>`.
-- **Don't rely on color alone** (WCAG 1.4.1) — pair with text, icon, underline, shape.
-- **Contrast meets AA** (1.4.3/1.4.11): text 4.5:1, large 3:1, UI/graphics 3:1.
-- **Headings & landmarks** structure the page; don't skip levels; one `<h1>`.
-- **Respect `prefers-reduced-motion`** (see `micro-motion`); no content flashing >3×/sec.
-- **Announce dynamic changes** to screen readers: live regions (`aria-live`,
-  `role="status"`/`role="alert"`) for async updates, errors, toasts (see `empty-states`).
-- **Don't disable zoom**; layout reflows to 320px / 400% (see `responsive-layout`,
-  `web-typography`).
+1. Tab forward and backward from the browser chrome through completion. Record focus order, visible indicator, and any trap.
+2. Trigger the failure state with the keyboard. Confirm focus stays purposeful, the error is programmatically associated, and entered data survives.
+3. Read the affected region with a screen reader or inspect its computed name, role, value, state, and description. Check the update is announced once.
+4. Measure the final rendered foreground/background pair and test reflow at 200% and 400%. Include text over imagery and disabled-looking controls if they carry meaning.
+5. Repeat with reduced motion when the interaction animates. The non-motion path must still expose progress and completion.
 
-## The prioritized audit (run top-down, fix as you go)
+A screenshot can support a claim; it cannot prove keyboard order or announcements. An automated audit can find candidates; it cannot clear the path.
 
-Detailed fixes in `references/audit.md`. The order is by user impact:
+## Report a repair ledger
 
-1. **Keyboard operability & focus order** — tab through; fix unreachable/trapped/illogical.
-2. **Focus visibility** — ensure every focus stop shows a ≥3:1 indicator.
-3. **Accessible names** — alt text, labels, `aria-label` on icon buttons, link text.
-4. **Semantic structure** — real elements, headings in order, landmarks.
-5. **Color & contrast** — ratios + no color-only meaning.
-6. **Forms** — labels, error association, `aria-invalid`, instructions (see `form-ux`).
-7. **Dynamic content** — live regions for updates; manage focus on route/modal changes.
-8. **Media & motion** — captions/alt, reduced-motion, no flashing, pausable autoplay.
-9. **Touch & target size** — targets ≥24×24 CSS px (WCAG 2.2 §2.5.8), spacing.
-10. **Zoom & reflow** — 200% text / 400% zoom usable, no horizontal scroll.
+Use this row format for every finding:
 
-## What's new in WCAG 2.2 (don't miss these)
-- **2.4.11 Focus Not Obscured** — the focused element must not be hidden behind sticky
-  headers/footers.
-- **2.5.8 Target Size (Minimum)** — interactive targets ≥ 24×24 CSS px (or spacing).
-- **2.5.7 Dragging Movements** — any drag action needs a single-pointer alternative.
-- **3.3.7 Redundant Entry** — don't make users re-enter info already provided in a
-  process.
-- **3.3.8 Accessible Authentication** — don't require a cognitive test (e.g. solving a
-  puzzle, retyping) with no alternative; allow paste/password managers.
+| Path / criterion | Observed failure | Repair | Evidence | Residual risk |
+| --- | --- | --- | --- | --- |
+| Submit → invalid email | focus lands on an unnamed summary; inline error is silent | move focus to named summary, link field error with `aria-describedby`, retain value | keyboard trace; computed accessibility tree; 400% capture | screen-reader wording needs product review |
 
-## Run the built-in audit (measure, don't eyeball)
-This skill ships a zero-dependency auditor: **`assets/audit.js`**. Paste it into the
-browser devtools Console on the page (or inject it in a Playwright/Puppeteer run) and it
-prints the *measurable* failures the eye misses — contrast ratios, sub-24px tap targets,
-missing alt/labels/names, heading-order jumps, zoom lock, missing landmarks, and
-outline:none-without-focus-visible. Re-run with `a11yAudit()`. Fix the ✗ fails, then do
-the manual checks below (the auditor can't judge keyboard flow, alt quality, or whether
-ARIA makes sense). *Lesson learned: a 2.92:1 label and 20px nav links looked fine and
-were caught only by measuring.*
+Separate a confirmed defect from a design concern. State the browser, assistive technology or inspection method, viewport/zoom, and exact reproduction step. If the artifact is unavailable, stop and ask for the rendered path rather than inventing evidence.
 
-## Tooling (use, but don't trust blindly)
-- Automated (axe DevTools, Lighthouse, WAVE, Pa11y) catches ~30–40% of issues — run it,
-  fix what it finds, but it **cannot** judge keyboard flow, focus order, alt-text
-  quality, or whether ARIA makes sense. Those need the manual checks above.
-- Manual: keyboard-only pass; a screen reader (VoiceOver/NVDA) on key flows; 400% zoom;
-  a color-contrast checker; a CVD simulator.
+## Delivery and handoff
 
-## Reference files
+Prioritize blockers to task completion, then frequent-path defects, then polish. Send component lifecycle or form-state questions to the owning skill when the defect is a state-design problem rather than a WCAG repair.
 
-- `references/audit.md` — the full prioritized audit with the exact fix and code for
-  each issue (keyboard, focus, names, ARIA patterns, contrast, forms, live regions,
-  modals, target size, reflow), plus the manual test scripts.
-- `references/decision-records.md` — meta-patterns + ADR rules for novel cases.
+- [Audit method](references/audit.md)
+- [Keyboard and focus helper](assets/audit.js)
+- [Decision records](references/decision-records.md)
 
-## Self-check (the ship gate)
+## Ship check
 
-1. Full keyboard pass: everything reachable/operable, logical order, no traps?
-2. Visible `:focus-visible` (≥3:1) at every stop; focus not obscured by sticky UI?
-3. Every image has alt (or `alt=""`); every input a label; icon buttons named?
-4. Semantic elements (real `<button>`/`<a>`), headings in order, landmarks present?
-5. Contrast AA (4.5:1 / 3:1) and nothing color-only?
-6. Form errors associated + announced; `aria-invalid` set?
-7. Dynamic updates announced via live regions; focus managed on modal/route change?
-8. Targets ≥24px; reduced-motion respected; usable at 400% zoom?
-9. Ran an automated scan AND did the manual keyboard + screen-reader spot check?
+- [ ] A named user path has keyboard, semantic, zoom/reflow, and dynamic-state evidence.
+- [ ] Every finding names a concrete control or region, repair, and verification result.
+- [ ] Automated checks are labeled as discovery, not sign-off.
+- [ ] Focus, announcements, errors, and reduced-motion behavior have an explicit owner.
 
-## How to deliver
+<!-- contract:v1:start -->
+## Contract (generated)
 
-- Run the audit top-down and **fix as you go**, then report what was fixed and what
-  remains, with WCAG references: "added skip link, focus rings, alt text on 6 images,
-  labeled the search input, fixed the 2.9:1 muted text to 4.6:1; remaining: video needs
-  captions."
-- Prefer semantic HTML fixes over ARIA bolt-ons.
-- Don't claim "accessible" from an automated scan alone — state that you did the manual
-  keyboard + SR checks.
-- Pair with `component-states` (focus/disabled), `form-ux` (labels/errors),
-  `color-system` (contrast), `responsive-layout` + `web-typography` (zoom/reflow),
-  and `cognitive-a11y` (the cognitive layer this pass doesn't cover).
+Canonical detail: [contract.json](contract.json).
+
+- Route: A rendered interface needs WCAG 2.2 AA repair findings verified by keyboard, browser, or measurement.; avoid: The request is only cognitive load or multilingual expansion without an accessibility defect.
+- Exclude: Do not self-attest a fix without browser or source evidence. (+1 in contract.json)
+- Stop / handoff: Stop when the user path or target artifact is unavailable. (+1 in contract.json); receives [component-states, form-ux, responsive-layout, theming] -> sends [tastecheck-pass]
+- Output: prioritized WCAG repair ledger with measured verification
+- Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
+<!-- contract:v1:end -->

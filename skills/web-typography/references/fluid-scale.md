@@ -96,7 +96,7 @@ clamp for the same zoom-safety reason as `vw`.
 ## A pragmatic default scale (Major Third, fluid)
 
 If you don't want to open Utopia, this is a sane, accessible starting set (also in
-`assets/starter.css`). Tune the max base up to `1.125rem`/`1.25rem` for editorial
+`../assets/starter.css`). Tune the max base up to `1.125rem`/`1.25rem` for editorial
 reading.
 
 ```css

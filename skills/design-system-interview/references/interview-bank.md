@@ -1,100 +1,66 @@
-# Interview Bank — Questions, Defaults & Counters
+# Interview technique bank
 
-Read this to run the interview well. The technique throughout: **recommend a concrete
-default, then let the user react.** Reacting ("no, warmer") is easier and faster than
-inventing from blank, and it still forces a real decision. Never ask an open "what do
-you want?" — that returns the average.
+The canonical dimension list, abstention recommendations, grouping, and state rules live in
+`interview-contract.generated.md`, sourced from `../../../contracts/v1/interviews/greenfield.json`. This reference adds interviewing technique;
+it must not become a second dimension specification.
 
-## The rules of the interview
-- **Lead with an opinion.** Every question carries your recommended pick + 2–3 concrete
-  alternatives. The user picks or vetoes.
-- **One round of decisions, ~6–7 questions.** Speed matters; this is a sprint before
-  building, not a discovery phase.
-- **Reject adjectives, demand references/poles.** "Modern/clean/professional" → counter.
-- **Land each dimension on something nameable and specific.** Write it as you go.
-- **If they abstain, decide boldly and announce it.** "You don't have a preference, so
-  I'm committing to X — react if it's wrong." Mean-seeking is the enemy.
+## Running a fast, useful round
 
-## Q1 — Reference, not adjectives
-**Ask:** "Name one site/brand/object whose *feel* you want to borrow — e.g. Stripe
-(precise, techy-trust), Linear (dark, sharp), a Criterion DVD case (editorial film),
-Aesop (warm apothecary), a Bloomberg terminal (dense data), a 1970s ski lodge (warm
-retro)."
-**Why:** a concrete reference encodes taste, palette, type, and density at once;
-adjectives don't.
-**Counter if vague:** "'Modern' describes 90% of sites — point me at *one* you'd be
-happy to resemble." If they can't, offer 3 references spanning different moods and have
-them pick the least-wrong.
+- Start with the strongest signal already supplied. Reflect it back before asking for
+  more; this proves that the interview is narrowing rather than collecting trivia.
+- Ask grouped prompts in the canonical group order. Every prompt should include a
+  reasoned recommendation and a way to reject it.
+- Record the answer against its canonical dimension ID immediately. If the user
+  abstains, record the evidence-dependent recommendation or explicit abstention and say it aloud.
+- When a reply affects several IDs, mark each affected ID with the same evidence rather
+  than inventing a new category. Do not ask the same thing twice in different language.
 
-## Q2 — Personality poles (pick a side)
-**Ask:** "Pick a side on each — don't say 'both':
-warm ⇄ cool · serious ⇄ playful · minimal ⇄ maximal · classic ⇄ experimental ·
-refined ⇄ raw · dense ⇄ spacious."
-**Why:** the middle of each axis is exactly where generic lives. Commitment to poles
-creates character.
-**Counter if 'a bit of both':** "Both = average = forgettable. If you had to lean,
-which way?" Force the lean.
+## Useful prompt shapes
 
-## Q3 — Aesthetic direction (one concrete phrase)
-**Ask / recommend:** based on Q1–Q2, propose a named direction and confirm:
-- Editorial (serif headlines, generous measure, magazine feel)
-- Swiss / International (grid, Helvetica-grade sans, red accent, objective)
-- Brutalist / terminal (monospace, hairlines, high contrast, raw)
-- Soft-organic (rounded, warm, friendly, blobby-but-tasteful)
-- Retro-print (limited ink palette, halftone, vintage)
-- High-contrast luxury (black/ivory, big type, lots of space, one metallic accent)
-- Playful-geometric (bold shapes, primary-ish colors, motion)
-**Why:** the model can execute a named aesthetic; it cannot execute "nice."
-**Counter:** if none fit, invent a specific phrase combining Q1+Q2 ("warm dense
-editorial-terminal"). Ban "modern/clean/minimalist-but-unique."
+### `reference` and `personality`
 
-## Q4 — Type stance (→ web-typography)
-**Recommend:** "Distinctive display + readable body, never Inter/Roboto/Arial:
-- Editorial: **Fraunces** / Newsreader display + a humanist sans body
-- Technical: **Space Grotesk** / IBM Plex + IBM Plex Sans body
-- Luxury: a high-contrast serif (Canela-like) + clean grotesque
-- Playful: **Bricolage Grotesque** / Clash Display
-Or do you have brand fonts?"
-**Force:** an actual display face + body face. Note real size/weight contrast intent
-(3×+ scale, weight extremes). Hand the faces to web-typography.
+Ask for a concrete cultural, product, or material reference, then ask which tension in
+that reference matters. If the answer is an adjective such as “clean”, offer a contrast
+between two observable outcomes rather than a gallery of example systems.
 
-## Q5 — Color anchor (→ color-system)
-**Ask:** "Give me ONE dominant brand hue (a color or a thing — 'burnt orange',
-'deep teal', 'oxblood') and one sharp accent. We generate the full OKLCH ramp from it,
-tint neutrals toward it (no dead grays), and we do **not** default to indigo→violet."
-**Why:** a system has one dominant color + an accent, not five equal pastels (slop).
-**Force:** a hue, not a hex palette; color-system builds the rest. If they abstain,
-pick a non-obvious committed hue that fits the direction and say so.
+### `aesthetic`, `type`, and `color_mode`
 
-## Q6 — Density & shape
-**Ask, land on numbers:**
-- Density: spacious (generous whitespace) or dense (data-rich, tight)?
-- Corner radius: sharp (0–4px), soft (8–12px), or round (16px+)? (Not pill on CTAs.)
-- Elevation: flat (borders, no shadow) or layered (a real shadow scale)?
-**Why:** these three silently define the whole feel and are almost always left to
-default. Decide them explicitly.
+State a hypothesis tied to the brief: “The audience needs fast scanning, so I would
+start from compact editorial hierarchy rather than a showroom composition. Is that the
+right pressure?” Keep type and color as consequences of the territory, not a shopping
+list. Confirm the mode separately because theme readiness changes implementation.
 
-## Q7 — One signature move
-**Ask:** "What's the one memorable thing people screenshot — an oversized serif number
-treatment, a single unexpected accent color, an asymmetric split grid, one beautifully
-orchestrated page-load reveal, a distinctive cursor/hover?"
-**Why:** designed work has exactly one signature; slop has none (or five competing
-gimmicks). Pick one and commit.
+### `density_shape` and `structure_rhythm`
 
-## Optional Q8 — Motion level (→ micro-motion)
-Restrained (subtle, fast) / lively (more animation, still tasteful) / none. Default
-restrained.
+Ask about information pressure and the reading path together. Test whether the work
+needs a repeated operational cadence, a paced narrative cadence, or deliberately varied
+sections. Ask for a concrete hierarchy conflict before proposing a grid.
 
-## Deciding boldly when the user abstains
-If the user says "you choose" / "I don't know" / "whatever's best":
-1. Use any signal you have (their product, audience, Q1 reference) to pick a
-   *specific, slightly unexpected* direction — not the safe average.
-2. State it as a committed default they can veto: "I'm going with high-contrast luxury,
-   oxblood anchor, Fraunces display, dense, sharp 2px corners, signature = oversized
-   numerals. Shout if any of that's wrong; otherwise I'll build to it."
-3. Never resolve "I don't know" into Inter + slate + centered. Abstention is permission
-   to be bold, not permission to be average.
+### `signature` and `imagery_iconography`
 
-## Closing the interview
-Restate the full committed direction in **one line** (the "north star"), write
-`DESIGN-SYSTEM.md` + tokens, then build to it and audit against it with deslop-ui.
+Separate one memorable behavior from decorative accumulation. Ask what earns attention
+and what should recede. For imagery, establish source rights/treatment and an icon
+convention; never solve uncertainty with stock-photo or emoji defaults.
+
+### `motion`
+
+Ask only when motion changes comprehension, rhythm, or feedback. If it is in scope,
+define a reduced-motion equivalent at the same time.
+
+## Recovery techniques
+
+- **Vague answer:** explain why the answer does not yet change a design decision, then
+  offer two brief-specific consequences to react to.
+- **Contradiction:** name both statements, show the implementation tradeoff, and ask
+  which constraint wins. Do not quietly average them.
+- **Abstention:** state the evidence basis, leave the choice pending confirmation, and make it easy to revise; never resolve toward the mean.
+- **Existing direction:** count covered canonical dimensions. At the shortcut threshold,
+  ask for confirmation and fill only the missing dimensions.
+- **Interruption:** summarize answered IDs and resume at the first unanswered one.
+- **Headless use:** expose questions and recommendations as assumptions pending
+  confirmation; do not present an unconfirmed artifact as a committed system.
+
+## Evidence note
+
+The final record cites the user answer, supplied artifact, or evidence-dependent abstention for every
+dimension. It never cites this bank’s prompt wording as design evidence.

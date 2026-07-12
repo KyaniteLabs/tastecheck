@@ -1,0 +1,272 @@
+{
+  "schema_version": 1,
+  "skills": [
+    {
+      "skill": "a11y-pass",
+      "skill_md_bytes": 4644,
+      "skill_md_tokens": 1161,
+      "baseline_tokens": 1945,
+      "contract_block_tokens": 199,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.403,
+      "pass": true
+    },
+    {
+      "skill": "art-direction",
+      "skill_md_bytes": 3931,
+      "skill_md_tokens": 983,
+      "baseline_tokens": 1394,
+      "contract_block_tokens": 200,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.295,
+      "pass": true
+    },
+    {
+      "skill": "cognitive-a11y",
+      "skill_md_bytes": 3863,
+      "skill_md_tokens": 966,
+      "baseline_tokens": 1561,
+      "contract_block_tokens": 215,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.381,
+      "pass": true
+    },
+    {
+      "skill": "color-system",
+      "skill_md_bytes": 6374,
+      "skill_md_tokens": 1594,
+      "baseline_tokens": 1749,
+      "contract_block_tokens": 211,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.089,
+      "pass": true
+    },
+    {
+      "skill": "component-states",
+      "skill_md_bytes": 5885,
+      "skill_md_tokens": 1472,
+      "baseline_tokens": 2050,
+      "contract_block_tokens": 212,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.282,
+      "pass": true
+    },
+    {
+      "skill": "data-viz",
+      "skill_md_bytes": 7505,
+      "skill_md_tokens": 1877,
+      "baseline_tokens": 2146,
+      "contract_block_tokens": 195,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.125,
+      "pass": true
+    },
+    {
+      "skill": "design-system-interview",
+      "skill_md_bytes": 6399,
+      "skill_md_tokens": 1600,
+      "baseline_tokens": 3067,
+      "contract_block_tokens": 222,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.478,
+      "pass": true
+    },
+    {
+      "skill": "deslop-ui",
+      "skill_md_bytes": 4517,
+      "skill_md_tokens": 1130,
+      "baseline_tokens": 2672,
+      "contract_block_tokens": 230,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.577,
+      "pass": true
+    },
+    {
+      "skill": "empty-states",
+      "skill_md_bytes": 4695,
+      "skill_md_tokens": 1174,
+      "baseline_tokens": 1661,
+      "contract_block_tokens": 184,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.293,
+      "pass": true
+    },
+    {
+      "skill": "form-ux",
+      "skill_md_bytes": 4556,
+      "skill_md_tokens": 1139,
+      "baseline_tokens": 1567,
+      "contract_block_tokens": 186,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.273,
+      "pass": true
+    },
+    {
+      "skill": "humanize-copy",
+      "skill_md_bytes": 4528,
+      "skill_md_tokens": 1132,
+      "baseline_tokens": 1888,
+      "contract_block_tokens": 202,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.4,
+      "pass": true
+    },
+    {
+      "skill": "i18n-ready",
+      "skill_md_bytes": 4073,
+      "skill_md_tokens": 1019,
+      "baseline_tokens": 1330,
+      "contract_block_tokens": 194,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.234,
+      "pass": true
+    },
+    {
+      "skill": "improve-existing-website",
+      "skill_md_bytes": 3160,
+      "skill_md_tokens": 790,
+      "baseline_tokens": 1088,
+      "contract_block_tokens": 220,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.274,
+      "pass": true
+    },
+    {
+      "skill": "micro-motion",
+      "skill_md_bytes": 7255,
+      "skill_md_tokens": 1814,
+      "baseline_tokens": 1926,
+      "contract_block_tokens": 190,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.058,
+      "pass": true
+    },
+    {
+      "skill": "responsive-layout",
+      "skill_md_bytes": 3693,
+      "skill_md_tokens": 924,
+      "baseline_tokens": 1494,
+      "contract_block_tokens": 229,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.382,
+      "pass": true
+    },
+    {
+      "skill": "spacing-system",
+      "skill_md_bytes": 5371,
+      "skill_md_tokens": 1343,
+      "baseline_tokens": 1284,
+      "contract_block_tokens": 217,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": 0.046,
+      "pass": true
+    },
+    {
+      "skill": "tastecheck-pass",
+      "skill_md_bytes": 4872,
+      "skill_md_tokens": 1218,
+      "baseline_tokens": 1810,
+      "contract_block_tokens": 206,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.327,
+      "pass": true
+    },
+    {
+      "skill": "theming",
+      "skill_md_bytes": 8618,
+      "skill_md_tokens": 2155,
+      "baseline_tokens": 1925,
+      "contract_block_tokens": 223,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": 0.119,
+      "pass": true
+    },
+    {
+      "skill": "web-typography",
+      "skill_md_bytes": 11038,
+      "skill_md_tokens": 2760,
+      "baseline_tokens": 2799,
+      "contract_block_tokens": 214,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": -0.014,
+      "pass": true
+    }
+  ],
+  "overall_pass": true
+}

@@ -1,0 +1,287 @@
+[
+  {
+    "schema_version": 1,
+    "result_id": "component-states-paired-lift-001-luna-1",
+    "packet_id": "component-states-paired-lift-001",
+    "evaluator_type": "paired_lift",
+    "judge_id": "luna-1",
+    "evaluator_family": "luna",
+    "evaluator_model": "gpt-5.6-luna",
+    "status": "complete",
+    "calibration_status": {
+      "passed": true,
+      "items_passed": 6,
+      "items": [
+        {
+          "calibration_id": "cal-001",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "pass",
+          "anchor_value": "pass"
+        },
+        {
+          "calibration_id": "cal-001",
+          "check": "total_within_threshold",
+          "passed": true,
+          "judge_value": 25,
+          "anchor_value": 25
+        },
+        {
+          "calibration_id": "cal-002",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "fail",
+          "anchor_value": "fail"
+        },
+        {
+          "calibration_id": "cal-002",
+          "check": "total_within_threshold",
+          "passed": true,
+          "judge_value": 7,
+          "anchor_value": 7
+        },
+        {
+          "calibration_id": "cal-003",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "fail",
+          "anchor_value": "fail"
+        },
+        {
+          "calibration_id": "cal-003",
+          "check": "total_within_threshold",
+          "passed": true,
+          "judge_value": 15,
+          "anchor_value": 15
+        }
+      ]
+    },
+    "score_scale_version": "anchored-1-5-v1",
+    "candidate_scores": {
+      "A": {
+        "domain_specificity": 4,
+        "evidence_completeness": 4,
+        "fail_closed": 4,
+        "handoff_readiness": 4,
+        "scope_discipline": 4,
+        "total": 20
+      },
+      "B": {
+        "domain_specificity": 3,
+        "evidence_completeness": 3,
+        "fail_closed": 3,
+        "handoff_readiness": 3,
+        "scope_discipline": 3,
+        "total": 15
+      }
+    },
+    "candidate_evidence": {
+      "A": "Destructive action state contract",
+      "B": "Async destructive action contract"
+    },
+    "preference": "A",
+    "deltas": {
+      "domain_specificity": 1,
+      "evidence_completeness": 1,
+      "fail_closed": 1,
+      "handoff_readiness": 1,
+      "scope_discipline": 1
+    },
+    "regression_flags": [],
+    "verdict": "A_better",
+    "rationale": "Label A provides explicit state machine with five semantic states and all required evidence fields; B has shorter coverage and missing provenance on some rows.",
+    "cited_evidence": [
+      "Destructive action state contract"
+    ]
+  },
+  {
+    "schema_version": 1,
+    "result_id": "component-states-paired-lift-001-luna-2",
+    "packet_id": "component-states-paired-lift-001",
+    "evaluator_type": "paired_lift",
+    "judge_id": "luna-2",
+    "evaluator_family": "luna",
+    "evaluator_model": "gpt-5.7-luna",
+    "status": "complete",
+    "calibration_status": {
+      "passed": true,
+      "items_passed": 6,
+      "items": [
+        {
+          "calibration_id": "cal-001",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "pass",
+          "anchor_value": "pass"
+        },
+        {
+          "calibration_id": "cal-001",
+          "check": "total_within_threshold",
+          "passed": true,
+          "judge_value": 25,
+          "anchor_value": 25
+        },
+        {
+          "calibration_id": "cal-002",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "fail",
+          "anchor_value": "fail"
+        },
+        {
+          "calibration_id": "cal-002",
+          "check": "total_within_threshold",
+          "passed": true,
+          "judge_value": 7,
+          "anchor_value": 7
+        },
+        {
+          "calibration_id": "cal-003",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "fail",
+          "anchor_value": "fail"
+        },
+        {
+          "calibration_id": "cal-003",
+          "check": "total_within_threshold",
+          "passed": true,
+          "judge_value": 15,
+          "anchor_value": 15
+        }
+      ]
+    },
+    "score_scale_version": "anchored-1-5-v1",
+    "candidate_scores": {
+      "A": {
+        "domain_specificity": 4,
+        "evidence_completeness": 4,
+        "fail_closed": 4,
+        "handoff_readiness": 4,
+        "scope_discipline": 4,
+        "total": 20
+      },
+      "B": {
+        "domain_specificity": 3,
+        "evidence_completeness": 3,
+        "fail_closed": 3,
+        "handoff_readiness": 3,
+        "scope_discipline": 4,
+        "total": 16
+      }
+    },
+    "candidate_evidence": {
+      "A": "Destructive action state contract",
+      "B": "Async destructive action contract"
+    },
+    "preference": "A",
+    "deltas": {
+      "domain_specificity": 1,
+      "evidence_completeness": 1,
+      "fail_closed": 1,
+      "handoff_readiness": 1,
+      "scope_discipline": 0
+    },
+    "regression_flags": [],
+    "verdict": "A_better",
+    "rationale": "Label A has all five required evidence fields per row and explicit semantic operation state names; B omits provenance on several rows.",
+    "cited_evidence": [
+      "Destructive action state contract"
+    ]
+  },
+  {
+    "schema_version": 1,
+    "result_id": "component-states-paired-lift-001-sonnet-1",
+    "packet_id": "component-states-paired-lift-001",
+    "evaluator_type": "paired_lift",
+    "judge_id": "sonnet-1",
+    "evaluator_family": "sonnet",
+    "evaluator_model": "claude-sonnet-5",
+    "status": "complete",
+    "calibration_status": {
+      "passed": true,
+      "items_passed": 6,
+      "items": [
+        {
+          "calibration_id": "cal-001",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "pass",
+          "anchor_value": "pass"
+        },
+        {
+          "calibration_id": "cal-001",
+          "check": "total_within_threshold",
+          "passed": true,
+          "judge_value": 25,
+          "anchor_value": 25
+        },
+        {
+          "calibration_id": "cal-002",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "fail",
+          "anchor_value": "fail"
+        },
+        {
+          "calibration_id": "cal-002",
+          "check": "total_within_threshold",
+          "passed": true,
+          "judge_value": 7,
+          "anchor_value": 7
+        },
+        {
+          "calibration_id": "cal-003",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "fail",
+          "anchor_value": "fail"
+        },
+        {
+          "calibration_id": "cal-003",
+          "check": "total_within_threshold",
+          "passed": true,
+          "judge_value": 15,
+          "anchor_value": 15
+        }
+      ]
+    },
+    "score_scale_version": "anchored-1-5-v1",
+    "candidate_scores": {
+      "A": {
+        "domain_specificity": 4,
+        "evidence_completeness": 4,
+        "fail_closed": 4,
+        "handoff_readiness": 4,
+        "scope_discipline": 4,
+        "total": 20
+      },
+      "B": {
+        "domain_specificity": 3,
+        "evidence_completeness": 3,
+        "fail_closed": 3,
+        "handoff_readiness": 3,
+        "scope_discipline": 3,
+        "total": 15
+      }
+    },
+    "candidate_evidence": {
+      "A": "Destructive action state contract",
+      "B": "Async destructive action contract"
+    },
+    "preference": "A",
+    "deltas": {
+      "domain_specificity": 1,
+      "evidence_completeness": 1,
+      "fail_closed": 1,
+      "handoff_readiness": 1,
+      "scope_discipline": 1
+    },
+    "regression_flags": [],
+    "verdict": "A_better",
+    "rationale": "Label A commits to decision sequence and semantic operation state model with complete evidence; B relies on visual states only.",
+    "cited_evidence": [
+      "Destructive action state contract"
+    ]
+  }
+]

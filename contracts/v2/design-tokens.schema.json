@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/contracts/v2/design-tokens.schema.json",
+  "title": "TasteCheck Design Tokens v2",
+  "description": "Strict semantic tokens for the render-grounded Taste Oracle vertical slice.",
+  "type": "object",
+  "required": ["schema_version", "token_set_id", "colors", "type", "spacing", "radii"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "integer", "const": 2 },
+    "token_set_id": { "type": "string", "minLength": 1 },
+    "colors": { "$ref": "#/definitions/colors" },
+    "type": { "$ref": "#/definitions/type" },
+    "spacing": { "$ref": "#/definitions/spacing" },
+    "radii": { "$ref": "#/definitions/radii" }
+  },
+  "definitions": {
+    "color": {
+      "type": "string",
+      "description": "Supported subset: 3/4/6/8-digit hex or modern space-separated rgb(), hsl(), and oklch(). The explicit validator additionally enforces component ranges.",
+      "pattern": "^(?:#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|rgb\\((?:(?:[+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)\\s+){2}[+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)|(?:[+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)%\\s+){2}[+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)%)(?:\\s*/\\s*[+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)%?)?\\)|hsl\\([+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:deg)?\\s+[+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)%\\s+[+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)%(?:\\s*/\\s*[+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)%?)?\\)|oklch\\([+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)%?\\s+[+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)\\s+[+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:deg)?(?:\\s*/\\s*[+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)%?)?\\))$"
+    },
+    "length": {
+      "type": "string",
+      "pattern": "^(0|([0-9]+(\\.[0-9]+)?|\\.[0-9]+)(px|rem|em|%|vw|vh))$"
+    },
+    "lineHeight": {
+      "type": "string",
+      "pattern": "^([0-9]+(\\.[0-9]+)?|\\.[0-9]+|([0-9]+(\\.[0-9]+)?|\\.[0-9]+)(px|rem|em|%))$"
+    },
+    "colors": {
+      "type": "object",
+      "required": ["canvas", "surface", "text", "text_muted", "accent", "border"],
+      "additionalProperties": false,
+      "properties": {
+        "canvas": { "$ref": "#/definitions/color" },
+        "surface": { "$ref": "#/definitions/color" },
+        "text": { "$ref": "#/definitions/color" },
+        "text_muted": { "$ref": "#/definitions/color" },
+        "accent": { "$ref": "#/definitions/color" },
+        "border": { "$ref": "#/definitions/color" }
+      }
+    },
+    "type": {
+      "type": "object",
+      "required": ["font_family", "body_size", "body_line_height", "heading_size", "heading_line_height", "weight_regular", "weight_medium", "weight_bold"],
+      "additionalProperties": false,
+      "properties": {
+        "font_family": { "type": "string", "minLength": 1, "pattern": "^[^{};\\r\\n]+$" },
+        "body_size": { "$ref": "#/definitions/length" },
+        "body_line_height": { "$ref": "#/definitions/lineHeight" },
+        "heading_size": { "$ref": "#/definitions/length" },
+        "heading_line_height": { "$ref": "#/definitions/lineHeight" },
+        "weight_regular": { "type": "integer", "minimum": 100, "maximum": 900, "multipleOf": 100 },
+        "weight_medium": { "type": "integer", "minimum": 100, "maximum": 900, "multipleOf": 100 },
+        "weight_bold": { "type": "integer", "minimum": 100, "maximum": 900, "multipleOf": 100 }
+      }
+    },
+    "spacing": {
+      "type": "object",
+      "required": ["xs", "sm", "md", "lg", "xl"],
+      "additionalProperties": false,
+      "properties": {
+        "xs": { "$ref": "#/definitions/length" },
+        "sm": { "$ref": "#/definitions/length" },
+        "md": { "$ref": "#/definitions/length" },
+        "lg": { "$ref": "#/definitions/length" },
+        "xl": { "$ref": "#/definitions/length" }
+      }
+    },
+    "radii": {
+      "type": "object",
+      "required": ["sm", "md", "pill"],
+      "additionalProperties": false,
+      "properties": {
+        "sm": { "$ref": "#/definitions/length" },
+        "md": { "$ref": "#/definitions/length" },
+        "pill": { "$ref": "#/definitions/length" }
+      }
+    }
+  }
+}
