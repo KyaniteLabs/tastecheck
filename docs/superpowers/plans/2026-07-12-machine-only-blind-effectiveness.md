@@ -383,7 +383,7 @@ Commit: `feat: add effectiveness v2 execution adapters`
 
 **Interfaces:**
 - The production CLI consumes only the frozen protocol and creates immutable run-scoped evidence.
-- No tracked source file changes after production admission except the append-only public-safe evidence ledger and derived result documentation.
+- No tracked source file changes after production admission except the append-only public-safe evidence ledger, the terminal synthesis reservation, and derived result documentation.
 
 - [ ] **Step 1: Run non-consuming preflight**
 
