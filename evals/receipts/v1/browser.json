@@ -6,7 +6,7 @@
     "id": "tastecheck-live-execution",
     "version": 1
   },
-  "source_tree_sha256": "b4c925dc89a83f425280ca54164ce8da4a04bd92808b9d381d50df0405792933",
+  "source_tree_sha256": "7031281ec8add4b80659b554cbdc654a731bcaf0e50c643299ea85c4fb0fc48d",
   "nonce": "browser-release-v1",
   "runtime": {
     "node": "v26.0.0",
@@ -14,196 +14,2578 @@
     "browser": "149.0.7827.55",
     "platform": "darwin"
   },
-  "started_at": "2026-07-12T01:00:53.731Z",
-  "finished_at": "2026-07-12T01:00:58.902Z",
+  "started_at": "2026-07-12T01:25:50.709Z",
+  "finished_at": "2026-07-12T01:26:14.039Z",
   "executed": true,
   "reproducible": true,
   "artifacts": [
     {
-      "id": "landing-desktop",
-      "path": "evals/receipts/v1/artifacts/browser/landing-desktop-5efce8cfc1448370ee30b674a1df43c5d1678a178c6d480d459104d961e68a6e.png",
-      "sha256": "5efce8cfc1448370ee30b674a1df43c5d1678a178c6d480d459104d961e68a6e",
-      "bytes": 1574554
+      "id": "demo-01-foundations-390",
+      "path": "evals/receipts/v1/artifacts/browser/demo-01-foundations-390-1726befa72884c16cb33631b4ca7f1507b19fc1e37dc08aaa52455d394a1470e.png",
+      "sha256": "1726befa72884c16cb33631b4ca7f1507b19fc1e37dc08aaa52455d394a1470e",
+      "bytes": 32863
     },
     {
-      "id": "landing-mobile",
-      "path": "evals/receipts/v1/artifacts/browser/landing-mobile-6d252c493d95f3c9cd6ad5194c6478d1ecad1212a9039635afde3f79c53b35d5.png",
-      "sha256": "6d252c493d95f3c9cd6ad5194c6478d1ecad1212a9039635afde3f79c53b35d5",
-      "bytes": 429829
+      "id": "demo-01-foundations-768",
+      "path": "evals/receipts/v1/artifacts/browser/demo-01-foundations-768-bda52aed222e69e2b3f7f472c973e37675bd40b7ebc2ba84e9a23201da5be6e6.png",
+      "sha256": "bda52aed222e69e2b3f7f472c973e37675bd40b7ebc2ba84e9a23201da5be6e6",
+      "bytes": 38779
     },
     {
-      "id": "gallery-desktop",
-      "path": "evals/receipts/v1/artifacts/browser/gallery-desktop-3d07c59d08bbf5f54e5b3ec38fc9e064cd11e8c9b03807fae702f9bc0217d4db.png",
-      "sha256": "3d07c59d08bbf5f54e5b3ec38fc9e064cd11e8c9b03807fae702f9bc0217d4db",
-      "bytes": 320692
+      "id": "demo-01-foundations-1280",
+      "path": "evals/receipts/v1/artifacts/browser/demo-01-foundations-1280-1802014c73623b67fa386f9ce76f21754cb7b8172514fa1de8d041496d4a0ddc.png",
+      "sha256": "1802014c73623b67fa386f9ce76f21754cb7b8172514fa1de8d041496d4a0ddc",
+      "bytes": 42463
     },
     {
-      "id": "gallery-mobile",
-      "path": "evals/receipts/v1/artifacts/browser/gallery-mobile-f21e769429a3f775ad3483674cd29fac1120893882d7b46be2140890e12d9968.png",
-      "sha256": "f21e769429a3f775ad3483674cd29fac1120893882d7b46be2140890e12d9968",
-      "bytes": 306741
+      "id": "demo-02-states-390",
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-390-0d40328fcc72cc95634f9681dd5bae3bce87b7acec16d2a4b2243b6b3127a35c.png",
+      "sha256": "0d40328fcc72cc95634f9681dd5bae3bce87b7acec16d2a4b2243b6b3127a35c",
+      "bytes": 25904
     },
     {
-      "id": "integration-desktop",
-      "path": "evals/receipts/v1/artifacts/browser/integration-desktop-135a99e8f4e5431c95888d8a04adb2e91fd112f284ff720f8954a949c686d778.png",
-      "sha256": "135a99e8f4e5431c95888d8a04adb2e91fd112f284ff720f8954a949c686d778",
-      "bytes": 680666
+      "id": "demo-02-states-768",
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-768-865f2c22ec335f5879bcc9b84de4e992499b85244bf54f2d2cf708d989209f67.png",
+      "sha256": "865f2c22ec335f5879bcc9b84de4e992499b85244bf54f2d2cf708d989209f67",
+      "bytes": 27214
     },
     {
-      "id": "integration-mobile",
-      "path": "evals/receipts/v1/artifacts/browser/integration-mobile-fef7fbc1b148ebcd5b9ba65b424dac9b732b6ab34877fcbdd7308705f07652f8.png",
-      "sha256": "fef7fbc1b148ebcd5b9ba65b424dac9b732b6ab34877fcbdd7308705f07652f8",
-      "bytes": 576341
+      "id": "demo-02-states-1280",
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-1280-417ce842d3e9d964cca4bc9e1d771ef18a15fbd8bf8018fa8a5a0670a71b1633.png",
+      "sha256": "417ce842d3e9d964cca4bc9e1d771ef18a15fbd8bf8018fa8a5a0670a71b1633",
+      "bytes": 29234
+    },
+    {
+      "id": "demo-03-responsive-390",
+      "path": "evals/receipts/v1/artifacts/browser/demo-03-responsive-390-e47fa7f7b0bcdd39c9e7990e2e4e99d565ed6c80db8da06f71f121ed9723ff3b.png",
+      "sha256": "e47fa7f7b0bcdd39c9e7990e2e4e99d565ed6c80db8da06f71f121ed9723ff3b",
+      "bytes": 28406
+    },
+    {
+      "id": "demo-03-responsive-768",
+      "path": "evals/receipts/v1/artifacts/browser/demo-03-responsive-768-eeed5124aa68d82c4ca5daa4054744678a9a6dc8802607869757746316b05bd2.png",
+      "sha256": "eeed5124aa68d82c4ca5daa4054744678a9a6dc8802607869757746316b05bd2",
+      "bytes": 26983
+    },
+    {
+      "id": "demo-03-responsive-1280",
+      "path": "evals/receipts/v1/artifacts/browser/demo-03-responsive-1280-8cd5f03a8a6cadf9513f9318732bb1439a3a9debae753de13d842802973cad47.png",
+      "sha256": "8cd5f03a8a6cadf9513f9318732bb1439a3a9debae753de13d842802973cad47",
+      "bytes": 27301
+    },
+    {
+      "id": "demo-04-motion-forms-empty-390",
+      "path": "evals/receipts/v1/artifacts/browser/demo-04-motion-forms-empty-390-224fcfebc0a4b3559e8b16cf1b4cbf480798bf8127d92c6f7ee3ad57efb16357.png",
+      "sha256": "224fcfebc0a4b3559e8b16cf1b4cbf480798bf8127d92c6f7ee3ad57efb16357",
+      "bytes": 27657
+    },
+    {
+      "id": "demo-04-motion-forms-empty-768",
+      "path": "evals/receipts/v1/artifacts/browser/demo-04-motion-forms-empty-768-27270c696925fa17c1482e1c72e568364b7d001fc38ce78c1338d8efc00a4019.png",
+      "sha256": "27270c696925fa17c1482e1c72e568364b7d001fc38ce78c1338d8efc00a4019",
+      "bytes": 28555
+    },
+    {
+      "id": "demo-04-motion-forms-empty-1280",
+      "path": "evals/receipts/v1/artifacts/browser/demo-04-motion-forms-empty-1280-01f1896ae43183bdbdc1cf1699710439f4b17e45e864ad2b15ac860436aa8774.png",
+      "sha256": "01f1896ae43183bdbdc1cf1699710439f4b17e45e864ad2b15ac860436aa8774",
+      "bytes": 32343
+    },
+    {
+      "id": "demo-05-deslop-390",
+      "path": "evals/receipts/v1/artifacts/browser/demo-05-deslop-390-72aa243d274331f8a18c584c549ad8229fa17caf38fae41c7b0f14b7786b104b.png",
+      "sha256": "72aa243d274331f8a18c584c549ad8229fa17caf38fae41c7b0f14b7786b104b",
+      "bytes": 40084
+    },
+    {
+      "id": "demo-05-deslop-768",
+      "path": "evals/receipts/v1/artifacts/browser/demo-05-deslop-768-def2d9f2aa10c49c9562d1a16defde447dc129be6fb434bded581d07eba6d112.png",
+      "sha256": "def2d9f2aa10c49c9562d1a16defde447dc129be6fb434bded581d07eba6d112",
+      "bytes": 41454
+    },
+    {
+      "id": "demo-05-deslop-1280",
+      "path": "evals/receipts/v1/artifacts/browser/demo-05-deslop-1280-adeb3bef87f103cd879ffd9d65bd87df464017a8e15113cd2e57eeeb30b04db5.png",
+      "sha256": "adeb3bef87f103cd879ffd9d65bd87df464017a8e15113cd2e57eeeb30b04db5",
+      "bytes": 42419
+    },
+    {
+      "id": "demo-skill-integration-390",
+      "path": "evals/receipts/v1/artifacts/browser/demo-skill-integration-390-cb7d3de395e2cf7cd6d6eedb6346a3fc4bda126dd7a1bc8cf77a922e0c70cbb6.png",
+      "sha256": "cb7d3de395e2cf7cd6d6eedb6346a3fc4bda126dd7a1bc8cf77a922e0c70cbb6",
+      "bytes": 577491
+    },
+    {
+      "id": "demo-skill-integration-768",
+      "path": "evals/receipts/v1/artifacts/browser/demo-skill-integration-768-f861a98fdb6e246ed007904cf71c60692dc8afaeab74e3ae3e3407594451070c.png",
+      "sha256": "f861a98fdb6e246ed007904cf71c60692dc8afaeab74e3ae3e3407594451070c",
+      "bytes": 620833
+    },
+    {
+      "id": "demo-skill-integration-1280",
+      "path": "evals/receipts/v1/artifacts/browser/demo-skill-integration-1280-6fb78e445e5bc4d58866c91f355e8a54a152dea65683aca323356c492d728e0a.png",
+      "sha256": "6fb78e445e5bc4d58866c91f355e8a54a152dea65683aca323356c492d728e0a",
+      "bytes": 652478
+    },
+    {
+      "id": "gallery-390",
+      "path": "evals/receipts/v1/artifacts/browser/gallery-390-fb3d0d0d2d05a56d7eae0086188305a7c778b555c13050fc5d94e287ba4d641c.png",
+      "sha256": "fb3d0d0d2d05a56d7eae0086188305a7c778b555c13050fc5d94e287ba4d641c",
+      "bytes": 308969
+    },
+    {
+      "id": "gallery-768",
+      "path": "evals/receipts/v1/artifacts/browser/gallery-768-91a366b3ae2a946b6eae0a1251cd0115b8aa640e186026d77f348b4285b090d7.png",
+      "sha256": "91a366b3ae2a946b6eae0a1251cd0115b8aa640e186026d77f348b4285b090d7",
+      "bytes": 317637
+    },
+    {
+      "id": "gallery-1280",
+      "path": "evals/receipts/v1/artifacts/browser/gallery-1280-c715ec4d873fd1ef0b575bc91cbff3e9a3d187be1632321c0525fe7b267a63fa.png",
+      "sha256": "c715ec4d873fd1ef0b575bc91cbff3e9a3d187be1632321c0525fe7b267a63fa",
+      "bytes": 317237
+    },
+    {
+      "id": "landing-390",
+      "path": "evals/receipts/v1/artifacts/browser/landing-390-18b6954d48071bac9589b4882cd37dab34a83ce90a374592dd9548c51440b550.png",
+      "sha256": "18b6954d48071bac9589b4882cd37dab34a83ce90a374592dd9548c51440b550",
+      "bytes": 892132
+    },
+    {
+      "id": "landing-768",
+      "path": "evals/receipts/v1/artifacts/browser/landing-768-5ad13cb1af9c7f7db61a97440719eac676d7ac0952eb5656793975dbbc2b0d96.png",
+      "sha256": "5ad13cb1af9c7f7db61a97440719eac676d7ac0952eb5656793975dbbc2b0d96",
+      "bytes": 1251812
+    },
+    {
+      "id": "landing-1280",
+      "path": "evals/receipts/v1/artifacts/browser/landing-1280-5362c1497935134c3b75146a472557ee6d49cc5640ad27aea4011ce889b06afa.png",
+      "sha256": "5362c1497935134c3b75146a472557ee6d49cc5640ad27aea4011ce889b06afa",
+      "bytes": 1818757
+    },
+    {
+      "id": "sample-clay-390",
+      "path": "evals/receipts/v1/artifacts/browser/sample-clay-390-08fd6521e9b75c727cbd598e3f2f5d726152a5b4aaeb45dbcc0ef175ceb9376b.png",
+      "sha256": "08fd6521e9b75c727cbd598e3f2f5d726152a5b4aaeb45dbcc0ef175ceb9376b",
+      "bytes": 407658
+    },
+    {
+      "id": "sample-clay-768",
+      "path": "evals/receipts/v1/artifacts/browser/sample-clay-768-651767ecd98da95de87ac6754b11cb339c12f565a35a3fc6cef080c555697a6e.png",
+      "sha256": "651767ecd98da95de87ac6754b11cb339c12f565a35a3fc6cef080c555697a6e",
+      "bytes": 450402
+    },
+    {
+      "id": "sample-clay-1280",
+      "path": "evals/receipts/v1/artifacts/browser/sample-clay-1280-b57a191790708386536b3f766433b5ebda52d6aa55f7f92584232fd652b16dbe.png",
+      "sha256": "b57a191790708386536b3f766433b5ebda52d6aa55f7f92584232fd652b16dbe",
+      "bytes": 499260
+    },
+    {
+      "id": "sample-concrete-390",
+      "path": "evals/receipts/v1/artifacts/browser/sample-concrete-390-5c30f329c3040d49b64d76fe1c92e89ee07315b4c5a03763287b4e3ad5bd3bc5.png",
+      "sha256": "5c30f329c3040d49b64d76fe1c92e89ee07315b4c5a03763287b4e3ad5bd3bc5",
+      "bytes": 333885
+    },
+    {
+      "id": "sample-concrete-768",
+      "path": "evals/receipts/v1/artifacts/browser/sample-concrete-768-4aa2bed0e24ef5a1d4eb0ae5c1ecf8458d1d9aef77e6d3520bce6f1d98a34060.png",
+      "sha256": "4aa2bed0e24ef5a1d4eb0ae5c1ecf8458d1d9aef77e6d3520bce6f1d98a34060",
+      "bytes": 346425
+    },
+    {
+      "id": "sample-concrete-1280",
+      "path": "evals/receipts/v1/artifacts/browser/sample-concrete-1280-5a3f434953e27254ecb78c2a531d7132dd40144ed5b9552bc276aefedf12cd3b.png",
+      "sha256": "5a3f434953e27254ecb78c2a531d7132dd40144ed5b9552bc276aefedf12cd3b",
+      "bytes": 370270
+    },
+    {
+      "id": "sample-copper-390",
+      "path": "evals/receipts/v1/artifacts/browser/sample-copper-390-4e027ba7fa711cd70429a3016e6d393176cacb7397f07bc01669aefd462e88ec.png",
+      "sha256": "4e027ba7fa711cd70429a3016e6d393176cacb7397f07bc01669aefd462e88ec",
+      "bytes": 659865
+    },
+    {
+      "id": "sample-copper-768",
+      "path": "evals/receipts/v1/artifacts/browser/sample-copper-768-0ef45af8bff016f7c757e9d0efc0a396e6dc71b517f1a9333e5be520cce445c4.png",
+      "sha256": "0ef45af8bff016f7c757e9d0efc0a396e6dc71b517f1a9333e5be520cce445c4",
+      "bytes": 926266
+    },
+    {
+      "id": "sample-copper-1280",
+      "path": "evals/receipts/v1/artifacts/browser/sample-copper-1280-3f533d558f1e812017af947a3154e613666d32a66b0916ec19d2e83a3e9c58c6.png",
+      "sha256": "3f533d558f1e812017af947a3154e613666d32a66b0916ec19d2e83a3e9c58c6",
+      "bytes": 1407299
+    },
+    {
+      "id": "sample-dispatch-390",
+      "path": "evals/receipts/v1/artifacts/browser/sample-dispatch-390-2fb635baa8d300c35b97f83f612d4876a622799fafc684947cf29851749146cc.png",
+      "sha256": "2fb635baa8d300c35b97f83f612d4876a622799fafc684947cf29851749146cc",
+      "bytes": 367359
+    },
+    {
+      "id": "sample-dispatch-768",
+      "path": "evals/receipts/v1/artifacts/browser/sample-dispatch-768-76b76491478f10a8ddeb05cc68ed0bc02770b25a1fa509d459ebf3a3d46ac697.png",
+      "sha256": "76b76491478f10a8ddeb05cc68ed0bc02770b25a1fa509d459ebf3a3d46ac697",
+      "bytes": 394098
+    },
+    {
+      "id": "sample-dispatch-1280",
+      "path": "evals/receipts/v1/artifacts/browser/sample-dispatch-1280-78f52c13bb2ea5e9cb087e1f18d0091cb09ad9ef01daa0dbd987b908d7a4957a.png",
+      "sha256": "78f52c13bb2ea5e9cb087e1f18d0091cb09ad9ef01daa0dbd987b908d7a4957a",
+      "bytes": 421312
+    },
+    {
+      "id": "sample-maximal-390",
+      "path": "evals/receipts/v1/artifacts/browser/sample-maximal-390-09997b4514b975a689290cfda64615a5253be352752961badb917e45ebc598ff.png",
+      "sha256": "09997b4514b975a689290cfda64615a5253be352752961badb917e45ebc598ff",
+      "bytes": 1332855
+    },
+    {
+      "id": "sample-maximal-768",
+      "path": "evals/receipts/v1/artifacts/browser/sample-maximal-768-79e4641f9846fe8f4ba6806bfe6226bbb31a013f32718ea30def449282532d07.png",
+      "sha256": "79e4641f9846fe8f4ba6806bfe6226bbb31a013f32718ea30def449282532d07",
+      "bytes": 1821084
+    },
+    {
+      "id": "sample-maximal-1280",
+      "path": "evals/receipts/v1/artifacts/browser/sample-maximal-1280-7ecc3360ff3b3bf9945545d4b0abafdc3ed198e311b052aa2ebe09c6b4c00bc0.png",
+      "sha256": "7ecc3360ff3b3bf9945545d4b0abafdc3ed198e311b052aa2ebe09c6b4c00bc0",
+      "bytes": 2602010
+    },
+    {
+      "id": "sample-swiss-390",
+      "path": "evals/receipts/v1/artifacts/browser/sample-swiss-390-9825925914a7a56533dab68e2f4c3cb64b9cd8e426e47e81136fdd7a5c9dd1ee.png",
+      "sha256": "9825925914a7a56533dab68e2f4c3cb64b9cd8e426e47e81136fdd7a5c9dd1ee",
+      "bytes": 2388514
+    },
+    {
+      "id": "sample-swiss-768",
+      "path": "evals/receipts/v1/artifacts/browser/sample-swiss-768-d6aec36ae67faa36b7e573b46c65258ec5ccbba4d93f818f70e973bb4aac54e9.png",
+      "sha256": "d6aec36ae67faa36b7e573b46c65258ec5ccbba4d93f818f70e973bb4aac54e9",
+      "bytes": 2399131
+    },
+    {
+      "id": "sample-swiss-1280",
+      "path": "evals/receipts/v1/artifacts/browser/sample-swiss-1280-e7e09b2a7c5bb2f6f949a4cde19a6efd02f49183f5d0aa8f3210eb5ea4767184.png",
+      "sha256": "e7e09b2a7c5bb2f6f949a4cde19a6efd02f49183f5d0aa8f3210eb5ea4767184",
+      "bytes": 2523368
+    },
+    {
+      "id": "browser-audit-results",
+      "path": "evals/receipts/v1/artifacts/browser/browser-audit-results-803acf304d91d6a9e92b8d8353a436ccc7cc00e5a204fc87276f250c947e93db.json",
+      "sha256": "803acf304d91d6a9e92b8d8353a436ccc7cc00e5a204fc87276f250c947e93db",
+      "bytes": 25624
     }
   ],
   "checks": [
     {
-      "id": "landing-desktop-http",
+      "id": "demo-01-foundations-390-http",
       "passed": true,
       "detail": "HTTP surface loaded"
     },
     {
-      "id": "landing-desktop-title",
+      "id": "demo-01-foundations-390-title",
       "passed": true,
       "detail": "Document title is present"
     },
     {
-      "id": "landing-desktop-main",
+      "id": "demo-01-foundations-390-main",
       "passed": true,
-      "detail": "Exactly one main landmark is rendered"
+      "detail": "Exactly one main landmark rendered"
     },
     {
-      "id": "landing-desktop-no-overflow",
+      "id": "demo-01-foundations-390-no-overflow",
       "passed": true,
       "detail": "No horizontal viewport overflow"
     },
     {
-      "id": "landing-desktop-no-console-errors",
+      "id": "demo-01-foundations-390-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-01-foundations-390-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-01-foundations-390-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-01-foundations-390-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "demo-01-foundations-390-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "demo-01-foundations-390-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-01-foundations-390-no-console-errors",
       "passed": true,
       "detail": "No console or page errors"
     },
     {
-      "id": "landing-mobile-http",
+      "id": "demo-01-foundations-768-http",
       "passed": true,
       "detail": "HTTP surface loaded"
     },
     {
-      "id": "landing-mobile-title",
+      "id": "demo-01-foundations-768-title",
       "passed": true,
       "detail": "Document title is present"
     },
     {
-      "id": "landing-mobile-main",
+      "id": "demo-01-foundations-768-main",
       "passed": true,
-      "detail": "Exactly one main landmark is rendered"
+      "detail": "Exactly one main landmark rendered"
     },
     {
-      "id": "landing-mobile-no-overflow",
+      "id": "demo-01-foundations-768-no-overflow",
       "passed": true,
       "detail": "No horizontal viewport overflow"
     },
     {
-      "id": "landing-mobile-no-console-errors",
+      "id": "demo-01-foundations-768-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-01-foundations-768-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-01-foundations-768-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-01-foundations-768-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "demo-01-foundations-768-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "demo-01-foundations-768-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-01-foundations-768-no-console-errors",
       "passed": true,
       "detail": "No console or page errors"
     },
     {
-      "id": "gallery-desktop-http",
+      "id": "demo-01-foundations-1280-http",
       "passed": true,
       "detail": "HTTP surface loaded"
     },
     {
-      "id": "gallery-desktop-title",
+      "id": "demo-01-foundations-1280-title",
       "passed": true,
       "detail": "Document title is present"
     },
     {
-      "id": "gallery-desktop-main",
+      "id": "demo-01-foundations-1280-main",
       "passed": true,
-      "detail": "Exactly one main landmark is rendered"
+      "detail": "Exactly one main landmark rendered"
     },
     {
-      "id": "gallery-desktop-no-overflow",
+      "id": "demo-01-foundations-1280-no-overflow",
       "passed": true,
       "detail": "No horizontal viewport overflow"
     },
     {
-      "id": "gallery-desktop-no-console-errors",
+      "id": "demo-01-foundations-1280-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-01-foundations-1280-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-01-foundations-1280-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-01-foundations-1280-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "demo-01-foundations-1280-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "demo-01-foundations-1280-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-01-foundations-1280-no-console-errors",
       "passed": true,
       "detail": "No console or page errors"
     },
     {
-      "id": "gallery-mobile-http",
+      "id": "demo-02-states-390-http",
       "passed": true,
       "detail": "HTTP surface loaded"
     },
     {
-      "id": "gallery-mobile-title",
+      "id": "demo-02-states-390-title",
       "passed": true,
       "detail": "Document title is present"
     },
     {
-      "id": "gallery-mobile-main",
+      "id": "demo-02-states-390-main",
       "passed": true,
-      "detail": "Exactly one main landmark is rendered"
+      "detail": "Exactly one main landmark rendered"
     },
     {
-      "id": "gallery-mobile-no-overflow",
+      "id": "demo-02-states-390-no-overflow",
       "passed": true,
       "detail": "No horizontal viewport overflow"
     },
     {
-      "id": "gallery-mobile-no-console-errors",
+      "id": "demo-02-states-390-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-02-states-390-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-02-states-390-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-02-states-390-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "demo-02-states-390-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "demo-02-states-390-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-02-states-390-no-console-errors",
       "passed": true,
       "detail": "No console or page errors"
     },
     {
-      "id": "integration-desktop-http",
+      "id": "demo-02-states-768-http",
       "passed": true,
       "detail": "HTTP surface loaded"
     },
     {
-      "id": "integration-desktop-title",
+      "id": "demo-02-states-768-title",
       "passed": true,
       "detail": "Document title is present"
     },
     {
-      "id": "integration-desktop-main",
+      "id": "demo-02-states-768-main",
       "passed": true,
-      "detail": "Exactly one main landmark is rendered"
+      "detail": "Exactly one main landmark rendered"
     },
     {
-      "id": "integration-desktop-no-overflow",
+      "id": "demo-02-states-768-no-overflow",
       "passed": true,
       "detail": "No horizontal viewport overflow"
     },
     {
-      "id": "integration-desktop-no-console-errors",
+      "id": "demo-02-states-768-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-02-states-768-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-02-states-768-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-02-states-768-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "demo-02-states-768-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "demo-02-states-768-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-02-states-768-no-console-errors",
       "passed": true,
       "detail": "No console or page errors"
     },
     {
-      "id": "integration-mobile-http",
+      "id": "demo-02-states-1280-http",
       "passed": true,
       "detail": "HTTP surface loaded"
     },
     {
-      "id": "integration-mobile-title",
+      "id": "demo-02-states-1280-title",
       "passed": true,
       "detail": "Document title is present"
     },
     {
-      "id": "integration-mobile-main",
+      "id": "demo-02-states-1280-main",
       "passed": true,
-      "detail": "Exactly one main landmark is rendered"
+      "detail": "Exactly one main landmark rendered"
     },
     {
-      "id": "integration-mobile-no-overflow",
+      "id": "demo-02-states-1280-no-overflow",
       "passed": true,
       "detail": "No horizontal viewport overflow"
     },
     {
-      "id": "integration-mobile-no-console-errors",
+      "id": "demo-02-states-1280-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-02-states-1280-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-02-states-1280-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-02-states-1280-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "demo-02-states-1280-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "demo-02-states-1280-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-02-states-1280-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "demo-03-responsive-390-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "demo-03-responsive-390-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "demo-03-responsive-390-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "demo-03-responsive-390-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "demo-03-responsive-390-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-03-responsive-390-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-03-responsive-390-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-03-responsive-390-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+    },
+    {
+      "id": "demo-03-responsive-390-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "demo-03-responsive-390-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-03-responsive-390-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "demo-03-responsive-768-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "demo-03-responsive-768-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "demo-03-responsive-768-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "demo-03-responsive-768-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "demo-03-responsive-768-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-03-responsive-768-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-03-responsive-768-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-03-responsive-768-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+    },
+    {
+      "id": "demo-03-responsive-768-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "demo-03-responsive-768-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-03-responsive-768-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "demo-03-responsive-1280-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "demo-03-responsive-1280-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "demo-03-responsive-1280-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "demo-03-responsive-1280-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "demo-03-responsive-1280-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-03-responsive-1280-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-03-responsive-1280-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-03-responsive-1280-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+    },
+    {
+      "id": "demo-03-responsive-1280-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "demo-03-responsive-1280-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-03-responsive-1280-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-390-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-390-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-390-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-390-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-390-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-390-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-390-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-390-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-390-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-390-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-390-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-768-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-768-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-768-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-768-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-768-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-768-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-768-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-768-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-768-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-768-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-768-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-1280-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-1280-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-1280-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-1280-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-1280-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-1280-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-1280-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-1280-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-1280-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-1280-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-04-motion-forms-empty-1280-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "demo-05-deslop-390-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "demo-05-deslop-390-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "demo-05-deslop-390-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "demo-05-deslop-390-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "demo-05-deslop-390-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-05-deslop-390-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-05-deslop-390-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-05-deslop-390-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+    },
+    {
+      "id": "demo-05-deslop-390-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 2 warnings recorded"
+    },
+    {
+      "id": "demo-05-deslop-390-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-05-deslop-390-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "demo-05-deslop-768-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "demo-05-deslop-768-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "demo-05-deslop-768-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "demo-05-deslop-768-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "demo-05-deslop-768-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-05-deslop-768-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-05-deslop-768-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-05-deslop-768-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+    },
+    {
+      "id": "demo-05-deslop-768-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 2 warnings recorded"
+    },
+    {
+      "id": "demo-05-deslop-768-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-05-deslop-768-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "demo-05-deslop-1280-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "demo-05-deslop-1280-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "demo-05-deslop-1280-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "demo-05-deslop-1280-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "demo-05-deslop-1280-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-05-deslop-1280-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-05-deslop-1280-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-05-deslop-1280-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+    },
+    {
+      "id": "demo-05-deslop-1280-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 2 warnings recorded"
+    },
+    {
+      "id": "demo-05-deslop-1280-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-05-deslop-1280-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "demo-skill-integration-390-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "demo-skill-integration-390-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "demo-skill-integration-390-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "demo-skill-integration-390-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "demo-skill-integration-390-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-skill-integration-390-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-skill-integration-390-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-skill-integration-390-gate-audit",
+      "passed": true,
+      "detail": "CLEAN: 0 fails, 0 warns recorded"
+    },
+    {
+      "id": "demo-skill-integration-390-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 0 warnings recorded"
+    },
+    {
+      "id": "demo-skill-integration-390-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-skill-integration-390-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "demo-skill-integration-768-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "demo-skill-integration-768-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "demo-skill-integration-768-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "demo-skill-integration-768-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "demo-skill-integration-768-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-skill-integration-768-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-skill-integration-768-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-skill-integration-768-gate-audit",
+      "passed": true,
+      "detail": "CLEAN: 0 fails, 0 warns recorded"
+    },
+    {
+      "id": "demo-skill-integration-768-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 0 warnings recorded"
+    },
+    {
+      "id": "demo-skill-integration-768-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-skill-integration-768-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "demo-skill-integration-1280-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "demo-skill-integration-1280-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "demo-skill-integration-1280-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "demo-skill-integration-1280-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "demo-skill-integration-1280-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "demo-skill-integration-1280-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "demo-skill-integration-1280-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "demo-skill-integration-1280-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+    },
+    {
+      "id": "demo-skill-integration-1280-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 0 warnings recorded"
+    },
+    {
+      "id": "demo-skill-integration-1280-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "demo-skill-integration-1280-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "gallery-390-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "gallery-390-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "gallery-390-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "gallery-390-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "gallery-390-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "gallery-390-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "gallery-390-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "gallery-390-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "gallery-390-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "gallery-390-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "gallery-390-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "gallery-768-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "gallery-768-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "gallery-768-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "gallery-768-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "gallery-768-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "gallery-768-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "gallery-768-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "gallery-768-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "gallery-768-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "gallery-768-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "gallery-768-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "gallery-1280-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "gallery-1280-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "gallery-1280-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "gallery-1280-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "gallery-1280-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "gallery-1280-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "gallery-1280-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "gallery-1280-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "gallery-1280-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "gallery-1280-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "gallery-1280-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "landing-390-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "landing-390-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "landing-390-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "landing-390-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "landing-390-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "landing-390-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "landing-390-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "landing-390-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "landing-390-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 0 warnings recorded"
+    },
+    {
+      "id": "landing-390-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "landing-390-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "landing-768-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "landing-768-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "landing-768-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "landing-768-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "landing-768-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "landing-768-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "landing-768-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "landing-768-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "landing-768-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 0 warnings recorded"
+    },
+    {
+      "id": "landing-768-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "landing-768-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "landing-1280-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "landing-1280-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "landing-1280-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "landing-1280-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "landing-1280-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "landing-1280-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "landing-1280-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "landing-1280-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "landing-1280-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 0 warnings recorded"
+    },
+    {
+      "id": "landing-1280-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "landing-1280-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-clay-390-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-clay-390-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-clay-390-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-clay-390-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-clay-390-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-clay-390-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-clay-390-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-clay-390-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 3 warns recorded"
+    },
+    {
+      "id": "sample-clay-390-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 11 warnings recorded"
+    },
+    {
+      "id": "sample-clay-390-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-clay-390-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-clay-768-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-clay-768-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-clay-768-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-clay-768-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-clay-768-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-clay-768-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-clay-768-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-clay-768-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 6 warns recorded"
+    },
+    {
+      "id": "sample-clay-768-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "sample-clay-768-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-clay-768-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-clay-1280-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-clay-1280-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-clay-1280-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-clay-1280-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-clay-1280-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-clay-1280-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-clay-1280-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-clay-1280-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 6 warns recorded"
+    },
+    {
+      "id": "sample-clay-1280-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 1 warnings recorded"
+    },
+    {
+      "id": "sample-clay-1280-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-clay-1280-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-concrete-390-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-concrete-390-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-concrete-390-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-concrete-390-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-concrete-390-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-concrete-390-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-concrete-390-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-concrete-390-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+    },
+    {
+      "id": "sample-concrete-390-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 16 warnings recorded"
+    },
+    {
+      "id": "sample-concrete-390-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-concrete-390-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-concrete-768-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-concrete-768-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-concrete-768-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-concrete-768-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-concrete-768-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-concrete-768-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-concrete-768-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-concrete-768-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "sample-concrete-768-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 10 warnings recorded"
+    },
+    {
+      "id": "sample-concrete-768-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-concrete-768-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-concrete-1280-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-concrete-1280-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-concrete-1280-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-concrete-1280-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-concrete-1280-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-concrete-1280-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-concrete-1280-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-concrete-1280-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+    },
+    {
+      "id": "sample-concrete-1280-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 10 warnings recorded"
+    },
+    {
+      "id": "sample-concrete-1280-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-concrete-1280-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-copper-390-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-copper-390-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-copper-390-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-copper-390-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-copper-390-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-copper-390-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-copper-390-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-copper-390-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 3 warns recorded"
+    },
+    {
+      "id": "sample-copper-390-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 17 warnings recorded"
+    },
+    {
+      "id": "sample-copper-390-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-copper-390-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-copper-768-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-copper-768-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-copper-768-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-copper-768-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-copper-768-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-copper-768-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-copper-768-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-copper-768-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 4 warns recorded"
+    },
+    {
+      "id": "sample-copper-768-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 7 warnings recorded"
+    },
+    {
+      "id": "sample-copper-768-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-copper-768-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-copper-1280-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-copper-1280-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-copper-1280-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-copper-1280-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-copper-1280-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-copper-1280-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-copper-1280-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-copper-1280-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 4 warns recorded"
+    },
+    {
+      "id": "sample-copper-1280-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 7 warnings recorded"
+    },
+    {
+      "id": "sample-copper-1280-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-copper-1280-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-dispatch-390-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-dispatch-390-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-dispatch-390-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-dispatch-390-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-dispatch-390-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-dispatch-390-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-dispatch-390-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-dispatch-390-gate-audit",
+      "passed": true,
+      "detail": "CLEAN: 0 fails, 0 warns recorded"
+    },
+    {
+      "id": "sample-dispatch-390-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 25 warnings recorded"
+    },
+    {
+      "id": "sample-dispatch-390-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-dispatch-390-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-dispatch-768-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-dispatch-768-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-dispatch-768-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-dispatch-768-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-dispatch-768-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-dispatch-768-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-dispatch-768-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-dispatch-768-gate-audit",
+      "passed": true,
+      "detail": "CLEAN: 0 fails, 0 warns recorded"
+    },
+    {
+      "id": "sample-dispatch-768-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 15 warnings recorded"
+    },
+    {
+      "id": "sample-dispatch-768-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-dispatch-768-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-dispatch-1280-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-dispatch-1280-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-dispatch-1280-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-dispatch-1280-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-dispatch-1280-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-dispatch-1280-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-dispatch-1280-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-dispatch-1280-gate-audit",
+      "passed": true,
+      "detail": "CLEAN: 0 fails, 0 warns recorded"
+    },
+    {
+      "id": "sample-dispatch-1280-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 15 warnings recorded"
+    },
+    {
+      "id": "sample-dispatch-1280-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-dispatch-1280-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-maximal-390-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-maximal-390-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-maximal-390-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-maximal-390-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-maximal-390-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-maximal-390-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-maximal-390-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-maximal-390-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+    },
+    {
+      "id": "sample-maximal-390-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 98 warnings recorded"
+    },
+    {
+      "id": "sample-maximal-390-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-maximal-390-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-maximal-768-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-maximal-768-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-maximal-768-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-maximal-768-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-maximal-768-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-maximal-768-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-maximal-768-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-maximal-768-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 3 warns recorded"
+    },
+    {
+      "id": "sample-maximal-768-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 92 warnings recorded"
+    },
+    {
+      "id": "sample-maximal-768-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-maximal-768-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-maximal-1280-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-maximal-1280-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-maximal-1280-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-maximal-1280-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-maximal-1280-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-maximal-1280-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-maximal-1280-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-maximal-1280-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+    },
+    {
+      "id": "sample-maximal-1280-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 92 warnings recorded"
+    },
+    {
+      "id": "sample-maximal-1280-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-maximal-1280-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-swiss-390-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-swiss-390-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-swiss-390-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-swiss-390-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-swiss-390-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-swiss-390-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-swiss-390-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-swiss-390-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "sample-swiss-390-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 85 warnings recorded"
+    },
+    {
+      "id": "sample-swiss-390-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-swiss-390-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-swiss-768-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-swiss-768-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-swiss-768-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-swiss-768-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-swiss-768-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-swiss-768-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-swiss-768-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-swiss-768-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "sample-swiss-768-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 85 warnings recorded"
+    },
+    {
+      "id": "sample-swiss-768-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-swiss-768-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-swiss-1280-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-swiss-1280-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-swiss-1280-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-swiss-1280-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-swiss-1280-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-swiss-1280-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-swiss-1280-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-swiss-1280-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "sample-swiss-1280-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 85 warnings recorded"
+    },
+    {
+      "id": "sample-swiss-1280-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-swiss-1280-no-console-errors",
       "passed": true,
       "detail": "No console or page errors"
     }
