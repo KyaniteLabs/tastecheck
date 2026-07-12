@@ -1,0 +1,212 @@
+{
+  "schema_version": 1,
+  "kind": "browser",
+  "producer_id": "tastecheck.release.live-execution.v1",
+  "producer": {
+    "id": "tastecheck-live-execution",
+    "version": 1
+  },
+  "source_tree_sha256": "b4c925dc89a83f425280ca54164ce8da4a04bd92808b9d381d50df0405792933",
+  "nonce": "browser-release-v1",
+  "runtime": {
+    "node": "v26.0.0",
+    "playwright": "1.61.1",
+    "browser": "149.0.7827.55",
+    "platform": "darwin"
+  },
+  "started_at": "2026-07-12T01:00:53.731Z",
+  "finished_at": "2026-07-12T01:00:58.902Z",
+  "executed": true,
+  "reproducible": true,
+  "artifacts": [
+    {
+      "id": "landing-desktop",
+      "path": "evals/receipts/v1/artifacts/browser/landing-desktop-5efce8cfc1448370ee30b674a1df43c5d1678a178c6d480d459104d961e68a6e.png",
+      "sha256": "5efce8cfc1448370ee30b674a1df43c5d1678a178c6d480d459104d961e68a6e",
+      "bytes": 1574554
+    },
+    {
+      "id": "landing-mobile",
+      "path": "evals/receipts/v1/artifacts/browser/landing-mobile-6d252c493d95f3c9cd6ad5194c6478d1ecad1212a9039635afde3f79c53b35d5.png",
+      "sha256": "6d252c493d95f3c9cd6ad5194c6478d1ecad1212a9039635afde3f79c53b35d5",
+      "bytes": 429829
+    },
+    {
+      "id": "gallery-desktop",
+      "path": "evals/receipts/v1/artifacts/browser/gallery-desktop-3d07c59d08bbf5f54e5b3ec38fc9e064cd11e8c9b03807fae702f9bc0217d4db.png",
+      "sha256": "3d07c59d08bbf5f54e5b3ec38fc9e064cd11e8c9b03807fae702f9bc0217d4db",
+      "bytes": 320692
+    },
+    {
+      "id": "gallery-mobile",
+      "path": "evals/receipts/v1/artifacts/browser/gallery-mobile-f21e769429a3f775ad3483674cd29fac1120893882d7b46be2140890e12d9968.png",
+      "sha256": "f21e769429a3f775ad3483674cd29fac1120893882d7b46be2140890e12d9968",
+      "bytes": 306741
+    },
+    {
+      "id": "integration-desktop",
+      "path": "evals/receipts/v1/artifacts/browser/integration-desktop-135a99e8f4e5431c95888d8a04adb2e91fd112f284ff720f8954a949c686d778.png",
+      "sha256": "135a99e8f4e5431c95888d8a04adb2e91fd112f284ff720f8954a949c686d778",
+      "bytes": 680666
+    },
+    {
+      "id": "integration-mobile",
+      "path": "evals/receipts/v1/artifacts/browser/integration-mobile-fef7fbc1b148ebcd5b9ba65b424dac9b732b6ab34877fcbdd7308705f07652f8.png",
+      "sha256": "fef7fbc1b148ebcd5b9ba65b424dac9b732b6ab34877fcbdd7308705f07652f8",
+      "bytes": 576341
+    }
+  ],
+  "checks": [
+    {
+      "id": "landing-desktop-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "landing-desktop-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "landing-desktop-main",
+      "passed": true,
+      "detail": "Exactly one main landmark is rendered"
+    },
+    {
+      "id": "landing-desktop-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "landing-desktop-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "landing-mobile-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "landing-mobile-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "landing-mobile-main",
+      "passed": true,
+      "detail": "Exactly one main landmark is rendered"
+    },
+    {
+      "id": "landing-mobile-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "landing-mobile-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "gallery-desktop-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "gallery-desktop-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "gallery-desktop-main",
+      "passed": true,
+      "detail": "Exactly one main landmark is rendered"
+    },
+    {
+      "id": "gallery-desktop-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "gallery-desktop-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "gallery-mobile-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "gallery-mobile-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "gallery-mobile-main",
+      "passed": true,
+      "detail": "Exactly one main landmark is rendered"
+    },
+    {
+      "id": "gallery-mobile-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "gallery-mobile-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "integration-desktop-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "integration-desktop-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "integration-desktop-main",
+      "passed": true,
+      "detail": "Exactly one main landmark is rendered"
+    },
+    {
+      "id": "integration-desktop-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "integration-desktop-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "integration-mobile-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "integration-mobile-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "integration-mobile-main",
+      "passed": true,
+      "detail": "Exactly one main landmark is rendered"
+    },
+    {
+      "id": "integration-mobile-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "integration-mobile-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    }
+  ],
+  "status": "pass"
+}
