@@ -131,7 +131,7 @@ rejectProjection("promoted V5 verdict", "terminal-v5-effectiveness", (value) => 
 
 const current = JSON.parse(readFileSync(join(root, "contracts/v1/release-receipts.json"), "utf8"));
 const currentErrors = checkReleaseManifest(current);
-if (!currentErrors.some((error) => error.includes("placeholder SHA-256"))) throw new Error("current manifest placeholders must remain release-blocking");
+if (currentErrors.length) throw new Error(`current release manifest failed: ${currentErrors.join("; ")}`);
 const currentEffectiveness = deriveEffectivenessClaim(current);
 if (currentEffectiveness.status !== "blocked") throw new Error("current immutable effectiveness claim must remain blocked");
 
