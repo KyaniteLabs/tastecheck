@@ -1,0 +1,14 @@
+{
+  "runId": "run-fixture-001",
+  "artifact": {
+    "artifact_id": "artifact-fixture-001",
+    "unit_id": "unit-fixture-001",
+    "arm": "baseline",
+    "bytes": "<!doctype html><html><head><style>body{margin:0;font-family:Arial,sans-serif}.card{display:grid;place-items:center;min-height:100vh;background:#f5f7fb;color:#10213d}</style></head><body><main class=\"card\">Tastecheck</main></body></html>"
+  },
+  "requiredViewports": [
+    { "viewport_id": "mobile", "width": 390, "height": 844 },
+    { "viewport_id": "desktop", "width": 1440, "height": 900 }
+  ],
+  "admissionState": { "admitted": 0 }
+}
