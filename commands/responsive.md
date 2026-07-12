@@ -1,13 +1,13 @@
 ---
-description: Make a layout work at any width (mobile-first, intrinsic, container queries)
+description: Make a layout survive narrow, wide, embedded, and zoomed contexts
 argument-hint: "[file/path or text, optional]"
 ---
 
 Load and apply the **responsive-layout** skill (`~/.agents/skills/responsive-layout/SKILL.md`).
 
-Preserve content hierarchy with mobile-first intrinsic patterns; use content-led
-breakpoints and container behavior, then verify 320px, long content, embedded slots,
-and 400% zoom with evidence.
+Preserve the reading order and task hierarchy with intrinsic layout and content-led
+breakpoints. Test narrow and wide containers, long content, embedded slots, input
+methods, and 400% zoom. Return the failures found, repairs made, and viewport evidence.
 
 Target: $ARGUMENTS (if empty, apply to the current file / most recent work in context).
 

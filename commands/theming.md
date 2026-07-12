@@ -1,14 +1,14 @@
 ---
-description: Build a theme system — light + dark + high-contrast from one token source
+description: Build coherent theme mappings from one semantic token system
 argument-hint: "[site/app, optional]"
 ---
 
 Load and apply the **theming** skill (`~/.agents/skills/theming/SKILL.md`).
 
-Define semantic tokens once; map brief-derived light, tuned dark, and high-contrast
-themes; respect `forced-colors`, preserve user preference without a flash, and measure
-real pairs per theme. Stop for missing semantic roles rather than hard-coding colors.
+Define semantic roles once, then map only the modes the product requires. Test real
+foreground/background pairs, user preference, first paint, browser controls, and forced
+colors as distinct concerns. Report missing roles instead of hard-coding exceptions.
 
-Run the skill's single authoritative self-check and emit status, reason, remediation, evidence, and provenance for each applicable row.
+Return one evidence row per supported mapping and environment, with a repair for each failure.
 
 Target: $ARGUMENTS

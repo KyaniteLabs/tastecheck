@@ -129,15 +129,21 @@
       "Component guidance notes"
     ],
     "optional_sections": ["Motion tokens"],
-    "completion_criteria": "All 9 required dimensions decided, token block complete, artifact written or explicitly approved"
+    "completion_criteria": "All 9 required dimensions decided and the token block complete; approved status additionally requires explicit confirmation"
   },
   "readiness": {
+    "status_semantics": {
+      "approved": "The direction is confirmed and buildable; implementation handoff is allowed",
+      "approval-ready": "Recommendations and tokens are complete but await confirmation; do not hand off to implementation",
+      "blocked": "A contradiction or missing authority prevents a safe recommendation"
+    },
     "not_ready_signals": [
       "Fewer than 5 dimensions answered",
       "Contradiction unresolved",
-      "Trust-critical domain with no credibility rationale"
+      "Trust-critical domain with no credibility rationale",
+      "Required confirmation still pending"
     ],
-    "ready_signal": "All required dimensions decided (by answer or explicit abstention with stated default)"
+    "ready_signal": "All required dimensions decided and explicitly confirmed; abstentions retain their evidence-dependent recommendation"
   },
   "handoff": {
     "downstream": ["color-system", "web-typography", "spacing-system", "theming", "component-states", "art-direction", "micro-motion"],

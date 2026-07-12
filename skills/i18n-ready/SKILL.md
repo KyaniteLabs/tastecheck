@@ -34,7 +34,9 @@ structural readiness only.
 3. Use logical inline/block properties for RTL readiness, and `Intl` with real locales
    for all mechanical formats.
 4. Re-express native voice/idiom/formality (including tú/usted); do not calque.
-5. Self-label and persist a language toggle, update `lang`, and provide `hreflang`/per-locale metadata where applicable.
+5. When the product offers an in-product language choice, self-label and persist the
+   control and update `lang`; provide `hreflang` and per-locale metadata for indexed
+   locale routes where applicable.
 
 ## Non-negotiables
 

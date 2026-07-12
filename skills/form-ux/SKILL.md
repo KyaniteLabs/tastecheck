@@ -32,7 +32,8 @@ task, not database/API shape.
 
 - Persistent associated label; visible required/optional state; correct type, inputmode,
   autocomplete, and a one-column task flow (short related pairs excepted).
-- Validate format on blur and submit, clear errors on repair, and keep server truth server-owned.
+- Validate on submit. Validate on blur only when the value is complete enough to judge;
+  after an error, re-check while the person repairs it. Keep server truth server-owned.
 - Put specific, adjacent “what + fix” errors behind `aria-invalid`/`aria-describedby`;
   announce and focus first error on failed submit.
 - Never silently disable submit; retain visible focus and explain what is missing.
@@ -48,7 +49,18 @@ Give feedback at the earliest truthful moment; browser checks never impersonate 
 truth. On submit distinguish field errors (focus/retain), conflict (correct branch),
 transient failure (preserved draft/safe retry), authorization (boundary/route), and
 irreversible payment (duplicate lock plus receipt/status). Pending work has an accessible
-label/status and rejects duplicates; failure restores a usable explained route.
+label/status and rejects duplicates; failure restores a usable explained route. Cancel or
+ignore stale asynchronous validation responses so an older result cannot overwrite the
+current value.
+
+### Worked field contract
+
+| Field | Rule owner | When to check | Repair path |
+| --- | --- | --- | --- |
+| Email | server owns account availability; client owns basic shape | submit; blur after a complete address; re-check while repairing | “Enter an address like name@example.com.” Preserve the value; announce an account conflict only after the server responds. |
+
+The row separates a local affordance from server authority. Apply that distinction to
+cross-field rules, invitation codes, inventory, pricing, and payment status.
 
 ## Quick-start
 
@@ -73,7 +85,7 @@ field/state plus validation owner/recovery; `n/a` needs subject absence, never a
 ## Self-check (before shipping a form)
 
 1. Field contract, labels, required state, types/autofill, and keyboard/screen-reader wiring complete?
-2. Blur/submit timing, repair relaxation, specific adjacent errors, first-error focus, and retained input work?
+2. Submit/blur/repair timing, stale async responses, specific adjacent errors, first-error focus, and retained input work?
 3. No silent disabled submit; pending, duplicate, conflict, authorization, and irreversible outcomes differ?
 
 ## How to deliver

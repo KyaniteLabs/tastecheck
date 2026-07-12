@@ -6,9 +6,9 @@ Credited ideas, original expression.
 
 ## Meta-patterns
 
-### MP-1 · Dark mode is a separate design system, not an inversion
+### MP-1 · Dark mode is a tuned mapping, not an inversion
 The eye responds differently on a dark field, so values must be tuned per theme, not
-flipped. **Consequence:** never `#fff`↔`#000`. Build a dark-specific surface ramp,
+flipped. **Consequence:** build a dark-specific surface ramp,
 text tiers, and accent set; share only the *semantic structure* via tokens.
 
 ### MP-2 · On dark, light means near, dark means far
@@ -16,9 +16,10 @@ Depth cues invert: shadows (darker) can't read against dark, so elevation is sho
 *lighter* surfaces. **Consequence:** higher elevation = lighter gray; shadows are a
 secondary reinforcement for floating UI only.
 
-### MP-3 · Maximum contrast is not maximum comfort
-Pure white on pure black is 21:1 and physically uncomfortable — edges vibrate, strain
-rises. **Consequence:** aim high-but-not-max (~15:1 body); off-white on near-black.
+### MP-3 · Nominal contrast is not the whole reading context
+Pure white on pure black is 21:1, but comfort also depends on ambient light, display,
+type, user preference, and visual direction. **Consequence:** choose endpoints deliberately
+and test them; do not turn a common near-black recipe into a universal rule.
 
 ### MP-4 · Chroma blooms in the dark
 Saturated colors over-stimulate on dark fields. **Consequence:** desaturate + lighten
@@ -31,9 +32,10 @@ Two themes drift unless components reference semantic variables, never raw color
 
 ## Decision records
 
-### DR-1 · Background ≥ #121212, never #000
-- **Why (MP-3):** pure black maxes contrast and kills shadow depth.
-- **Apply:** `#121212`–`#1a1a1a`, optional 5–10% hue tint.
+### DR-1 · Choose the dark endpoint deliberately
+- **Why (MP-3):** near-black preserves more surface/shadow range; pure black can serve
+  OLED, projection, high-contrast, or deliberately stark systems.
+- **Apply:** start around `#121212`–`#1a1a1a` when no stronger evidence exists, then test.
 
 ### DR-2 · Elevation by lightness
 - **Why (MP-2):** shadows don't read on dark.
@@ -52,10 +54,11 @@ Two themes drift unless components reference semantic variables, never raw color
 - **Why:** native controls/scrollbars stay light otherwise.
 - **Apply:** `color-scheme: dark` on the dark `:root`.
 
-### DR-6 · Default + persistent toggle
-- **Why (MP-1):** respect OS preference but don't trap the user.
-- **Apply:** `prefers-color-scheme` default; `data-theme` override class that persists
-  and wins.
+### DR-6 · Resolution policy matches supported scope
+- **Why (MP-1):** theme choice must be predictable; a control is useful only when the
+  product offers multiple supported mappings.
+- **Apply:** define application and OS precedence; persist a validated override when a
+  user control exists.
 
 ## Principle, not property
 Distills shared dark-UI practice; credit lineage (Material) where natural, never copy
