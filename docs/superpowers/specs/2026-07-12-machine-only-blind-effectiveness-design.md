@@ -63,6 +63,27 @@ ID, and initial ledger root bind that commitment. The seed is opened only after 
 committed synthesis reservation; a late or replaced commitment, a second opening, or an
 opening that does not verify is terminally invalid.
 
+The randomization seed is stored before admission in a local, mode-`0600`, exclusive-create
+secret file outside tracked run evidence. “Opening” means disclosing that seed to synthesis
+or public evidence; only the privileged randomization adapter may access it earlier. Packet
+construction calls that adapter through a capability-limited interface. Internally it
+verifies the seed commitment and derives each unit's assignment bit as
+`HMAC(seed, "assignment" || scenario_id || generation_seed)`. That bit maps real arms onto
+non-semantic `opaque_slot` values `0` and `1`. Unit and packet IDs use
+`HMAC(seed, domain || scenario_id || generation_seed)`; arm, label, and artifact IDs add
+`opaque_slot`; viewport IDs add `opaque_slot` and the frozen `viewport_id`. All tuples use
+length-prefixed fields and distinct domains. Real arm identity and input arm order are never
+derivation coordinates. The adapter constructs and returns
+finished opaque packets plus an authenticated encrypted unmask map and its commitment; it
+never returns assignments, plaintext map, seed, or decryption capability. The same adapter's
+separate `open` entry point is disabled until the exact synthesis reservation is committed
+and the worktree is clean. Before seed access, `open` exclusively creates and fsyncs a
+run-bound terminal `opening-attempt.json`, then appends and fsyncs its digest to the ledger.
+Mere existence of that marker prohibits every later opening, including after a crash. Only
+then does it verify and decrypt that exact map. Missing,
+permissively readable, replaced, or commitment-mismatched secret state is terminally
+invalid; neither secret bytes nor secret path may enter public artifacts.
+
 Render-required artifacts are captured locally at the frozen mobile and desktop viewports.
 Each closed render receipt binds the source artifact hash to screenshot, serialized DOM,
 and deterministic computed-style hashes, plus viewport, Playwright, Chromium, font-set,
@@ -103,8 +124,9 @@ Packets use a closed allowlist: opaque packet, scenario, unit, artifact, viewpor
 IDs; the common brief and rubric; unmodified treatment-produced artifact content; and
 content hashes. They never contain revisions, versions, package metadata, source paths,
 worktree/run paths, timestamps, logs, generator receipts, provider data, filesystem
-metadata, or asymmetric arm fields. Opaque IDs are derived independently of arm order from
-a committed randomization commitment. Judges may infer treatment from genuine output
+metadata, or asymmetric arm fields. Opaque IDs are seed-keyed by the single HMAC tuple
+contract above, independently of arm order, and their packet-set digest is bound to the
+admitted randomization commitment. Judges may infer treatment from genuine output
 differences; the protocol claims only that direct provenance cues are absent.
 
 Packet construction is reject-only. A frozen validator version and digest applies the same
@@ -173,6 +195,12 @@ this evaluation’s evidence.
   reused or erased.
 - Dispatch false-success—zero turns, zero tokens, or no artifact—is a failed attempt, never
   a completed judge.
+- One shared attempted-call wrapper governs all 160 generation, production-judge, and
+  anchor invocations. It first reserves the ordinal, then immediately before invocation
+  persists a Pushing Dispatch routing attestation matching the frozen executor and invokes
+  once. Missing or mismatched routing, transport failure, zero turns, zero tokens, or no
+  artifact consumes the ordinal and terminates `production_incomplete` without retry or
+  substitution for every call class.
 - Costs and external-call counts are recorded. This cycle permits at most 160 external
   calls: 48 arm generations, 96 production judgments, and 16 anchor judgments. Incremental
   pay-per-call spend is capped at $0; existing flat-rate or already-provisioned access is
@@ -183,6 +211,13 @@ this evaluation’s evidence.
   and its terminal status. Aggregate admission state cannot substitute for these receipts.
 - Partial results are published only as `production_incomplete`; they make no effectiveness
   claim.
+
+Status classification is exhaustive. Missing required evidence, attempted-call failure,
+false success, executor/provider/render drift, schema-invalid or inadmissible judgments,
+anchor failure, ledger damage, and other execution or integrity failures are
+`production_incomplete`. A complete admissible run with family disagreement or a missed
+positive threshold is `inconclusive`. A complete admissible run with any hard regression is
+`blocked`. Only a complete admissible run clearing every frozen family rule is `supported`.
 
 Admission verifies a committed historical-authority manifest before the first call and
 again at closeout. Historical separation is content- and provenance-based, not path-based.
