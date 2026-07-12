@@ -13,35 +13,35 @@
       {
         "id": "browser",
         "path": "evals/receipts/v1/browser.json",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sha256": "62f832a9bb38694a0e2f4c6e1beca1708f29a8e12b7ea74f4c3bb707ac92b5e7",
         "producer_id": "browser",
         "assertions": { "status": "pass", "reproducible": true, "producer_id": "tastecheck.release.live-execution.v1" }
       },
       {
         "id": "e2e",
         "path": "evals/receipts/v1/e2e.json",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sha256": "59f3e5f12b149b2376c518819a6beeb82797e3aef17668c716a803b39907a525",
         "producer_id": "e2e",
         "assertions": { "status": "pass", "reproducible": true, "producer_id": "tastecheck.release.live-execution.v1" }
       },
       {
         "id": "mechanical",
         "path": "evals/receipts/v1/mechanical.json",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sha256": "ffed3efa1b63238e1d69f680754a467bd3f0ad73202c09034b318b0506fc78f1",
         "producer_id": "mechanical",
         "assertions": { "status": "pass", "reproducible": true, "producer_id": "tastecheck.release.mechanical.v1" }
       },
       {
         "id": "security",
         "path": "evals/receipts/v1/security.json",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sha256": "a9a8b0b656668e457a3531bf38e2da3116dc2f22bf6fce2d75fe5e97805b8c97",
         "producer_id": "security",
         "assertions": { "status": "pass", "reproducible": true, "producer_id": "tastecheck.release.security.v1" }
       },
       {
         "id": "clean-clone",
         "path": "evals/receipts/v1/clean-clone.json",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sha256": "cd078a5eb316bfab77bd787443cadd2dce72fdd497b2ca75a88b1b2622a3e577",
         "producer_id": "clean-clone",
         "assertions": { "status": "pass", "reproducible": true, "producer_id": "tastecheck.release.clean-clone.v1" }
       }
@@ -53,12 +53,12 @@
       {
         "id": "w1-effectiveness",
         "path": "evals/receipts/v1/immutable/w1-effectiveness.json",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        "sha256": "02eff9ab29e4f363070a47e742e7fe73eb167efe7bff75815acc4d26fc6e2ea6"
       },
       {
         "id": "terminal-v5-effectiveness",
         "path": "evals/receipts/v1/immutable/terminal-v5-effectiveness.json",
-        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        "sha256": "ff1f45dc434ec10c69a29b659f08888083dd18c4f9680b968a27ba42daad5711"
       }
     ]
   }
