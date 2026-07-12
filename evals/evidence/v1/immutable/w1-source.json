@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "kind": "immutable-w1-source-snapshot",
+  "upstream_evidence_sha256": "4740047dde16d93f1c07ed7be8dab4bb7aab0930b61d0e035caa64263963a6ce",
+  "jobs": {
+    "complete": 12,
+    "required": 12
+  },
+  "judgments": {
+    "complete": 27,
+    "required": 27
+  },
+  "paired": {
+    "pass_count": 0,
+    "required_count": 3
+  },
+  "diversity": {
+    "pass_count": 0,
+    "required_count": 3
+  },
+  "immutable_stop_rule": true
+}

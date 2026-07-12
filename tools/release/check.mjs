@@ -7,6 +7,7 @@ import { join } from "node:path";
 import Ajv from "ajv";
 import { computeSourceTreeSha256 } from "./engineering-receipt.mjs";
 import { scanUnsupportedEffectivenessClaims } from "./check-effectiveness-claims.mjs";
+import { checkEffectivenessProjections } from "./project-effectiveness-evidence.mjs";
 
 export const root = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 export const TERMINAL_V5_SYNTHESIS = "evals/replays/remediation7-v5-spacing-final-2026-07-11/blind-judge/synthesis.json";
@@ -20,8 +21,8 @@ export const ENGINEERING_PRODUCERS = Object.freeze({
   "clean-clone": Object.freeze({ path: "evals/receipts/v1/clean-clone.json", command: "npm run release:clean-clone-receipt", assertions: Object.freeze({ status: "pass", reproducible: true, producer_id: "tastecheck.release.clean-clone.v1" }) }),
 });
 export const EFFECTIVENESS_SOURCES = Object.freeze({
-  "w1-effectiveness": Object.freeze({ path: "evals/receipts/v1/immutable/w1-effectiveness.json", source_evidence_sha256: "4740047dde16d93f1c07ed7be8dab4bb7aab0930b61d0e035caa64263963a6ce" }),
-  "terminal-v5-effectiveness": Object.freeze({ path: "evals/receipts/v1/immutable/terminal-v5-effectiveness.json", source_evidence_sha256: "1bf66f612098df398163042e2450ed6eb6ee4b0a3b57d73e1aebbe76196b1d81" }),
+  "w1-effectiveness": Object.freeze({ path: "evals/receipts/v1/immutable/w1-effectiveness.json", source_evidence_sha256: "663b6a4729ff3b59636578ac5262ae7ae28aa673fbc214930b87803b34a8fce8" }),
+  "terminal-v5-effectiveness": Object.freeze({ path: "evals/receipts/v1/immutable/terminal-v5-effectiveness.json", source_evidence_sha256: "6cb65b37b87bcf59cd4d851b7fc65038fb8de9c65cd19c30fbc612315989d218" }),
 });
 const mode = process.argv.find((arg) => arg.startsWith("--mode="))?.split("=")[1] ?? "release";
 
@@ -237,6 +238,7 @@ export function deriveEffectivenessClaim(manifest, ioOverrides = {}) {
     if (v5.immutable_stop_rule !== true) errors.push("terminal-v5-effectiveness: immutable stop rule is required");
   }
   const reasons = ["w1_paired_0_of_3", "w1_diversity_0_of_3", "terminal_v5_delta_0.3_below_0.6"];
+  if (Object.keys(ioOverrides).length === 0) errors.push(...checkEffectivenessProjections(root));
   return { status: "blocked", errors, reasons };
 }
 
