@@ -6,42 +6,42 @@
       {
         "id": "context-budget",
         "path": "evals/receipts/v1/context-budget.json",
-        "sha256": "87dedee14f1e2fc254e94ecf24e8aa7ee03ef42430c5597e1ecd79060b57989b",
+        "sha256": "6f5fa2fed4d9a1a2a48bbb6dc1bffa507d9c078b86291053f91caf0f829b6212",
         "producer_id": "context-budget",
         "assertions": { "overall_pass": true }
       },
       {
         "id": "browser",
         "path": "evals/receipts/v1/browser.json",
-        "sha256": "1a50d4b885964447c0e91ce745c088b3a8c993808ffe2071b7ee9cf2961e5226",
+        "sha256": "80051b9ecbb2970a9fb1a19916dbfc267cf363b38c561fd1625bb0b6632ed1b3",
         "producer_id": "browser",
         "assertions": { "status": "pass", "reproducible": true, "producer_id": "tastecheck.release.live-execution.v1" }
       },
       {
         "id": "e2e",
         "path": "evals/receipts/v1/e2e.json",
-        "sha256": "c2bb29a89cf388027734efc335a1afaff6df8e96f0e38756dd752bedcf78842a",
+        "sha256": "b371e56559355d2fc020d2b05001cbbe80e088071d35f904fbb386233dcaa7ca",
         "producer_id": "e2e",
         "assertions": { "status": "pass", "reproducible": true, "producer_id": "tastecheck.release.live-execution.v1" }
       },
       {
         "id": "mechanical",
         "path": "evals/receipts/v1/mechanical.json",
-        "sha256": "13eaf5e610f4903a72713c6815f8b2ea2fa384e2426930c34871f23fc3c0856a",
+        "sha256": "1622f850c041c790dfef9a517f7a29b4373e9836b8346d002b4bed2be65e398a",
         "producer_id": "mechanical",
         "assertions": { "status": "pass", "reproducible": true, "producer_id": "tastecheck.release.mechanical.v1" }
       },
       {
         "id": "security",
         "path": "evals/receipts/v1/security.json",
-        "sha256": "4a105dfb8e76ae655edccb36fda61c546c50f4442bcfe699e23c739dc31b7a07",
+        "sha256": "f6a2d515ac66bff45214efbb4c05c1b6148a8b6aa32dc7a073600b61a0b0760b",
         "producer_id": "security",
         "assertions": { "status": "pass", "reproducible": true, "producer_id": "tastecheck.release.security.v1" }
       },
       {
         "id": "clean-clone",
         "path": "evals/receipts/v1/clean-clone.json",
-        "sha256": "64b1084fecabead3a925abb577567b180555d4cfcb7e563c4f3b48d32a58c6c9",
+        "sha256": "3dcd32306decab67ce969547e9960014a066f8c767b744de100e6009e98c0942",
         "producer_id": "clean-clone",
         "assertions": { "status": "pass", "reproducible": true, "producer_id": "tastecheck.release.clean-clone.v1" }
       }
