@@ -48,8 +48,10 @@ clustered observations and never inflate the effective sample size.
 ## Machine judges and anchor qualification
 
 Use two declared provider/model families. Provider separation is evidence of operational
-diversity, not proof of statistical independence. Each family runs two isolated judge
-executions over the full corpus, producing 96 production judgments in total.
+diversity, not proof of statistical independence. Each family supplies two isolated judge
+identities. Every judge identity evaluates each comparison and anchor in a separate fresh
+call with no shared response context, producing 96 production judgments and 16 anchor
+judgments in total.
 
 Each judge batch also receives four blinded machine anchors:
 
