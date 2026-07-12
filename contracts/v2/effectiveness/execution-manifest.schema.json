@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/contracts/v2/effectiveness/execution-manifest.schema.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "kind", "generator", "evaluator_families", "playwright_version", "chromium_version", "font_set_sha256", "renderer_adapter_sha256", "render_host_sha256", "viewports"],
+  "properties": {
+    "schema_version": { "const": 2 }, "kind": { "const": "effectiveness-v2-execution-manifest" },
+    "generator": { "$ref": "#/definitions/generator" },
+    "evaluator_families": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/definitions/family" } },
+    "playwright_version": { "$ref": "#/definitions/nonempty" }, "chromium_version": { "$ref": "#/definitions/nonempty" },
+    "font_set_sha256": { "$ref": "#/definitions/sha256" }, "renderer_adapter_sha256": { "$ref": "#/definitions/sha256" }, "render_host_sha256": { "$ref": "#/definitions/sha256" },
+    "viewports": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/definitions/viewport" }, "allOf": [{ "contains": { "type": "object", "properties": { "viewport_id": { "const": "mobile" } }, "required": ["viewport_id"] } }, { "contains": { "type": "object", "properties": { "viewport_id": { "const": "desktop" } }, "required": ["viewport_id"] } }] }
+  },
+  "definitions": {
+    "nonempty": { "type": "string", "minLength": 1 }, "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "generator": { "type": "object", "additionalProperties": false, "required": ["provider", "foundation_lineage", "model_version", "runtime_version", "adapter_sha256", "system_prompt_sha256", "settings_sha256", "tool_policy_sha256", "time_budget_seconds"], "properties": { "provider": { "$ref": "#/definitions/nonempty" }, "foundation_lineage": { "$ref": "#/definitions/nonempty" }, "model_version": { "$ref": "#/definitions/nonempty" }, "runtime_version": { "$ref": "#/definitions/nonempty" }, "adapter_sha256": { "$ref": "#/definitions/sha256" }, "system_prompt_sha256": { "$ref": "#/definitions/sha256" }, "settings_sha256": { "$ref": "#/definitions/sha256" }, "tool_policy_sha256": { "$ref": "#/definitions/sha256" }, "time_budget_seconds": { "type": "integer", "minimum": 1 } } },
+    "family": { "type": "object", "additionalProperties": false, "required": ["family_id", "provider", "foundation_lineage", "model_version", "runtime_version", "adapter_sha256", "system_prompt_sha256", "rubric_sha256", "identities"], "properties": { "family_id": { "$ref": "#/definitions/nonempty" }, "provider": { "$ref": "#/definitions/nonempty" }, "foundation_lineage": { "$ref": "#/definitions/nonempty" }, "model_version": { "$ref": "#/definitions/nonempty" }, "runtime_version": { "$ref": "#/definitions/nonempty" }, "adapter_sha256": { "$ref": "#/definitions/sha256" }, "system_prompt_sha256": { "$ref": "#/definitions/sha256" }, "rubric_sha256": { "$ref": "#/definitions/sha256" }, "identities": { "type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true, "items": { "$ref": "#/definitions/nonempty" } } } },
+    "viewport": { "type": "object", "additionalProperties": false, "required": ["viewport_id", "width", "height"], "properties": { "viewport_id": { "enum": ["mobile", "desktop"] }, "width": { "type": "integer", "minimum": 1 }, "height": { "type": "integer", "minimum": 1 } } }
+  }
+}
