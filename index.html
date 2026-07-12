@@ -259,7 +259,7 @@ h2{font-family:var(--disp);font-weight:700;font-size:clamp(2.1rem,1.4rem + 3vw,3
 footer{border-top:1px solid var(--line);padding-block:2.4rem;color:var(--muted);font-size:.92rem}
 footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}footer b{color:var(--ink);font-family:var(--disp)}
 
-@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}.hero .bg{animation:none!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}.hero .bg{animation:none!important}}
 @media(prefers-reduced-motion:no-preference){
  .hero .bg{animation:drift 26s ease-in-out infinite alternate}
  @keyframes drift{from{transform:scale(1.04) translate(0,0)}to{transform:scale(1.10) translate(-1.5%, -1.5%)}}
