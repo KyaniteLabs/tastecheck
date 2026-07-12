@@ -27,3 +27,4 @@
 | --- | --- | --- | --- |
 | 1. Closed contracts and protocol freeze | RED: missing `contracts.mjs`; GREEN: `npm run test:effectiveness-v2` | `APPROVE` after commitment/validator freezing, exact-version, nested-contract, viewport, and opaque-slot corrections | ready to commit |
 | 2. Registry, historical quarantine, and admission ledger | RED: missing `registry.mjs`; GREEN: `node tools/evals/v2/test-registry.mjs` plus Task 1 suite | `APPROVE` after capability isolation, adapter-byte binding, recursive indirection quarantine, full-chain locked ledger durability, and closed corpus corrections | ready to commit |
+| 3. Shared attempted-call and generation runner | RED: missing `admission.mjs`; GREEN: `node tools/evals/v2/test-generation.mjs` and aggregate v2 suite | `APPROVE` after immutable cap/membership, closed routing receipts, strict result shape, and persistence-uncertainty terminality corrections | ready to commit |
