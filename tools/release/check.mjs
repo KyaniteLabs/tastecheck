@@ -35,6 +35,8 @@ const defaultIo = Object.freeze({
   hasFile: (path) => existsSync(join(root, path)),
   hasCommand: (command) => Boolean(load("package.json").scripts?.[command.replace(/^npm run /, "")]),
   sourceTreeSha256: () => computeSourceTreeSha256(root),
+  requiredLiveCheckIds: (kind) => requiredLiveCheckIds(kind),
+  requiredLiveArtifactIds: (kind) => requiredLiveArtifactIds(kind),
 });
 const SHA256 = /^[a-f0-9]{64}$/;
 const LIVE_SCHEMA = JSON.parse(readFileSync(join(root, "contracts/v1/live-execution-receipt.schema.json"), "utf8"));
@@ -44,6 +46,35 @@ const GENERIC_CHECK_IDS = Object.freeze({
   security: ["effectiveness-claims", "public-replay-surface", "receipt-sanitizer", "source-stability"],
   "clean-clone": ["npm-ci", "test", "contracts", "effectiveness-claims", "head-source-match", "source-stability"],
 });
+
+function browserSurfaceIds() {
+  const ids = ["landing", "gallery"];
+  for (const entry of readdirSync(join(root, "samples"), { withFileTypes: true })) {
+    if (entry.isDirectory() && existsSync(join(root, "samples", entry.name, "index.html"))) ids.push(`sample-${entry.name}`);
+  }
+  for (const name of readdirSync(join(root, "demos")).filter((entry) => entry.endsWith(".html"))) ids.push(`demo-${name.replace(/\.html$/, "")}`);
+  return ids.sort();
+}
+
+function requiredLiveCheckIds(kind) {
+  if (kind === "browser") {
+    const suffixes = ["http", "title", "main", "no-overflow", "meaningful-content", "images", "reduced-motion", "gate-audit", "a11y-audit", "keyboard-focus", "no-console-errors"];
+    return browserSurfaceIds().flatMap((surface) => [390, 768, 1280].flatMap((width) => suffixes.map((suffix) => `${surface}-${width}-${suffix}`)));
+  }
+  return [
+    "install-command-completed", "install-canonical-skills", "install-operator-commands",
+    "operator-desktop-http", "operator-skill-coverage", "operator-theme-paths", "operator-component-state",
+    "operator-invalid-form", "operator-valid-form", "operator-empty-state", "operator-error-state", "operator-retry-state",
+    "operator-desktop-no-overflow", "operator-desktop-no-console-errors", "operator-mobile-http",
+    "operator-mobile-no-overflow", "operator-mobile-no-console-errors",
+  ];
+}
+
+function requiredLiveArtifactIds(kind) {
+  return kind === "browser"
+    ? [...browserSurfaceIds().flatMap((surface) => [390, 768, 1280].map((width) => `${surface}-${width}`)), "browser-audit-results"]
+    : ["operator-desktop", "operator-mobile"];
+}
 
 function strictKeys(value, allowed, label, errors) {
   if (!value || typeof value !== "object" || Array.isArray(value)) { errors.push(`${label} must be an object`); return; }
@@ -93,6 +124,8 @@ function validateEngineeringReceipt(id, value, io, errors) {
     if (value.status !== "pass" || value.reproducible !== true || value.executed !== true || value.checks.some((check) => check.passed !== true)) {
       errors.push(`${id}: live receipt must derive from nonempty all-pass executed checks`);
     }
+    const checkIds = value.checks.map((check) => check.id);
+    if (!sameJson([...checkIds].sort(), [...io.requiredLiveCheckIds(id)].sort())) errors.push(`${id}: live check set does not match the registered coverage matrix`);
     const artifactIds = new Set();
     for (const artifact of value.artifacts) {
       if (artifactIds.has(artifact.id)) errors.push(`${id}: duplicate artifact id ${artifact.id}`);
@@ -102,6 +135,7 @@ function validateEngineeringReceipt(id, value, io, errors) {
       if (bytes.length !== artifact.bytes) errors.push(`${id}: artifact byte count mismatch ${artifact.path}`);
       if (sha256(bytes) !== artifact.sha256) errors.push(`${id}: artifact SHA-256 mismatch ${artifact.path}`);
     }
+    if (!sameJson([...artifactIds].sort(), [...io.requiredLiveArtifactIds(id)].sort())) errors.push(`${id}: live artifact set does not match the registered coverage matrix`);
     return;
   }
   strictKeys(value, ["schema_version", "kind", "producer_id", "source_tree_sha256", "nonce", "started_at", "finished_at", "checks", "status", "reproducible"], `${id} receipt`, errors);
