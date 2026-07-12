@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "kind": "immutable-terminal-v5-effectiveness-projection",
+  "source_evidence_sha256": "1bf66f612098df398163042e2450ed6eb6ee4b0a3b57d73e1aebbe76196b1d81",
+  "effectiveness_status": "blocked",
+  "release_eligible": false,
+  "mean_delta": 0.3,
+  "threshold": 0.6,
+  "preference": {
+    "current": 11,
+    "total": 12
+  },
+  "immutable_stop_rule": true
+}
