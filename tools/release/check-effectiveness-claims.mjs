@@ -5,7 +5,7 @@ import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const DEFAULT_ROOT = resolve(fileURLToPath(new URL("../..", import.meta.url)));
-const ROOT_FILES = ["README.md", "CHANGELOG.md", "llms.txt"];
+const ROOT_FILES = ["README.md", "CHANGELOG.md", "llms.txt", "index.html"];
 const ROOT_DIRECTORIES = ["site", "docs", "skills"];
 const TEXT_EXTENSIONS = /\.(?:html?|json|md|mdx|txt)$/i;
 const EVIDENCE = String.raw`(?:validated|proven|measured|demonstrated|verified)`;

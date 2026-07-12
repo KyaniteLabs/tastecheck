@@ -15,6 +15,8 @@
  */
 import { readFileSync, readdirSync, statSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { computeSourceTreeSha256 } from "../release/engineering-receipt.mjs";
 
 const root = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 
@@ -27,24 +29,23 @@ function estimateTokens(bytes) {
   return Math.ceil(bytes / BYTES_PER_TOKEN);
 }
 
-const baselineManifestPath = join(root, "evals/baselines/context-budget-v0.1.0.json");
-const baselineManifest = JSON.parse(readFileSync(baselineManifestPath, "utf8"));
-if (baselineManifest.schema_version !== 1 || baselineManifest.baseline_release !== "0.1.0") {
-  throw new Error("context budget baseline identity mismatch");
-}
-
-const skillDirs = readdirSync(join(root, "skills"))
-  .filter((name) => statSync(join(root, "skills", name)).isDirectory())
-  .sort();
-
-const findings = [];
-const report = { schema_version: 1, skills: [], overall_pass: true };
-
 const START_MARKER = "<!-- contract:v1:start -->";
 const END_MARKER = "<!-- contract:v1:end -->";
 
-for (const skill of skillDirs) {
-  const skillMdPath = join(root, "skills", skill, "SKILL.md");
+export function buildContextBudgetReport(repoRoot = root) {
+  const baselineManifestPath = join(repoRoot, "evals/baselines/context-budget-v0.1.0.json");
+  const baselineManifest = JSON.parse(readFileSync(baselineManifestPath, "utf8"));
+  if (baselineManifest.schema_version !== 1 || baselineManifest.baseline_release !== "0.1.0") {
+    throw new Error("context budget baseline identity mismatch");
+  }
+  const skillDirs = readdirSync(join(repoRoot, "skills"))
+    .filter((name) => statSync(join(repoRoot, "skills", name)).isDirectory())
+    .sort();
+  const findings = [];
+  const report = { schema_version: 1, source_tree_sha256: computeSourceTreeSha256(repoRoot), skills: [], overall_pass: true };
+
+  for (const skill of skillDirs) {
+  const skillMdPath = join(repoRoot, "skills", skill, "SKILL.md");
   const relPath = `skills/${skill}/SKILL.md`;
   const body = readFileSync(skillMdPath, "utf8");
   const currentBytes = Buffer.byteLength(body, "utf8");
@@ -98,17 +99,21 @@ for (const skill of skillDirs) {
   const skillPass = Object.values(skillReport.checks).every(Boolean);
   skillReport.pass = skillPass;
   if (!skillPass) report.overall_pass = false;
-  report.skills.push(skillReport);
+    report.skills.push(skillReport);
+  }
+  return { report, findings };
 }
 
-const receiptsDir = join(root, "evals/receipts/v1");
-mkdirSync(receiptsDir, { recursive: true });
-writeFileSync(join(receiptsDir, "context-budget.json"), JSON.stringify(report, null, 2));
-
-for (const f of findings) console.error(f);
-if (findings.length === 0) {
-  console.log(`context-budget: ${skillDirs.length} skills, all within caps`);
-} else {
-  console.error(`context-budget: ${findings.length} violations`);
-  process.exit(1);
+if (fileURLToPath(import.meta.url) === process.argv[1]) {
+  const { report, findings } = buildContextBudgetReport(root);
+  const receiptsDir = join(root, "evals/receipts/v1");
+  mkdirSync(receiptsDir, { recursive: true });
+  writeFileSync(join(receiptsDir, "context-budget.json"), JSON.stringify(report, null, 2));
+  for (const finding of findings) console.error(finding);
+  if (findings.length === 0) {
+    console.log(`context-budget: ${report.skills.length} skills, all within caps`);
+  } else {
+    console.error(`context-budget: ${findings.length} violations`);
+    process.exit(1);
+  }
 }
