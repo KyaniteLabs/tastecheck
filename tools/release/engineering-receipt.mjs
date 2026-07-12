@@ -21,7 +21,8 @@ const excludedReceipts = new Set([
 
 export function isExcludedReceiptPath(path) {
   const normalized = path.replaceAll("\\", "/");
-  return excludedReceipts.has(normalized) || normalized.startsWith("evals/receipts/v1/artifacts/");
+  return excludedReceipts.has(normalized)
+    || (normalized.startsWith("evals/receipts/v1/") && !normalized.startsWith("evals/receipts/v1/immutable/"));
 }
 
 export function computeSourceTreeSha256(root = defaultRoot) {
@@ -110,14 +111,23 @@ function cleanCloneChecks(root) {
 
 export function produceEngineeringReceipt({ kind, root = defaultRoot, nonce = randomBytes(16).toString("hex") }) {
   const startedAt = new Date().toISOString();
+  const sourceTreeSha256 = computeSourceTreeSha256(root);
   const checks = kind === "mechanical"
     ? mechanicalChecks(root)
     : kind === "security"
       ? securityChecks(root)
       : cleanCloneChecks(root);
+  const sourceTreeAfterSha256 = computeSourceTreeSha256(root);
+  checks.push({
+    id: "source-stability",
+    command: "internal source digest comparison",
+    passed: sourceTreeAfterSha256 === sourceTreeSha256,
+    exit_code: sourceTreeAfterSha256 === sourceTreeSha256 ? 0 : 1,
+    output_sha256: createHash("sha256").update(sourceTreeAfterSha256).digest("hex"),
+  });
   return deriveReceipt({
     kind,
-    sourceTreeSha256: computeSourceTreeSha256(root),
+    sourceTreeSha256,
     nonce,
     startedAt,
     finishedAt: new Date().toISOString(),
