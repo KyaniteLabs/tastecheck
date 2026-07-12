@@ -34,9 +34,9 @@ Engineering readiness is computed. The manifest does not contain an editable rea
 | `security` | `npm run release:security-receipt` |
 | `clean-clone` | `npm run release:clean-clone-receipt` |
 
-Each cell is bound to an exact repository-relative path, an allowlisted producer, immutable file bytes through SHA-256, and non-negotiable assertions registered in `tools/release/check.mjs`. The checker rejects missing producer commands, manual or unknown producers, orphan paths, duplicate or missing cells, weakened assertions, unknown manifest fields, malformed JSON, missing files, and stale hashes.
+Each cell is bound to an exact repository-relative path, an allowlisted producer, immutable file bytes through SHA-256, and non-negotiable assertions registered in `tools/release/check.mjs`. The checker rejects missing producer commands, manual or unknown producers, orphan paths, duplicate or missing cells, weakened assertions, unknown manifest fields, malformed JSON, missing files, stale hashes, stale source-tree identities, incomplete check sets, and missing or altered browser artifacts.
 
-A receipt is not trusted merely because a file with a passing boolean exists. Its producer command must be registered and its receipt must declare the registered reproducibility and producer identity fields.
+A receipt is not trusted merely because a file with a passing boolean exists. Its producer command, closed schema, exact check matrix, source digest, and referenced artifacts must all validate. Here `reproducible` means the registered command can reproduce the evidence from the bound source revision; it does not claim bit-for-bit identical screenshots across browser versions.
 
 ### Effectiveness claim
 
@@ -44,6 +44,8 @@ Effectiveness is derived independently from two public immutable projections:
 
 - `evals/receipts/v1/immutable/w1-effectiveness.json`
 - `evals/receipts/v1/immutable/terminal-v5-effectiveness.json`
+
+Both projections are mechanically regenerated from committed public-safe source snapshots under `evals/evidence/v1/immutable/`. Those snapshots retain the SHA-256 identities of the upstream forensic evidence, so a clean clone can re-derive the blocked claim without requiring ignored local replay directories.
 
 The only supported claim for this release is `blocked`. The checker re-derives that status from the pinned source bytes and rejects any attempt to declare the pack effective, change the historical W1 counts, change the V5 delta or threshold, treat the descriptive 11/12 preference as the gate, remove the immutable stop rule, or substitute another source path.
 

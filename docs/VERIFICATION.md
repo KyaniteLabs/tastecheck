@@ -98,6 +98,12 @@ Run this before publishing visual claims or screenshots:
 - Check reduced motion with `prefers-reduced-motion: reduce`.
 - Spot-check dark and high-contrast theme mappings where a page exposes them.
 
+The 1.0 browser receipt automates this matrix for every committed sample and demo at
+390px, 768px, and 1280px. It records HTTP/render/overflow/console results, keyboard focus,
+reduced-motion state, the runnable accessibility and gate audits, and content-addressed
+screenshots. `verify:release` validates the complete check set, current source digest, and
+every referenced artifact byte/hash; a pinned `pass` field alone is insufficient.
+
 ## Evidence Format
 
 For releases, append a short dated note with:
