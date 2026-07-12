@@ -20,7 +20,8 @@ const excludedReceipts = new Set([
 ]);
 
 export function isExcludedReceiptPath(path) {
-  return excludedReceipts.has(path.replaceAll("\\", "/"));
+  const normalized = path.replaceAll("\\", "/");
+  return excludedReceipts.has(normalized) || normalized.startsWith("evals/receipts/v1/artifacts/");
 }
 
 export function computeSourceTreeSha256(root = defaultRoot) {
