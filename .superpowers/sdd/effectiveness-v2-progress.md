@@ -20,3 +20,9 @@
 | Adversarial QA | pending | — |
 | Public leak audit | pending | — |
 | Production external calls | prohibited | All stop gates must pass first. |
+
+## Task checkpoints
+
+| Task | TDD receipt | Independent review | State |
+| --- | --- | --- | --- |
+| 1. Closed contracts and protocol freeze | RED: missing `contracts.mjs`; GREEN: `npm run test:effectiveness-v2` | `APPROVE` after commitment/validator freezing, exact-version, nested-contract, viewport, and opaque-slot corrections | ready to commit |
