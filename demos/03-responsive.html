@@ -51,7 +51,8 @@ img, video, svg { max-width: 100%; height: auto; }
 
 /* Debug helper: uncomment to find overflow source
 * { outline: 1px solid red; } */
-body{font-family:system-ui;margin:0}.box{background:#dce3f0;border:1px solid #9bb;padding:1rem;border-radius:8px}h1{padding:1rem}</style></head><body>
+body{font-family:system-ui;margin:0}.box{background:#dce3f0;border:1px solid #9bb;padding:1rem;border-radius:8px}h1{padding:1rem}.skip{position:absolute;left:.5rem;top:-4rem;background:#111;color:#fff;padding:.6rem}.skip:focus{top:.5rem}</style></head><body>
+<a class=skip href=#main>Skip to responsive demo</a><main id=main tabindex=-1>
 <h1>responsive-layout demo</h1>
 <div class=container><div class=grid-auto>
 <div class=box>card 1</div>
@@ -62,4 +63,4 @@ body{font-family:system-ui;margin:0}.box{background:#dce3f0;border:1px solid #9b
 <div class=box>card 6</div>
 </div></div>
 <div class=container style="margin-top:1rem"><div class=with-sidebar><div class="sidebar box">sidebar</div><div class="content box">content area (min-width:0 prevents overflow)</div></div></div>
-</body></html>
+</main></body></html>
