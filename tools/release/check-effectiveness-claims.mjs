@@ -10,7 +10,12 @@ const ROOT_DIRECTORIES = ["site", "docs", "skills"];
 const TEXT_EXTENSIONS = /\.(?:html?|json|md|mdx|txt)$/i;
 const EVIDENCE = String.raw`(?:validated|proven|measured|demonstrated|verified)`;
 const OUTCOME = String.raw`(?:effectiveness|effective|improvements?|improved|lift|outperformance|better\s+outcomes?)`;
-const CLAIM = new RegExp(String.raw`\b${EVIDENCE}\b[^.!?;\n]{0,120}\b${OUTCOME}\b|\b${OUTCOME}\b[^.!?;\n]{0,120}\b${EVIDENCE}\b`, "i");
+const CLAIMS = [
+  new RegExp(String.raw`\b${EVIDENCE}\b[^.!?;\n]{0,120}\b${OUTCOME}\b|\b${OUTCOME}\b[^.!?;\n]{0,120}\b${EVIDENCE}\b`, "i"),
+  /\b(?:tastecheck|the\s+(?:pack|toolkit|workflow)|this\s+(?:pack|toolkit|workflow)|these\s+skills?)\s+(?:is|are)\s+(?:the\s+)?(?:fix|solution|answer)\b/i,
+  /\b(?:beats?|outperforms?|surpasses?)\s+(?:the\s+|an?\s+)?(?:AI\s+)?(?:baseline|average|alternatives?|competition|competitors?|other\s+(?:tools?|systems?|approaches?))\b/i,
+  /\b(?:delivers?|produces?|creates?|drives?|yields?|ensures?|guarantees?)\b[^.!?;\n]{0,60}\b(?:better|superior|higher-quality|improved)\s+(?:outcomes?|results?|quality|designs?|websites?|interfaces?|output)\b/i,
+];
 const QUALIFIER = /\b(?:blocked|unsupported|unsubstantiated)\b|\bhistorical\s+failed\s+evidence\b|\bnot\s+(?:validated|proven|measured|demonstrated|verified)\b|\bdoes\s+not\s+(?:claim|show|demonstrate|establish|prove|validate)\b|\bcannot\s+(?:claim|show|demonstrate|establish|prove|validate)\b/i;
 
 function collectFiles(root) {
@@ -33,7 +38,7 @@ export function scanUnsupportedEffectivenessClaims(root = DEFAULT_ROOT) {
     const lines = readFileSync(path, "utf8").split(/\r?\n/);
     lines.forEach((line, index) => {
       for (const clause of line.split(/[.!?;]+/)) {
-        if (!CLAIM.test(clause) || QUALIFIER.test(clause)) continue;
+        if (!CLAIMS.some((claim) => claim.test(clause)) || QUALIFIER.test(clause)) continue;
         findings.push({ path: relative(root, path).replaceAll("\\", "/"), line: index + 1, text: clause.trim() });
       }
     });
