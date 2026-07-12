@@ -34,6 +34,7 @@ try {
   assert.notEqual(computeSourceTreeSha256(temp), first, "tracked source changes must invalidate the source digest");
 
   assert.equal(isExcludedReceiptPath("evals/receipts/v1/browser.json"), true);
+  assert.equal(isExcludedReceiptPath("evals/receipts/v1/artifacts/browser/proof.png"), true);
   assert.equal(isExcludedReceiptPath("evals/receipts/v1/immutable/w1-effectiveness.json"), false);
 
   const passed = deriveReceipt({
