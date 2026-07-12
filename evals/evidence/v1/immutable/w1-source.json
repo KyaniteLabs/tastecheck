@@ -1,8 +1,7 @@
 {
   "schema_version": 1,
-  "kind": "immutable-w1-effectiveness-projection",
-  "source_evidence_sha256": "663b6a4729ff3b59636578ac5262ae7ae28aa673fbc214930b87803b34a8fce8",
-  "effectiveness_status": "blocked",
+  "kind": "immutable-w1-source-snapshot",
+  "upstream_evidence_sha256": "4740047dde16d93f1c07ed7be8dab4bb7aab0930b61d0e035caa64263963a6ce",
   "jobs": {
     "complete": 12,
     "required": 12

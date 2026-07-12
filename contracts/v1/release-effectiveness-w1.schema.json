@@ -8,7 +8,7 @@
   "properties": {
     "schema_version": { "const": 1 },
     "kind": { "const": "immutable-w1-effectiveness-projection" },
-    "source_evidence_sha256": { "const": "4740047dde16d93f1c07ed7be8dab4bb7aab0930b61d0e035caa64263963a6ce" },
+    "source_evidence_sha256": { "const": "663b6a4729ff3b59636578ac5262ae7ae28aa673fbc214930b87803b34a8fce8" },
     "effectiveness_status": { "const": "blocked" },
     "jobs": { "$ref": "#/$defs/completedJobs" },
     "judgments": { "$ref": "#/$defs/completedJudgments" },

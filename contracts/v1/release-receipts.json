@@ -53,12 +53,12 @@
       {
         "id": "w1-effectiveness",
         "path": "evals/receipts/v1/immutable/w1-effectiveness.json",
-        "sha256": "02eff9ab29e4f363070a47e742e7fe73eb167efe7bff75815acc4d26fc6e2ea6"
+        "sha256": "14ad3501396e57bd9f6b7e30a7f79f1a5873199858334dc9d3192c56589bf993"
       },
       {
         "id": "terminal-v5-effectiveness",
         "path": "evals/receipts/v1/immutable/terminal-v5-effectiveness.json",
-        "sha256": "ff1f45dc434ec10c69a29b659f08888083dd18c4f9680b968a27ba42daad5711"
+        "sha256": "cd0b2d94a53e89de1ada561151ef3aed2c1db80ce4647468ccba9846429d6269"
       }
     ]
   }
