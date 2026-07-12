@@ -2,17 +2,17 @@
   "schema_version": 1,
   "kind": "clean-clone",
   "producer_id": "tastecheck.release.clean-clone.v1",
-  "source_tree_sha256": "b4c925dc89a83f425280ca54164ce8da4a04bd92808b9d381d50df0405792933",
+  "source_tree_sha256": "7031281ec8add4b80659b554cbdc654a731bcaf0e50c643299ea85c4fb0fc48d",
   "nonce": "clean-clone-release-v1",
-  "started_at": "2026-07-12T01:01:11.494Z",
-  "finished_at": "2026-07-12T01:01:20.628Z",
+  "started_at": "2026-07-12T01:26:42.472Z",
+  "finished_at": "2026-07-12T01:27:00.125Z",
   "checks": [
     {
       "id": "npm-ci",
       "command": "npm ci --ignore-scripts",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "2eca2a9e804c47892e00ce5cb55bd9f0d2b270e950fda50b1ba6a94723896aa1"
+      "output_sha256": "2550626029613e872103ddbc848020e3c93cae75234dd61202257928bb078d9e"
     },
     {
       "id": "test",
@@ -30,17 +30,24 @@
     },
     {
       "id": "effectiveness-claims",
-      "command": "/opt/homebrew/Cellar/node/26.0.0/bin/node tools/release/check-effectiveness-claims.mjs",
+      "command": "node tools/release/check-effectiveness-claims.mjs",
       "passed": true,
       "exit_code": 0,
       "output_sha256": "7111a3cf1ef6f6844c6cd6b5fd49a9e8b015e38e4a3f183312c8d74e4d147be8"
+    },
+    {
+      "id": "head-source-match",
+      "command": "internal HEAD source digest comparison",
+      "passed": true,
+      "exit_code": 0,
+      "output_sha256": "b6cf133c8990fd68ba7cdb73da9af0d5c37878249b50d87226fd3f47c05a92e7"
     },
     {
       "id": "source-stability",
       "command": "internal source digest comparison",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "bece6e1411d0a3f6bc053987c7ac5303ea8343f0b825bbd2afc89d72c7aa6139"
+      "output_sha256": "b6cf133c8990fd68ba7cdb73da9af0d5c37878249b50d87226fd3f47c05a92e7"
     }
   ],
   "status": "pass",
