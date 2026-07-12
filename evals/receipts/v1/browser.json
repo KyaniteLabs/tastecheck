@@ -6,7 +6,7 @@
     "id": "tastecheck-live-execution",
     "version": 1
   },
-  "source_tree_sha256": "1328e7e35c40a58cc7b666234978bc0bb26832cc7b72c35809e7824d6889801d",
+  "source_tree_sha256": "8d19ec7cc066378474bd99580a8f5046914fba202d009118f07fcd1108533e04",
   "nonce": "browser-release-v1",
   "runtime": {
     "node": "v26.0.0",
@@ -14,8 +14,8 @@
     "browser": "149.0.7827.55",
     "platform": "darwin"
   },
-  "started_at": "2026-07-12T02:29:22.751Z",
-  "finished_at": "2026-07-12T02:29:36.814Z",
+  "started_at": "2026-07-12T02:40:04.867Z",
+  "finished_at": "2026-07-12T02:40:21.051Z",
   "executed": true,
   "reproducible": true,
   "artifacts": [
@@ -39,20 +39,20 @@
     },
     {
       "id": "demo-02-states-390",
-      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-390-9047112584000f8daeddc0ea353a929fe410e42946dd7223641a5858daabb2af.png",
-      "sha256": "9047112584000f8daeddc0ea353a929fe410e42946dd7223641a5858daabb2af",
-      "bytes": 25902
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-390-0d40328fcc72cc95634f9681dd5bae3bce87b7acec16d2a4b2243b6b3127a35c.png",
+      "sha256": "0d40328fcc72cc95634f9681dd5bae3bce87b7acec16d2a4b2243b6b3127a35c",
+      "bytes": 25904
     },
     {
       "id": "demo-02-states-768",
-      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-768-e8136e3cb5aaebe453b9fac7756cf7e75c8ef432fb161d3889169c9e5c54b266.png",
-      "sha256": "e8136e3cb5aaebe453b9fac7756cf7e75c8ef432fb161d3889169c9e5c54b266",
-      "bytes": 27213
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-768-865f2c22ec335f5879bcc9b84de4e992499b85244bf54f2d2cf708d989209f67.png",
+      "sha256": "865f2c22ec335f5879bcc9b84de4e992499b85244bf54f2d2cf708d989209f67",
+      "bytes": 27214
     },
     {
       "id": "demo-02-states-1280",
-      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-1280-62540641403471946dae266715a101c358ec344abcfe3c85c1161a31a8135396.png",
-      "sha256": "62540641403471946dae266715a101c358ec344abcfe3c85c1161a31a8135396",
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-1280-417ce842d3e9d964cca4bc9e1d771ef18a15fbd8bf8018fa8a5a0670a71b1633.png",
+      "sha256": "417ce842d3e9d964cca4bc9e1d771ef18a15fbd8bf8018fa8a5a0670a71b1633",
       "bytes": 29234
     },
     {
@@ -219,9 +219,9 @@
     },
     {
       "id": "sample-dispatch-390",
-      "path": "evals/receipts/v1/artifacts/browser/sample-dispatch-390-2fb635baa8d300c35b97f83f612d4876a622799fafc684947cf29851749146cc.png",
-      "sha256": "2fb635baa8d300c35b97f83f612d4876a622799fafc684947cf29851749146cc",
-      "bytes": 367359
+      "path": "evals/receipts/v1/artifacts/browser/sample-dispatch-390-60fe02ed5c773416f5d50af041b555af5f97f525284a2f23c9b583016ece4391.png",
+      "sha256": "60fe02ed5c773416f5d50af041b555af5f97f525284a2f23c9b583016ece4391",
+      "bytes": 367361
     },
     {
       "id": "sample-dispatch-768",
@@ -237,8 +237,8 @@
     },
     {
       "id": "sample-maximal-390",
-      "path": "evals/receipts/v1/artifacts/browser/sample-maximal-390-78ad040e296e6d88d8b30c5ec359a4d17b109d2026b20ef40a1d168b3904eccb.png",
-      "sha256": "78ad040e296e6d88d8b30c5ec359a4d17b109d2026b20ef40a1d168b3904eccb",
+      "path": "evals/receipts/v1/artifacts/browser/sample-maximal-390-09997b4514b975a689290cfda64615a5253be352752961badb917e45ebc598ff.png",
+      "sha256": "09997b4514b975a689290cfda64615a5253be352752961badb917e45ebc598ff",
       "bytes": 1332855
     },
     {

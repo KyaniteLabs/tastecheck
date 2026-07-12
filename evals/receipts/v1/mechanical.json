@@ -2,10 +2,10 @@
   "schema_version": 1,
   "kind": "mechanical",
   "producer_id": "tastecheck.release.mechanical.v1",
-  "source_tree_sha256": "1328e7e35c40a58cc7b666234978bc0bb26832cc7b72c35809e7824d6889801d",
+  "source_tree_sha256": "8d19ec7cc066378474bd99580a8f5046914fba202d009118f07fcd1108533e04",
   "nonce": "mechanical-release-v1",
-  "started_at": "2026-07-12T02:29:39.275Z",
-  "finished_at": "2026-07-12T02:29:45.245Z",
+  "started_at": "2026-07-12T02:40:23.776Z",
+  "finished_at": "2026-07-12T02:40:28.855Z",
   "checks": [
     {
       "id": "test",
@@ -40,7 +40,7 @@
       "command": "internal source digest comparison",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "e85f8f35c8ac79762eee4ab94372d2df5c6a2e875cbcf18edef9a2362d0ad51e"
+      "output_sha256": "720c3d418a9e0ed069e3dd40fef424852db2f8b3cf851a699731bad7a374f42a"
     }
   ],
   "status": "pass",
