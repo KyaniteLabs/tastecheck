@@ -8,13 +8,14 @@ description: >-
 
 # Humanize Copy
 
-Humanizing is source-backed specificity, clear order, and fitting cadence—not flourish.
-Use the pub test: would this sound natural aloud to this reader in this situation?
+Human copy sounds like someone meant it for this reader, in this moment. Keep the facts;
+replace formula with consequence, stance, and a cadence the speaker could sustain aloud.
 
 ## Establish the speaking situation before editing
 
 Do not synonym-swap detached text. Build a voice brief from source, reader job, protected
-language, defensible claim, and situational register.
+language, defensible claim, and situational register. If the intended author is a real
+person, use supplied or approved samples; never infer a private identity from stereotypes.
 
 | Voice brief field | Evidence to use |
 | --- | --- |
@@ -27,48 +28,47 @@ language, defensible claim, and situational register.
 Without facts/voice authority, change only clarity, order, and cadence; never invent
 claims, metrics, anecdotes, testimony, or personal voice.
 
-## How to use this skill
+## Edit in three passes
 
-1. Mark voice brief and protected facts.
-2. Lead with reader consequence or defensible tension.
-3. Use the detector to cut filler, restore causal order, add source-backed specificity,
-   or change sentence shape; settle meaning before cadence.
-4. Take stance only with authority; compare material changes to source.
+1. **Source:** mark protected meaning and the factual authority behind every claim.
+2. **Stance:** decide what the speaker can say plainly, then lead with the reader's
+   consequence, decision, or next action.
+3. **Shape:** cut the wrapper, restore causal order, and tune sentence length and register.
 
-Use `references/kill-list.md` and `references/rhythm-and-voice.md`; plainer is better
-than thesaurus-salad.
+Compare the revision to the source, not to a list of banned words. Use
+`references/kill-list.md` and `references/rhythm-and-voice.md` as detectors after meaning
+is settled.
 
 ## Detect formula before replacing words
 
-The kill list is a detector, not a ban: preserve necessary technical, legal, or brand
-terms. Inspect abstract buzzwords, ceremonial/fake-hook openers, manufactured contrast,
-repeated rule-of-three or em-dash cadence, hedge, and generic metaphor. Cut the wrapper
-or name the source-backed subject; do not replace one cliché with a fancier synonym.
+The kill list is a detector, not a ban. Inspect abstract buzzwords, ceremonial hooks,
+manufactured contrast, repeated rule-of-three or em-dash cadence, hedges, and generic
+metaphor. Preserve necessary technical, legal, and brand terms. When a detector fires,
+repair the underlying mechanism: name the subject, state the consequence, or remove the
+sentence. A fancier synonym is not a repair.
 
-## Rhythm & structure rules
+## Worked transformation
 
-Vary sentence length/openings and use fragments only when they serve the reader. Flag
-three similarly shaped sentences, formulaic lists, and warm-up openings; lead with the point.
+**Source facts:** appointments are booked online; technicians give a two-hour arrival
+window; customers receive a text before arrival.
 
-## Stance rules (remove the hedge)
+**Before:** “Experience seamless repair solutions designed to get your day back on track.”
 
-Remove unsupported hedges and “aims to”; take the authorized position. Use verified
-named specifics, never invented data.
+**After:** “Book online. We’ll give you a two-hour window and text before the technician
+arrives.”
 
-## Revise by mechanism, not by surface word count
-
-Pass claim (source/opinion/remove), order (consequence first), precision (proved subject
-or plainer boundary), cadence (reader-beneficial variation), and register (real channel).
-Explain high-leverage changes by mechanism, not adjective count.
+The revision earns its confidence from the source. It replaces an unsupported emotional
+promise with the decision, the timing, and the useful reassurance. This is the target:
+not universally casual copy, but language whose specificity and rhythm fit its authority.
 
 ## Decision order and evidence
 
-Build brief/fact ledger, then revise claim, order, precision, cadence, and register
-without changing facts/safety. Record source authority for new specificity or stance.
+Build the brief and fact ledger, then revise stance, order, precision, and cadence without
+changing facts or safety meaning. Record source authority for every new specificity.
 
 ## Self-check (run before claiming "humanized")
 
-1. Pub test, direct opening, no formulaic cadence/hedge/thesaurus-salad?
+1. Read-aloud test, direct opening, and no formulaic cadence, hedge, or thesaurus-salad?
 2. Source-backed specifics and bounded claims—not competitor-generic copy or invented texture?
 3. Register fits this reader, task, and consequence?
 
@@ -80,8 +80,9 @@ without changing facts/safety. Record source authority for new specificity or st
 
 ## How to deliver
 
-Deliver voice brief, 2–5 source/protected-meaning changes by mechanism, then revision.
-Preserve facts/register; pair non-English work with `i18n-ready`.
+Deliver the revised copy first when that is what the user asked for. Follow with the voice
+brief and 2–5 high-leverage changes by mechanism when rationale is useful. Preserve facts
+and register; pair non-English work with `i18n-ready`.
 
 <!-- contract:v1:start -->
 ## Contract (generated)

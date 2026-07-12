@@ -5,6 +5,25 @@ All notable changes to the tastecheck skill pack. Format follows
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-07-11
+
+### Changed
+
+- Reframed the headline interview around a concrete recommend-then-react exchange,
+  visible decision snapshots, a build-ready output, and an interruption-safe resume card.
+- Reframed `tastecheck-pass` around a BLUF **SHIP** / **HOLD** release brief while
+  preserving the fail-closed evidence table and actionable rerun requirements.
+- Rewrote the 20-command product surface as concise jobs with explicit user-visible
+  outputs; removed stale shortcuts and internal evaluator language from command prompts.
+- Reworked the README and launch kit around the brief → artifact → implementation →
+  ship-gate product story, corrected the gallery to six systems, and tightened claim boundaries.
+- Replaced brittle universal recipes in color, charts, responsive layout, theming, and
+  typography with evidence-led decisions and explicit exceptions that still verify.
+- Hardened loading, form validation, motion, and existing-site repair against stale async
+  results, delayed JavaScript, interrupted sessions, and accidental identity erasure.
+- Rebuilt `humanize-copy` around protected source facts, authorized stance, and a worked
+  before/after instead of a longer list of AI-writing tells.
+
 ## [1.0.0] — 2026-07-11
 
 ### Release status

@@ -35,5 +35,9 @@ Canonical source: [`contracts/v1/interviews/greenfield.json`](../../../contracts
 
 ## Readiness and handoff
 
-Ready means every required dimension is answered or explicitly abstained with its evidence basis and confirmation state. Emit the completed token artifact only after that state is recorded.
+- `approved`: The direction is confirmed and buildable; implementation handoff is allowed
+- `approval-ready`: Recommendations and tokens are complete but await confirmation; do not hand off to implementation
+- `blocked`: A contradiction or missing authority prevents a safe recommendation
+
+Only `approved` may hand off to implementation. Every required dimension needs an answer or explicit abstention with its evidence basis and confirmation state.
 <!-- interview-contract:v1:end -->

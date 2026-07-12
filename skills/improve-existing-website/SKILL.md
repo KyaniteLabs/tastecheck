@@ -7,36 +7,67 @@ description: >-
 
 # Improve Existing Website
 
-Improve an observed system without erasing its recognizable identity or mistaking drift
-for a new brand decision.
+Improve what is weak without sanding away what makes the product recognizable. Existing
+work contains both signal and drift; evidence decides which is which.
 
-## The state machine
+## 1. Inspect the product people actually use
 
-Run `inspect → infer → score → ask_or_skip → approve → execute → verify`. Label direct
-observations **EVIDENCE** and derivations **INFERRED**, record preserved signals, and use
-`references/inspection-state-machine.md` for incomplete/resumed decisions. Inspect rendered
-and source hierarchy, tokens, components, voice, and business cues; use
-`references/signal-vs-drift.md` for ambiguity. `assets/INFERRED-SYSTEM.template.md` covers audience,
-territory, type, color, layout, components, voice, and accessibility; score/ask/approve per
-the reference before execution.
+Open the rendered priority path before prescribing. Trace entry, decision, action, and
+recovery at wide and narrow widths. Then inspect source hierarchy, tokens, repeated
+components, content, analytics or user evidence supplied in scope, and business cues.
 
-## Handoff chain
+Label what you can point to **EVIDENCE**. Label every interpretation **INFERRED**. A direct
+observation is “the primary action changes label across three screens”; “the brand values
+warmth” is inferred unless the brief or product evidence says so.
 
-After approval, use `references/repair-handoffs.md` for evidence-justified specialists
-and valid subject-absence skips.
+**Done when:** the priority path, recurring system choices, and highest-cost failures are
+observable rather than guessed.
 
-## Output shape
+## 2. Separate identity from drift
 
-Before editing, write `INFERRED-SYSTEM.md` with labels, preserved signals, readiness,
-scope, and question rationale. Afterward report preserved signal, removed drift, skills,
-browser/static proof, and deferred ambiguity.
+Record signals worth preserving: distinctive type, color relationships, interaction
+patterns, content voice, layout logic, or customer-recognizable assets. Classify each
+candidate change:
 
-## Repair authorization packet
+| Class | Meaning | Authority |
+| --- | --- | --- |
+| **Preserve** | coherent, repeated, brief-supported identity | repair defects without replacing the signal |
+| **Normalize** | accidental variation against an established pattern | safe to align when evidence is strong |
+| **Approval needed** | a new hierarchy, palette, voice, or material redesign | show the choice and wait for owner agreement |
 
-For each candidate, record the smallest safe edit/proof and source/approved provenance.
-Classify **preserve** (recognizable identity), **normalize** (accidental variation), or
-**approval needed** (new language/hierarchy/palette/material redesign); never queue the
-last class without owner agreement.
+Use `references/signal-vs-drift.md` when repetition, age, or inconsistency could plausibly
+be intentional. Age alone is not evidence of drift.
+
+**Done when:** every proposed change names what survives and why the change is authorized.
+
+## 3. Form the smallest coherent direction
+
+Complete `assets/INFERRED-SYSTEM.template.md` across audience, territory, type, color,
+layout, components, voice, and accessibility. Score readiness with
+`references/inspection-state-machine.md`. Ask only questions whose answers would change
+the safe direction; otherwise state the inference and its evidence.
+
+Do not solve a system problem with isolated polish. Choose a narrow vertical slice that
+proves the direction across a real path—for example navigation, one content section, one
+form or state, and the narrow layout—before propagating it.
+
+**Done when:** the direction can be approved, rejected, or resumed without reconstructing
+the investigation.
+
+## 4. Approve, repair, and verify
+
+For each repair, record the observed failure, preserved signal, smallest coherent edit,
+owner or approval source, and proof. After approval, use
+`references/repair-handoffs.md` for evidence-justified specialist passes. Verify the same
+path and viewports used during inspection; comparison must show that the defect changed
+and the preserved signal survived.
+
+If work pauses, save the current state, unresolved question, evidence, and exact next
+decision using `references/inspection-state-machine.md`. Resumption starts from that
+checkpoint, not from a fresh aesthetic opinion.
+
+**Done when:** the implementation report distinguishes repaired drift, preserved identity,
+browser/static proof, and deliberately deferred ambiguity.
 
 ## Reference files
 

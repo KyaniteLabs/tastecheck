@@ -1,15 +1,13 @@
 ---
-description: Run the tastecheck ship gate — every relevant skill self-check, with a pass/fail report
+description: Decide whether finished frontend work can ship, with evidence
 argument-hint: "[project/page to gate, optional]"
 ---
 
 Load and apply the **tastecheck-pass** skill (`~/.agents/skills/tastecheck-pass/SKILL.md`).
 
-The gate is fail-closed: no bare checkmarks, unsupported `n/a`, inferred
-execution, or missing provenance. Deliver the canonical evidence ledger and a
-presentation report separately.
-
-Run the projected pipeline against the actual artifact; attach measured browser,
-keyboard, contrast, zoom, and motion evidence. A claimed pass cannot override a finding.
+Run the gate on the real artifact. Lead with **SHIP** or **HOLD**, the blocker count, and
+the fastest credible path forward. Then attach the evidence table with measured browser,
+keyboard, contrast, zoom, motion, cold-load, and against-spec results. Unsupported `n/a`
+and claimed-but-unrun checks are failures.
 
 Target: $ARGUMENTS (if empty, gate the most recent build in context).

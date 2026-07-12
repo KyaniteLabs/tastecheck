@@ -3,7 +3,7 @@ description: (alias of /theming) Light + dark + high-contrast theme system
 argument-hint: "[site/app, optional]"
 ---
 Load and apply the **theming** skill (`~/.agents/skills/theming/SKILL.md`) — dark mode is one mapping of a full theme system. See /theming.
-Run the **theming** skill's single authoritative self-check; the alias emits the same status, reason, remediation, evidence, and provenance fields.
+Run the **theming** skill's self-check and return the same supported-mode evidence as `/theming`.
 Target: $ARGUMENTS
 
 <!-- contract:v1:start -->

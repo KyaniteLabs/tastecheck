@@ -14,7 +14,8 @@ not named-device CSS.
 
 1. Start mobile-first and use Grid/Flex intrinsic sizing (`minmax`, `auto-fit`, `clamp`, `%`/`fr`).
 2. Add breakpoints only where observed content breaks; reusable components use container queries.
-3. Verify 320px, 200–400% zoom, long/translated content, narrow embeds, and wide views without overflow/collapse.
+3. Verify the product's minimum supported viewport, 200–400% zoom, long/translated
+   content, narrow embeds, and wide views without accidental overflow or collapse.
 
 ## Preserve hierarchy under pressure
 
@@ -24,9 +25,13 @@ zoom, and embedded cases before calling it responsive.
 
 ## Non-negotiables
 
-- Mobile-first `min-width`; no fixed layout widths or device-name breakpoints.
+- Start from the narrowest supported content state; avoid device-name breakpoints.
 - Prevent overflow with `min-width: 0`, bounded media, and wrapping; reflow rather than shrink to unusable.
-- Reusable components use container queries; 320px/400% zoom cannot require 2-D scrolling.
+- Prefer container queries for reusable components when their behavior depends on their
+  container, not the viewport.
+- At narrow widths and zoom, ordinary reading and interaction should not require
+  two-dimensional scrolling. Isolate essential exceptions such as wide data tables,
+  maps, timelines, or canvases in a labelled, keyboard-operable scroll region.
 
 ## Quick-start patterns
 

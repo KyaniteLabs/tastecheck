@@ -8,41 +8,47 @@ description: >-
 
 # Design System Interview
 
-Unspecified intent produces generic UI. Before building, turn real evidence into
-committed refusals, `DESIGN-SYSTEM.md`, and semantic tokens; when the user abstains,
-make a bounded bold choice and label it.
+Turn a vague frontend brief into decisions a builder can use. The interview should feel
+like a sharp creative director at the table: it studies the evidence, recommends a point
+of view, and asks only questions that materially change the build.
 
-## Interview from evidence, not a canned questionnaire
+## Start with a direction, not a questionnaire
 
-Make a decision map from product job, audience, marks/content, constraints, locales,
-and contradictions. For each exchange: **signal** (supplied evidence), **consequence**,
-two materially different brief-compatible **forks** with recommendation/trade-off, and
-**record** (`committed`, `assumption awaiting confirmation`, or `blocked by contradiction`).
-Ask the highest-consequence unresolved fork; batch only causal neighbors and resume there.
+Inspect the product job, audience, content, existing marks, constraints, locales, and any
+visual references before asking a question. Then open with:
 
-| Situation | Move |
-| --- | --- |
-| Existing evidence | Separate binding signal from historical residue. |
-| Conflict | Assign domains, then resolve their overlap—never average them. |
-| No taste vocabulary | Ask what the real task must feel like. |
-| Headless/interrupted | State confidence and exact confirmation; do not imply completion. |
+```markdown
+What I see: <the strongest signal in the brief>
+My recommendation: <a specific direction>
+Why it fits: <the product consequence>
+Choose: <fork A and trade-off> / <fork B and trade-off> / redirect me
+```
 
-## How to run it (the loop)
+Ask one high-consequence fork at a time. Combine questions only when one answer genuinely
+settles several decisions. After each answer, reflect the decision back in one line so the
+user can correct it without rereading the conversation.
 
-1. Choose full interview for greenfield brand work; offer a brief recommendation for
-   urgent/internal work without pressuring the user.
-2. Inspect existing direction/source of truth first; use the shortcut only for undecided
-   dimensions, and never adopt a worked example as the answer.
-3. In 4–10 evidence-derived exchanges, recommend then react; vague adjectives require
-   concrete forks. Surface headless assumptions and failed gates.
-4. Close all nine dimensions with a commitment, labelled abstention, or block. A bold
-   choice stays credible for trust-critical domains.
-5. Emit the artifact/token block and explicit downstream handoff.
+## The interview loop
 
-## The dimension bank (use adaptively, then close every dimension)
+1. **Read the room.** Separate current evidence from historical residue. If an existing
+   direction already covers five dimensions, confirm it and ask only for the gaps.
+2. **Propose a fork.** Give two brief-compatible outcomes that would look or behave
+   materially differently. Recommend one and name its trade-off.
+3. **Turn language into consequences.** Translate “clean,” “premium,” or “bold” into
+   hierarchy, density, material, type, color, or rhythm. Do not debate adjectives.
+4. **Record the decision.** Mark it `committed`, `assumption awaiting confirmation`, or
+   `blocked by contradiction`, with the evidence that earned it.
+5. **Stop when the system is buildable.** All nine dimensions are decided, explicitly
+   delegated to the recommendation, or blocked. Then write the artifact and handoff.
 
-Use these adaptively; `references/interview-contract.generated.md` holds the canonical
-session/dimension detail. Do not use any example as an answer.
+Use 4–10 exchanges for a full interview. For urgent internal work, offer the recommended
+direction as a short approval pass. In a one-shot or interrupted run, save the decision
+snapshot and name the first question needed to resume; do not present assumptions as approval.
+
+## Decisions to close
+
+Use these adaptively; `references/interview-contract.generated.md` is the canonical
+session/dimension authority. Examples teach format, never taste.
 
 | Canonical ID | Close with |
 | --- | --- |
@@ -58,15 +64,18 @@ session/dimension detail. Do not use any example as an answer.
 
 Optionally set motion level for products.
 
-## Anti-slop guardrails (enforce during the interview)
+## What the user receives
 
-Reject generic adjectives and default template choices; choose a real hue, poles rather
-than middles, and a labelled bounded decision when the user abstains.
+Write `DESIGN-SYSTEM.md` from `assets/DESIGN-SYSTEM.template.md`, then give the user a
+short handoff they can approve or build from immediately:
 
-## The output: decision map, then DESIGN-SYSTEM.md + tokens
+1. **Direction:** one sentence that predicts the interface.
+2. **Decisions:** the completed decision map.
+3. **Refusals:** three to five defaults this product will not use.
+4. **Build contract:** semantic tokens, structural rhythm, and responsive/accessibility constraints.
+5. **Next move:** the first implementation step, or the exact blocker and owner.
 
-Write `DESIGN-SYSTEM.md` from `assets/DESIGN-SYSTEM.template.md`, semantic tokens, and
-the decision map below. Read `references/session-protocol.md` for readiness/resume rules.
+Read `references/session-protocol.md` for readiness and resume rules.
 
 ```markdown
 | Dimension / conflict | Evidence | Decision or assumption | Consequence | Confirmation / owner |
@@ -74,8 +83,10 @@ the decision map below. Read `references/session-protocol.md` for readiness/resu
 | Alert hierarchy | ... | committed / assumed / blocked | ... | ... |
 ```
 
-Blocked rows make the artifact `approval-ready`, not `approved`, and name waiting work.
-Each non-obvious choice cites authority; each token and direction has a semantic/build job.
+Use `approved` only when the direction is confirmed and buildable. Use `approval-ready`
+when recommendations and tokens are complete but await confirmation; do not hand that
+state to implementation. Use `blocked` when a contradiction or missing authority prevents
+a safe recommendation. Each non-obvious choice cites its source; each token has a real build job.
 
 ```
 The committed direction in one line: "<source-derived aesthetic phrase> — <chosen
@@ -83,7 +94,8 @@ hierarchy>, <color role>, <type stance>, <shape/density>, signature = <specific 
 ```
 
 Hand off hue to `color-system`, type to `web-typography`, modes to `theming`, tokens to
-implementation skills, and the completed spec to `deslop-ui` for audit.
+implementation skills, and the completed spec to `deslop-ui` for audit. Preserve a
+single `DESIGN-SYSTEM.md` as the source of truth.
 
 ## Reference files
 
@@ -94,7 +106,7 @@ implementation skills, and the completed spec to `deslop-ui` for audit.
 - `references/session-protocol.md` — shortcut, headless, contradiction, and resume states.
 - `references/interview-contract.generated.md` — generated session and dimension authority.
 
-## Completion evidence (before you start building)
+## Ready-to-build check
 
 Report these rows with direct evidence, reason, remediation, and `pass`/`fail`/`n/a`.
 
@@ -106,15 +118,10 @@ Report these rows with direct evidence, reason, remediation, and `pass`/`fail`/`
 | DESIGN-SYSTEM.md and canonical token block complete |  |  |  |  |
 | Downstream handoff is explicit |  |  |  |  |
 
-## Self-check
-
-Confirm dimensions/evidence, labelled contradictions/abstentions, source-specific direction,
-and ready artifact/token handoff.
-
-## How to deliver
-
-Run a fast evidence-dependent recommend-then-react interview, finish with the one-line
-direction and artifact, then build to it through the stated handoff chain.
+The interview is build-ready only when every row passes and the artifact is `approved`.
+An `approval-ready` or `blocked` output is a resumable checkpoint: name the unresolved
+owner and next confirmation, but do not start implementation. Deliver the one-line
+direction first, link the artifact, then state the next allowed action.
 
 <!-- contract:v1:start -->
 ## Contract (generated)
