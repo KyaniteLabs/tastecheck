@@ -4,6 +4,9 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
+import Ajv from "ajv";
+import { computeSourceTreeSha256 } from "./engineering-receipt.mjs";
+import { scanUnsupportedEffectivenessClaims } from "./check-effectiveness-claims.mjs";
 
 export const root = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 export const TERMINAL_V5_SYNTHESIS = "evals/replays/remediation7-v5-spacing-final-2026-07-11/blind-judge/synthesis.json";
@@ -28,10 +31,19 @@ function at(value, path) { return path.split(".").reduce((current, key) => curre
 
 const defaultIo = Object.freeze({
   readText: (path) => readFileSync(join(root, path), "utf8"),
+  readBytes: (path) => readFileSync(join(root, path)),
   hasFile: (path) => existsSync(join(root, path)),
   hasCommand: (command) => Boolean(load("package.json").scripts?.[command.replace(/^npm run /, "")]),
+  sourceTreeSha256: () => computeSourceTreeSha256(root),
 });
 const SHA256 = /^[a-f0-9]{64}$/;
+const LIVE_SCHEMA = JSON.parse(readFileSync(join(root, "contracts/v1/live-execution-receipt.schema.json"), "utf8"));
+const validateLiveReceiptSchema = new Ajv({ allErrors: true, strict: false }).compile(LIVE_SCHEMA);
+const GENERIC_CHECK_IDS = Object.freeze({
+  mechanical: ["test", "contracts", "eval-schema", "release-eval-contracts", "source-stability"],
+  security: ["effectiveness-claims", "public-replay-surface", "receipt-sanitizer", "source-stability"],
+  "clean-clone": ["npm-ci", "test", "contracts", "effectiveness-claims", "head-source-match", "source-stability"],
+});
 
 function strictKeys(value, allowed, label, errors) {
   if (!value || typeof value !== "object" || Array.isArray(value)) { errors.push(`${label} must be an object`); return; }
@@ -59,6 +71,52 @@ function readPinnedJson(entry, label, io, errors) {
   catch { errors.push(`${label}: receipt is not valid JSON`); return null; }
 }
 
+function validateEngineeringReceipt(id, value, io, errors) {
+  if (id === "context-budget") {
+    strictKeys(value, ["schema_version", "skills", "overall_pass"], "context-budget receipt", errors);
+    if (value?.schema_version !== 1 || value?.overall_pass !== true || !Array.isArray(value?.skills) || value.skills.length !== 19) {
+      errors.push("context-budget: complete 19-skill passing receipt is required");
+    }
+    if (value?.skills?.some((skill) => skill?.pass !== true || skill?.checks?.within_growth_cap !== true)) {
+      errors.push("context-budget: every skill must pass the frozen growth baseline");
+    }
+    return;
+  }
+  const currentSource = io.sourceTreeSha256();
+  if (value?.source_tree_sha256 !== currentSource) errors.push(`${id}: source_tree_sha256 is stale for the current tracked source`);
+  if (id === "browser" || id === "e2e") {
+    if (!validateLiveReceiptSchema(value)) {
+      errors.push(`${id}: live receipt schema validation failed: ${validateLiveReceiptSchema.errors?.map((entry) => `${entry.instancePath || "/"} ${entry.message}`).join(", ")}`);
+      return;
+    }
+    if (value.kind !== id) errors.push(`${id}: live receipt kind mismatch`);
+    if (value.status !== "pass" || value.reproducible !== true || value.executed !== true || value.checks.some((check) => check.passed !== true)) {
+      errors.push(`${id}: live receipt must derive from nonempty all-pass executed checks`);
+    }
+    const artifactIds = new Set();
+    for (const artifact of value.artifacts) {
+      if (artifactIds.has(artifact.id)) errors.push(`${id}: duplicate artifact id ${artifact.id}`);
+      artifactIds.add(artifact.id);
+      if (!io.hasFile(artifact.path)) { errors.push(`${id}: missing artifact ${artifact.path}`); continue; }
+      const bytes = io.readBytes(artifact.path);
+      if (bytes.length !== artifact.bytes) errors.push(`${id}: artifact byte count mismatch ${artifact.path}`);
+      if (sha256(bytes) !== artifact.sha256) errors.push(`${id}: artifact SHA-256 mismatch ${artifact.path}`);
+    }
+    return;
+  }
+  strictKeys(value, ["schema_version", "kind", "producer_id", "source_tree_sha256", "nonce", "started_at", "finished_at", "checks", "status", "reproducible"], `${id} receipt`, errors);
+  if (value?.schema_version !== 1 || value?.kind !== id || value?.producer_id !== `tastecheck.release.${id}.v1`) errors.push(`${id}: generic receipt identity mismatch`);
+  if (!Array.isArray(value?.checks) || value.checks.length === 0) { errors.push(`${id}: checks must be nonempty`); return; }
+  const ids = value.checks.map((check) => check?.id);
+  if (!sameJson(ids, GENERIC_CHECK_IDS[id])) errors.push(`${id}: check identities/order do not match the registered producer`);
+  const validChecks = value.checks.every((check) => {
+    strictKeys(check, ["id", "command", "passed", "exit_code", "output_sha256"], `${id} check ${check?.id ?? "<unnamed>"}`, errors);
+    if (/^(?:\/|[A-Za-z]:\\)/.test(check?.command ?? "")) errors.push(`${id}: check command leaks an absolute executable path`);
+    return check?.passed === true && check?.exit_code === 0 && SHA256.test(check?.output_sha256 ?? "");
+  });
+  if (!validChecks || value.status !== "pass" || value.reproducible !== true) errors.push(`${id}: generic receipt must derive from registered all-pass checks`);
+}
+
 export function checkEngineeringReadiness(manifest, ioOverrides = {}) {
   const io = { ...defaultIo, ...ioOverrides };
   const errors = [];
@@ -80,8 +138,11 @@ export function checkEngineeringReadiness(manifest, ioOverrides = {}) {
     if (cell.path !== producer.path) { errors.push(`${cell.id}: path is not the registered path ${producer.path}`); continue; }
     if (!sameJson(cell.assertions, producer.assertions)) errors.push(`${cell.id}: assertions must equal the registered producer assertions`);
     const value = readPinnedJson(cell, cell.id, io, errors);
-    if (value) for (const [path, expected] of Object.entries(producer.assertions)) {
-      if (at(value, path) !== expected) errors.push(`${cell.id}: ${path}=${JSON.stringify(at(value, path))}; expected ${JSON.stringify(expected)}`);
+    if (value) {
+      for (const [path, expected] of Object.entries(producer.assertions)) {
+        if (at(value, path) !== expected) errors.push(`${cell.id}: ${path}=${JSON.stringify(at(value, path))}; expected ${JSON.stringify(expected)}`);
+      }
+      validateEngineeringReceipt(cell.id, value, io, errors);
     }
   }
   for (const id of Object.keys(ENGINEERING_PRODUCERS)) if (!seen.has(id)) errors.push(`${id}: missing registered producer cell`);
@@ -214,7 +275,8 @@ function main() {
   } else if (mode === "release") {
     const releaseManifest = load("contracts/v1/release-receipts.json");
     const effectiveness = deriveEffectivenessClaim(releaseManifest);
-    errors.push(...claims(), ...checkReleaseManifest(releaseManifest));
+    const unsupportedClaims = scanUnsupportedEffectivenessClaims(root);
+    errors.push(...claims(), ...checkReleaseManifest(releaseManifest), ...unsupportedClaims.map((finding) => `${finding.path}:${finding.line}: unsupported effectiveness claim: ${finding.text}`));
     successDetail = `; engineering_ready=true; effectiveness=${effectiveness.status}`;
   } else errors.push(`unknown release check mode: ${mode}`);
   if (errors.length) {

@@ -63,13 +63,29 @@ export function deriveReceipt({ kind, sourceTreeSha256, nonce, startedAt, finish
 function runCheck(cwd, id, command, args) {
   const result = spawnSync(command, args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
   const combined = `${result.stdout ?? ""}${result.stderr ?? ""}`;
+  const publicCommand = command === process.execPath ? "node" : command;
   return {
     id,
-    command: [command, ...args].join(" "),
+    command: [publicCommand, ...args].join(" "),
     passed: result.status === 0,
     exit_code: result.status ?? 1,
     output_sha256: createHash("sha256").update(combined).digest("hex"),
   };
+}
+
+export function computeHeadSourceTreeSha256(root = defaultRoot) {
+  const paths = execFileSync("git", ["ls-tree", "-r", "--name-only", "-z", "HEAD"], { cwd: root })
+    .toString("utf8").split("\0").filter(Boolean).sort();
+  const digest = createHash("sha256");
+  for (const path of paths) {
+    if (isExcludedReceiptPath(path)) continue;
+    const content = execFileSync("git", ["show", `HEAD:${path}`], { cwd: root, maxBuffer: 20 * 1024 * 1024 });
+    digest.update(path);
+    digest.update("\0");
+    digest.update(createHash("sha256").update(content).digest("hex"));
+    digest.update("\n");
+  }
+  return digest.digest("hex");
 }
 
 function mechanicalChecks(root) {
@@ -117,6 +133,16 @@ export function produceEngineeringReceipt({ kind, root = defaultRoot, nonce = ra
     : kind === "security"
       ? securityChecks(root)
       : cleanCloneChecks(root);
+  if (kind === "clean-clone") {
+    const headSourceTreeSha256 = computeHeadSourceTreeSha256(root);
+    checks.push({
+      id: "head-source-match",
+      command: "internal HEAD source digest comparison",
+      passed: headSourceTreeSha256 === sourceTreeSha256,
+      exit_code: headSourceTreeSha256 === sourceTreeSha256 ? 0 : 1,
+      output_sha256: createHash("sha256").update(headSourceTreeSha256).digest("hex"),
+    });
+  }
   const sourceTreeAfterSha256 = computeSourceTreeSha256(root);
   checks.push({
     id: "source-stability",
