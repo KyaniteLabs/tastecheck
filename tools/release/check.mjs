@@ -6,6 +6,7 @@ import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 import Ajv from "ajv";
 import { computeSourceTreeSha256 } from "./engineering-receipt.mjs";
+import { buildContextBudgetReport } from "../evals/context-budget.mjs";
 import { scanUnsupportedEffectivenessClaims } from "./check-effectiveness-claims.mjs";
 import { checkEffectivenessProjections } from "./project-effectiveness-evidence.mjs";
 
@@ -36,16 +37,29 @@ const defaultIo = Object.freeze({
   hasFile: (path) => existsSync(join(root, path)),
   hasCommand: (command) => Boolean(load("package.json").scripts?.[command.replace(/^npm run /, "")]),
   sourceTreeSha256: () => computeSourceTreeSha256(root),
+  contextBudgetReport: () => buildContextBudgetReport(root).report,
   requiredLiveCheckIds: (kind) => requiredLiveCheckIds(kind),
   requiredLiveArtifactIds: (kind) => requiredLiveArtifactIds(kind),
 });
 const SHA256 = /^[a-f0-9]{64}$/;
 const LIVE_SCHEMA = JSON.parse(readFileSync(join(root, "contracts/v1/live-execution-receipt.schema.json"), "utf8"));
 const validateLiveReceiptSchema = new Ajv({ allErrors: true, strict: false }).compile(LIVE_SCHEMA);
-const GENERIC_CHECK_IDS = Object.freeze({
-  mechanical: ["test", "contracts", "eval-schema", "release-eval-contracts", "source-stability"],
-  security: ["effectiveness-claims", "public-replay-surface", "receipt-sanitizer", "source-stability"],
-  "clean-clone": ["npm-ci", "test", "contracts", "effectiveness-claims", "head-source-match", "source-stability"],
+export const GENERIC_CHECKS = Object.freeze({
+  mechanical: Object.freeze([
+    ["test", "npm test"], ["contracts", "npm run test:contracts"], ["eval-schema", "npm run test:eval-schema"],
+    ["release-eval-contracts", "npm run test:release-eval-contracts"], ["source-stability", "internal source digest comparison"],
+  ]),
+  security: Object.freeze([
+    ["effectiveness-claims", "node tools/release/check-effectiveness-claims.mjs"],
+    ["public-replay-surface", "node tools/evals/test-public-replay-surface.mjs"],
+    ["receipt-sanitizer", "node tools/evals/test-sanitizer-fixtures.mjs"],
+    ["source-stability", "internal source digest comparison"],
+  ]),
+  "clean-clone": Object.freeze([
+    ["npm-ci", "npm ci --ignore-scripts"], ["test", "npm test"], ["contracts", "npm run test:contracts"],
+    ["effectiveness-claims", "node tools/release/check-effectiveness-claims.mjs"],
+    ["head-source-match", "internal HEAD source digest comparison"], ["source-stability", "internal source digest comparison"],
+  ]),
 });
 
 function browserSurfaceIds() {
@@ -105,13 +119,11 @@ function readPinnedJson(entry, label, io, errors) {
 
 function validateEngineeringReceipt(id, value, io, errors) {
   if (id === "context-budget") {
-    strictKeys(value, ["schema_version", "skills", "overall_pass"], "context-budget receipt", errors);
-    if (value?.schema_version !== 1 || value?.overall_pass !== true || !Array.isArray(value?.skills) || value.skills.length !== 19) {
-      errors.push("context-budget: complete 19-skill passing receipt is required");
-    }
-    if (value?.skills?.some((skill) => skill?.pass !== true || skill?.checks?.within_growth_cap !== true)) {
-      errors.push("context-budget: every skill must pass the frozen growth baseline");
-    }
+    strictKeys(value, ["schema_version", "source_tree_sha256", "skills", "overall_pass"], "context-budget receipt", errors);
+    const expected = io.contextBudgetReport();
+    if (!sameJson(value, expected)) errors.push("context-budget: receipt does not exactly match recomputed current skill metrics and frozen baseline");
+    if (value?.source_tree_sha256 !== io.sourceTreeSha256()) errors.push("context-budget: source_tree_sha256 is stale for the current tracked source");
+    if (expected.overall_pass !== true) errors.push("context-budget: current skills exceed the frozen context budget");
     return;
   }
   const currentSource = io.sourceTreeSha256();
@@ -142,11 +154,13 @@ function validateEngineeringReceipt(id, value, io, errors) {
   strictKeys(value, ["schema_version", "kind", "producer_id", "source_tree_sha256", "nonce", "started_at", "finished_at", "checks", "status", "reproducible"], `${id} receipt`, errors);
   if (value?.schema_version !== 1 || value?.kind !== id || value?.producer_id !== `tastecheck.release.${id}.v1`) errors.push(`${id}: generic receipt identity mismatch`);
   if (!Array.isArray(value?.checks) || value.checks.length === 0) { errors.push(`${id}: checks must be nonempty`); return; }
+  const registeredChecks = GENERIC_CHECKS[id];
   const ids = value.checks.map((check) => check?.id);
-  if (!sameJson(ids, GENERIC_CHECK_IDS[id])) errors.push(`${id}: check identities/order do not match the registered producer`);
-  const validChecks = value.checks.every((check) => {
+  if (!sameJson(ids, registeredChecks.map(([checkId]) => checkId))) errors.push(`${id}: check identities/order do not match the registered producer`);
+  const validChecks = value.checks.every((check, index) => {
     strictKeys(check, ["id", "command", "passed", "exit_code", "output_sha256"], `${id} check ${check?.id ?? "<unnamed>"}`, errors);
     if (/^(?:\/|[A-Za-z]:\\)/.test(check?.command ?? "")) errors.push(`${id}: check command leaks an absolute executable path`);
+    if (check?.command !== registeredChecks[index]?.[1]) errors.push(`${id}: check command does not match the registered producer for ${check?.id ?? "<unnamed>"}`);
     return check?.passed === true && check?.exit_code === 0 && SHA256.test(check?.output_sha256 ?? "");
   });
   if (!validChecks || value.status !== "pass" || value.reproducible !== true) errors.push(`${id}: generic receipt must derive from registered all-pass checks`);

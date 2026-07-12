@@ -6,6 +6,7 @@ import Ajv2020 from "ajv/dist/2020.js";
 import {
   EFFECTIVENESS_SOURCES,
   ENGINEERING_PRODUCERS,
+  GENERIC_CHECKS,
   checkEngineeringReadiness,
   checkReleaseManifest,
   deriveEffectivenessClaim,
@@ -16,11 +17,6 @@ const hash = (text) => createHash("sha256").update(text).digest("hex");
 const SOURCE_SHA = "a".repeat(64);
 const ARTIFACT_PATH = "artifacts/proof.png";
 const ARTIFACT_BYTES = Buffer.from("proof");
-const CHECK_IDS = {
-  mechanical: ["test", "contracts", "eval-schema", "release-eval-contracts", "source-stability"],
-  security: ["effectiveness-claims", "public-replay-surface", "receipt-sanitizer", "source-stability"],
-  "clean-clone": ["npm-ci", "test", "contracts", "effectiveness-claims", "head-source-match", "source-stability"],
-};
 const w1Payload = JSON.stringify({
   schema_version: 1,
   kind: "immutable-w1-effectiveness-projection",
@@ -45,7 +41,7 @@ const v5Payload = JSON.stringify({
 });
 
 function receiptFixture(id) {
-  if (id === "context-budget") return { schema_version: 1, skills: Array.from({ length: 19 }, (_, index) => ({ skill: `skill-${index}`, checks: { within_growth_cap: true }, pass: true })), overall_pass: true };
+  if (id === "context-budget") return { schema_version: 1, source_tree_sha256: SOURCE_SHA, skills: Array.from({ length: 19 }, (_, index) => ({ skill: `skill-${index}`, checks: { within_growth_cap: true }, pass: true })), overall_pass: true };
   if (id === "browser" || id === "e2e") return {
     schema_version: 1,
     kind: id,
@@ -70,7 +66,7 @@ function receiptFixture(id) {
     nonce: "fixture-release-0001",
     started_at: "2026-07-11T00:00:00.000Z",
     finished_at: "2026-07-11T00:00:01.000Z",
-    checks: CHECK_IDS[id].map((checkId) => ({ id: checkId, command: "fixture command", passed: true, exit_code: 0, output_sha256: "b".repeat(64) })),
+    checks: GENERIC_CHECKS[id].map(([checkId, command]) => ({ id: checkId, command, passed: true, exit_code: 0, output_sha256: "b".repeat(64) })),
     status: "pass",
     reproducible: true,
   };
@@ -111,6 +107,7 @@ const io = {
   readBytes: (path) => path === ARTIFACT_PATH ? ARTIFACT_BYTES : Buffer.from(texts.get(path)),
   hasCommand: () => true,
   sourceTreeSha256: () => SOURCE_SHA,
+  contextBudgetReport: () => receiptFixture("context-budget"),
   requiredLiveCheckIds: () => ["fixture-check"],
   requiredLiveArtifactIds: () => ["proof"],
 };
@@ -192,11 +189,15 @@ function rejectReceipt(label, id, mutate, expected, ioMutate = (candidateIo) => 
 }
 
 rejectReceipt("stale source", "mechanical", (value) => { value.source_tree_sha256 = "c".repeat(64); }, "source_tree_sha256 is stale");
+rejectReceipt("forged duplicate context rows", "context-budget", (value) => { value.skills = Array.from({ length: 19 }, () => structuredClone(value.skills[0])); }, "does not exactly match recomputed");
+rejectReceipt("forged context metric", "context-budget", (value) => { value.skills[0].skill_md_tokens = 1; }, "does not exactly match recomputed");
+rejectReceipt("stale context source", "context-budget", (value) => { value.source_tree_sha256 = "c".repeat(64); }, "source_tree_sha256 is stale");
 rejectReceipt("forged minimal receipt", "mechanical", (value) => { for (const key of Object.keys(value)) delete value[key]; Object.assign(value, ENGINEERING_PRODUCERS.mechanical.assertions); }, "generic receipt identity mismatch");
 rejectReceipt("missing live artifact", "browser", () => {}, "missing artifact", (candidateIo) => ({ ...candidateIo, hasFile: (path) => path !== ARTIFACT_PATH && candidateIo.hasFile(path) }));
 rejectReceipt("tampered live artifact", "browser", () => {}, "artifact SHA-256 mismatch", (candidateIo) => ({ ...candidateIo, readBytes: (path) => path === ARTIFACT_PATH ? Buffer.from("tampered") : candidateIo.readBytes(path) }));
 rejectReceipt("incomplete live check set", "browser", (value) => { value.checks[0].id = "wrong-check"; }, "live check set");
 rejectReceipt("absolute command leak", "security", (value) => { value.checks[0].command = "/private/node checker.mjs"; }, "absolute executable path");
+rejectReceipt("forged generic command", "mechanical", (value) => { value.checks[0].command = "printf trust-me"; }, "command does not match the registered producer");
 
 const current = JSON.parse(readFileSync(join(root, "contracts/v1/release-receipts.json"), "utf8"));
 const currentEffectiveness = deriveEffectivenessClaim(current);
