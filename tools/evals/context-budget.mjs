@@ -13,8 +13,8 @@
  *
  * Token estimation: 1 token ≈ 4 bytes (rough heuristic, no tokenizer dependency)
  */
-import { readFileSync, readdirSync, statSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { join, relative } from "node:path";
+import { readFileSync, readdirSync, statSync, mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 
 const root = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 
@@ -27,15 +27,10 @@ function estimateTokens(bytes) {
   return Math.ceil(bytes / BYTES_PER_TOKEN);
 }
 
-const baselineManifestPath = join(root, ".omx/evidence/tastecheck-v1/baseline/v0.1.0/manifest.json");
-const baselineExists = existsSync(baselineManifestPath);
-let baselineEntries = new Map();
-
-if (baselineExists) {
-  const manifest = JSON.parse(readFileSync(baselineManifestPath, "utf8"));
-  for (const entry of manifest.entries) {
-    baselineEntries.set(entry.path, { size: entry.size });
-  }
+const baselineManifestPath = join(root, "evals/baselines/context-budget-v0.1.0.json");
+const baselineManifest = JSON.parse(readFileSync(baselineManifestPath, "utf8"));
+if (baselineManifest.schema_version !== 1 || baselineManifest.baseline_release !== "0.1.0") {
+  throw new Error("context budget baseline identity mismatch");
 }
 
 const skillDirs = readdirSync(join(root, "skills"))
@@ -55,8 +50,10 @@ for (const skill of skillDirs) {
   const currentBytes = Buffer.byteLength(body, "utf8");
   const currentTokens = estimateTokens(currentBytes);
 
-  const baselineEntry = baselineEntries.get(relPath);
-  const baselineTokens = baselineEntry ? estimateTokens(baselineEntry.size) : null;
+  const baselineTokens = baselineManifest.skills[skill];
+  if (!Number.isInteger(baselineTokens) || baselineTokens <= 0) {
+    throw new Error(`missing frozen context budget baseline for ${skill}`);
+  }
 
   const contractStartIdx = body.indexOf(START_MARKER);
   const contractEndIdx = body.indexOf(END_MARKER);
@@ -82,14 +79,12 @@ for (const skill of skillDirs) {
   }
 
   // Growth check vs baseline
-  if (baselineTokens !== null) {
-    const growthRatio = (currentTokens - baselineTokens) / Math.max(baselineTokens, 1);
-    skillReport.growth_ratio = parseFloat(growthRatio.toFixed(3));
-    skillReport.checks.within_growth_cap = growthRatio <= SKILL_MD_GROWTH_LIMIT
-      || currentTokens <= baselineTokens; // growing below baseline is always fine
-    if (!skillReport.checks.within_growth_cap) {
-      findings.push(`FAIL: ${skill}/SKILL.md: grew ${Math.round(growthRatio * 100)}% (limit ${Math.round(SKILL_MD_GROWTH_LIMIT * 100)}%)`);
-    }
+  const growthRatio = (currentTokens - baselineTokens) / Math.max(baselineTokens, 1);
+  skillReport.growth_ratio = parseFloat(growthRatio.toFixed(3));
+  skillReport.checks.within_growth_cap = growthRatio <= SKILL_MD_GROWTH_LIMIT
+    || currentTokens <= baselineTokens; // growing below baseline is always fine
+  if (!skillReport.checks.within_growth_cap) {
+    findings.push(`FAIL: ${skill}/SKILL.md: grew ${Math.round(growthRatio * 100)}% (limit ${Math.round(SKILL_MD_GROWTH_LIMIT * 100)}%)`);
   }
 
   // Contract block cap
