@@ -1,5 +1,18 @@
 # Verification
 
+## What verification does not establish
+
+Engineering readiness and effectiveness are separate. The checks below verify repository,
+contract, integration, and browser properties. They do not establish that the skills improve
+model output. Effectiveness remains blocked and unsupported because the terminal blind
+evaluation did not clear its release threshold.
+
+Public copy can be checked independently with:
+
+```bash
+node tools/release/check-effectiveness-claims.mjs
+```
+
 This repo has two verification layers:
 
 1. **Repeatable local gate:** `npm test`
