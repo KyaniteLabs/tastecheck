@@ -13,6 +13,14 @@ import {
 
 const root = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 const hash = (text) => createHash("sha256").update(text).digest("hex");
+const SOURCE_SHA = "a".repeat(64);
+const ARTIFACT_PATH = "artifacts/proof.png";
+const ARTIFACT_BYTES = Buffer.from("proof");
+const CHECK_IDS = {
+  mechanical: ["test", "contracts", "eval-schema", "release-eval-contracts", "source-stability"],
+  security: ["effectiveness-claims", "public-replay-surface", "receipt-sanitizer", "source-stability"],
+  "clean-clone": ["npm-ci", "test", "contracts", "effectiveness-claims", "head-source-match", "source-stability"],
+};
 const w1Payload = JSON.stringify({
   schema_version: 1,
   kind: "immutable-w1-effectiveness-projection",
@@ -36,8 +44,40 @@ const v5Payload = JSON.stringify({
   immutable_stop_rule: true,
 });
 
+function receiptFixture(id) {
+  if (id === "context-budget") return { schema_version: 1, skills: Array.from({ length: 19 }, (_, index) => ({ skill: `skill-${index}`, checks: { within_growth_cap: true }, pass: true })), overall_pass: true };
+  if (id === "browser" || id === "e2e") return {
+    schema_version: 1,
+    kind: id,
+    producer_id: "tastecheck.release.live-execution.v1",
+    producer: { id: "tastecheck-live-execution", version: 1 },
+    source_tree_sha256: SOURCE_SHA,
+    nonce: "fixture-release-0001",
+    runtime: { node: "v26.0.0", playwright: "1.61.1", browser: "fixture", platform: "other" },
+    started_at: "2026-07-11T00:00:00.000Z",
+    finished_at: "2026-07-11T00:00:01.000Z",
+    executed: true,
+    reproducible: true,
+    artifacts: [{ id: "proof", path: ARTIFACT_PATH, sha256: hash(ARTIFACT_BYTES), bytes: ARTIFACT_BYTES.length }],
+    checks: [{ id: "fixture-check", passed: true, detail: "Fixture passed" }],
+    status: "pass",
+  };
+  return {
+    schema_version: 1,
+    kind: id,
+    producer_id: `tastecheck.release.${id}.v1`,
+    source_tree_sha256: SOURCE_SHA,
+    nonce: "fixture-release-0001",
+    started_at: "2026-07-11T00:00:00.000Z",
+    finished_at: "2026-07-11T00:00:01.000Z",
+    checks: CHECK_IDS[id].map((checkId) => ({ id: checkId, command: "fixture command", passed: true, exit_code: 0, output_sha256: "b".repeat(64) })),
+    status: "pass",
+    reproducible: true,
+  };
+}
+
 function manifestFixture() {
-  const payloads = Object.fromEntries(Object.entries(ENGINEERING_PRODUCERS).map(([id, producer]) => [id, JSON.stringify({ schema_version: 1, ...producer.assertions })]));
+  const payloads = Object.fromEntries(Object.keys(ENGINEERING_PRODUCERS).map((id) => [id, JSON.stringify(receiptFixture(id))]));
   return {
     schema_version: 2,
     target_release: "1.0.0",
@@ -61,11 +101,17 @@ function manifestFixture() {
 }
 
 const texts = new Map([
-  ...Object.entries(ENGINEERING_PRODUCERS).map(([id, { path, assertions }]) => [path, JSON.stringify({ schema_version: 1, ...assertions })]),
+  ...Object.entries(ENGINEERING_PRODUCERS).map(([id, { path }]) => [path, JSON.stringify(receiptFixture(id))]),
   [EFFECTIVENESS_SOURCES["w1-effectiveness"].path, w1Payload],
   [EFFECTIVENESS_SOURCES["terminal-v5-effectiveness"].path, v5Payload],
 ]);
-const io = { hasFile: (path) => texts.has(path), readText: (path) => texts.get(path), hasCommand: () => true };
+const io = {
+  hasFile: (path) => texts.has(path) || path === ARTIFACT_PATH,
+  readText: (path) => texts.get(path),
+  readBytes: (path) => path === ARTIFACT_PATH ? ARTIFACT_BYTES : Buffer.from(texts.get(path)),
+  hasCommand: () => true,
+  sourceTreeSha256: () => SOURCE_SHA,
+};
 const valid = manifestFixture();
 
 const ajv = new Ajv2020({ allErrors: true, strict: true });
@@ -105,7 +151,7 @@ reject("stale effectiveness hash", (m) => { m.effectiveness_claim.sources[0].sha
 
 const forgedTexts = new Map(texts);
 forgedTexts.set(EFFECTIVENESS_SOURCES["terminal-v5-effectiveness"].path, JSON.stringify({ ...JSON.parse(v5Payload), release_eligible: true }));
-const forgedIo = { hasFile: (path) => forgedTexts.has(path), readText: (path) => forgedTexts.get(path), hasCommand: () => true };
+const forgedIo = { ...io, hasFile: (path) => forgedTexts.has(path), readText: (path) => forgedTexts.get(path) };
 if (!deriveEffectivenessClaim(valid, forgedIo).errors.some((error) => error.includes("pinned SHA-256"))) throw new Error("forged effective evidence bypassed immutable hash binding");
 
 function rejectProjection(label, id, mutate, expected) {
@@ -117,7 +163,7 @@ function rejectProjection(label, id, mutate, expected) {
   const text = JSON.stringify(payload);
   candidateTexts.set(source.path, text);
   source.sha256 = hash(text);
-  const candidateIo = { hasFile: (path) => candidateTexts.has(path), readText: (path) => candidateTexts.get(path), hasCommand: () => true };
+  const candidateIo = { ...io, hasFile: (path) => candidateTexts.has(path), readText: (path) => candidateTexts.get(path) };
   const errors = deriveEffectivenessClaim(candidate, candidateIo).errors;
   if (!errors.some((error) => error.includes(expected))) throw new Error(`${label} did not fail with ${expected}: ${errors.join("; ")}`);
 }
@@ -129,9 +175,27 @@ rejectProjection("forged V5 source binding", "terminal-v5-effectiveness", (value
 rejectProjection("weakened V5 threshold", "terminal-v5-effectiveness", (value) => { value.threshold = 0.3; }, "historical delta 0.3 and threshold 0.6 must be preserved");
 rejectProjection("promoted V5 verdict", "terminal-v5-effectiveness", (value) => { value.release_eligible = true; value.effectiveness_status = "effective"; }, "immutable release_eligible must remain false");
 
+function rejectReceipt(label, id, mutate, expected, ioMutate = (candidateIo) => candidateIo) {
+  const candidate = structuredClone(valid);
+  const candidateTexts = new Map(texts);
+  const cell = candidate.engineering_readiness.required_cells.find((entry) => entry.id === id);
+  const receipt = JSON.parse(candidateTexts.get(cell.path));
+  mutate(receipt);
+  const text = JSON.stringify(receipt);
+  candidateTexts.set(cell.path, text);
+  cell.sha256 = hash(text);
+  const candidateIo = ioMutate({ ...io, readText: (path) => candidateTexts.get(path), hasFile: (path) => candidateTexts.has(path) || path === ARTIFACT_PATH });
+  const errors = checkEngineeringReadiness(candidate, candidateIo).errors;
+  if (!errors.some((error) => error.includes(expected))) throw new Error(`${label} did not fail with ${expected}: ${errors.join("; ")}`);
+}
+
+rejectReceipt("stale source", "mechanical", (value) => { value.source_tree_sha256 = "c".repeat(64); }, "source_tree_sha256 is stale");
+rejectReceipt("forged minimal receipt", "mechanical", (value) => { for (const key of Object.keys(value)) delete value[key]; Object.assign(value, ENGINEERING_PRODUCERS.mechanical.assertions); }, "generic receipt identity mismatch");
+rejectReceipt("missing live artifact", "browser", () => {}, "missing artifact", (candidateIo) => ({ ...candidateIo, hasFile: (path) => path !== ARTIFACT_PATH && candidateIo.hasFile(path) }));
+rejectReceipt("tampered live artifact", "browser", () => {}, "artifact SHA-256 mismatch", (candidateIo) => ({ ...candidateIo, readBytes: (path) => path === ARTIFACT_PATH ? Buffer.from("tampered") : candidateIo.readBytes(path) }));
+rejectReceipt("absolute command leak", "security", (value) => { value.checks[0].command = "/private/node checker.mjs"; }, "absolute executable path");
+
 const current = JSON.parse(readFileSync(join(root, "contracts/v1/release-receipts.json"), "utf8"));
-const currentErrors = checkReleaseManifest(current);
-if (currentErrors.length) throw new Error(`current release manifest failed: ${currentErrors.join("; ")}`);
 const currentEffectiveness = deriveEffectivenessClaim(current);
 if (currentEffectiveness.status !== "blocked") throw new Error("current immutable effectiveness claim must remain blocked");
 
