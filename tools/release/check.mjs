@@ -8,45 +8,150 @@ import { join } from "node:path";
 export const root = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 export const TERMINAL_V5_SYNTHESIS = "evals/replays/remediation7-v5-spacing-final-2026-07-11/blind-judge/synthesis.json";
 export const HISTORICAL_FULL19_PREFIX = "evals/replays/full19-v1rc-2026-07-11/";
+export const ENGINEERING_PRODUCERS = Object.freeze({
+  "context-budget": Object.freeze({ path: "evals/receipts/v1/context-budget.json", command: "npm run eval:context-budget", assertions: Object.freeze({ overall_pass: true }) }),
+  browser: Object.freeze({ path: "evals/receipts/v1/browser.json", command: "npm run release:browser-receipt", assertions: Object.freeze({ status: "pass", reproducible: true, producer_id: "tastecheck.release.live-execution.v1" }) }),
+  e2e: Object.freeze({ path: "evals/receipts/v1/e2e.json", command: "npm run release:e2e-receipt", assertions: Object.freeze({ status: "pass", reproducible: true, producer_id: "tastecheck.release.live-execution.v1" }) }),
+  mechanical: Object.freeze({ path: "evals/receipts/v1/mechanical.json", command: "npm run release:mechanical-receipt", assertions: Object.freeze({ status: "pass", reproducible: true, producer_id: "tastecheck.release.mechanical.v1" }) }),
+  security: Object.freeze({ path: "evals/receipts/v1/security.json", command: "npm run release:security-receipt", assertions: Object.freeze({ status: "pass", reproducible: true, producer_id: "tastecheck.release.security.v1" }) }),
+  "clean-clone": Object.freeze({ path: "evals/receipts/v1/clean-clone.json", command: "npm run release:clean-clone-receipt", assertions: Object.freeze({ status: "pass", reproducible: true, producer_id: "tastecheck.release.clean-clone.v1" }) }),
+});
+export const EFFECTIVENESS_SOURCES = Object.freeze({
+  "w1-effectiveness": Object.freeze({ path: "evals/receipts/v1/immutable/w1-effectiveness.json", source_evidence_sha256: "4740047dde16d93f1c07ed7be8dab4bb7aab0930b61d0e035caa64263963a6ce" }),
+  "terminal-v5-effectiveness": Object.freeze({ path: "evals/receipts/v1/immutable/terminal-v5-effectiveness.json", source_evidence_sha256: "1bf66f612098df398163042e2450ed6eb6ee4b0a3b57d73e1aebbe76196b1d81" }),
+});
 const mode = process.argv.find((arg) => arg.startsWith("--mode="))?.split("=")[1] ?? "release";
 
 function load(rel) { return JSON.parse(readFileSync(join(root, rel), "utf8")); }
 function sha256(value) { return createHash("sha256").update(value).digest("hex"); }
 function at(value, path) { return path.split(".").reduce((current, key) => current?.[key], value); }
 
-export function checkReceiptManifest(manifest, { readText = (path) => readFileSync(join(root, path), "utf8"), hasFile = (path) => existsSync(join(root, path)) } = {}) {
+const defaultIo = Object.freeze({
+  readText: (path) => readFileSync(join(root, path), "utf8"),
+  hasFile: (path) => existsSync(join(root, path)),
+  hasCommand: (command) => Boolean(load("package.json").scripts?.[command.replace(/^npm run /, "")]),
+});
+const SHA256 = /^[a-f0-9]{64}$/;
+
+function strictKeys(value, allowed, label, errors) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) { errors.push(`${label} must be an object`); return; }
+  for (const key of Object.keys(value)) if (!allowed.includes(key)) errors.push(`${label}: unknown field ${key}`);
+}
+
+function canonical(value) {
+  if (Array.isArray(value)) return value.map(canonical);
+  if (value && typeof value === "object") return Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonical(value[key])]));
+  return value;
+}
+
+function sameJson(left, right) { return JSON.stringify(canonical(left)) === JSON.stringify(canonical(right)); }
+
+function readPinnedJson(entry, label, io, errors) {
+  if (!entry || typeof entry !== "object") return null;
+  if (!SHA256.test(entry.sha256 ?? "")) { errors.push(`${label}: sha256 must be a lowercase 64-character digest`); return null; }
+  if (/^0{64}$/.test(entry.sha256)) { errors.push(`${label}: placeholder SHA-256 is not allowed in release mode`); return null; }
+  if (!io.hasFile(entry.path)) { errors.push(`${label}: missing required receipt cell ${entry.path}`); return null; }
+  let text;
+  try { text = io.readText(entry.path); }
+  catch (error) { errors.push(`${label}: cannot read ${entry.path}: ${error.message}`); return null; }
+  if (sha256(text) !== entry.sha256) errors.push(`${label}: pinned SHA-256 does not match ${entry.path}`);
+  try { return JSON.parse(text); }
+  catch { errors.push(`${label}: receipt is not valid JSON`); return null; }
+}
+
+export function checkEngineeringReadiness(manifest, ioOverrides = {}) {
+  const io = { ...defaultIo, ...ioOverrides };
   const errors = [];
-  if (manifest?.schema_version !== 1) errors.push("release receipt manifest schema_version must be 1");
-  if (manifest?.target_release !== "1.0.0") errors.push("release receipt manifest target_release must be 1.0.0");
-  if (!Array.isArray(manifest?.required_receipts) || manifest.required_receipts.length === 0) errors.push("required_receipts must be nonempty");
-  for (const receipt of manifest?.required_receipts ?? []) {
-    if (!receipt.id || !receipt.path || !receipt.sha256 || !receipt.assertions) {
-      errors.push(`${receipt.id ?? "<unnamed>"}: missing path, sha256, or assertions`);
-      continue;
-    }
-    if (!hasFile(receipt.path)) { errors.push(`${receipt.id}: missing required receipt cell ${receipt.path}`); continue; }
-    const text = readText(receipt.path);
-    if (sha256(text) !== receipt.sha256) errors.push(`${receipt.id}: pinned SHA-256 does not match ${receipt.path}`);
-    const value = JSON.parse(text);
-    for (const [path, expected] of Object.entries(receipt.assertions)) {
-      if (at(value, path) !== expected) errors.push(`${receipt.id}: ${path}=${JSON.stringify(at(value, path))}; expected ${JSON.stringify(expected)}`);
+  const section = manifest?.engineering_readiness;
+  strictKeys(section, ["required_cells"], "engineering_readiness", errors);
+  if (!Array.isArray(section?.required_cells)) {
+    errors.push("engineering_readiness.required_cells must be an array");
+    return { status: "blocked", errors };
+  }
+  const seen = new Set();
+  for (const cell of section.required_cells) {
+    strictKeys(cell, ["id", "path", "sha256", "producer_id", "assertions"], `engineering cell ${cell?.id ?? "<unnamed>"}`, errors);
+    if (seen.has(cell?.id)) errors.push(`${cell.id}: duplicate cell id`);
+    seen.add(cell?.id);
+    const producer = ENGINEERING_PRODUCERS[cell?.producer_id];
+    if (!producer) { errors.push(`${cell?.id ?? "<unnamed>"}: unregistered producer ${cell?.producer_id ?? "<missing>"}`); continue; }
+    if (!io.hasCommand(producer.command)) errors.push(`${cell.id}: registered producer command is unavailable: ${producer.command}`);
+    if (cell.id !== cell.producer_id) errors.push(`${cell.id}: cell id must equal producer_id ${cell.producer_id}`);
+    if (cell.path !== producer.path) { errors.push(`${cell.id}: path is not the registered path ${producer.path}`); continue; }
+    if (!sameJson(cell.assertions, producer.assertions)) errors.push(`${cell.id}: assertions must equal the registered producer assertions`);
+    const value = readPinnedJson(cell, cell.id, io, errors);
+    if (value) for (const [path, expected] of Object.entries(producer.assertions)) {
+      if (at(value, path) !== expected) errors.push(`${cell.id}: ${path}=${JSON.stringify(at(value, path))}; expected ${JSON.stringify(expected)}`);
     }
   }
-  return errors;
+  for (const id of Object.keys(ENGINEERING_PRODUCERS)) if (!seen.has(id)) errors.push(`${id}: missing registered producer cell`);
+  if (seen.size !== Object.keys(ENGINEERING_PRODUCERS).length) errors.push("engineering_readiness must contain the complete six-cell producer registry");
+  return { status: errors.length ? "blocked" : "ready", errors };
+}
+
+export function deriveEffectivenessClaim(manifest, ioOverrides = {}) {
+  const io = { ...defaultIo, ...ioOverrides };
+  const errors = [];
+  const claim = manifest?.effectiveness_claim;
+  strictKeys(claim, ["claimed_status", "sources"], "effectiveness_claim", errors);
+  if (claim?.claimed_status !== "blocked") errors.push("effectiveness_claim.claimed_status must be blocked");
+  if (!Array.isArray(claim?.sources)) {
+    errors.push("effectiveness_claim.sources must be an array");
+    return { status: "blocked", errors, reasons: ["invalid_effectiveness_contract"] };
+  }
+  const seen = new Set();
+  const values = new Map();
+  for (const source of claim.sources) {
+    strictKeys(source, ["id", "path", "sha256"], `effectiveness source ${source?.id ?? "<unnamed>"}`, errors);
+    if (seen.has(source?.id)) errors.push(`${source.id}: duplicate effectiveness source id`);
+    seen.add(source?.id);
+    const registered = EFFECTIVENESS_SOURCES[source?.id];
+    if (!registered) { errors.push(`${source?.id ?? "<unnamed>"}: unregistered effectiveness source`); continue; }
+    if (source.path !== registered.path) { errors.push(`${source.id}: path is not the registered immutable path ${registered.path}`); continue; }
+    const value = readPinnedJson(source, source.id, io, errors);
+    if (value) values.set(source.id, value);
+  }
+  for (const id of Object.keys(EFFECTIVENESS_SOURCES)) if (!seen.has(id)) errors.push(`${id}: missing immutable effectiveness source`);
+
+  const w1 = values.get("w1-effectiveness");
+  if (w1) {
+    strictKeys(w1, ["schema_version", "kind", "source_evidence_sha256", "effectiveness_status", "jobs", "judgments", "paired", "diversity", "immutable_stop_rule"], "w1 effectiveness projection", errors);
+    strictKeys(w1.jobs, ["complete", "required"], "w1 jobs projection", errors);
+    strictKeys(w1.judgments, ["complete", "required"], "w1 judgments projection", errors);
+    strictKeys(w1.paired, ["pass_count", "required_count"], "w1 paired projection", errors);
+    strictKeys(w1.diversity, ["pass_count", "required_count"], "w1 diversity projection", errors);
+    if (w1.schema_version !== 1 || w1.kind !== "immutable-w1-effectiveness-projection") errors.push("w1-effectiveness: projection identity mismatch");
+    if (w1.source_evidence_sha256 !== EFFECTIVENESS_SOURCES["w1-effectiveness"].source_evidence_sha256) errors.push("w1-effectiveness: canonical source evidence hash mismatch");
+    if (w1.effectiveness_status !== "blocked") errors.push("w1-effectiveness: effectiveness_status must remain blocked");
+    if (w1.jobs?.complete !== 12 || w1.jobs?.required !== 12) errors.push("w1-effectiveness: completed jobs must remain 12/12");
+    if (w1.judgments?.complete !== 27 || w1.judgments?.required !== 27) errors.push("w1-effectiveness: completed judgments must remain 27/27");
+    if (w1.paired?.pass_count !== 0 || w1.paired?.required_count !== 3) errors.push("w1-effectiveness: immutable paired result must remain 0/3");
+    if (w1.diversity?.pass_count !== 0 || w1.diversity?.required_count !== 3) errors.push("w1-effectiveness: immutable diversity result must remain 0/3");
+    if (w1.immutable_stop_rule !== true) errors.push("w1-effectiveness: immutable stop rule is required");
+  }
+  const v5 = values.get("terminal-v5-effectiveness");
+  if (v5) {
+    strictKeys(v5, ["schema_version", "kind", "source_evidence_sha256", "effectiveness_status", "release_eligible", "mean_delta", "threshold", "preference", "immutable_stop_rule"], "terminal V5 effectiveness projection", errors);
+    strictKeys(v5.preference, ["current", "total"], "terminal V5 preference projection", errors);
+    if (v5.schema_version !== 1 || v5.kind !== "immutable-terminal-v5-effectiveness-projection") errors.push("terminal-v5-effectiveness: projection identity mismatch");
+    if (v5.source_evidence_sha256 !== EFFECTIVENESS_SOURCES["terminal-v5-effectiveness"].source_evidence_sha256) errors.push("terminal-v5-effectiveness: canonical source evidence hash mismatch");
+    if (v5.effectiveness_status !== "blocked") errors.push("terminal-v5-effectiveness: effectiveness_status must remain blocked");
+    if (v5.release_eligible !== false) errors.push("terminal-v5-effectiveness: immutable release_eligible must remain false");
+    if (v5.mean_delta !== 0.3 || v5.threshold !== 0.6) errors.push("terminal-v5-effectiveness: historical delta 0.3 and threshold 0.6 must be preserved");
+    if (v5.preference?.current !== 11 || v5.preference?.total !== 12) errors.push("terminal-v5-effectiveness: historical preference 11/12 must be preserved");
+    if (v5.immutable_stop_rule !== true) errors.push("terminal-v5-effectiveness: immutable stop rule is required");
+  }
+  const reasons = ["w1_paired_0_of_3", "w1_diversity_0_of_3", "terminal_v5_delta_0.3_below_0.6"];
+  return { status: "blocked", errors, reasons };
 }
 
 export function checkReleaseManifest(manifest, io = {}) {
-  const errors = checkReceiptManifest(manifest, io);
-  const terminal = manifest?.required_receipts?.find((receipt) => receipt.id === "terminal-v5-synthesis");
-  if (!terminal) {
-    errors.push("terminal-v5-synthesis: required terminal V5 synthesis receipt is missing");
-  } else {
-    if (terminal.path !== TERMINAL_V5_SYNTHESIS) errors.push("terminal-v5-synthesis: terminal receipt path is not the canonical V5 synthesis");
-    if (terminal.assertions?.release_eligible !== true) errors.push("terminal-v5-synthesis: release_eligible=true is required");
-  }
-  for (const receipt of manifest?.required_receipts ?? []) {
-    if (receipt.path?.startsWith(HISTORICAL_FULL19_PREFIX)) errors.push(`${receipt.id}: historical full19-v1rc evidence cannot satisfy the current release gate`);
-  }
+  const errors = [];
+  strictKeys(manifest, ["schema_version", "target_release", "engineering_readiness", "effectiveness_claim"], "release manifest", errors);
+  if (manifest?.schema_version !== 2) errors.push("release receipt manifest schema_version must be 2");
+  if (manifest?.target_release !== "1.0.0") errors.push("release receipt manifest target_release must be 1.0.0");
+  errors.push(...checkEngineeringReadiness(manifest, io).errors);
+  errors.push(...deriveEffectivenessClaim(manifest, io).errors);
   return errors;
 }
 
@@ -82,6 +187,7 @@ function checkE2E() {
 
 function main() {
   const errors = [];
+  let successDetail = "";
   if (mode === "browser") {
     const ok = ["tools/verify.mjs", "tools/verify-landing.mjs", "tools/verify-integration.mjs", "tools/verify-gate-audit.mjs"].every((script) => runNode(script));
     if (!ok) errors.push("static browser-contract checks failed");
@@ -97,15 +203,26 @@ function main() {
     errors.push(...checkE2E());
   } else if (mode === "claims") {
     errors.push(...claims());
+  } else if (mode === "engineering") {
+    const engineering = checkEngineeringReadiness(load("contracts/v1/release-receipts.json"));
+    errors.push(...engineering.errors);
+    successDetail = "; engineering_ready=true";
+  } else if (mode === "effectiveness") {
+    const effectiveness = deriveEffectivenessClaim(load("contracts/v1/release-receipts.json"));
+    errors.push(...effectiveness.errors);
+    successDetail = `; effectiveness=${effectiveness.status}`;
   } else if (mode === "release") {
-    errors.push(...claims(), ...checkReleaseManifest(load("contracts/v1/release-receipts.json")));
+    const releaseManifest = load("contracts/v1/release-receipts.json");
+    const effectiveness = deriveEffectivenessClaim(releaseManifest);
+    errors.push(...claims(), ...checkReleaseManifest(releaseManifest));
+    successDetail = `; engineering_ready=true; effectiveness=${effectiveness.status}`;
   } else errors.push(`unknown release check mode: ${mode}`);
   if (errors.length) {
     console.error(`release check blocked (${mode})`);
     for (const error of errors) console.error(`- ${error}`);
     process.exit(1);
   }
-  console.log(`release check passed (${mode})`);
+  console.log(`release check passed (${mode})${successDetail}`);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) main();
