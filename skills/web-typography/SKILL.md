@@ -13,22 +13,8 @@ You are setting type for screens, not print. The goal is text that is **legible*
 length), and **clear in hierarchy** (does the eye know where to go) — across every
 viewport, zoom level, and font preference a real user might have.
 
-This skill encodes a small number of decisions that matter most, in the order you
-should make them. Work top-down: get the **system** right (scale, measure, rhythm)
-before reaching for clever features. Most "bad typography" on the web is not a
-missing OpenType flag — it's a body size that's too small, a measure that's too
-wide, line-height that's too tight, and a font that shifts the layout when it loads.
-
-## Provenance — principle, not property
-
-This skill is an **independent synthesis of widely-taught typographic principles**,
-not a reproduction of anyone's writing, examples, or designs. Ideas are attributed to
-their lineage (e.g. measure from Bringhurst, Letter→Text→Grid from Lupton, the modular
-scale from Tim Brown) because crediting an idea is scholarship — but the expression and
-the web translation here are this skill's own. When you apply or extend it, do the
-same: express principles in your own words, credit the source of an idea where natural,
-and never copy a source's prose, sample layouts, or proprietary content. The shared
-*knowledge* is yours to use; any individual's *expression* is not.
+Work top-down: establish roles, readable measure, scale, and loading behavior before
+polish. The result should suit the reading task, language coverage, density, and brand.
 
 ## The decision order
 
@@ -38,20 +24,20 @@ Make these decisions in sequence. Each one constrains the next.
    valid deliberate choice. For brand, marketing, portfolio, or launch surfaces,
    start from the design-system interview and choose a display/body stance with
    personality. If you load a web font, plan its loading (step 6) at the same time.
-2. **Base size & measure** — Body text ≥ `1rem` (16px), line-length 45–75
-   characters (`max-width: ~66ch`). These two do more for readability than anything else.
-3. **Type scale** — Pick one modular ratio and derive every size from it. Make it
-   fluid with `clamp()`. Don't hand-pick random px values.
-4. **Vertical rhythm** — Line-height ~1.5 for body, tighter (1.1–1.3) for large
-   headings. Space paragraphs *or* indent them, never both.
+2. **Base size & measure** — Start body text around `1rem` and sustained reading around
+   45–75 characters per line, then test the actual face, language, density, and viewport.
+3. **Type scale** — Define a small role-based scale. A modular ratio can generate a
+   starting point; optical hierarchy decides the final values. Use fluid sizing only
+   where the role benefits from it.
+4. **Vertical rhythm** — Start body line-height around 1.4–1.6 and tighten display
+   roles; verify clipping and spacing with the chosen face and scripts.
 5. **Hierarchy & polish** — Weight/size/space contrast, `text-wrap: balance` on
-   headings and `pretty` on body, OpenType features, and tracking: display sizes
-   (step-3 and up) get −0.01 to −0.03em letter-spacing, ALL-CAPS labels get +0.05 to
-   +0.1em — body text is never negative-tracked.
-6. **Loading & performance** — `font-display`, preload the one critical font,
-   self-host WOFF2, and **metric-match the fallback** so the page doesn't shift (CLS).
+   headings and `pretty` on body where supported, OpenType features, and optical
+   tracking. Treat numeric tracking recipes as starting points, not universal values.
+6. **Loading & performance** — choose `font-display`, preload only a genuinely critical
+   known resource, prefer WOFF2, and metric-match the fallback where reflow matters.
 7. **Accessibility pass** — Contrast, zoom to 200%, the WCAG 1.4.12 text-spacing
-   overrides, never disable zoom, never justify body text.
+   overrides, enabled zoom, and rendered review of any justified reading text.
 
 ## Derive a type stance from use, not a sample pairing
 
@@ -69,23 +55,25 @@ checks.
 These are the mistakes that show up again and again. Internalize the *why* so you
 can apply them in novel situations, not just copy them.
 
-- **Size body text in `rem`, never `px`.** `rem` respects the user's browser
-  font-size setting; `px` silently overrides an accessibility preference. Reserve
-  `px` for hairline borders and genuinely fixed physical details.
+- **Use user-relative units for the type system.** Prefer `rem` for document-level
+  roles and `em` where a component should scale with its context. A pixel declaration
+  is not automatically inaccessible, but a pixel-only system is easier to detach from
+  user preferences and harder to scale coherently.
 - **Line-height is unitless.** `line-height: 1.5` is inherited as a *ratio*, so
   each element recomputes from its own size. A fixed `line-height: 24px` inherits
   the computed pixel value and breaks on differently-sized children.
-- **Never size fonts in pure `vw`.** Viewport units don't respond to zoom or user
-  font-size — that fails WCAG 1.4.4. Always wrap fluid sizing in `clamp()` with a
-  `rem` term: `clamp(2rem, 1rem + 3vw, 4rem)`. The `rem` keeps zoom working.
+- **Do not size text with unbounded viewport units.** For fluid display type, bound
+  the range and include a relative-unit contribution, then test browser zoom and text
+  resizing: `clamp(2rem, 1rem + 3vw, 4rem)`.
 - **Constrain the measure.** Lines longer than ~75 characters make the eye lose its
   place on the return sweep; shorter than ~45 gets choppy. `max-width: 66ch` on
   text containers is the single highest-leverage readability fix.
-- **Never justify body text on the web.** CSS justification without sophisticated
-  hyphenation opens "rivers" of whitespace. Left-align, ragged right.
-- **A web font must not shift the layout when it loads.** Pair `font-display` with
+- **Default sustained reading to ragged text.** Justification needs language-aware
+  hyphenation, adequate measure, and rendered review; without those, it creates rivers.
+- **Control web-font layout shift.** Pair `font-display` with
   a **metric-matched fallback** (`size-adjust` + `ascent/descent/line-gap-override`)
-  so swapping the real font in causes zero reflow. This is the fix for font-driven CLS.
+  and measure the result. Metric matching reduces font-driven reflow; it does not
+  justify a zero-CLS claim without observation.
 
 ## Role map and metric budget
 
@@ -134,7 +122,7 @@ Keep this file in context; pull a reference in when the task calls for it.
   to a container rather than the viewport.**
 - **`references/font-loading.md`** — Web-font performance: `font-display`,
   preloading, self-hosting vs Google Fonts (GDPR), WOFF2, subsetting,
-  `unicode-range`, variable fonts, and **eliminating CLS with metric-matched
+  `unicode-range`, variable fonts, and **reducing font-driven layout shift with metric-matched
   fallbacks** (`size-adjust`, `*-override`, Fontaine, next/font). **Read this
   whenever a project loads a custom web font or has layout-shift / slow-text issues.**
 - **`references/accessibility.md`** — WCAG 2.2 for text: contrast ratios, resize to

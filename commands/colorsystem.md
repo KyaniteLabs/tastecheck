@@ -1,13 +1,13 @@
 ---
-description: Build an OKLCH palette that's cohesive and passes contrast
+description: Build or repair a purposeful, contrast-checked color system
 argument-hint: "[file/path or text, optional]"
 ---
 
 Load and apply the **color-system** skill (`~/.agents/skills/color-system/SKILL.md`).
 
-Generate or repair a brief-derived palette: OKLCH ramp, tinted neutrals, semantic
-tokens, and measured contrast pairs. Treat skill examples as mechanics, not a palette
-menu; report the evidence table with status, provenance, reason, and remediation.
+Start from the brief and existing brand evidence. Produce the needed OKLCH ramps,
+semantic roles, mode mappings, and measured foreground/background pairs. Examples teach
+the mechanics; they are not a palette menu.
 
 Target: $ARGUMENTS (if empty, apply to the current file / most recent work in context).
 

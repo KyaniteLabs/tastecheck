@@ -1,11 +1,11 @@
 # Verification
 
-## What verification does not establish
+## BLUF
 
-Engineering readiness and effectiveness are separate. The checks below verify repository,
-contract, integration, and browser properties. They do not establish that the skills improve
-model output. Effectiveness remains blocked and unsupported because the terminal blind
-evaluation did not clear its release threshold.
+`npm test` verifies the repository, installer, contracts, links, demo surfaces, and the
+Taste Oracle's internal capture/analysis contracts. Browser QA verifies rendered behavior
+on the pages and viewports actually tested. Effectiveness is unproven; the terminal blind
+evaluation has not cleared its release threshold.
 
 Public copy can be checked independently with:
 
@@ -13,7 +13,7 @@ Public copy can be checked independently with:
 node tools/release/check-effectiveness-claims.mjs
 ```
 
-This repo has two verification layers:
+Use both verification layers for a release:
 
 1. **Repeatable local gate:** `npm test`
 2. **Manual/browser QA:** render the static pages in a real browser and do the checks below
@@ -30,8 +30,10 @@ Run from the repo root:
 npm test
 ```
 
-`npm test` runs `tools/verify.mjs`, `tools/lint-skills.mjs`, `tools/verify-landing.mjs`,
-`tools/verify-integration.mjs`, and `tools/verify-gate-audit.mjs`.
+`npm test` first runs the Taste Oracle's contract, capture, statistics, judge-quorum, and
+file-backed CLI tests. It then runs `tools/verify.mjs`, `tools/lint-skills.mjs`,
+`tools/verify-landing.mjs`, `tools/verify-integration.mjs`, and
+`tools/verify-gate-audit.mjs`.
 
 `tools/verify.mjs` checks:
 
@@ -87,7 +89,7 @@ GitHub Pages:
 
 Run this before publishing visual claims or screenshots:
 
-- Open `index.html`, `samples/index.html`, all five `samples/*/index.html`, and every `demos/*.html`.
+- Open `index.html`, `samples/index.html`, all six committed `samples/*/index.html`, and every `demos/*.html`.
 - Check 390px, 768px, and 1280px widths.
 - Confirm first meaningful content renders, fonts/images resolve, and there is no horizontal overflow.
 - Open DevTools console; record any errors or warnings relevant to the page.
@@ -156,7 +158,8 @@ Date: 2026-06-06
 - Browser: CloakBrowser Chromium against local `python3 -m http.server` on
   `http://127.0.0.1:4176/`.
 - Pages checked in real same-origin iframes at 390px and 1280px:
-  homepage, samples gallery, five sample systems, six demos, example-build after page,
+  homepage, samples gallery, the five sample systems committed at that receipt's date,
+  six demos, example-build after page,
   and `skills/data-viz/assets/chart-starter.html`.
 - Browser smoke result: 28 page/viewport checks, 0 blank pages, 0 H1-count failures,
   0 horizontal-overflow failures, 0 broken images, 0 `a11yAudit()` failures.

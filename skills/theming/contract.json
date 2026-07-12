@@ -13,9 +13,9 @@
     "optional": ["Source color ramp", "User preference policy", "Native-control and browser-chrome requirements"]
   },
   "outputs": {
-    "primary": "A semantic light, dark, and high-contrast theme map with preference behavior and measured pairs",
+    "primary": "Semantic mappings for every supported theme, plus forced-colors behavior, preference policy, and measured pairs",
     "artifacts": ["theme token mappings", "theme preference policy", "contrast table"],
-    "handoff_fields": ["semantic_roles", "light_map", "dark_map", "high_contrast_map", "preference_behavior", "contrast_pairs"]
+    "handoff_fields": ["semantic_roles", "supported_theme_maps", "forced_colors_behavior", "preference_behavior", "contrast_pairs"]
   },
   "stop_conditions": ["Pause when semantic roles are missing and theme values would be raw-color copies", "Do not claim a theme is accessible without per-theme measurements"],
   "handoff": {

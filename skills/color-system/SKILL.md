@@ -8,35 +8,30 @@ description: >-
 
 # Color System
 
-Most palette problems come from one root cause: **HSL and hex don't match human
-perception.** In HSL, `hsl(60 100% 50%)` (yellow) and `hsl(240 100% 50%)` (blue) have
-the *same* lightness value but the yellow looks far brighter — so ramps built in HSL
-have lightness that lurches around as hue changes, contrast becomes unpredictable, and
-mid-tones go muddy. **OKLCH fixes this**: its L (lightness) is perceptually uniform, so
-"L = 0.6" looks equally bright at every hue. That one property makes cohesive,
-contrast-predictable palettes straightforward.
+Build a palette whose roles survive real text, controls, themes, and gamut limits.
+OKLCH makes lightness and chroma easier to reason about than HSL or hex, but it does
+not choose the art direction or guarantee contrast. The rendered pair remains the
+test.
 
-This skill is a method + real values for building a palette that is cohesive,
-accessible, and not generic — every step checkable.
-
-## Why OKLCH (use it)
+## Why OKLCH
 
 `oklch(L C H)`: **L** 0–1 perceptual lightness, **C** chroma (0 = gray, ~0.37 max
 real), **H** 0–360 hue. Benefits that matter:
-- Equal L = equal perceived brightness across hues → predictable contrast & even ramps.
+- Similar L values are a useful starting point for visually even ramps; hue and chroma
+  still affect the result, so inspect and measure it.
 - Adjust one property without wrecking the others (lighten without desaturating).
 - Wide-gamut (P3) ready; degrades to sRGB. Supported in all current evergreen browsers;
   for very old targets provide a hex fallback (build tools can emit both).
 
-## The method: generate, don't hand-pick
+## The method
 
-1. **Choose the brand hue(s).** Pick H for your dominant color; optionally one accent
-   hue (analogous = harmonious, complementary ≈ +180 = high energy, triadic ≈ +120).
+1. **Choose a palette structure from evidence.** A restrained product may need one hue
+   and neutrals; a data or editorial system may need several. Record what each hue does.
 2. **Build a lightness ramp** at fixed steps. A 10–12 stop ramp from ~0.97 (50) down
    to ~0.20 (900). Keep H constant; vary L; let C peak in the mid-tones and taper at
    the extremes (very light and very dark can't hold high chroma).
-3. **Build neutrals as a low-chroma version of the brand hue** (C ≈ 0.01–0.03), not
-   pure gray — tinted neutrals feel designed and tie the system together.
+3. **Choose neutral temperature deliberately.** Low-chroma brand tinting can create
+   cohesion; true neutrals can be better for data, photography, or strict status colors.
 4. **Pick semantic colors** (success/error/warning/info) at matched L/C so they belong
    to the same family (don't paste in a random stock red/green).
 5. **Derive interaction states** (hover/active) by nudging L ±0.04–0.06, not by adding
@@ -59,15 +54,19 @@ foreground/background pair for each semantic status.
 
 ## Non-negotiables
 
-- **Build ramps in OKLCH with constant hue and stepped lightness.** Don't eyeball hex.
-- **One dominant color + a sharp accent; neutrals do most of the work.** The timid,
-  evenly-distributed five-pastel palette is an AI-slop tell (see `deslop-ui`). Commit.
-- **Tint neutrals toward the brand hue** (tiny chroma) — pure `#888` grays look dead.
+- **Build ramps in OKLCH with controlled lightness and chroma.** Keep hue stable when
+  continuity matters; allow documented hue correction when a nominally constant ramp
+  looks uneven or leaves the target gamut.
+- **Give every hue a job.** Do not add equally weighted colors just to make the palette
+  feel complete; do not force a single-accent formula on evidence that needs more.
+- **Choose neutral temperature from the content.** Tinted and true-neutral ramps are
+  both valid when their role is explicit.
 - **Verify WCAG on real pairs:** body text ≥ 4.5:1, large text/UI/icons ≥ 3:1. A color
-  that looks fine can still fail; measure. (WCAG 2.x ratios remain the AA/legal target
-  in 2026; APCA is informative-only — use it as a sanity check, not the compliance
-  number. CSS `contrast-color()` is useful where supported but still ships only a
-  black/white answer — don't lean on it for brand pairs.)
+  that looks fine can still fail; measure. WCAG 2.x ratios are the AA conformance
+  thresholds used here; legal applicability depends on the project's jurisdiction.
+  Treat APCA as an additional reading check, not a substitute for the required gate.
+  CSS `contrast-color()` is useful where supported but still ships only a black/white
+  answer — don't lean on it for brand pairs.
 - **Don't convey meaning by color alone** (color-blind users) — pair with icon/text.
 - **Chroma tapers at lightness extremes.** Max chroma lives in the mid L range; near-
   white and near-black stops must drop C or they look neon/muddy.

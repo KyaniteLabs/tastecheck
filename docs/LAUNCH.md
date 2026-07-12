@@ -1,126 +1,112 @@
-# Launch kit — tastecheck
+# Launch kit — TasteCheck
 
-Draft copy for launch. Written to read human (ran against the humanize-copy kill-list:
-no buzzwords, varied sentence length, a real stance, concrete specifics). Edit the
-@handle, links, and any numbers before posting. Attach `docs/hero/six-systems.png` as
-the lead image everywhere.
+Public copy for the 19-skill pack. Attach `docs/hero/six-systems.png`. Before posting,
+replace placeholders, verify links, and keep claims within the evidence boundary in
+`docs/VERIFICATION.md`.
 
-The one rule: **lead with the picture and the enemy, not the feature list.** People share
-the before/after image; the repo link rides along.
+The durable story is not “purple is bad.” It is: **an agent cannot preserve design intent
+that was never made explicit. TasteCheck turns that intent into a build contract.**
 
----
+## X / Twitter
 
-## X / Twitter — main thread
+**Post 1 — image**
 
-**Tweet 1 (the hook + image)**
-> Every AI builds the same website.
-> Purple gradient. Inter. Centered hero. Three identical cards.
+> Same product story. Six different structures, type systems, color systems, and rhythms.
 >
-> Not because it's wrong — because it's the average of the web.
+> I built TasteCheck because coding agents need design decisions they can carry through a
+> build—not another prompt that says “make it polished.”
 >
-> So I built the thing that stops it. Same prompt, same model, one skill on 👇
-> [attach docs/hero/six-systems.png]
+> [attach `docs/hero/six-systems.png`]
 
-**Tweet 2**
-> The trick isn't cleaning up after the AI. It's refusing to let it guess.
+**Post 2 — the interaction**
+
+> TasteCheck starts before the first component.
 >
-> tastecheck's main skill *interviews you first*:
-> "'modern' is a non-answer — name one site you'd be happy to resemble."
-> "Pick a side: warm or cool. The middle is where generic lives."
-
-**Tweet 3**
-> Then 13 more skills do the craft, and every rule is checkable, not vibes:
-> · pill button (9999px) → 6px
-> · indigo→violet → one committed hue
-> · #000 dark mode → #121212 + elevation by lightness
-> · OKLCH palettes that actually pass contrast
-
-**Tweet 4**
-> Plain Markdown skills, no runtime. The installer links `~/.agents/skills` and mirrors
-> into detected Claude Code, Codex, Gemini, Cursor, Kilocode, and Kimi skill dirs.
+> “This product is a fast operational instrument, so I recommend compact editorial
+> hierarchy with one high-signal accent. Dense and immediate, or paced and explanatory?”
 >
-> One command:
+> The answer becomes `DESIGN-SYSTEM.md`, semantic tokens, structural rules, and refusals.
+
+**Post 3 — the system**
+
+> Then 17 specialist skills carry that decision through type, color, spacing, themes,
+> responsive layout, states, forms, motion, imagery, data viz, copy, a11y, i18n, and the
+> final ship gate.
+>
+> Nineteen skills total. Twenty slash commands. Plain Markdown. MIT.
+
+**Post 4 — install**
+
+> Works with agents that can read Markdown skills. The installer creates a canonical
+> `~/.agents/skills` path and links supported agent homes it detects.
+>
 > `git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh`
-
-**Tweet 5 (the flex + close)**
-> Every other "fix AI design" repo is itself untested AI slop.
-> This one ships a repeatable `npm test` gate plus browser QA notes and screenshots in the repo.
 >
-> MIT. Free. ⭐ it if you're tired of purple:
-> https://github.com/KyaniteLabs/tastecheck
-
----
+> Repo: https://github.com/KyaniteLabs/tastecheck
 
 ## Hacker News — Show HN
 
-**Title:**
-> Show HN: tastecheck – stops AI from building the same purple-gradient website
+**Title**
 
-**First comment (post immediately after):**
-> Every LLM, asked to "build a landing page" with no direction, returns the same thing:
-> purple gradient, Inter, centered hero, three feature cards. It's not a bug — it's the
-> model returning the statistical average of its training data. (Tailwind's creator
-> actually apologized last year for making indigo the demo default and seeding half of it.)
->
-> I got tired of redesigning the same generated page, so I made tastecheck. It's a set of
-> 19 skills for AI coding agents. The part I think is actually new: the headline skill
-> doesn't fix the output afterward — it interviews you *before* the build and forces the
-> decisions the model would otherwise average away (reference instead of adjectives, one
-> dominant color instead of five pastels, a real type pairing instead of Inter). It writes
-> a DESIGN-SYSTEM.md + tokens, and the other skills build from that.
->
-> The other thirteen are plain craft, each written to be checkable rather than "make it pop":
-> OKLCH color with real contrast math, dark mode by surface-lightness, WCAG 2.2 fixes,
-> responsive layout with container queries, the full component state matrix, etc.
->
-> Two things I did differently from most skill repos: (1) it's plain Markdown with a
-> canonical `~/.agents/skills` install path plus mirrors for detected agent homes; and
-> (2) it ships a repeatable `npm test` gate plus browser QA notes, because an untested
-> "anti-slop" pack would be pretty funny. Verification notes and screenshots are in the repo.
->
-> MIT, no account, no SaaS: https://github.com/KyaniteLabs/tastecheck
-> Genuinely curious whether the "interview-first" idea holds up for people building with
-> other models — feedback welcome.
+> Show HN: TasteCheck – design decisions and ship gates for coding agents
 
----
+**First comment**
 
-## Reddit — r/webdev (and r/ClaudeAI, r/programming with tweaked tone)
+> I kept seeing a predictable failure in agent-built frontends: the brief would specify
+> the product but leave hierarchy, density, type, color, and structure open. The agent had
+> to fill those gaps, and unrelated products converged on familiar defaults.
+>
+> TasteCheck moves that work upstream. Its design-system interview reads the supplied
+> evidence, recommends a concrete direction, and asks only the questions that materially
+> change the build. It writes a source-controlled `DESIGN-SYSTEM.md` with semantic tokens,
+> structure, refusals, accessibility constraints, and the next implementation move.
+>
+> The other skills each own one craft concern: typography, color, spacing, themes,
+> responsive layout, component states, forms, empty states, motion, art direction, data
+> visualization, copy, accessibility, internationalization, existing-site repair, and a
+> fail-closed release gate. They share one token vocabulary and handoff order.
+>
+> The pack is plain Markdown, MIT licensed, and currently contains 19 skills plus 20 slash
+> commands. `npm test` verifies repository contracts, installation, links, and demo
+> behavior; those checks are engineering evidence, not a universal effectiveness claim.
+>
+> Repo: https://github.com/KyaniteLabs/tastecheck
+>
+> I’d especially value feedback on the interview output and whether the handoffs remain
+> clear across different coding agents.
 
-**Title:**
-> I made a tool that stops AI from building the same purple-gradient website every time
+## Reddit — r/webdev / agent communities
 
-**Body:**
-> You've seen it: ask any AI to build a landing page and you get a purple gradient, Inter,
-> a centered hero, and three identical cards. It happens because the model fills every
-> unspecified choice with the most common pattern in its training data — and the average
-> of the web is exactly that.
->
-> tastecheck is my attempt at the fix. It's a set of skills for AI coding agents, and the
-> main one is the part I'm proud of: instead of polishing the output afterward, it grills
-> you *before* anything gets built — "name a site you'd be happy to resemble," "pick warm
-> or cool, not both," "one dominant color, not five." It turns your answers into a design
-> system the rest of the skills follow.
->
-> The other skills are straight craft, all checkable: OKLCH color with contrast math, dark
-> mode that isn't pure black, WCAG 2.2 fixes, container-query layouts, every component
-> state, accessible forms, tasteful motion.
->
-> [six-systems montage image]
->
-> It's plain Markdown, MIT, and has a repeatable verification gate so it's not the usual
-> untested "make it pop" repo. Repo: https://github.com/KyaniteLabs/tastecheck
->
-> Would love feedback, especially from anyone building with Cursor/Codex/Gemini.
+**Title**
 
----
+> I built a design-quality system for coding agents, from brief to ship gate
 
-## Notes for posting
-- **Image first.** The six-systems montage PNG is the asset (plus the live gallery). On X it's the whole tweet; on Reddit
-  it goes in the body; on HN it lives in the repo README (HN is text).
-- **HN timing:** weekday morning US Eastern; reply fast to the first comments.
-- **Don't cross-post the same minute** — stagger by a few hours; let X/Reddit traction
-  exist before HN.
-- **Engage the purple-gradient crowd** — quote-reply to existing "AI purple problem" posts
-  with the before/after; that's where the audience already is.
-- **One stance to hold in replies:** "fix it before the model guesses, not after." That's
-  the differentiator; keep returning to it.
+**Body**
+
+> A vague design brief creates a hidden problem: the agent still has to choose hierarchy,
+> density, type, color, structure, component behavior, and motion. If those decisions stay
+> implicit, familiar defaults accumulate even when each one looks reasonable alone.
+>
+> TasteCheck is my attempt to make that decision chain explicit. It starts with a short,
+> opinionated design-system interview, writes the result to `DESIGN-SYSTEM.md`, and hands
+> the same decisions through 19 connected frontend skills. The final skill returns
+> **SHIP** or **HOLD** with measured evidence and a repair path.
+>
+> [attach the six-system montage]
+>
+> It is plain Markdown, MIT licensed, and works with coding agents that can load or read
+> skill files. The repo includes 20 slash commands, an installer, local verification, and
+> six browser-rendered systems built from the same product story.
+>
+> Repo: https://github.com/KyaniteLabs/tastecheck
+>
+> I’m looking for concrete feedback: where does the interview still feel abstract, and
+> which handoff would you trust least on a real project?
+
+## Posting checklist
+
+- Use the six-system montage; verify the gallery and repo links immediately before posting.
+- Stagger channels so feedback from one can improve the next post.
+- Answer questions with the brief → artifact → implementation → ship-gate chain.
+- Describe `npm test` as repository verification, not proof of universal design improvement.
+- Capture recurring objections as product inputs; do not argue with taste preferences.
