@@ -8,13 +8,13 @@ import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 import { chromium } from "playwright";
+import { computeSourceTreeSha256 } from "./engineering-receipt.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const PRODUCER = Object.freeze({ id: "tastecheck-live-execution", version: 1 });
 const SHA256 = /^[0-9a-f]{64}$/;
 const SAFE_RELATIVE = /^(?!\/)(?!.*(?:^|\/)\.\.(?:\/|$))(?!.*\\)[A-Za-z0-9._/-]+$/;
 const NONCE = /^[A-Za-z0-9][A-Za-z0-9._-]{15,127}$/;
-const RECEIPT_OUTPUTS = new Set(["evals/receipts/v1/browser.json", "evals/receipts/v1/e2e.json"]);
 
 const hash = (value) => crypto.createHash("sha256").update(value).digest("hex");
 const canonical = (value) => `${JSON.stringify(value, null, 2)}\n`;
@@ -61,20 +61,7 @@ function parseArgs(argv) {
 }
 
 function sourceTreeHash() {
-  const output = execFileSync("git", ["ls-files", "--cached", "--others", "--exclude-standard", "-z"], { cwd: root });
-  const files = output.toString("utf8").split("\0").filter(Boolean).sort().filter((relative) => (
-    !RECEIPT_OUTPUTS.has(relative)
-    && !relative.startsWith("evals/receipts/v1/artifacts/")
-  ));
-  const digest = crypto.createHash("sha256");
-  for (const relative of files) {
-    const absolute = assertRelative(relative, "source path");
-    const stat = fs.lstatSync(absolute);
-    if (!stat.isFile()) continue;
-    digest.update(Buffer.from(`${Buffer.byteLength(relative)}:${relative}:${stat.size}:`, "utf8"));
-    digest.update(fs.readFileSync(absolute));
-  }
-  return digest.digest("hex");
+  return computeSourceTreeSha256(root);
 }
 
 function publicPlatform() {
