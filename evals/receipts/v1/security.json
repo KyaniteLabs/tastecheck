@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "kind": "security",
+  "producer_id": "tastecheck.release.security.v1",
+  "source_tree_sha256": "8d19ec7cc066378474bd99580a8f5046914fba202d009118f07fcd1108533e04",
+  "nonce": "security-release-v1",
+  "started_at": "2026-07-12T02:40:29.039Z",
+  "finished_at": "2026-07-12T02:40:29.286Z",
+  "checks": [
+    {
+      "id": "effectiveness-claims",
+      "command": "node tools/release/check-effectiveness-claims.mjs",
+      "passed": true,
+      "exit_code": 0,
+      "output_sha256": "7111a3cf1ef6f6844c6cd6b5fd49a9e8b015e38e4a3f183312c8d74e4d147be8"
+    },
+    {
+      "id": "public-replay-surface",
+      "command": "node tools/evals/test-public-replay-surface.mjs",
+      "passed": true,
+      "exit_code": 0,
+      "output_sha256": "774b36802b5211242081142efe8f2c73c1d17acb5eb8f634852720eb512eaff7"
+    },
+    {
+      "id": "receipt-sanitizer",
+      "command": "node tools/evals/test-sanitizer-fixtures.mjs",
+      "passed": true,
+      "exit_code": 0,
+      "output_sha256": "16c4d660a99daded870304b3d12e0b645f7a84886e55fb778ad1258b366c1019"
+    },
+    {
+      "id": "source-stability",
+      "command": "internal source digest comparison",
+      "passed": true,
+      "exit_code": 0,
+      "output_sha256": "720c3d418a9e0ed069e3dd40fef424852db2f8b3cf851a699731bad7a374f42a"
+    }
+  ],
+  "status": "pass",
+  "reproducible": true
+}

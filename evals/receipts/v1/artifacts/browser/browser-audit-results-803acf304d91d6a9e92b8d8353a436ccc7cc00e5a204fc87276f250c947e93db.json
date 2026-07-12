@@ -1,0 +1,1042 @@
+[
+  {
+    "surface_id": "demo-01-foundations",
+    "route": "/demos/01-foundations.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-01-foundations",
+    "route": "/demos/01-foundations.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-01-foundations",
+    "route": "/demos/01-foundations.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-02-states",
+    "route": "/demos/02-states.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-02-states",
+    "route": "/demos/02-states.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-02-states",
+    "route": "/demos/02-states.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-03-responsive",
+    "route": "/demos/03-responsive.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 6× identical div.box in div.grid-auto (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-03-responsive",
+    "route": "/demos/03-responsive.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 6× identical div.box in div.grid-auto (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-03-responsive",
+    "route": "/demos/03-responsive.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 6× identical div.box in div.grid-auto (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-04-motion-forms-empty",
+    "route": "/demos/04-motion-forms-empty.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "2 skeleton placeholder(s) visible on load (stuck loading state?)",
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-04-motion-forms-empty",
+    "route": "/demos/04-motion-forms-empty.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "2 skeleton placeholder(s) visible on load (stuck loading state?)",
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-04-motion-forms-empty",
+    "route": "/demos/04-motion-forms-empty.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "2 skeleton placeholder(s) visible on load (stuck loading state?)",
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-05-deslop",
+    "route": "/demos/05-deslop.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 2
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)",
+        "pill text CTA: \"Get started\" (button.cta, radius 9999px on 34px)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-05-deslop",
+    "route": "/demos/05-deslop.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 2
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)",
+        "pill text CTA: \"Get started\" (button.cta, radius 9999px on 34px)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-05-deslop",
+    "route": "/demos/05-deslop.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 2
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)",
+        "pill text CTA: \"Get started\" (button.cta, radius 9999px on 34px)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-skill-integration",
+    "route": "/demos/skill-integration.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 0
+    },
+    "gate": {
+      "verdict": "CLEAN",
+      "fails": [],
+      "warns": [],
+      "notes": [
+        "display face resolves to \"Georgia\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-skill-integration",
+    "route": "/demos/skill-integration.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 0
+    },
+    "gate": {
+      "verdict": "CLEAN",
+      "fails": [],
+      "warns": [],
+      "notes": [
+        "display face resolves to \"Georgia\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "demo-skill-integration",
+    "route": "/demos/skill-integration.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 0
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 3× identical article.panel in div.audit-grid (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "uniform card grid: 19× identical div.skill-pill in div.skill-map (equal size, bordered/rounded — the \"three cards\" tell?)"
+      ],
+      "notes": [
+        "display face resolves to \"Georgia\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "gallery",
+    "route": "/samples/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "gallery",
+    "route": "/samples/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "gallery",
+    "route": "/samples/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "landing",
+    "route": "/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 0
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.x — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Red0\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "landing",
+    "route": "/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 0
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.x — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Red0\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "landing",
+    "route": "/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 0
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.x — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Red0\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-clay",
+    "route": "/samples/clay/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 11
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "pill text CTA: \"Run a taste check →\" (a.btn, radius 999px on 58px)",
+        "pill text CTA: \"See the skills\" (a.btn, radius 999px on 58px)",
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Mulish\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-clay",
+    "route": "/samples/clay/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 3× identical div.slop in div.slops (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "pill text CTA: \"How it works\" (div.menu > a:nth-of-type(2), radius 999px on 70px)",
+        "pill text CTA: \"What it refuses\" (div.menu > a:nth-of-type(3), radius 999px on 70px)",
+        "pill text CTA: \"Run a taste check →\" (a.btn, radius 999px on 58px)",
+        "pill text CTA: \"See the skills\" (a.btn, radius 999px on 58px)",
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Mulish\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-clay",
+    "route": "/samples/clay/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 3× identical div.slop in div.slops (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "pill text CTA: \"How it works\" (div.menu > a:nth-of-type(2), radius 999px on 70px)",
+        "pill text CTA: \"What it refuses\" (div.menu > a:nth-of-type(3), radius 999px on 70px)",
+        "pill text CTA: \"Run a taste check →\" (a.btn, radius 999px on 58px)",
+        "pill text CTA: \"See the skills\" (a.btn, radius 999px on 58px)",
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Mulish\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-concrete",
+    "route": "/samples/concrete/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 16
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 3× identical div.lrow in div.ledger (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Grotesk\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-concrete",
+    "route": "/samples/concrete/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 10
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Grotesk\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-concrete",
+    "route": "/samples/concrete/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 10
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 3× identical div.lrow in div.ledger (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Grotesk\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-copper",
+    "route": "/samples/copper/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 17
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 12× identical div.sk in div.skills-g (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "uniform card grid: 4× identical div.sk in div.skills-g (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Red0\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-copper",
+    "route": "/samples/copper/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 7
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 12× identical div.sk in div.skills-g (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "uniform card grid: 4× identical div.sk in div.skills-g (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "uniform card grid: 3× identical div.slop in div.slops (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Red0\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-copper",
+    "route": "/samples/copper/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 7
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 12× identical div.sk in div.skills-g (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "uniform card grid: 4× identical div.sk in div.skills-g (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "uniform card grid: 3× identical div.slop in div.slops (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Red0\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-dispatch",
+    "route": "/samples/dispatch/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 25
+    },
+    "gate": {
+      "verdict": "CLEAN",
+      "fails": [],
+      "warns": [],
+      "notes": [
+        "display face resolves to \"Bric\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-dispatch",
+    "route": "/samples/dispatch/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 15
+    },
+    "gate": {
+      "verdict": "CLEAN",
+      "fails": [],
+      "warns": [],
+      "notes": [
+        "display face resolves to \"Bric\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-dispatch",
+    "route": "/samples/dispatch/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 15
+    },
+    "gate": {
+      "verdict": "CLEAN",
+      "fails": [],
+      "warns": [],
+      "notes": [
+        "display face resolves to \"Bric\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-maximal",
+    "route": "/samples/maximal/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 98
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "stat-counter band: 9 numeric callouts in div.skills-g (the SaaS social-proof tell?)",
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Bricolage\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-maximal",
+    "route": "/samples/maximal/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 92
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 3× identical div.sk in div.skills-g (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "stat-counter band: 9 numeric callouts in div.skills-g (the SaaS social-proof tell?)",
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Bricolage\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-maximal",
+    "route": "/samples/maximal/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 92
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "stat-counter band: 9 numeric callouts in div.skills-g (the SaaS social-proof tell?)",
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Bricolage\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-swiss",
+    "route": "/samples/swiss/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 85
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Hanken\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-swiss",
+    "route": "/samples/swiss/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 85
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Hanken\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  },
+  {
+    "surface_id": "sample-swiss",
+    "route": "/samples/swiss/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 85
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Hanken\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    }
+  }
+]
