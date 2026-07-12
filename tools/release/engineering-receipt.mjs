@@ -76,7 +76,7 @@ function mechanicalChecks(root) {
     runCheck(root, "test", "npm", ["test"]),
     runCheck(root, "contracts", "npm", ["run", "test:contracts"]),
     runCheck(root, "eval-schema", "npm", ["run", "test:eval-schema"]),
-    runCheck(root, "eval-remediation", "npm", ["run", "test:eval-remediation"]),
+    runCheck(root, "release-eval-contracts", "npm", ["run", "test:release-eval-contracts"]),
   ];
 }
 
