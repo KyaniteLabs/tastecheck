@@ -45,6 +45,14 @@ skills.
 The scenario is the primary sampling unit. Multiple judge rows for one scenario are
 clustered observations and never inflate the effective sample size.
 
+Before the first external call, a hash-bound execution manifest freezes the exact generator
+provider, foundation-model lineage, model version, runtime, adapter digest, system-prompt
+digest, settings, tool policy, and time budget. It also freezes both evaluator providers,
+foundation-model lineages, exact model versions, identity tuples, runtime and adapter
+digests, plus the Playwright and Chromium versions, font-set digest, viewport matrix, and
+render host contract. No alias, version, provider, runtime, adapter, or render substitution
+is allowed after admission. Drift produces `production_incomplete`.
+
 ## Machine judges and anchor qualification
 
 Use two declared provider/model families. Provider separation is evidence of operational
@@ -64,20 +72,44 @@ All four anchors must pass. A failed anchor invalidates the whole judge batch. A
 qualify machine consistency only; they are not represented as human calibration or ground
 truth about taste.
 
+The two evaluator families must have different verified providers and different verified
+foundation-model lineages. Alias resolution is recorded before admission. If lineage cannot
+be verified, preflight fails; two declared endpoint labels cannot satisfy the family claim.
+A judge identity is the frozen provider, lineage, model version, system-prompt digest,
+rubric digest, runtime, and adapter-digest tuple. Every call has a unique context and
+invocation ID; duplicates are inadmissible.
+
 Every production judgment must cite exact packet evidence. Results that leak arm identity,
 omit evidence, share context with another judge, or fail schema validation are inadmissible.
+
+Packets use a closed allowlist: opaque packet, scenario, unit, artifact, viewport, and label
+IDs; the common brief and rubric; sanitized treatment-produced artifact content; and
+content hashes. They never contain revisions, versions, package metadata, source paths,
+worktree/run paths, timestamps, logs, generator receipts, provider data, filesystem
+metadata, or asymmetric arm fields. Opaque IDs are derived independently of arm order from
+a committed randomization commitment. Judges may infer treatment from genuine output
+differences; the protocol claims only that direct provenance cues are absent.
 
 ## Frozen decision rule
 
 The candidate passes only when all conditions hold:
 
-1. Both evaluator families independently prefer the candidate on at least 18 of the 24
-   paired units after ties are counted as half a preference for each arm.
-2. Each family shows candidate-majority preference in at least 8 of the 12 scenarios.
-3. Candidate absolute-quality mean is at least 4.0/5.0 in each family, with no dimension
-   below 3.0/5.0.
-4. Neither family reports a hard accessibility, safety, contract, evidence-integrity, or
-   task-completion regression.
+1. Map each identity preference to candidate `1`, tie `0.5`, or baseline `0`. Abstention or
+   a missing/invalid preference makes production incomplete. The family-unit score is the
+   arithmetic mean of its two identity scores. Both families independently require the sum
+   of their 24 family-unit scores to be at least `18`.
+2. A family-scenario score is the arithmetic mean of its two seeded family-unit scores. It
+   is candidate-majority only when strictly greater than `0.5`; exactly `0.5` is not a
+   majority. Each family requires candidate-majority in at least 8 of 12 scenarios.
+3. Each identity scores both opaque arms on all five dimensions from 1 through 5. For each
+   family, unit, arm, and dimension, average the two identity scores. Then average the 24
+   candidate unit scores separately for each dimension with equal unit weight. Each family
+   requires the mean of its five candidate dimension means to be at least `4.0`, with every
+   candidate dimension mean at least `3.0`. Missing or out-of-range scores make production
+   incomplete; baseline scores remain diagnostic and cannot rescue the candidate.
+4. Any hard accessibility, safety, contract, evidence-integrity, or task-completion
+   regression flagged by any admissible identity blocks the run. There is no adjudication
+   or override.
 5. All generation, render, packet, anchor, judge-family, and unmask bindings validate.
 
 If both families do not independently clear the rule, the status is `inconclusive` or
@@ -88,7 +120,8 @@ separate reported properties and cannot silently substitute for effectiveness.
 
 1. Closed schemas for protocol, generation receipt, judge result, synthesis, and public
    claim projection under `contracts/v2/effectiveness/`.
-2. A frozen scenario registry and source/corpus manifest under `evals/v2/`.
+2. A frozen scenario registry, source/corpus manifest, execution manifest, and committed
+   SHA-256 authority manifest for tracked V1/W1/full19/V5 public evidence under `evals/v2/`.
 3. A generation runner that enforces arm parity and records failure/retry lineage.
 4. A blind packet builder with a separate hash-bound unmask map.
 5. Provider adapters that record model/version, packet digest, isolated execution, and
@@ -105,8 +138,10 @@ this evaluation’s evidence.
 
 - Missing provider family, credentials, source revision, scenario, render, anchor, or
   judgment stops before unmask.
-- Infrastructure retries are permitted only for preregistered transport failures and keep
-  the original failed-attempt receipt. Content-bearing retries are prohibited.
+- No external-call retry is permitted. Every attempted invocation reserves and increments
+  the 160-call ledger ordinal before execution. Transport failure, false success, or any
+  other failed attempt terminates the run as `production_incomplete`; ordinals are never
+  reused or erased.
 - Dispatch false-success—zero turns, zero tokens, or no artifact—is a failed attempt, never
   a completed judge.
 - Costs and external-call counts are recorded. This cycle permits at most 160 external
@@ -117,12 +152,28 @@ this evaluation’s evidence.
 - Partial results are published only as `production_incomplete`; they make no effectiveness
   claim.
 
+Admission verifies a committed historical-authority manifest before the first call and
+again at closeout. V1 paths are prohibited as v2 generation, packet, judgment, or synthesis
+inputs. The run ID is derived from the protocol, corpus, source, and execution-manifest
+digests, and its initial ledger root is committed before admission.
+
+Before unmasking, `reserve` atomically creates `synthesis-reservation.json` with exclusive
+creation, fsyncs it, and exits. Synthesis is allowed only after that exact reservation is
+committed in `HEAD` and the worktree is clean. A reservation is terminal: an interrupted
+or crashed synthesis cannot resume or create another reservation for the same run ID. The
+validator rejects deletion, truncation, a forked predecessor, copied run directories with
+wrong roots, or any run ID/root that already contains a synthesis reservation.
+
 ## Verification
 
 Implementation must include negative tests proving that the system rejects identity leaks,
 single-family judging, failed anchors, pooled-family rescue, altered thresholds, corpus
 overlap, late exclusions, missing evidence citations, forged unmask files, source drift,
-reruns, and claim-scope promotion.
+reruns, and claim-scope promotion. Boundary fixtures cover split identities, split seeds,
+ties, exact threshold equality, missing scores, contradictory regression flags, duplicate
+lineage/context/invocation IDs, alias drift, renderer drift, historical-byte mutation,
+ledger deletion/truncation/forks/copies, interrupted synthesis, and packet leaks through
+revisions, versions, paths, timestamps, metadata, logs, ordering, or asymmetric structure.
 
 The final gate includes the complete existing TasteCheck suite, the new v2 contract and
 adversarial tests, clean-clone reconstruction, public leak audit, independent code review,
