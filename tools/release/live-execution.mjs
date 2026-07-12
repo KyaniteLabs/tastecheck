@@ -7,6 +7,7 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
+import Ajv from "ajv";
 import { chromium } from "playwright";
 import { computeSourceTreeSha256 } from "./engineering-receipt.mjs";
 
@@ -15,6 +16,8 @@ const PRODUCER = Object.freeze({ id: "tastecheck-live-execution", version: 1 });
 const SHA256 = /^[0-9a-f]{64}$/;
 const SAFE_RELATIVE = /^(?!\/)(?!.*(?:^|\/)\.\.(?:\/|$))(?!.*\\)[A-Za-z0-9._/-]+$/;
 const NONCE = /^[A-Za-z0-9][A-Za-z0-9._-]{15,127}$/;
+const receiptSchema = JSON.parse(fs.readFileSync(path.join(root, "contracts/v1/live-execution-receipt.schema.json"), "utf8"));
+const validateReceiptSchema = new Ajv({ allErrors: true, strict: false }).compile(receiptSchema);
 
 const hash = (value) => crypto.createHash("sha256").update(value).digest("hex");
 const canonical = (value) => `${JSON.stringify(value, null, 2)}\n`;
@@ -51,13 +54,18 @@ function parseArgs(argv) {
   const values = {};
   while (argv.length) {
     const flag = argv.shift();
+    if (flag === "--replace") {
+      if (values[flag]) throw new Error(`duplicate argument ${flag}`);
+      values[flag] = true;
+      continue;
+    }
     if (!["--out", "--artifact-dir", "--nonce"].includes(flag) || !argv.length) throw new Error(`invalid argument ${flag ?? ""}`.trim());
     if (values[flag]) throw new Error(`duplicate argument ${flag}`);
     values[flag] = argv.shift();
   }
   if (!values["--out"] || !values["--artifact-dir"] || !values["--nonce"]) throw new Error("--out, --artifact-dir, and --nonce are required");
   if (!NONCE.test(values["--nonce"])) throw new Error("nonce must be 16-128 public-safe characters");
-  return { kind, out: values["--out"], artifactDir: values["--artifact-dir"], nonce: values["--nonce"] };
+  return { kind, out: values["--out"], artifactDir: values["--artifact-dir"], nonce: values["--nonce"], replace: values["--replace"] === true };
 }
 
 function sourceTreeHash() {
@@ -100,10 +108,10 @@ async function withServer(run) {
   }
 }
 
-function storeArtifact(artifactDirRelative, id, bytes) {
+function storeArtifact(artifactDirRelative, id, bytes, extension = "png") {
   const digest = hash(bytes);
   if (!SHA256.test(digest)) throw new Error("artifact hashing failed");
-  const relative = path.posix.join(artifactDirRelative, `${id}-${digest}.png`);
+  const relative = path.posix.join(artifactDirRelative, `${id}-${digest}.${extension}`);
   const absolute = assertRelative(relative, "artifact path");
   fs.mkdirSync(path.dirname(absolute), { recursive: true });
   if (fs.existsSync(absolute)) {
@@ -116,22 +124,62 @@ function storeArtifact(artifactDirRelative, id, bytes) {
   return { id, path: relative, sha256: digest, bytes: bytes.length };
 }
 
-async function inspectSurface(browser, baseUrl, surface, route, viewport, artifactDir, checks, artifacts) {
+async function inspectSurface(browser, baseUrl, surface, route, viewport, artifactDir, checks, artifacts, auditResults, auditSources) {
   const page = await browser.newPage({ viewport: { width: viewport.width, height: viewport.height }, deviceScaleFactor: 1 });
   const errors = [];
   page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
   page.on("pageerror", (error) => errors.push(error.message));
   try {
-    const response = await page.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const response = await page.goto(`${baseUrl}${route}`, { waitUntil: "load" });
+    await page.evaluate(() => document.fonts.ready);
+    await page.waitForTimeout(120);
     checks.push(check(`${surface}-${viewport.id}-http`, response?.ok() === true, response?.ok() ? "HTTP surface loaded" : "HTTP surface did not load"));
-    const measurements = await page.evaluate(() => ({
-      title: document.title.trim(),
-      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-      main: document.querySelectorAll("main").length,
-    }));
+    const measurements = await page.evaluate(() => {
+      const primary = document.querySelector("main") ?? document.body;
+      return {
+        title: document.title.trim(),
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        mainLandmarks: document.querySelectorAll("main").length,
+        primaryPresent: Boolean(primary),
+        content: (primary?.innerText ?? "").trim().length,
+        brokenImages: [...document.images].filter((image) => image.complete && image.naturalWidth === 0).length,
+        reduced: matchMedia("(prefers-reduced-motion: reduce)").matches,
+        runningAnimations: document.getAnimations().filter((animation) => animation.playState === "running").length,
+        focusableCount: document.querySelectorAll('a[href],button,input,select,textarea,summary,[tabindex]:not([tabindex="-1"])').length,
+      };
+    });
     checks.push(check(`${surface}-${viewport.id}-title`, measurements.title.length > 0, "Document title is present"));
-    checks.push(check(`${surface}-${viewport.id}-main`, measurements.main === 1, "Exactly one main landmark is rendered"));
+    checks.push(check(`${surface}-${viewport.id}-main`, measurements.mainLandmarks === 1, measurements.mainLandmarks === 1 ? "Exactly one main landmark rendered" : `${measurements.mainLandmarks} main landmarks rendered`));
     checks.push(check(`${surface}-${viewport.id}-no-overflow`, measurements.overflow <= 1, "No horizontal viewport overflow"));
+    checks.push(check(`${surface}-${viewport.id}-meaningful-content`, measurements.content > 20, "First meaningful content rendered"));
+    checks.push(check(`${surface}-${viewport.id}-images`, measurements.brokenImages === 0, `${measurements.brokenImages} broken rendered images`));
+    checks.push(check(`${surface}-${viewport.id}-reduced-motion`, measurements.reduced && measurements.runningAnimations === 0, measurements.reduced ? `${measurements.runningAnimations} running animations under reduced motion` : "Reduced-motion emulation inactive"));
+
+    await page.addScriptTag({ content: auditSources.gate });
+    const gate = await page.evaluate(() => window.__gateAudit);
+    const gateValid = gate && ["CLEAN", "REVIEW WARNS", "FAIL"].includes(gate.verdict) && Array.isArray(gate.fails) && Array.isArray(gate.warns);
+    checks.push(check(`${surface}-${viewport.id}-gate-audit`, gateValid && gate.fails.length === 0, gateValid ? `${gate.verdict}: ${gate.fails.length} fails, ${gate.warns.length} warns recorded` : "Gate audit contract unavailable"));
+
+    await page.addScriptTag({ content: auditSources.a11y });
+    const a11y = await page.evaluate(() => window.a11yAudit());
+    const a11yValid = Number.isInteger(a11y?.fails) && Number.isInteger(a11y?.warnings);
+    checks.push(check(`${surface}-${viewport.id}-a11y-audit`, a11yValid && a11y.fails === 0, a11yValid ? `${a11y.fails} measured fails, ${a11y.warnings} warnings recorded` : "A11y audit contract unavailable"));
+
+    await page.keyboard.press("Tab");
+    const keyboard = await page.evaluate(() => {
+      const active = document.activeElement;
+      if (!active || active === document.body || active === document.documentElement) return { reached: false, visible: false };
+      const style = getComputedStyle(active);
+      const rect = active.getBoundingClientRect();
+      return {
+        reached: rect.width > 0 && rect.height > 0,
+        visible: style.outlineStyle !== "none" || style.boxShadow !== "none" || parseFloat(style.borderWidth) > 0,
+      };
+    });
+    const keyboardPassed = measurements.focusableCount === 0 || (keyboard.reached && keyboard.visible);
+    checks.push(check(`${surface}-${viewport.id}-keyboard-focus`, keyboardPassed, measurements.focusableCount === 0 ? "No keyboard-operable elements on this static surface" : keyboard.reached ? "First keyboard target has visible focus treatment" : "No visible keyboard target reached"));
+    auditResults.push({ surface_id: surface, route, width: viewport.width, main_landmarks: measurements.mainLandmarks, running_animations_reduced: measurements.runningAnimations, a11y, gate, keyboard });
     await new Promise((resolve) => setImmediate(resolve));
     checks.push(check(`${surface}-${viewport.id}-no-console-errors`, errors.length === 0, errors.length ? `${errors.length} browser error events` : "No console or page errors"));
     const bytes = await page.screenshot({ fullPage: true, animations: "disabled" });
@@ -141,20 +189,35 @@ async function inspectSurface(browser, baseUrl, surface, route, viewport, artifa
   }
 }
 
+function discoverBrowserSurfaces() {
+  const surfaces = [["landing", "/index.html"], ["gallery", "/samples/index.html"]];
+  for (const entry of fs.readdirSync(path.join(root, "samples"), { withFileTypes: true })) {
+    if (entry.isDirectory() && fs.existsSync(path.join(root, "samples", entry.name, "index.html"))) {
+      surfaces.push([`sample-${entry.name}`, `/samples/${entry.name}/index.html`]);
+    }
+  }
+  for (const name of fs.readdirSync(path.join(root, "demos")).filter((entry) => entry.endsWith(".html"))) {
+    surfaces.push([`demo-${path.basename(name, ".html")}`, `/demos/${name}`]);
+  }
+  return surfaces.sort((left, right) => left[0].localeCompare(right[0]));
+}
+
 async function runBrowser(browser, artifactDir) {
   const checks = [];
   const artifacts = [];
-  const surfaces = [
-    ["landing", "/index.html"],
-    ["gallery", "/samples/index.html"],
-    ["integration", "/demos/skill-integration.html"],
-  ];
-  const viewports = [{ id: "desktop", width: 1440, height: 1000 }, { id: "mobile", width: 390, height: 844 }];
+  const auditResults = [];
+  const surfaces = discoverBrowserSurfaces();
+  const viewports = [390, 768, 1280].map((width) => ({ id: String(width), width, height: width === 390 ? 844 : 900 }));
+  const auditSources = {
+    a11y: fs.readFileSync(path.join(root, "skills/a11y-pass/assets/audit.js"), "utf8"),
+    gate: fs.readFileSync(path.join(root, "skills/tastecheck-pass/assets/gate-audit.js"), "utf8"),
+  };
   await withServer(async (baseUrl) => {
     for (const [surface, route] of surfaces) {
-      for (const viewport of viewports) await inspectSurface(browser, baseUrl, surface, route, viewport, artifactDir, checks, artifacts);
+      for (const viewport of viewports) await inspectSurface(browser, baseUrl, surface, route, viewport, artifactDir, checks, artifacts, auditResults, auditSources);
     }
   });
+  artifacts.push(storeArtifact(artifactDir, "browser-audit-results", Buffer.from(canonical(auditResults)), "json"));
   return { checks, artifacts };
 }
 
@@ -229,19 +292,50 @@ async function runOperatorE2E(browser, artifactDir) {
   return { checks, artifacts };
 }
 
-function writeReceipt(relative, receipt) {
+function inspectExistingReceipt(relative, kind, artifactDir, replace) {
   const absolute = assertRelative(relative, "receipt path");
-  if (fs.existsSync(absolute)) throw new Error("accepted receipt already exists; choose a new output path or remove it explicitly before a new run");
+  if (!fs.existsSync(absolute)) return null;
+  if (!replace) throw new Error("accepted receipt already exists; pass --replace to replace verified producer output");
+  let existing;
+  try {
+    existing = JSON.parse(fs.readFileSync(absolute, "utf8"));
+  } catch {
+    throw new Error("refusing to replace an unreadable existing receipt");
+  }
+  if (!validateReceiptSchema(existing)
+    || existing.kind !== kind
+    || existing.producer_id !== "tastecheck.release.live-execution.v1"
+    || existing.producer?.id !== PRODUCER.id
+    || existing.producer?.version !== PRODUCER.version) {
+    throw new Error("refusing to replace a receipt not owned by this producer and schema");
+  }
+  const prefix = `${artifactDir}/`;
+  for (const artifact of existing.artifacts) {
+    if (!artifact.path.startsWith(prefix)) throw new Error("refusing to replace receipt with artifacts outside the requested artifact directory");
+    const bytes = fs.readFileSync(assertRelative(artifact.path, "existing artifact path"));
+    if (bytes.length !== artifact.bytes || hash(bytes) !== artifact.sha256) throw new Error("refusing to replace receipt with invalid existing artifact evidence");
+  }
+  return existing;
+}
+
+function writeReceipt(relative, receipt, existing) {
+  const absolute = assertRelative(relative, "receipt path");
+  if (!validateReceiptSchema(receipt)) throw new Error(`generated receipt violates schema: ${JSON.stringify(validateReceiptSchema.errors)}`);
   fs.mkdirSync(path.dirname(absolute), { recursive: true });
   const temporary = `${absolute}.${process.pid}.tmp`;
   fs.writeFileSync(temporary, canonical(receipt), { flag: "wx" });
   fs.renameSync(temporary, absolute);
+  const retained = new Set(receipt.artifacts.map((artifact) => artifact.path));
+  for (const artifact of existing?.artifacts ?? []) {
+    if (!retained.has(artifact.path)) fs.rmSync(assertRelative(artifact.path, "superseded artifact path"));
+  }
 }
 
-export async function produceLiveReceipt({ kind, out, artifactDir, nonce }) {
+export async function produceLiveReceipt({ kind, out, artifactDir, nonce, replace = false }) {
   assertRelative(out, "receipt path");
   assertRelative(path.posix.join(artifactDir, "placeholder"), "artifact directory");
   if (!NONCE.test(nonce)) throw new Error("nonce must be 16-128 public-safe characters");
+  const existing = inspectExistingReceipt(out, kind, artifactDir, replace);
   const startedAt = new Date().toISOString();
   const sourceTreeSha256 = sourceTreeHash();
   const playwrightVersion = JSON.parse(fs.readFileSync(path.join(root, "node_modules/playwright/package.json"), "utf8")).version;
@@ -264,7 +358,7 @@ export async function produceLiveReceipt({ kind, out, artifactDir, nonce }) {
       checks: execution.checks,
       status: deriveStatus(execution.checks),
     };
-    writeReceipt(out, receipt);
+    writeReceipt(out, receipt, existing);
     if (receipt.status !== "pass") throw new Error(`live ${kind} checks failed; failing receipt preserved at ${out}`);
     return receipt;
   } finally {
