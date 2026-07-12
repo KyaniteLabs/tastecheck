@@ -21,7 +21,7 @@
 - No human-calibration field or human-preference claim is permitted in the effectiveness-v2 namespace.
 - Both families must independently clear the frozen rule; pooled votes cannot rescue disagreement.
 - Historical failure, production failure, and inconclusive output remain publishable evidence and are never rerun for a preferred result.
-- Forgejo is canonical; GitHub is mirror-only. No push, PR, merge, tag, or public claim occurs until implementation, review, and QA gates are clean.
+- Forgejo is canonical; GitHub is mirror-only. After each coherent task checkpoint passes its focused tests, independent task review, and public leak audit, push that checkpoint to the named Forgejo feature branch. No PR-ready declaration, merge, tag, release, GitHub mirror publication, production-evidence publication, or effectiveness claim occurs until all implementation, clean-clone reconstruction, independent whole-branch review, adversarial QA, and leak-audit gates are clean. Any later mirror operation is Forgejo-first.
 
 ---
 
@@ -461,7 +461,15 @@ Commit: `feat: add effectiveness v2 execution adapters`
 - The production CLI consumes only the frozen protocol and creates immutable run-scoped evidence.
 - No tracked source file changes after production admission except the append-only public-safe evidence ledger, the terminal synthesis reservation, and derived result documentation.
 
-- [ ] **Step 1: Run non-consuming preflight**
+- [ ] **Step 1: Qualify the implementation before any production external call**
+
+Run the complete fake-executor rehearsal, existing TasteCheck suite, release-claim checks, and clean-clone reconstruction from the canonical Forgejo feature-branch tip. The clean clone must install from the lockfile and reproduce `npm run verify:v1`, `npm run verify:v2`, `npm run release:claims`, and `git diff --check` without relying on untracked or ignored files.
+
+Then run the independent whole-branch code-review lanes, requiring a code-reviewer `APPROVE` and architect `CLEAR`, followed by adversarial end-to-end QA of the fake-executor pipeline covering every mutation listed in Step 8. Run a public leak audit over all tracked implementation, fixtures, generated rehearsal evidence, review artifacts intended for sharing, and proposed production commands.
+
+Expected: durable receipts for the fake-executor rehearsal, existing suite, clean-clone reconstruction, independent review, adversarial QA, and leak audit all pass. Any missing or non-clean receipt leaves `production_not_started`; do not reserve an external-call ordinal and do not weaken or bypass the gate.
+
+- [ ] **Step 2: Run non-consuming production preflight**
 
 Run: `pushing-dispatch route --mode breakout --task "TasteCheck v2 machine-only blind evaluation: select two already-provisioned independent provider families for isolated judging"`
 
@@ -469,43 +477,43 @@ Run: `npm run eval:v2:preflight`
 
 Expected: exact source/corpus/protocol/execution-manifest/historical-authority/randomization-commitment/packet-validator hashes, `exclusions=[]`, two providers with different verified foundation-model lineages, exact generator/judge/runtime/render identities, `incremental_spend_cap_usd=0`, `retry_policy=none`, `planned_external_calls=160`, and no production event.
 
-- [ ] **Step 2: Execute generation once**
+- [ ] **Step 3: Execute generation once**
 
 Run: `npm run eval:v2:generate`
 
 Expected: 48 completed arm receipts or a terminal `production_incomplete` ledger; every attempt has a unique pre-reserved ordinal and no retry.
 
-- [ ] **Step 3: Capture and validate local render evidence**
+- [ ] **Step 4: Capture and validate local render evidence**
 
 Run: `npm run eval:v2:render`
 
 Expected: both frozen viewports for every arm of every render-required unit, with hash-bound screenshot, DOM, computed-style, artifact-lineage, renderer, and host receipts; no external-call ordinal consumed. Any missing or stale receipt terminates `production_incomplete`.
 
-- [ ] **Step 4: Build packets and execute two-family judges once**
+- [ ] **Step 5: Build packets and execute two-family judges once**
 
 Run: `node tools/evals/v2/build-packets.mjs && npm run eval:v2:judge`
 
 Expected: four valid judge identities with 112 isolated calls containing 96 production and 16 anchor judgments, or terminal incomplete/invalid evidence.
 
-- [ ] **Step 5: Reserve synthesis before unmask**
+- [ ] **Step 6: Reserve synthesis before unmask**
 
 Run: `node tools/evals/v2/synthesize.mjs reserve`
 
 Expected: exclusively created and fsynced `synthesis-reservation.json`; no unmask access and no synthesis output. Commit the reservation as `eval: reserve effectiveness v2 synthesis`, then require a clean worktree.
 
-- [ ] **Step 6: Unmask and synthesize exactly once**
+- [ ] **Step 7: Unmask and synthesize exactly once**
 
 Run: `npm run eval:v2:synthesize`
 
 Expected: `supported`, `inconclusive`, `blocked`, or `production_incomplete`; the command verifies the committed reservation and refuses every second, interrupted, forked, truncated, deleted, or copied synthesis attempt.
 
-- [ ] **Step 7: Verify, review, and adversarially QA**
+- [ ] **Step 8: Verify produced evidence, review, and adversarially QA**
 
 Run: `npm run verify:v1 && npm run verify:v2 && npm run release:claims && git diff --check`
 
-Then run an independent code review requiring `APPROVE` and architectural `CLEAR`, followed by adversarial QA covering dirty trees; source drift; exact, renamed, wrapped, normalized, symlinked, or indirect historical copies; late/replaced commitments and repeated/invalid openings; arm-order-dependent IDs; alias/lineage/version/runtime drift; missing viewport, mismatched artifact, tampered screenshot/DOM/styles, wrong renderer/host, and stale render replay; late scenario/unit/arm/viewport exclusions; reject-only validator drift, asymmetric acceptance, collision, or output transformation; packet leaks through paths/versions/timestamps/metadata/asymmetry; failed anchors; split identities/seeds; exact ties; missing scores; contradictory regression flags; duplicate contexts/invocations; single-family output; invented/paraphrased/wrong-arm/wrong-viewport/wrong-locator/stale/empty/nonmatching evidence; false-success dispatch; per-attempt cost classification and zero-cost cap; partial production; swapped-arm/swapped-unit/wrong-run/missing/extra/recomputed/post-reservation unmask maps; ledger deletion/truncation/forks/copies; interrupted reservation; and repeat synthesis.
+Then run an independent evidence review requiring `APPROVE` and architectural `CLEAR`, followed by adversarial QA of the produced evidence covering dirty trees; source drift; exact, renamed, wrapped, normalized, symlinked, or indirect historical copies; late/replaced commitments and repeated/invalid openings; arm-order-dependent IDs; alias/lineage/version/runtime drift; missing viewport, mismatched artifact, tampered screenshot/DOM/styles, wrong renderer/host, and stale render replay; late scenario/unit/arm/viewport exclusions; reject-only validator drift, asymmetric acceptance, collision, or output transformation; packet leaks through paths/versions/timestamps/metadata/asymmetry; failed anchors; split identities/seeds; exact ties; missing scores; contradictory regression flags; duplicate contexts/invocations; single-family output; invented/paraphrased/wrong-arm/wrong-viewport/wrong-locator/stale/empty/nonmatching evidence; false-success dispatch; per-attempt cost classification and zero-cost cap; partial production; swapped-arm/swapped-unit/wrong-run/missing/extra/recomputed/post-reservation unmask maps; ledger deletion/truncation/forks/copies; interrupted reservation; and repeat synthesis. This post-result review does not replace the pre-production qualification in Step 1.
 
-- [ ] **Step 8: Public leak audit and evidence commit**
+- [ ] **Step 9: Public leak audit and evidence commit**
 
 Scan staged textual output for credentials, local paths, usernames, emails, temporary paths, private hosts, environment values, and process-only evidence. Commit only public-safe artifacts.
 
