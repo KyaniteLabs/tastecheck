@@ -34,10 +34,3 @@ Define the roles once; the dark mapping (see `surfaces-and-elevation.md` +
 `color-and-contrast.md`) raises lightness of accents and inverts the elevation logic
 (lighter = higher). The light values here are the canonical names; dark/high-contrast
 only remap them.
-
-## Self-check
-- [ ] Ground is off-white (tinted toward brand), not pure #fff.
-- [ ] Ink is softened near-black, not #000; body still ≥4.5:1, large/UI ≥3:1.
-- [ ] Elevation: one scale, mostly flat + hairline, shadow for floating only.
-- [ ] Accent text ≥4.5:1 on the light ground; fill labels ≥4.5:1; neutrals tinted.
-- [ ] Same token roles the dark/high-contrast themes will remap.

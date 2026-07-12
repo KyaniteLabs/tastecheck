@@ -8,14 +8,33 @@ description: >-
 
 # Component States
 
-A button isn't one thing — it's six. The most common UI defect from LLMs and rushed
-builds is shipping **only the default state**: a control that looks right at rest but
-doesn't respond to hover, shows no focus ring for keyboard users, gives no pressed
-feedback, has a greyed-out disabled state with no explanation, and no loading state
-during async work. The result feels dead and is often unusable by keyboard.
+An interactive control is a lifecycle, not a resting style. Map every applicable state
+to semantics, a visible treatment, and recovery.
 
-This skill is the **state matrix**: for each interactive component, every state that
-must exist, what it should communicate, and the exact CSS to express it. All checkable.
+## Decision order and evidence contract
+
+1. Name role, interaction model, owner, and applicable states.
+2. Give each state an ARIA/DOM mapping, visible non-color treatment, trigger, and recovery.
+3. Test keyboard, focus-visible, contrast, reduced motion, and async completion.
+
+Report one evidence row per state; `n/a` needs a subject-absence reason. Hand field
+validation to `form-ux`, region emptiness to `empty-states`, and missing state tokens
+back as gaps rather than invented fallbacks.
+
+## Async and destructive controls
+
+Name one semantic owner; visual states only present its lifecycle.
+
+| State / event | Guard and observable contract |
+|---|---|
+| `ready` / invoke | Click, Enter, Space, and script use one eligible route; accepted work creates a request key. |
+| `confirming` | Use only for irreversible, broad, or cascading work; name consequence, move focus in, and restore the invoker on cancel. |
+| `submitting` | Create the key before dispatch; reject duplicates; expose native disabled/busy and a working label. |
+| matching completion | Only the matching key may settle current work; stale results cannot clear busy, alter another target, or move focus. |
+| success / failure | Record data before presentation; confirm locally and choose focus, or retain context with nearby error and retry/cancel. |
+
+Test a real and a stale/failed completion. If success empties a region, hand that
+region to `empty-states`.
 
 ## The universal state matrix
 
@@ -37,118 +56,54 @@ and error (form fields) where they apply.
 
 ## Non-negotiables
 
-- **Never ship default-only.** At minimum every interactive element needs hover, focus,
-  active, and (if it can be) disabled.
-- **Use `:focus-visible`, not `:focus`, for the ring** — so keyboard users get a clear
-  indicator while mouse users don't get a "stuck" outline. **Never** `outline: none`
-  without a replacement; a visible focus indicator is a WCAG requirement.
-- **Hover is not focus.** Pointer hover effects don't help keyboard users; you need a
-  *separate* focus style. Don't rely on hover to convey anything essential (it doesn't
-  exist on touch).
-- **Disabled must be obvious and, ideally, explained.** Reduced contrast + `cursor:
-  not-allowed` + `disabled`/`aria-disabled`. Better: keep the control enabled and
-  explain what's missing (see `form-ux`) — a silent grey button is a dead end.
-- **Async actions need a loading state.** Disable re-submit, show a spinner/label
-  change, set `aria-busy`. Don't leave the user clicking a button that looks idle.
-- **State changes must meet contrast.** Hover/active/selected colors still need ≥3:1
-  for UI and ≥4.5:1 for text (see `color-system`/`a11y-pass`). Don't signal state by a
-  color change so subtle it's invisible — or by color alone.
-- **Pressed/active feedback should be instant** (120–150ms, transform-based — the
-  `--dur-fast` token; see `micro-motion`).
+- Never ship default-only: applicable hover, focus-visible, active, disabled, loading,
+  selected, and error states need semantics and non-color signals.
+- Never remove a focus outline without an equally visible replacement; hover is not focus.
+- Explain unavailability; a silent disabled submit is a `form-ux` failure.
+- Async controls prevent duplicate dispatch, expose busy state, and preserve contrast
+  (≥3:1 UI, ≥4.5:1 text). Use fast reduced-motion-safe feedback.
 
-## Quick-start: a fully-stated button
+## Implementation starter
 
-```css
-/* All colors come from the project's DESIGN-SYSTEM.md tokens (the canonical contract)
-   — never hard-code brand values here. No fallback hexes: if the tokens are missing,
-   that's a build error to fix, not to paper over with a default blue. */
-.btn {
-  background: var(--color-primary);
-  color: var(--color-primary-ink);
-  border: 1px solid transparent;
-  border-radius: var(--radius-control);   /* not pill — see deslop-ui */
-  padding: 0.6em 1.1em;
-  cursor: pointer;
-  transition: background-color var(--dur-fast) var(--ease-out),
-              transform var(--dur-fast) var(--ease-out);
-}
-.btn:hover  { background: var(--color-primary-hover); }
-.btn:active { transform: scale(0.97); }                 /* pressed feedback */
-.btn:focus-visible {                                    /* keyboard focus only */
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-}
-.btn:disabled,
-.btn[aria-disabled="true"] {
-  opacity: 0.5; cursor: not-allowed; filter: grayscale(0.2);
-}
-.btn[data-loading="true"] { color: transparent; pointer-events: none; position: relative; }
-.btn[data-loading="true"]::after {                      /* spinner */
-  content: ""; position: absolute; inset: 0; margin: auto;
-  width: 1em; height: 1em; border: 2px solid var(--color-primary-ink);
-  border-right-color: transparent;
-  border-radius: 50%; animation: spin .6s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) {
-  .btn:active { transform: none; }
-  .btn[data-loading="true"]::after { animation-duration: 1.2s; }
-}
-```
-```html
-<button class="btn" data-loading="false">Save</button>
-<button class="btn" disabled>Save</button>
-<!-- async: set data-loading="true" + aria-busy="true" while saving -->
-```
+Read `assets/states-starter.css` for tokenized CSS and reduced-motion details. A missing
+token is a gap, never a fallback hex; add the request guard before styling async work.
 
 ## State by component (what each one needs)
 
-- **Button:** default/hover/focus/active/disabled/loading. (+ `aria-pressed` for toggle
-  buttons.)
-- **Link:** default/hover/focus/active + **visited** (where meaningful); keep underline
-  or another non-color cue.
-- **Text input / textarea:** default/focus/disabled/**error**/**filled**/readonly;
-  focus ring + clear error styling tied to a message (see `form-ux`).
-- **Checkbox / radio:** default/hover/focus/checked/disabled/indeterminate (checkbox)/
-  error. Style the real input or a properly-labeled custom control — keep it focusable.
-- **Toggle/switch:** off/on/focus/disabled; communicate on/off by position *and* not by
-  color alone.
-- **Select / combobox:** default/focus/open/disabled/selected-option/error.
-- **Tab / nav item:** default/hover/focus/**current** (`aria-current="page"` /
-  `aria-selected`); the active one must be clearly distinct.
-- **Card / list item (if interactive):** default/hover/focus/active/selected; make the
-  whole thing keyboard-focusable if it's clickable.
-- **Menu item:** default/hover/focus/disabled; hover and keyboard focus should look the
-  same here so arrow-key users see the highlight.
-- **Tooltip / popover / toast (overlays):** open/closed + entrance/exit; prefer the
-  native Popover API (`popover` attribute) and `<dialog>` over hand-rolled z-index
-  stacks — they give you focus handling, light-dismiss, and top-layer for free. Toasts
-  announce via `role="status"`; never trap hover-only content (it must be focusable).
+- **Button/link:** default, hover, focus-visible, active, disabled/loading as applicable;
+  toggles use `aria-pressed`, links retain a non-color cue/visited treatment.
+- **Fields:** focus, disabled, filled/readonly, error, and selected/open/checked states;
+  style a real or correctly labelled focusable input (`form-ux` owns validation).
+- **Navigation/list/menu:** current/selected state uses `aria-current`/`aria-selected`;
+  pointer and keyboard focus are equally legible.
+- **Overlays:** model open/closed and entry/exit; prefer native Popover or `<dialog>`;
+  toasts use `role="status"` and hover-only content remains reachable by focus.
 
 ## Reference files
 
-- `references/states.md` — each state's purpose and pitfalls in depth, the
-  hover-vs-focus distinction, loading/optimistic patterns, toggle/selected semantics,
-  contrast for states, and the ARIA attributes that pair with each visual state.
-- `references/decision-records.md` — meta-patterns + ADR rules for novel cases.
+- `references/states.md` — state semantics, pitfalls, and ARIA pairings.
+- `references/decision-records.md` — novel-case ADR rules.
 
 ## Self-check (per interactive element)
 
-1. Does it have hover, **`:focus-visible`**, and active styles (not just default)?
-2. Is the focus indicator visible and ≥3:1 (no bare `outline:none`)?
-3. Is there a disabled state that's obvious — and ideally explained, not a silent grey?
-4. For async actions: a loading state that prevents double-submit + `aria-busy`?
-5. For tabs/nav/options: a clear selected/current state with `aria-current`/`aria-selected`?
-6. For inputs: an error state tied to a message + `aria-invalid`?
-7. Do all state colors meet contrast and not rely on color alone?
-8. Pressed feedback instant; motion respects `prefers-reduced-motion`?
+For each applicable state, confirm visible focus, semantics, non-color contrast, and
+reduced-motion behavior. For async/destructive work confirm owner, guard, justified
+confirmation, duplicate prevention, recovery, and final focus; exercise real and stale
+or failed completion separately. Do not collapse controls into one checkmark.
 
 ## How to deliver
 
-- When you build any control, deliver the full matrix and say so: "button with hover/
-  focus-visible/active/disabled/loading; tab nav with aria-current."
-- These are exactly the states LLMs skip (see `deslop-ui` "functional slop") — treat
-  them as part of building the component, not a later pass.
-- Pair with `form-ux` (input/error states), `empty-states` (loading at the region
-  level), `micro-motion` (transitions), `a11y-pass` (focus + ARIA verification),
-  `color-system` (state colors with contrast).
+Deliver the full applicable matrix plus lifecycle evidence. Pair with `form-ux`,
+`empty-states`, `micro-motion`, `a11y-pass`, and `color-system` at their boundaries.
+
+<!-- contract:v1:start -->
+## Contract (generated)
+
+Canonical detail: [contract.json](contract.json).
+
+- Route: A control has interaction states missing or inconsistent with its semantics. (+1 in contract.json); avoid: The request is only about form copy or validation timing. (+1 in contract.json)
+- Exclude: Do not invent page-level empty states or validation policy. (+2 in contract.json)
+- Stop / handoff: Stop when the component semantics or interactive states cannot be identified. (+2 in contract.json); receives [design-system-interview, improve-existing-website, theming] -> sends [form-ux, empty-states, a11y-pass, micro-motion, tastecheck-pass]
+- Output: component lifecycle contract and implementation guidance
+- Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
+<!-- contract:v1:end -->

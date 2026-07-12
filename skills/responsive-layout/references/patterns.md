@@ -94,11 +94,3 @@ the *shape* (e.g. nav → hamburger), not to do work the patterns already do.
 Common causes: a child without `min-width:0` in flex/grid; a fixed-px element wider than
 the viewport; an image without `max-width:100%`; `100vw` (includes scrollbar) — use
 `100%`; un-wrapped long strings/URLs (`overflow-wrap:anywhere`).
-
-## Self-check
-- [ ] Used an intrinsic pattern before any breakpoint.
-- [ ] Grid for 2-D structure, Flex for content-driven wrapping.
-- [ ] `min-width:0` on flex/grid children with long content/media.
-- [ ] `dvh`/`svh` instead of `vh` for full-height mobile.
-- [ ] Images `max-width:100%` + `aspect-ratio`/`srcset`.
-- [ ] No horizontal scroll at 320px; usable at 400% zoom.

@@ -8,187 +8,122 @@ description: >-
 
 # Design System Interview
 
-The reason AI builds the same generic site every time is **unspecified intent**. Asked
-to "build a landing page" with no direction, the model fills every blank with the most
-probable token from its training data — and the average of the web is purple, Inter,
-centered, three-cards. You don't fix that after the fact with polish. You fix it
-*before the first line of code* by **forcing the decisions the model would otherwise
-average away.**
+Unspecified intent produces generic UI. Before building, turn real evidence into
+committed refusals, `DESIGN-SYSTEM.md`, and semantic tokens; when the user abstains,
+make a bounded bold choice and label it.
 
-This skill is a short, opinionated interview that drags a real direction out of the
-user (or, when they genuinely don't care, makes a *bold committed choice* and tells
-them) and writes it down as a `DESIGN-SYSTEM.md` + tokens. Every other frontend skill
-then builds from that committed spec instead of from the average.
+## Interview from evidence, not a canned questionnaire
 
-The mindset: **a design system is a set of refusals.** "We use Fraunces, not Inter.
-We're warm, not cool. We're dense, not airy. We never use pure black." Taste is
-constraint. Your job here is to extract or supply those refusals.
+Make a decision map from product job, audience, marks/content, constraints, locales,
+and contradictions. For each exchange: **signal** (supplied evidence), **consequence**,
+two materially different brief-compatible **forks** with recommendation/trade-off, and
+**record** (`committed`, `assumption awaiting confirmation`, or `blocked by contradiction`).
+Ask the highest-consequence unresolved fork; batch only causal neighbors and resume there.
+
+| Situation | Move |
+| --- | --- |
+| Existing evidence | Separate binding signal from historical residue. |
+| Conflict | Assign domains, then resolve their overlap—never average them. |
+| No taste vocabulary | Ask what the real task must feel like. |
+| Headless/interrupted | State confidence and exact confirmation; do not imply completion. |
 
 ## How to run it (the loop)
 
-0. **Choose the pressure level.** Greenfield brand/marketing work can use the full
-   opinionated interview. Internal tools, admin flows, urgent fixes, or users who ask for
-   low-friction help get a short recommendation first: "I can pick a calm default and
-   keep moving, or we can do the full taste interview." Pair this with
-   `cognitive-a11y`: decisive should not mean pressuring.
-0.5 **Check what already exists — never interview past given direction.** If the
-   project already has a `DESIGN-SYSTEM.md`, brand guidelines, or the user *stated*
-   direction in the request ("use IBM Plex and forest green"), don't run the full
-   interview: restate the direction in one line, fill only the genuinely undecided
-   dimensions (usually structure/rhythm and the signature move), and confirm. And
-   **never adopt an example system as the answer** — worked examples in this skill,
-   sample/case-study files in any repo, or gallery sites demonstrate *variance*, not a
-   menu. If multiple DESIGN-SYSTEM-like files exist in a project, ask which one is
-   canonical; never silently pick one.
-1. **Don't start building.** If the request is "build/make/design a [frontend thing]"
-   and no direction exists, run this interview first. Say so: "Before I build, 6 quick
-   questions so this doesn't come out generic."
-2. **Ask in rounds, not all at once.** Lead each question with a *concrete recommended
-   default* (your opinion), so the user can react ("yes" / "no, more X") instead of
-   facing a blank. Reacting is easier than inventing — and it still forces a decision.
-2.5 **Non-interactive context? Show your work, don't decide silently.** If you're
-   running where the user cannot answer (one-shot prompt, headless run, CI), do NOT
-   skip straight to a finished system: surface the forcing questions WITH the default
-   you'd choose for each, clearly labeled as overridable assumptions, then proceed on
-   those defaults. "Decide boldly" covers a user who *abstained* — not a user who was
-   never shown the questions.
-2.6 **Budget for the gate from minute one.** This interview is the first step of a
-   pipeline that ends with the `tastecheck-pass` gate, and in turn- or time-limited
-   runs the gate starves more often than it fails: cross-model runs have produced
-   excellent pages whose final turns went to optional extras (more screenshots,
-   embellishments) and then hit the cap mid-gate, shipping an ungated "done". Plan
-   the run so the gate fits; if the budget dies early anyway, say so in the
-   deliverable — never imply the gate ran.
-3. **Push back on vagueness.** "Modern / clean / professional / sleek" are non-answers
-   — that *is* the average. When you hear them, counter with concrete forks (below).
-4. **Force a commitment per dimension.** Don't leave a dimension at "default"; land on
-   a specific named choice and write it down.
-5. **If the user truly doesn't care, decide boldly and state it.** A committed
-   unexpected choice beats a safe average. Never resolve indecision toward the mean.
-   Bold is bounded by the domain: for trust-critical surfaces (banking, healthcare,
-   legal, government) commit to a *distinctive-but-credible* direction — editorial
-   restraint, confident type, a real hue — not novelty for its own sake. "Bold" means
-   specific, never reckless.
-6. **Emit the artifact.** Produce `DESIGN-SYSTEM.md` + a token block, then hand off to
-   `color-system`, `web-typography`, etc. to implement.
+1. Choose full interview for greenfield brand work; offer a brief recommendation for
+   urgent/internal work without pressuring the user.
+2. Inspect existing direction/source of truth first; use the shortcut only for undecided
+   dimensions, and never adopt a worked example as the answer.
+3. In 4–10 evidence-derived exchanges, recommend then react; vague adjectives require
+   concrete forks. Surface headless assumptions and failed gates.
+4. Close all nine dimensions with a commitment, labelled abstention, or block. A bold
+   choice stays credible for trust-critical domains.
+5. Emit the artifact/token block and explicit downstream handoff.
 
-## The interview (the forcing questions)
+## The dimension bank (use adaptively, then close every dimension)
 
-Ask these in order. Each has the **anti-slop framing** and **concrete forks** to offer.
-Keep the conversation to ~6–8 exchanges by batching related questions; this is a
-sprint, not a survey.
+Use these adaptively; `references/interview-contract.generated.md` holds the canonical
+session/dimension detail. Do not use any example as an answer.
 
-1. **Reference, not adjectives.** "Name one site, brand, or object whose feel you want
-   — Stripe? a Criterion DVD case? a 1970s ski lodge? Bloomberg terminal?" Concrete
-   references encode taste that adjectives can't. If they say "modern," reject it and
-   ask again with examples.
-2. **Personality (pick a pole, not the middle).** Offer opposed axes and make them
-   choose a side: warm⇄cool, serious⇄playful, minimal⇄maximal, classic⇄experimental,
-   refined⇄raw, dense⇄spacious. The middle of every axis is where slop lives.
-3. **Aesthetic direction (name it in one concrete phrase).** Editorial / Swiss-grid /
-   brutalist-terminal / soft-organic / retro-print / high-contrast-luxury / playful-
-   geometric. If nothing fits, invent a specific phrase. "Modern/clean" is banned.
-4. **Type stance.** Recommend a distinctive display + readable body pairing (NOT Inter/
-   Roboto). "Headlines in Fraunces (editorial) or Space Grotesk (technical); body in a
-   clean humanist sans. Or do you have brand fonts?" Force a real face. (→ web-typography)
-5. **Color anchor & mode.** "One dominant brand hue + one sharp accent — what's the
-   dominant? (and we tint neutrals toward it; no dead grays; no purple-on-white
-   default)." Get a hue, not a palette; we generate the ramp. In the same breath,
-   decide **mode**: light-only, or light + dark from day one (retrofit dark later is
-   how token systems rot). (→ color-system, theming)
-6. **Density & shape.** Spacious or dense? Sharp corners (0–4px), soft (8–12px), or
-   round (16px+)? Flat or layered/shadowed? These set the whole feel and are usually
-   skipped. Land on numbers.
-7. **Structure & rhythm (do NOT skip — this is where pages escape slop).** Symmetric
-   centered, or asymmetric/offset? Is there a spatial motif from the references (grid,
-   tessellation/bento, columns, collage)? Metronomic sections or syncopated (varied
-   width/density/treatment)? A committed palette on the generic SaaS skeleton is still
-   slop. Land on a composition + motif + rhythm. (→ `references/structure-and-rhythm.md`,
-   then `responsive-layout`; audited by `deslop-ui` → `structural-tells.md`.)
-8. **One signature move.** "What's the one memorable thing — a bold type treatment, an
-   unexpected color, a distinctive grid/structure, one orchestrated load animation?"
-   Designed work has exactly one. Pick it.
+| Canonical ID | Close with |
+| --- | --- |
+| `reference` | a real artifact and what it earns |
+| `personality` | a chosen pole, not a middle |
+| `aesthetic` | one concrete phrase predicting hierarchy/material |
+| `type` | binding evidence, display/body stance, language/measure risk |
+| `color_mode` | dominant hue, accent job, and light/dark commitment |
+| `density_shape` | density, numeric radius range, elevation |
+| `structure_rhythm` | composition, motif, and sectional cadence |
+| `signature` | one memorable move |
+| `imagery_iconography` | source/treatment or absence; one icon system |
 
-9. **Imagery & iconography stance (one decision, huge slop lever).** What fills the
-   image-shaped holes — real photography (what treatment?), illustration (what style?),
-   pure type/texture, or *nothing*? And one icon set, by name, at one stroke weight —
-   never emoji-as-icons, never three mixed icon styles. Generic AI-gradient
-   illustrations and stock-photo soup undo every other commitment. (→ `art-direction`)
-
-(Optional 10th for products: motion level — restrained / lively / none — feeding
-`micro-motion`.)
-
-**Do not copy this skill's examples.** Every concrete example in this file and its
-references ("1970s ski lodge," Fraunces, burnt-orange…) illustrates *what specificity
-looks like* — it is not a recommended answer. If your output's aesthetic phrase, faces,
-or hue match an example here, you've parroted the textbook: re-derive from the user's
-actual references.
+Optionally set motion level for products.
 
 ## Anti-slop guardrails (enforce during the interview)
 
-- **Ban the average words.** "modern, clean, sleek, professional, minimal-but-friendly,
-  elegant" → push for a concrete reference or a pole. These adjectives *are* the slop.
-- **Forbid the defaults out loud.** State what you will NOT do unless told otherwise:
-  no Inter/Roboto, no indigo→violet gradient, no centered-hero-+-3-cards, no pill CTAs,
-  no glassmorphism-by-default. (See `deslop-ui`.)
-- **One dominant color, not five pastels.** Commit to a hue; neutrals tint toward it.
-- **Pick poles, not middles.** Every "it depends / a bit of both" is a slop vote.
-- **Decide for them if needed — boldly.** Indecision resolved toward the mean = slop.
-  Indecision resolved toward a committed choice = a starting point they can react to.
+Reject generic adjectives and default template choices; choose a real hue, poles rather
+than middles, and a labelled bounded decision when the user abstains.
 
-## The output: DESIGN-SYSTEM.md + tokens
+## The output: decision map, then DESIGN-SYSTEM.md + tokens
 
-When the interview lands, write a `DESIGN-SYSTEM.md` (template in
-`assets/DESIGN-SYSTEM.template.md`) capturing the decisions, plus a **two-tier token
-block** (primitive → semantic; see `references/tokens.md`) the other skills consume:
+Write `DESIGN-SYSTEM.md` from `assets/DESIGN-SYSTEM.template.md`, semantic tokens, and
+the decision map below. Read `references/session-protocol.md` for readiness/resume rules.
 
-```
-The committed direction in one line: "1970s ski-lodge editorial — warm, dense, classic,
-burnt-orange anchor, Fraunces display, sharp 4px corners, signature = oversized serif numerals."
+```markdown
+| Dimension / conflict | Evidence | Decision or assumption | Consequence | Confirmation / owner |
+| --- | --- | --- | --- | --- |
+| Alert hierarchy | ... | committed / assumed / blocked | ... | ... |
 ```
 
-Then hand off: `color-system` builds the ramp from the hue, `web-typography` sets the
-type scale from the faces, `theming` derives light/dark/high-contrast variants, `component-states`/
-`form-ux`/etc. implement to the tokens, and `deslop-ui` audits the result against the
-committed spec (not the average).
+Blocked rows make the artifact `approval-ready`, not `approved`, and name waiting work.
+Each non-obvious choice cites authority; each token and direction has a semantic/build job.
+
+```
+The committed direction in one line: "<source-derived aesthetic phrase> — <chosen
+hierarchy>, <color role>, <type stance>, <shape/density>, signature = <specific move>."
+```
+
+Hand off hue to `color-system`, type to `web-typography`, modes to `theming`, tokens to
+implementation skills, and the completed spec to `deslop-ui` for audit.
 
 ## Reference files
 
-- `references/interview-bank.md` — the full question bank with recommended defaults,
-  the "they said 'modern', now what" counters, and how to decide boldly when the user
-  abstains. Read this to run the interview well.
-- `references/structure-and-rhythm.md` — committing **layout structure** (composition,
-  spatial motif, rhythm, signature), not just tokens. The half that actually escapes
-  the template. Read this every time — it's the most-skipped, highest-impact part.
-- `references/tokens.md` — the design-token architecture (primitive/semantic tiers,
-  naming, what to emit), so the output plugs into the other skills. Read when writing
-  the artifact.
-- `references/decision-records.md` — meta-patterns + ADR rules for novel cases.
+- `references/interview-bank.md` — forks and abstention guidance; read while interviewing.
+- `references/structure-and-rhythm.md` — composition and rhythm; read before committing structure.
+- `references/tokens.md` — token architecture; read when writing the artifact.
+- `references/decision-records.md` — novel cases.
+- `references/session-protocol.md` — shortcut, headless, contradiction, and resume states.
+- `references/interview-contract.generated.md` — generated session and dimension authority.
 
-## Self-check (before you start building)
+## Completion evidence (before you start building)
 
-0. If direction already existed (DESIGN-SYSTEM.md, brand guide, stated prefs), did I
-   build on it instead of re-interviewing — and did I avoid adopting any example or
-   sample system as the answer?
-1. Did I run the interview *before* building, on a vague request?
-2. Is there a **named aesthetic in one concrete phrase** (not "modern/clean")?
-3. One dominant color hue chosen (not five pastels, not "we'll see")?
-4. A distinctive type pairing chosen (not Inter/Roboto by default)?
-5. A pole picked on each personality axis (no "both")?
-6. Density + corner + elevation decided as actual values?
-7. One signature move named?
-8. Imagery/illustration stance + one named icon set decided (not left to chance)?
-9. Mode decided (light-only vs light+dark) — not deferred to a retrofit?
-10. Wrote `DESIGN-SYSTEM.md` + tokens, and handed off to the implementing skills?
-11. Does my output match any worked example from this skill? If yes, re-derive — that's
-    parroting, not designing.
+Report these rows with direct evidence, reason, remediation, and `pass`/`fail`/`n/a`.
+
+| Check | Status | Evidence / provenance | Reason | Remediation |
+| --- | --- | --- | --- | --- |
+| Nine required dimensions decided |  |  |  |  |
+| Existing-direction shortcut or full interview justified |  |  |  |  |
+| Contradictions and trust-critical rationale resolved |  |  |  |  |
+| DESIGN-SYSTEM.md and canonical token block complete |  |  |  |  |
+| Downstream handoff is explicit |  |  |  |  |
+
+## Self-check
+
+Confirm dimensions/evidence, labelled contradictions/abstentions, source-specific direction,
+and ready artifact/token handoff.
 
 ## How to deliver
 
-- Run it conversationally and fast — recommend-then-react, 6–7 questions, not a form.
-- Be opinionated: bring a strong default to every question; make abstention produce a
-  bold committed choice, never the average.
-- End with the one-line committed direction + the artifact, then build *to it*.
-- This is the front of the chain: **design-system-interview → color-system /
-  web-typography / theming → layout/components → micro-motion → a11y-pass**, with
-  `deslop-ui` auditing against the committed spec.
+Run a fast evidence-dependent recommend-then-react interview, finish with the one-line
+direction and artifact, then build to it through the stated handoff chain.
+
+<!-- contract:v1:start -->
+## Contract (generated)
+
+Canonical detail: [contract.json](contract.json).
+
+- Route: A new interface or redesign lacks a committed visual direction (+1 in contract.json); avoid: An existing site has sufficient evidence to improve without a new direction interview (+1 in contract.json)
+- Exclude: Do not begin implementation before direction is resolved or explicitly assumed (+1 in contract.json)
+- Stop / handoff: Pause when contradictory or trust-critical direction is unresolved (+1 in contract.json); receives [none] -> sends [color-system, web-typography, spacing-system, theming, responsive-layout, art-direction, micro-motion]
+- Output: A decision-complete design-system artifact with explicit assumptions and readiness state
+- Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
+<!-- contract:v1:end -->

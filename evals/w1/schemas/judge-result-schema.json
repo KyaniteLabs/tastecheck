@@ -1,0 +1,238 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/evals/w1/schemas/judge-result-schema.json",
+  "title": "W1 Judge Result v1",
+  "description": "One judge's completed result for a blinded packet. Three result files per packet (judge_ids: luna-1, luna-2, sonnet-1). Quorum is validated across result files — not inside the packet. cited_evidence must reference text present in the packet's candidate raw_output (anti-fabrication guard). Each judge must pass the six-item calibration threshold before their result counts.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "result_id",
+    "packet_id",
+    "evaluator_type",
+    "judge_id",
+    "evaluator_family",
+    "status"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "result_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]+-(?:paired-lift|diversity|anti-slop)-\\d+-(?:luna|sonnet)-\\d+$",
+      "description": "Unique result identifier. Pattern: {packet_id}-{judge_id}."
+    },
+    "packet_id": {
+      "type": "string",
+      "description": "Must match the packet_id of the parent judge packet."
+    },
+    "evaluator_type": {
+      "type": "string",
+      "enum": ["paired_lift", "diversity", "anti_slop"]
+    },
+    "judge_id": {
+      "type": "string",
+      "enum": ["luna-1", "luna-2", "sonnet-1"],
+      "description": "One of exactly three judges per packet. Ensures unique judge identity and at least two families."
+    },
+    "evaluator_family": {
+      "type": "string",
+      "enum": ["luna", "sonnet"],
+      "description": "Model family. luna-1 and luna-2 share family 'luna'; sonnet-1 has family 'sonnet'. At least two distinct families required across a packet's three results."
+    },
+    "evaluator_model": {
+      "type": "string",
+      "description": "Specific model ID. Required when status is 'complete'."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "complete"],
+      "description": "pending: result slot exists but judgment not yet submitted. complete: all required judgment fields are present and validated."
+    },
+    "calibration_status": {
+      "type": "object",
+      "description": "Six-item calibration gate. Three calibration examples x (verdict_correct + total_within_threshold) = 6 items. All six must pass for this result to count toward quorum.",
+      "required": ["passed", "items_passed", "items"],
+      "additionalProperties": false,
+      "properties": {
+        "passed": { "type": "boolean" },
+        "items_passed": { "type": "integer", "minimum": 0, "maximum": 6 },
+        "items": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "required": ["calibration_id", "check", "passed"],
+            "additionalProperties": false,
+            "properties": {
+              "calibration_id": { "type": "string" },
+              "check": { "type": "string", "enum": ["verdict_correct", "total_within_threshold"] },
+              "passed": { "type": "boolean" },
+              "judge_value": {},
+              "anchor_value": {}
+            }
+          }
+        }
+      }
+    },
+    "candidate_scores": {
+      "type": "object",
+      "description": "Required for paired_lift. Scores for each candidate (A, B) on all five rubric dimensions using anchored 1-5 integers (min 5, max 25). Zero is invalid and fails closed.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["domain_specificity", "evidence_completeness", "fail_closed", "handoff_readiness", "scope_discipline", "total"],
+        "additionalProperties": false,
+        "properties": {
+          "domain_specificity":    { "type": "integer", "minimum": 1, "maximum": 5 },
+          "evidence_completeness": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "fail_closed":           { "type": "integer", "minimum": 1, "maximum": 5 },
+          "handoff_readiness":     { "type": "integer", "minimum": 1, "maximum": 5 },
+          "scope_discipline":      { "type": "integer", "minimum": 1, "maximum": 5 },
+          "total":                 { "type": "integer", "minimum": 5, "maximum": 25 }
+        }
+      }
+    },
+    "score_scale_version": {
+      "type": "string",
+      "const": "anchored-1-5-v1",
+      "description": "Required for complete paired_lift results. Makes the 1-5 rubric unambiguous and prevents legacy 0-2 judgments from being silently accepted."
+    },
+    "candidate_evidence": {
+      "type": "object",
+      "description": "Required for paired_lift. Direct quotes from each candidate supporting the dimension scores.",
+      "additionalProperties": { "type": "string", "minLength": 5 }
+    },
+    "preference": {
+      "type": "string",
+      "description": "Required for paired_lift. Which candidate the judge prefers.",
+      "enum": ["A", "B", "tie"]
+    },
+    "deltas": {
+      "type": "object",
+      "description": "Required for paired_lift. Per-dimension score deltas (A score minus B score), each from -4 to +4.",
+      "additionalProperties": { "type": "integer", "minimum": -4, "maximum": 4 }
+    },
+    "regression_flags": {
+      "type": "array",
+      "description": "Required for paired_lift. Records candidate-specific safety, accessibility, or contract regressions. Any such flag on the upgraded label blocks release after private unmasking.",
+      "items": {
+        "type": "object",
+        "required": ["category", "candidate", "dimension", "delta", "evidence"],
+        "additionalProperties": false,
+        "properties": {
+          "category":  { "type": "string", "enum": ["safety", "accessibility", "contract"] },
+          "candidate": { "type": "string", "enum": ["A", "B"] },
+          "dimension": { "type": "string", "enum": ["domain_specificity", "evidence_completeness", "fail_closed", "handoff_readiness", "scope_discipline"] },
+          "delta":     { "type": "integer", "minimum": -4, "maximum": -1 },
+          "evidence":  { "type": "string", "minLength": 5 }
+        }
+      }
+    },
+    "pair_analyses": {
+      "type": "object",
+      "description": "Required for diversity. Must include all three explicit pairs: C1-C2, C1-C3, C2-C3.",
+      "required": ["C1-C2", "C1-C3", "C2-C3"],
+      "additionalProperties": false,
+      "properties": {
+        "C1-C2": { "$ref": "#/definitions/pairAnalysis" },
+        "C1-C3": { "$ref": "#/definitions/pairAnalysis" },
+        "C2-C3": { "$ref": "#/definitions/pairAnalysis" }
+      }
+    },
+    "candidate_findings": {
+      "type": "object",
+      "description": "Required for anti_slop. Concrete findings per candidate (C1, C2, C3). Must cite direct quotes — regex-only pattern matches without judgment are not sufficient.",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["type", "evidence", "quote"],
+          "additionalProperties": false,
+          "properties": {
+            "type":     { "type": "string", "minLength": 3 },
+            "evidence": { "type": "string", "minLength": 10 },
+            "quote":    { "type": "string", "minLength": 5 }
+          }
+        }
+      }
+    },
+    "verdict": {
+      "type": "string",
+      "description": "For paired_lift: 'A_better', 'B_better', 'tie'. For diversity: 'pass', 'fail'. For anti_slop: 'pass', 'fail'. Required when status is 'complete'."
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 20,
+      "description": "Justification grounded in candidate content. Required when status is 'complete'."
+    },
+    "cited_evidence": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 5 },
+      "minItems": 1,
+      "description": "Direct quotes or paraphrases from candidate raw_output. Quorum validator verifies at least one item appears verbatim in candidate text (anti-fabrication guard). Required when status is 'complete'."
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "pending" } } },
+      "then": {
+        "not": {
+          "anyOf": [
+            { "required": ["evaluator_model"] },
+            { "required": ["calibration_status"] },
+            { "required": ["verdict"] },
+            { "required": ["rationale"] },
+            { "required": ["cited_evidence"] }
+          ]
+        }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "complete" } } },
+      "then": {
+        "required": ["evaluator_model", "calibration_status", "verdict", "rationale", "cited_evidence"]
+      }
+    },
+    {
+      "if": { "properties": { "evaluator_type": { "const": "paired_lift" }, "status": { "const": "complete" } } },
+      "then": { "required": ["score_scale_version", "candidate_scores", "candidate_evidence", "preference", "deltas", "regression_flags"] }
+    },
+    {
+      "if": { "properties": { "evaluator_type": { "const": "diversity" }, "status": { "const": "complete" } } },
+      "then": { "required": ["pair_analyses"] }
+    },
+    {
+      "if": { "properties": { "evaluator_type": { "const": "anti_slop" }, "status": { "const": "complete" } } },
+      "then": { "required": ["candidate_findings"] }
+    }
+  ],
+  "definitions": {
+    "pairAnalysis": {
+      "type": "object",
+      "required": [
+        "structural_evidence",
+        "aesthetic_evidence",
+        "voice_evidence",
+        "coherence",
+        "usability",
+        "brief_fit",
+        "accessibility",
+        "skill_requirement"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "structural_evidence": { "type": "string", "minLength": 10 },
+        "aesthetic_evidence":  { "type": "string", "minLength": 10 },
+        "voice_evidence":      { "type": "string", "minLength": 10 },
+        "coherence":           { "type": "string", "enum": ["pass", "fail"] },
+        "usability":           { "type": "string", "enum": ["pass", "fail"] },
+        "brief_fit":           { "type": "string", "enum": ["pass", "fail"] },
+        "accessibility":       { "type": "string", "enum": ["pass", "fail"] },
+        "skill_requirement":   { "type": "string", "enum": ["pass", "fail"] }
+      }
+    }
+  }
+}

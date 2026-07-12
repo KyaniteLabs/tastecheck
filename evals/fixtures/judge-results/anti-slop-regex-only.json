@@ -1,0 +1,82 @@
+[
+  {
+    "schema_version": 1,
+    "result_id": "component-states-anti-slop-001-luna-1",
+    "packet_id": "component-states-anti-slop-001",
+    "evaluator_type": "anti_slop",
+    "judge_id": "luna-1",
+    "evaluator_family": "luna",
+    "evaluator_model": "gpt-5.6-luna",
+    "status": "complete",
+    "calibration_status": {
+      "passed": true,
+      "items_passed": 6,
+      "items": [
+        {
+          "calibration_id": "cal-001",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "pass",
+          "anchor_value": "pass"
+        },
+        {
+          "calibration_id": "cal-001",
+          "check": "total_within_threshold",
+          "passed": true,
+          "judge_value": 10,
+          "anchor_value": 10
+        },
+        {
+          "calibration_id": "cal-002",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "fail",
+          "anchor_value": "fail"
+        },
+        {
+          "calibration_id": "cal-002",
+          "check": "total_within_threshold",
+          "passed": true,
+          "judge_value": 2,
+          "anchor_value": 2
+        },
+        {
+          "calibration_id": "cal-003",
+          "check": "verdict_correct",
+          "passed": true,
+          "judge_value": "fail",
+          "anchor_value": "fail"
+        },
+        {
+          "calibration_id": "cal-003",
+          "check": "total_within_threshold",
+          "passed": true,
+          "judge_value": 6,
+          "anchor_value": 6
+        }
+      ]
+    },
+    "candidate_findings": {
+      "C1": [
+        {
+          "type": "generic-header",
+          "evidence": "matches pattern /^##\\s+/",
+          "quote": "##"
+        }
+      ],
+      "C2": [
+        {
+          "type": "bullet-list",
+          "evidence": "matches pattern /^- /m",
+          "quote": "- "
+        }
+      ],
+      "C3": []
+    },
+    "verdict": "fail",
+    "rationale": "All candidates match common slop patterns via regex.",
+    "cited_evidence": [
+      "Destructive action state contract"
+    ]
+  }
+]

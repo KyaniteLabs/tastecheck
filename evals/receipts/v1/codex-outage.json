@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "type": "runtime-outage",
+  "wave": "W1",
+  "executor_family": "codex-cli",
+  "affected_lanes": ["terra", "luna"],
+  "error_class": "auth_refresh_failure",
+  "error_tokens_observed": ["refresh_token_reused", "token_expired"],
+  "sanitized_error": "[TOKEN ROTATION FAILURE: refresh token already consumed or OAuth session expired — re-authentication required]",
+  "impact": "Terra and Luna Codex CLI threads cannot authenticate to execute fresh-context upgraded runs. Baseline runs queued before token expiry may have completed.",
+  "affected_jobs": [
+    "component-states-upgraded-seed101",
+    "component-states-upgraded-seed202",
+    "component-states-upgraded-seed303",
+    "deslop-ui-upgraded-seed101",
+    "deslop-ui-upgraded-seed202",
+    "deslop-ui-upgraded-seed303",
+    "tastecheck-pass-upgraded-seed101",
+    "tastecheck-pass-upgraded-seed202",
+    "tastecheck-pass-upgraded-seed303"
+  ],
+  "workaround": {
+    "description": "External Codex Desktop Terra/Luna threads may write raw output files directly to evals/w1/outputs/ following the filename convention and passing the attempt-output schema.",
+    "filename_convention": "<job_id>-attempt-<attempt_index>.json",
+    "schema_ref": "evals/w1/schemas/attempt-output-schema.json",
+    "unique_filename_required": true,
+    "note": "Each attempt from a distinct Codex thread must use a distinct attempt_index to avoid overwrite collisions. The run-w1-pilot.mjs runner discovers and registers these files."
+  },
+  "status": "encoded",
+  "resolution_path": "Re-authenticate Codex CLI in Terra and Luna lanes, then re-run failed upgraded jobs.",
+  "date_utc": "2026-07-10T00:00:00Z"
+}

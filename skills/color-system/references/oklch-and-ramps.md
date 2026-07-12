@@ -77,11 +77,4 @@ for stop in [50,100,...,900]:
     C = chroma_curve(L)                            # rises then falls, peak ~L 0.6
     emit oklch(L, C, H)
 ```
-See `assets/oklch-ramp.md` for a runnable version and a chroma curve.
-
-## Self-check
-- [ ] Ramp built in OKLCH, constant H, stepped L.
-- [ ] Chroma peaks mid-ramp and tapers at light/dark ends (no neon-white, no muddy-dark).
-- [ ] Neutrals tinted toward the brand hue (small C), not pure gray.
-- [ ] Accent hue shares L/C range with brand (only H differs).
-- [ ] Fallbacks emitted if legacy browsers are in scope.
+See `../assets/oklch-ramp.md` for a runnable version and a chroma curve.

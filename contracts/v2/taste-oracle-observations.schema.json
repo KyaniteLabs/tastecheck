@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/contracts/v2/taste-oracle-observations.schema.json",
+  "title": "TasteCheck Taste Oracle Paired Observations v2",
+  "description": "Milestone-only paired observations. Collected inputs require provenance from a validated judge panel.",
+  "type": "object",
+  "required": ["schema_version", "kind", "scenario_id", "target_arm", "comparator_arm", "release_scope", "provenance", "observations"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "integer", "const": 2 },
+    "kind": { "type": "string", "const": "taste-oracle-paired-observations" },
+    "scenario_id": { "type": "string", "const": "deslop-ui-hard-001" },
+    "target_arm": { "$ref": "#/definitions/armId" },
+    "comparator_arm": { "$ref": "#/definitions/armId" },
+    "release_scope": { "type": "string", "const": "milestone_only" },
+    "provenance": { "type": "object" },
+    "observations": { "type": "array", "minItems": 8 }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "provenance": { "type": "object", "required": ["kind"], "properties": { "kind": { "const": "synthetic_fixture" } } } } },
+      "then": {
+        "properties": {
+          "provenance": { "$ref": "#/definitions/syntheticProvenance" },
+          "observations": { "type": "array", "items": { "$ref": "#/definitions/syntheticObservation" } }
+        }
+      },
+      "else": {
+        "properties": {
+          "provenance": { "$ref": "#/definitions/collectedProvenance" },
+          "observations": { "type": "array", "items": { "$ref": "#/definitions/collectedObservation" } }
+        }
+      }
+    }
+  ],
+  "oneOf": [
+    { "$ref": "#/definitions/pairNoSkillCurrent" }, { "$ref": "#/definitions/pairNoSkillFrozen" },
+    { "$ref": "#/definitions/pairCurrentNoSkill" }, { "$ref": "#/definitions/pairCurrentFrozen" },
+    { "$ref": "#/definitions/pairFrozenNoSkill" }, { "$ref": "#/definitions/pairFrozenCurrent" }
+  ],
+  "definitions": {
+    "armId": { "type": "string", "enum": ["no-skill", "current", "frozen"] },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "opaqueObservationId": { "type": "string", "pattern": "^observation-[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "opaqueFamilyId": { "type": "string", "pattern": "^family-[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "opaqueResultId": { "type": "string", "pattern": "^result-[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "opaqueJudgeId": { "type": "string", "pattern": "^judge-[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "publicSafeText": { "type": "string", "minLength": 1, "pattern": "^(?![\\s\\S]*(?:(?<![A-Za-z0-9.%+\\-])[A-Za-z0-9._%+\\-]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,}(?![A-Za-z0-9.\\-])|[Ff][Ii][Ll][Ee]:\\/\\/|~[\\\\/]|\\/(?:[Uu][Ss][Ee][Rr][Ss]|[Hh][Oo][Mm][Ee])\\/[^\\/\\s]+|[A-Za-z]:[\\\\/](?:[Uu][Ss][Ee][Rr][Ss]|[Dd][Oo][Cc][Uu][Mm][Ee][Nn][Tt][Ss] [Aa][Nn][Dd] [Ss][Ee][Tt][Tt][Ii][Nn][Gg][Ss])[\\\\/][^\\\\/\\s]+|\\/[Pp][Rr][Ii][Vv][Aa][Tt][Ee]\\/(?:[Tt][Mm][Pp]|[Vv][Aa][Rr])\\/|\\/[Vv][Aa][Rr]\\/[Ff][Oo][Ll][Dd][Ee][Rr][Ss]\\/|\\/[Tt][Mm][Pp]\\/|\\b(?:[Tt][Oo][Kk][Ee][Nn]|[Aa][Pp][Ii][_-]?[Kk][Ee][Yy]|[Ss][Ee][Cc][Rr][Ee][Tt]|[Pp][Aa][Ss][Ss][Ww][Oo][Rr][Dd])\\s*=))(?=.*\\S)[\\s\\S]*$" },
+    "repoPath": { "allOf": [{ "$ref": "#/definitions/publicSafeText" }, { "type": "string", "pattern": "^(?!/|~|[A-Za-z]:|[a-z][a-z0-9+.-]*:)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*\\\\)(?!.*//).+$" }] },
+    "syntheticProvenance": { "type": "object", "required": ["kind", "notice"], "additionalProperties": false, "properties": { "kind": { "const": "synthetic_fixture" }, "notice": { "const": "SYNTHETIC FIXTURE — NOT RELEASE EVIDENCE" } } },
+    "packetReceipt": { "type": "object", "required": ["packet_id", "path", "file_sha256", "canonical_sha256"], "additionalProperties": false, "properties": { "packet_id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" }, "path": { "$ref": "#/definitions/repoPath" }, "file_sha256": { "$ref": "#/definitions/sha256" }, "canonical_sha256": { "$ref": "#/definitions/sha256" } } },
+    "manifestReceipt": { "type": "object", "required": ["path", "file_sha256", "canonical_sha256"], "additionalProperties": false, "properties": { "path": { "$ref": "#/definitions/repoPath" }, "file_sha256": { "$ref": "#/definitions/sha256" }, "canonical_sha256": { "$ref": "#/definitions/sha256" } } },
+    "resultReceipt": { "type": "object", "required": ["result_id", "path", "judge_id", "evaluator_family", "file_sha256", "canonical_sha256"], "additionalProperties": false, "properties": { "result_id": { "$ref": "#/definitions/opaqueResultId" }, "path": { "$ref": "#/definitions/repoPath" }, "judge_id": { "$ref": "#/definitions/opaqueJudgeId" }, "evaluator_family": { "$ref": "#/definitions/opaqueFamilyId" }, "file_sha256": { "$ref": "#/definitions/sha256" }, "canonical_sha256": { "$ref": "#/definitions/sha256" } } },
+    "unmaskReceipt": { "type": "object", "required": ["path", "file_sha256"], "additionalProperties": false, "properties": { "path": { "$ref": "#/definitions/repoPath" }, "file_sha256": { "$ref": "#/definitions/sha256" } } },
+    "collectedProvenance": { "type": "object", "required": ["kind", "packet", "unmask", "manifest", "results"], "additionalProperties": false, "properties": { "kind": { "const": "validated_judge_panel" }, "packet": { "$ref": "#/definitions/packetReceipt" }, "unmask": { "$ref": "#/definitions/unmaskReceipt" }, "manifest": { "$ref": "#/definitions/manifestReceipt" }, "results": { "type": "array", "minItems": 2, "items": { "$ref": "#/definitions/resultReceipt" } } } },
+    "syntheticObservation": { "type": "object", "required": ["observation_id", "evaluator_family", "result_id", "preference"], "additionalProperties": false, "properties": { "observation_id": { "$ref": "#/definitions/opaqueObservationId" }, "evaluator_family": { "$ref": "#/definitions/opaqueFamilyId" }, "result_id": { "$ref": "#/definitions/opaqueResultId" }, "preference": { "type": "string" } } },
+    "collectedObservation": { "type": "object", "required": ["observation_id", "evaluator_family", "result_id", "viewport_id", "preference", "evidence_citations"], "additionalProperties": false, "properties": { "observation_id": { "$ref": "#/definitions/opaqueObservationId" }, "evaluator_family": { "$ref": "#/definitions/opaqueFamilyId" }, "result_id": { "$ref": "#/definitions/opaqueResultId" }, "viewport_id": { "enum": ["mobile", "desktop"] }, "preference": { "type": "string" }, "evidence_citations": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "#/definitions/sha256" } } } },
+    "pairNoSkillCurrent": { "$ref": "#/definitions/pairTemplateNoSkillCurrent" },
+    "pairNoSkillFrozen": { "$ref": "#/definitions/pairTemplateNoSkillFrozen" },
+    "pairCurrentNoSkill": { "$ref": "#/definitions/pairTemplateCurrentNoSkill" },
+    "pairCurrentFrozen": { "$ref": "#/definitions/pairTemplateCurrentFrozen" },
+    "pairFrozenNoSkill": { "$ref": "#/definitions/pairTemplateFrozenNoSkill" },
+    "pairFrozenCurrent": { "$ref": "#/definitions/pairTemplateFrozenCurrent" },
+    "pairTemplateNoSkillCurrent": { "type": "object", "properties": { "target_arm": { "const": "no-skill" }, "comparator_arm": { "const": "current" }, "observations": { "type": "array", "items": { "type": "object", "properties": { "preference": { "enum": ["no-skill", "current", "tie", "abstain"] } } } } } },
+    "pairTemplateNoSkillFrozen": { "type": "object", "properties": { "target_arm": { "const": "no-skill" }, "comparator_arm": { "const": "frozen" }, "observations": { "type": "array", "items": { "type": "object", "properties": { "preference": { "enum": ["no-skill", "frozen", "tie", "abstain"] } } } } } },
+    "pairTemplateCurrentNoSkill": { "type": "object", "properties": { "target_arm": { "const": "current" }, "comparator_arm": { "const": "no-skill" }, "observations": { "type": "array", "items": { "type": "object", "properties": { "preference": { "enum": ["current", "no-skill", "tie", "abstain"] } } } } } },
+    "pairTemplateCurrentFrozen": { "type": "object", "properties": { "target_arm": { "const": "current" }, "comparator_arm": { "const": "frozen" }, "observations": { "type": "array", "items": { "type": "object", "properties": { "preference": { "enum": ["current", "frozen", "tie", "abstain"] } } } } } },
+    "pairTemplateFrozenNoSkill": { "type": "object", "properties": { "target_arm": { "const": "frozen" }, "comparator_arm": { "const": "no-skill" }, "observations": { "type": "array", "items": { "type": "object", "properties": { "preference": { "enum": ["frozen", "no-skill", "tie", "abstain"] } } } } } },
+    "pairTemplateFrozenCurrent": { "type": "object", "properties": { "target_arm": { "const": "frozen" }, "comparator_arm": { "const": "current" }, "observations": { "type": "array", "items": { "type": "object", "properties": { "preference": { "enum": ["frozen", "current", "tie", "abstain"] } } } } } }
+  }
+}

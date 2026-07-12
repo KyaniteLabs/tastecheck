@@ -8,7 +8,7 @@ Copy templates included; adapt the voice to the product.
 A skeleton mirrors the real content's *layout* with neutral placeholder blocks. Rules:
 - Match the real element count and rough dimensions (one skeleton row per expected row).
 - Reserve the real height/width so data arrival causes zero layout shift.
-- Subtle shimmer (see `micro-motion` `assets/motion-tokens.css` `.skeleton`); disable
+- Subtle shimmer (see `micro-motion` `../../micro-motion/assets/motion-tokens.css` `.skeleton`); disable
   under `prefers-reduced-motion`.
 - Don't over-detail — a few bars conveying "title + lines + thumbnail" is enough.
 - Cap how long a skeleton shows; if loading exceeds ~10s, switch to a slow-load message
@@ -75,9 +75,3 @@ payment/security failures). See the `humanize-copy` skill for tone.
 - Don't convey state by icon/color alone — include text.
 - Keep focus sane: on error after submit, move focus to the error/Retry.
 - Loading spinners need an accessible label (`aria-label="Loading"`).
-
-## Self-check
-- [ ] Skeleton matches layout and reserves space (no CLS on data arrival).
-- [ ] Each surface's empty flavor (first-run / cleared / no-results) handled correctly.
-- [ ] Errors fail gracefully and per-widget where possible; Retry present.
-- [ ] State changes announced to screen readers; not-found ≠ empty ≠ error.

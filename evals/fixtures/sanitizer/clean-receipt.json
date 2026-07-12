@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "job_id": "component-states-upgraded-seed101",
+  "status": "complete",
+  "executor": "claude-sonnet-4-6",
+  "skill": "component-states",
+  "notes": "This is a clean receipt with no PII, paths, or secrets."
+}

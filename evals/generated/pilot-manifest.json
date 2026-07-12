@@ -1,0 +1,392 @@
+{
+  "schema_version": 1,
+  "description": "Pilot evaluation corpus: 3 skills × (1 baseline + 3 upgraded) = 12 cells",
+  "pilot_skills": [
+    "component-states",
+    "deslop-ui",
+    "tastecheck-pass"
+  ],
+  "cells": [
+    {
+      "cell_id": "component-states:baseline",
+      "skill": "component-states",
+      "scenario_id": "component-states-async-destructive-control",
+      "scenario_class": "generative",
+      "variant": "baseline",
+      "seed": null,
+      "temperature": 0.7,
+      "fresh_context": false,
+      "prompt_packet": {
+        "prompt": "Design the state contract for an async destructive action in a dense admin interface. Include keyboard, focus-visible, pressed, disabled, loading, success, and error behavior. Use the existing semantic tokens and do not hide the only recovery path.",
+        "assertions": [
+          "Separates visual state from semantic state and names the trigger for each.",
+          "Includes focus-visible, keyboard parity, aria-busy/disabled semantics, and a no-double-submit rule.",
+          "Includes success and error recovery without inventing page-level empty states.",
+          "Provides status, reason, remediation, evidence, and provenance rather than bare checkmarks."
+        ],
+        "routing": {
+          "positive": true,
+          "negative_neighbor": "form-ux",
+          "handoff": "a11y-pass"
+        }
+      },
+      "run_conditions": {
+        "tool_policy": "read-only",
+        "invalid_retry_cap": 2,
+        "acceptance_quorum": 3
+      },
+      "evidence_path": ".omx/evidence/tastecheck-v1/raw/component-states/component-states-async-destructive-control/baseline.json",
+      "notes": "Frozen baseline — use W0 manifest blob; never regenerate through upgraded skill files."
+    },
+    {
+      "cell_id": "component-states:upgraded:101",
+      "skill": "component-states",
+      "scenario_id": "component-states-async-destructive-control",
+      "scenario_class": "generative",
+      "variant": "upgraded",
+      "seed": 101,
+      "temperature": 0.7,
+      "fresh_context": true,
+      "prompt_packet": {
+        "prompt": "Design the state contract for an async destructive action in a dense admin interface. Include keyboard, focus-visible, pressed, disabled, loading, success, and error behavior. Use the existing semantic tokens and do not hide the only recovery path.",
+        "assertions": [
+          "Separates visual state from semantic state and names the trigger for each.",
+          "Includes focus-visible, keyboard parity, aria-busy/disabled semantics, and a no-double-submit rule.",
+          "Includes success and error recovery without inventing page-level empty states.",
+          "Provides status, reason, remediation, evidence, and provenance rather than bare checkmarks."
+        ],
+        "routing": {
+          "positive": true,
+          "negative_neighbor": "form-ux",
+          "handoff": "a11y-pass"
+        }
+      },
+      "run_conditions": {
+        "tool_policy": "read-only",
+        "invalid_retry_cap": 2,
+        "acceptance_quorum": 3
+      },
+      "evidence_path": ".omx/evidence/tastecheck-v1/raw/component-states/component-states-async-destructive-control/upgraded-101.json",
+      "external_writer_glob": ".omx/evidence/tastecheck-v1/raw/component-states/component-states-async-destructive-control/upgraded-101-*.json",
+      "notes": "Fresh context required. External writers (Codex/Terra/Luna) may write to external_writer_glob path; collect-attempts.mjs ingests and validates."
+    },
+    {
+      "cell_id": "component-states:upgraded:202",
+      "skill": "component-states",
+      "scenario_id": "component-states-async-destructive-control",
+      "scenario_class": "generative",
+      "variant": "upgraded",
+      "seed": 202,
+      "temperature": 0.7,
+      "fresh_context": true,
+      "prompt_packet": {
+        "prompt": "Design the state contract for an async destructive action in a dense admin interface. Include keyboard, focus-visible, pressed, disabled, loading, success, and error behavior. Use the existing semantic tokens and do not hide the only recovery path.",
+        "assertions": [
+          "Separates visual state from semantic state and names the trigger for each.",
+          "Includes focus-visible, keyboard parity, aria-busy/disabled semantics, and a no-double-submit rule.",
+          "Includes success and error recovery without inventing page-level empty states.",
+          "Provides status, reason, remediation, evidence, and provenance rather than bare checkmarks."
+        ],
+        "routing": {
+          "positive": true,
+          "negative_neighbor": "form-ux",
+          "handoff": "a11y-pass"
+        }
+      },
+      "run_conditions": {
+        "tool_policy": "read-only",
+        "invalid_retry_cap": 2,
+        "acceptance_quorum": 3
+      },
+      "evidence_path": ".omx/evidence/tastecheck-v1/raw/component-states/component-states-async-destructive-control/upgraded-202.json",
+      "external_writer_glob": ".omx/evidence/tastecheck-v1/raw/component-states/component-states-async-destructive-control/upgraded-202-*.json",
+      "notes": "Fresh context required. External writers (Codex/Terra/Luna) may write to external_writer_glob path; collect-attempts.mjs ingests and validates."
+    },
+    {
+      "cell_id": "component-states:upgraded:303",
+      "skill": "component-states",
+      "scenario_id": "component-states-async-destructive-control",
+      "scenario_class": "generative",
+      "variant": "upgraded",
+      "seed": 303,
+      "temperature": 0.7,
+      "fresh_context": true,
+      "prompt_packet": {
+        "prompt": "Design the state contract for an async destructive action in a dense admin interface. Include keyboard, focus-visible, pressed, disabled, loading, success, and error behavior. Use the existing semantic tokens and do not hide the only recovery path.",
+        "assertions": [
+          "Separates visual state from semantic state and names the trigger for each.",
+          "Includes focus-visible, keyboard parity, aria-busy/disabled semantics, and a no-double-submit rule.",
+          "Includes success and error recovery without inventing page-level empty states.",
+          "Provides status, reason, remediation, evidence, and provenance rather than bare checkmarks."
+        ],
+        "routing": {
+          "positive": true,
+          "negative_neighbor": "form-ux",
+          "handoff": "a11y-pass"
+        }
+      },
+      "run_conditions": {
+        "tool_policy": "read-only",
+        "invalid_retry_cap": 2,
+        "acceptance_quorum": 3
+      },
+      "evidence_path": ".omx/evidence/tastecheck-v1/raw/component-states/component-states-async-destructive-control/upgraded-303.json",
+      "external_writer_glob": ".omx/evidence/tastecheck-v1/raw/component-states/component-states-async-destructive-control/upgraded-303-*.json",
+      "notes": "Fresh context required. External writers (Codex/Terra/Luna) may write to external_writer_glob path; collect-attempts.mjs ingests and validates."
+    },
+    {
+      "cell_id": "deslop-ui:baseline",
+      "skill": "deslop-ui",
+      "scenario_id": "deslop-ui-polished-generic-page",
+      "scenario_class": "repair",
+      "variant": "baseline",
+      "seed": null,
+      "temperature": 0.2,
+      "fresh_context": false,
+      "prompt_packet": {
+        "prompt": "Audit a polished marketing page that uses an indigo-violet gradient, pill CTA, centered hero, equal three-card grid, generic system typography, and plausible copy. The brief calls for a quiet field-research instrument with a left-anchored composition and one precise accent. Preserve the real product facts.",
+        "assertions": [
+          "Records observed findings separately across surface, structure, and verbal planes.",
+          "Preserves coherent product facts and deliberate brand signals.",
+          "Commits to a named, brief-compatible direction with concrete repairs, not subtraction alone.",
+          "Reports severity, evidence, remediation, and provenance for every finding."
+        ],
+        "routing": {
+          "positive": true,
+          "negative_neighbor": "design-system-interview",
+          "handoff": "humanize-copy"
+        }
+      },
+      "run_conditions": {
+        "tool_policy": "read-only",
+        "invalid_retry_cap": 2,
+        "acceptance_quorum": 3
+      },
+      "evidence_path": ".omx/evidence/tastecheck-v1/raw/deslop-ui/deslop-ui-polished-generic-page/baseline.json",
+      "notes": "Frozen baseline — use W0 manifest blob; never regenerate through upgraded skill files."
+    },
+    {
+      "cell_id": "deslop-ui:upgraded:101",
+      "skill": "deslop-ui",
+      "scenario_id": "deslop-ui-polished-generic-page",
+      "scenario_class": "repair",
+      "variant": "upgraded",
+      "seed": 101,
+      "temperature": 0.2,
+      "fresh_context": true,
+      "prompt_packet": {
+        "prompt": "Audit a polished marketing page that uses an indigo-violet gradient, pill CTA, centered hero, equal three-card grid, generic system typography, and plausible copy. The brief calls for a quiet field-research instrument with a left-anchored composition and one precise accent. Preserve the real product facts.",
+        "assertions": [
+          "Records observed findings separately across surface, structure, and verbal planes.",
+          "Preserves coherent product facts and deliberate brand signals.",
+          "Commits to a named, brief-compatible direction with concrete repairs, not subtraction alone.",
+          "Reports severity, evidence, remediation, and provenance for every finding."
+        ],
+        "routing": {
+          "positive": true,
+          "negative_neighbor": "design-system-interview",
+          "handoff": "humanize-copy"
+        }
+      },
+      "run_conditions": {
+        "tool_policy": "read-only",
+        "invalid_retry_cap": 2,
+        "acceptance_quorum": 3
+      },
+      "evidence_path": ".omx/evidence/tastecheck-v1/raw/deslop-ui/deslop-ui-polished-generic-page/upgraded-101.json",
+      "external_writer_glob": ".omx/evidence/tastecheck-v1/raw/deslop-ui/deslop-ui-polished-generic-page/upgraded-101-*.json",
+      "notes": "Fresh context required. External writers (Codex/Terra/Luna) may write to external_writer_glob path; collect-attempts.mjs ingests and validates."
+    },
+    {
+      "cell_id": "deslop-ui:upgraded:202",
+      "skill": "deslop-ui",
+      "scenario_id": "deslop-ui-polished-generic-page",
+      "scenario_class": "repair",
+      "variant": "upgraded",
+      "seed": 202,
+      "temperature": 0.2,
+      "fresh_context": true,
+      "prompt_packet": {
+        "prompt": "Audit a polished marketing page that uses an indigo-violet gradient, pill CTA, centered hero, equal three-card grid, generic system typography, and plausible copy. The brief calls for a quiet field-research instrument with a left-anchored composition and one precise accent. Preserve the real product facts.",
+        "assertions": [
+          "Records observed findings separately across surface, structure, and verbal planes.",
+          "Preserves coherent product facts and deliberate brand signals.",
+          "Commits to a named, brief-compatible direction with concrete repairs, not subtraction alone.",
+          "Reports severity, evidence, remediation, and provenance for every finding."
+        ],
+        "routing": {
+          "positive": true,
+          "negative_neighbor": "design-system-interview",
+          "handoff": "humanize-copy"
+        }
+      },
+      "run_conditions": {
+        "tool_policy": "read-only",
+        "invalid_retry_cap": 2,
+        "acceptance_quorum": 3
+      },
+      "evidence_path": ".omx/evidence/tastecheck-v1/raw/deslop-ui/deslop-ui-polished-generic-page/upgraded-202.json",
+      "external_writer_glob": ".omx/evidence/tastecheck-v1/raw/deslop-ui/deslop-ui-polished-generic-page/upgraded-202-*.json",
+      "notes": "Fresh context required. External writers (Codex/Terra/Luna) may write to external_writer_glob path; collect-attempts.mjs ingests and validates."
+    },
+    {
+      "cell_id": "deslop-ui:upgraded:303",
+      "skill": "deslop-ui",
+      "scenario_id": "deslop-ui-polished-generic-page",
+      "scenario_class": "repair",
+      "variant": "upgraded",
+      "seed": 303,
+      "temperature": 0.2,
+      "fresh_context": true,
+      "prompt_packet": {
+        "prompt": "Audit a polished marketing page that uses an indigo-violet gradient, pill CTA, centered hero, equal three-card grid, generic system typography, and plausible copy. The brief calls for a quiet field-research instrument with a left-anchored composition and one precise accent. Preserve the real product facts.",
+        "assertions": [
+          "Records observed findings separately across surface, structure, and verbal planes.",
+          "Preserves coherent product facts and deliberate brand signals.",
+          "Commits to a named, brief-compatible direction with concrete repairs, not subtraction alone.",
+          "Reports severity, evidence, remediation, and provenance for every finding."
+        ],
+        "routing": {
+          "positive": true,
+          "negative_neighbor": "design-system-interview",
+          "handoff": "humanize-copy"
+        }
+      },
+      "run_conditions": {
+        "tool_policy": "read-only",
+        "invalid_retry_cap": 2,
+        "acceptance_quorum": 3
+      },
+      "evidence_path": ".omx/evidence/tastecheck-v1/raw/deslop-ui/deslop-ui-polished-generic-page/upgraded-303.json",
+      "external_writer_glob": ".omx/evidence/tastecheck-v1/raw/deslop-ui/deslop-ui-polished-generic-page/upgraded-303-*.json",
+      "notes": "Fresh context required. External writers (Codex/Terra/Luna) may write to external_writer_glob path; collect-attempts.mjs ingests and validates."
+    },
+    {
+      "cell_id": "tastecheck-pass:baseline",
+      "skill": "tastecheck-pass",
+      "scenario_id": "tastecheck-pass-dishonest-evidence-bundle",
+      "scenario_class": "gate",
+      "variant": "baseline",
+      "seed": null,
+      "temperature": 0,
+      "fresh_context": false,
+      "prompt_packet": {
+        "prompt": "Gate a finished page with a present DESIGN-SYSTEM.md, specialist reports that claim all checks passed, missing contrast measurements, no cold-load browser trace, an error row marked n/a with no subject-absence reason, and a gate auditor output that finds a hidden error and a generic equal-card grid.",
+        "assertions": [
+          "Fails closed and names missing or contradictory evidence.",
+          "Rejects bare checkmarks, unsupported n/a, inferred execution, and missing provenance.",
+          "Keeps canonical evidence rows, measurements, skips, and verdict deterministic.",
+          "Separates the authoritative ledger from a presentation report."
+        ],
+        "routing": {
+          "positive": true,
+          "negative_neighbor": "a11y-pass",
+          "handoff": "none"
+        }
+      },
+      "run_conditions": {
+        "tool_policy": "read-only",
+        "invalid_retry_cap": 2,
+        "acceptance_quorum": 3
+      },
+      "evidence_path": ".omx/evidence/tastecheck-v1/raw/tastecheck-pass/tastecheck-pass-dishonest-evidence-bundle/baseline.json",
+      "notes": "Frozen baseline — use W0 manifest blob; never regenerate through upgraded skill files."
+    },
+    {
+      "cell_id": "tastecheck-pass:upgraded:101",
+      "skill": "tastecheck-pass",
+      "scenario_id": "tastecheck-pass-dishonest-evidence-bundle",
+      "scenario_class": "gate",
+      "variant": "upgraded",
+      "seed": 101,
+      "temperature": 0,
+      "fresh_context": true,
+      "prompt_packet": {
+        "prompt": "Gate a finished page with a present DESIGN-SYSTEM.md, specialist reports that claim all checks passed, missing contrast measurements, no cold-load browser trace, an error row marked n/a with no subject-absence reason, and a gate auditor output that finds a hidden error and a generic equal-card grid.",
+        "assertions": [
+          "Fails closed and names missing or contradictory evidence.",
+          "Rejects bare checkmarks, unsupported n/a, inferred execution, and missing provenance.",
+          "Keeps canonical evidence rows, measurements, skips, and verdict deterministic.",
+          "Separates the authoritative ledger from a presentation report."
+        ],
+        "routing": {
+          "positive": true,
+          "negative_neighbor": "a11y-pass",
+          "handoff": "none"
+        }
+      },
+      "run_conditions": {
+        "tool_policy": "read-only",
+        "invalid_retry_cap": 2,
+        "acceptance_quorum": 3
+      },
+      "evidence_path": ".omx/evidence/tastecheck-v1/raw/tastecheck-pass/tastecheck-pass-dishonest-evidence-bundle/upgraded-101.json",
+      "external_writer_glob": ".omx/evidence/tastecheck-v1/raw/tastecheck-pass/tastecheck-pass-dishonest-evidence-bundle/upgraded-101-*.json",
+      "notes": "Fresh context required. External writers (Codex/Terra/Luna) may write to external_writer_glob path; collect-attempts.mjs ingests and validates."
+    },
+    {
+      "cell_id": "tastecheck-pass:upgraded:202",
+      "skill": "tastecheck-pass",
+      "scenario_id": "tastecheck-pass-dishonest-evidence-bundle",
+      "scenario_class": "gate",
+      "variant": "upgraded",
+      "seed": 202,
+      "temperature": 0,
+      "fresh_context": true,
+      "prompt_packet": {
+        "prompt": "Gate a finished page with a present DESIGN-SYSTEM.md, specialist reports that claim all checks passed, missing contrast measurements, no cold-load browser trace, an error row marked n/a with no subject-absence reason, and a gate auditor output that finds a hidden error and a generic equal-card grid.",
+        "assertions": [
+          "Fails closed and names missing or contradictory evidence.",
+          "Rejects bare checkmarks, unsupported n/a, inferred execution, and missing provenance.",
+          "Keeps canonical evidence rows, measurements, skips, and verdict deterministic.",
+          "Separates the authoritative ledger from a presentation report."
+        ],
+        "routing": {
+          "positive": true,
+          "negative_neighbor": "a11y-pass",
+          "handoff": "none"
+        }
+      },
+      "run_conditions": {
+        "tool_policy": "read-only",
+        "invalid_retry_cap": 2,
+        "acceptance_quorum": 3
+      },
+      "evidence_path": ".omx/evidence/tastecheck-v1/raw/tastecheck-pass/tastecheck-pass-dishonest-evidence-bundle/upgraded-202.json",
+      "external_writer_glob": ".omx/evidence/tastecheck-v1/raw/tastecheck-pass/tastecheck-pass-dishonest-evidence-bundle/upgraded-202-*.json",
+      "notes": "Fresh context required. External writers (Codex/Terra/Luna) may write to external_writer_glob path; collect-attempts.mjs ingests and validates."
+    },
+    {
+      "cell_id": "tastecheck-pass:upgraded:303",
+      "skill": "tastecheck-pass",
+      "scenario_id": "tastecheck-pass-dishonest-evidence-bundle",
+      "scenario_class": "gate",
+      "variant": "upgraded",
+      "seed": 303,
+      "temperature": 0,
+      "fresh_context": true,
+      "prompt_packet": {
+        "prompt": "Gate a finished page with a present DESIGN-SYSTEM.md, specialist reports that claim all checks passed, missing contrast measurements, no cold-load browser trace, an error row marked n/a with no subject-absence reason, and a gate auditor output that finds a hidden error and a generic equal-card grid.",
+        "assertions": [
+          "Fails closed and names missing or contradictory evidence.",
+          "Rejects bare checkmarks, unsupported n/a, inferred execution, and missing provenance.",
+          "Keeps canonical evidence rows, measurements, skips, and verdict deterministic.",
+          "Separates the authoritative ledger from a presentation report."
+        ],
+        "routing": {
+          "positive": true,
+          "negative_neighbor": "a11y-pass",
+          "handoff": "none"
+        }
+      },
+      "run_conditions": {
+        "tool_policy": "read-only",
+        "invalid_retry_cap": 2,
+        "acceptance_quorum": 3
+      },
+      "evidence_path": ".omx/evidence/tastecheck-v1/raw/tastecheck-pass/tastecheck-pass-dishonest-evidence-bundle/upgraded-303.json",
+      "external_writer_glob": ".omx/evidence/tastecheck-v1/raw/tastecheck-pass/tastecheck-pass-dishonest-evidence-bundle/upgraded-303-*.json",
+      "notes": "Fresh context required. External writers (Codex/Terra/Luna) may write to external_writer_glob path; collect-attempts.mjs ingests and validates."
+    }
+  ]
+}

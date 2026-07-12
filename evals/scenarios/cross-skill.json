@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "cross-skill-component-to-gate",
+  "class": "integration",
+  "prompt": "Run a component-state repair through component-states, form-ux where inputs are involved, a11y-pass, deslop-ui, humanize-copy where copy is changed, and tastecheck-pass. Skip absent subjects only with explicit reasons.",
+  "pipeline": ["component-states", "form-ux", "empty-states", "micro-motion", "data-viz", "art-direction", "a11y-pass", "cognitive-a11y", "i18n-ready", "deslop-ui", "humanize-copy", "tastecheck-pass"],
+  "assertions": [
+    "Each handoff names its evidence fields and preserves semantic tokens.",
+    "Absent skills are skipped with subject-absence reasons, never assumed executed.",
+    "Tastecheck-pass fails if any required evidence is missing or dishonest.",
+    "The final gate report distinguishes canonical rows from presentation treatment.",
+    "Command wrappers route to the matching skill and retain its stop conditions; the canonical evidence fields remain stable while presentation structure and voice may vary.",
+    "Accept diversity only when each compared run cites at least two material changes across structure, aesthetic treatment, or voice and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+    "Negative routing is explicit at every handoff: name the rejected adjacent skill, the absent or out-of-scope subject, and the receiving boundary."
+  ],
+  "routing": {"positive": true, "negative_neighbor": "specialist stages outside this pipeline", "handoff": "tastecheck-pass"},
+  "run_protocol": {
+    "seeds": [101, 202, 303],
+    "fresh_context": true,
+    "truth_convergence": true,
+    "material_difference_requirement": "Accept diversity only when each compared run cites at least two material changes across the declared axes and ties each change to the prompt or evidence; a new order, synonym, recolor, or unsupported style swap is not diversity.",
+    "negative_routing_requirement": "Every specialist handoff must explicitly reject the adjacent skill when its subject is absent or out of scope."
+  }
+}

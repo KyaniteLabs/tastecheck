@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "job_id": "deslop-ui-upgraded-seed101",
+  "scenario_id": "deslop-ui-polished-generic-page",
+  "skill": "deslop-ui",
+  "run_type": "upgraded",
+  "requested_seed": 101,
+  "observed_seed": null,
+  "executor": "gpt-5.6-terra",
+  "fresh_context": true,
+  "requested_temperature": 0.2,
+  "observed_temperature": null,
+  "skill_version": "current",
+  "skill_source_path": "skills/deslop-ui/SKILL.md",
+  "skill_source_sha256": "6e486d00aafe72e096c4a0a561c7e1a047f322c70d499f7da886534d07c9a4b0",
+  "system_prompt": "You are the deslop-ui skill from TasteCheck.\nUsing current upgraded skill version. This run measures improvements over the baseline.\nApply the skill exactly as defined. Do not skip assertions. Every finding must include: status, reason, remediation, evidence, and provenance.\nSeed instruction: Approach this task from the structural angle: organize your response around the hierarchy and decision sequence of the problem.",
+  "user_prompt": "Audit a polished marketing page that uses an indigo-violet gradient, pill CTA, centered hero, equal three-card grid, generic system typography, and plausible copy. The brief calls for a quiet field-research instrument with a left-anchored composition and one precise accent. Preserve the real product facts.",
+  "assertions": [
+    "Records observed findings separately across surface, structure, and verbal planes.",
+    "Preserves coherent product facts and deliberate brand signals.",
+    "Commits to a named, brief-compatible direction with concrete repairs, not subtraction alone.",
+    "Reports severity, evidence, remediation, and provenance for every finding.",
+    "Uses one authoritative self-check; three runs may vary structure, aesthetic treatment, and voice while retaining a three-plane, candidate-specific diagnosis."
+  ],
+  "diversity_axes": [
+    "structure",
+    "aesthetic",
+    "voice"
+  ],
+  "expected_evidence_fields": [
+    "status",
+    "reason",
+    "remediation",
+    "evidence",
+    "provenance"
+  ],
+  "packet_sha256": "e63323f80362f439bd021a4806fae5b41ff0f5e24d48d75715156a0dc97dd842",
+  "source_revision": {
+    "revision": "attempt-3-live",
+    "validation": "live",
+    "sha256": "6e486d00aafe72e096c4a0a561c7e1a047f322c70d499f7da886534d07c9a4b0",
+    "source_path": "skills/deslop-ui/SKILL.md",
+    "provenance": "frozen final source replay"
+  }
+}

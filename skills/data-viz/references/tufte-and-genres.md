@@ -61,10 +61,3 @@ Direct labels remove that tax and a whole block of non-data-ink.
   reading exact values, and lighter than the data.
 - Color: sequential/diverging from a real scale (OKLCH via `color-system`), ≤5 hues,
   categorical hues distinguishable for color-blind viewers.
-
-## Self-check
-- [ ] Data-ink edited toward 1.0 (deleted every non-data pixel I could).
-- [ ] Lie factor ≈ 1; zero baselines; 1-D encoded by length/position.
-- [ ] No moiré / dreaded grid / duck / decoration.
-- [ ] Genre challenged against the default; stronger move chosen or justified.
-- [ ] Direct labels; range-frame axes.

@@ -1,4 +1,15 @@
-# improve-existing-website — run checklist
+# improve-existing-website — evidence ledger
+
+Use `pass`, `fail`, or `n/a` for every row. Record direct evidence/provenance, why the
+status applies, and remediation for failures. Do not use bare checkmarks.
+
+| Check | Status | Evidence / provenance | Reason | Remediation |
+| --- | --- | --- | --- | --- |
+| Inspection complete |  |  |  |  |
+| Evidence and inferences labelled |  |  |  |  |
+| Readiness score complete |  |  |  |  |
+| Scope approval recorded |  |  |  |  |
+| Verification complete |  |  |  |  |
 
 ## Before touching anything
 - [ ] Rendered the real site at 390 / 768 / 1280px (screenshots if possible)

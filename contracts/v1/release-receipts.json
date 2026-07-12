@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "target_release": "1.0.0",
+  "required_receipts": [
+    {"id":"context-budget","path":"evals/receipts/v1/context-budget.json","sha256":"e4f08d39a68065fd0537d31779b20a4be20216114ee4e0c134cdb02a0c0f36e3","assertions":{"overall_pass":true}},
+    {"id":"summary","path":"evals/receipts/v1/summary.json","sha256":"3e3c869c8a470b55264670af1fd451138f349e209ac8f7b7ac02e2caf0f9b770","assertions":{"overall_pass":true}},
+    {"id":"paired","path":"evals/receipts/v1/check-paired.json","sha256":"0d35b13a22a88b7ad9914f1b266c89117dcbabdc5007048e406d957004f8c8e7","assertions":{"all_pass":true}},
+    {"id":"w1-complete","path":"evals/receipts/v1/w1/w1-pilot-receipt.json","sha256":"898648569baad2a4d4d51f59e2987bb0e76c811da51d748122e88b27875c119b","assertions":{"all_required_complete":true}},
+    {"id":"w1-paired","path":"evals/receipts/v1/w1/paired-check.json","sha256":"49b8d88192c8db43ae5d3429a83b15ad00fe2ba5b98f9b5c0fb2de3ea62c69aa","assertions":{"overall_pass":true}},
+    {"id":"w1-diversity","path":"evals/receipts/v1/w1/diversity-check.json","sha256":"98a2a180e9545c08c9654e4a147f7abee5cab5750f1e7dc3fe54786ddd0e3515","assertions":{"overall_pass":true}},
+    {"id":"anti-slop","path":"evals/receipts/v1/corpus/anti-slop.json","sha256":"8179a42f87e668742f0ff9dfffe22c4a431f04fa5d3238a732e9e78d48889648","assertions":{"overall_heuristic_pass":true,"semantic_verdict_required":false}},
+    {"id":"terminal-v5-synthesis","path":"evals/replays/remediation7-v5-spacing-final-2026-07-11/blind-judge/synthesis.json","sha256":"1bf66f612098df398163042e2450ed6eb6ee4b0a3b57d73e1aebbe76196b1d81","assertions":{"release_eligible":true,"fail_closed":true}},
+    {"id":"browser","path":"evals/receipts/v1/browser.json","sha256":"pending-live-browser-receipt","assertions":{"executed":true,"status":"pass"}},
+    {"id":"e2e","path":"evals/receipts/v1/e2e.json","sha256":"pending-live-e2e-receipt","assertions":{"executed":true,"status":"pass"}}
+  ]
+}

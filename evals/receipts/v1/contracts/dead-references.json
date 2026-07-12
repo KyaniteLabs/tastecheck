@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "test": "dead-reference-lint-fixtures",
+  "fixture_count": 4,
+  "all_passed": true,
+  "results": [
+    {
+      "fixture": "valid-internal",
+      "description": "Current skill names and exempt external skills pass without findings",
+      "expect": "pass",
+      "findings": [],
+      "test_pass": true,
+      "notes": ""
+    },
+    {
+      "fixture": "css-like",
+      "description": "CSS pseudo-classes and HTML attribute tokens do not false-positive",
+      "expect": "pass",
+      "findings": [],
+      "test_pass": true,
+      "notes": ""
+    },
+    {
+      "fixture": "known-stale",
+      "description": "Known-stale skill references produce findings",
+      "expect": "fail",
+      "findings": [
+        {
+          "token": "idiomatic-translation",
+          "reason": "known_stale"
+        },
+        {
+          "token": "web-design-guidelines",
+          "reason": "known_stale"
+        }
+      ],
+      "test_pass": true,
+      "notes": ""
+    },
+    {
+      "fixture": "unknown-ref",
+      "description": "Previously unseen unknown skill-like references produce findings (P0-2 fix)",
+      "expect": "fail",
+      "findings": [
+        {
+          "token": "phantom-skill-xyz",
+          "reason": "unknown_skill_like"
+        },
+        {
+          "token": "future-color-engine",
+          "reason": "unknown_skill_like"
+        }
+      ],
+      "test_pass": true,
+      "notes": ""
+    }
+  ],
+  "date_utc": "2026-07-11T17:42:02Z"
+}

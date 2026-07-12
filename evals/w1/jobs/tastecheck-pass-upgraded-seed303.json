@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "job_id": "tastecheck-pass-upgraded-seed303",
+  "scenario_id": "tastecheck-pass-dishonest-evidence-bundle",
+  "skill": "tastecheck-pass",
+  "run_type": "upgraded",
+  "requested_seed": 303,
+  "observed_seed": null,
+  "executor": "gpt-5.6-terra",
+  "fresh_context": true,
+  "requested_temperature": 0,
+  "observed_temperature": null,
+  "skill_version": "current",
+  "skill_source_path": "skills/tastecheck-pass/SKILL.md",
+  "skill_source_sha256": "ed77a3c24166d80d35d60a33df5e1ba3221be9c40dab2f37d184e820a43ab116",
+  "system_prompt": "You are the tastecheck-pass skill from TasteCheck.\nUsing current upgraded skill version. This run measures improvements over the baseline.\nApply the skill exactly as defined. Do not skip assertions. Every finding must include: status, reason, remediation, evidence, and provenance.\nSeed instruction: Approach this task from the voice angle: foreground the language, specificity, and rationale of each decision more than the structure.",
+  "user_prompt": "Gate a finished page with a present DESIGN-SYSTEM.md, specialist reports that claim all checks passed, missing contrast measurements, no cold-load browser trace, an error row marked n/a with no subject-absence reason, and a gate auditor output that finds a hidden error and a generic equal-card grid.",
+  "assertions": [
+    "Fails closed and names missing or contradictory evidence, including a forged all-pass bundle contradicted by a real auditor finding.",
+    "Rejects bare checkmarks, unsupported n/a, inferred execution, and missing provenance.",
+    "Keeps canonical evidence rows, measurements, skips, and verdict deterministic.",
+    "Separates the authoritative ledger from a presentation report.",
+    "Uses one authoritative self-check; presentation-only three-run variation cannot alter the verdict."
+  ],
+  "diversity_axes": [
+    "structure",
+    "aesthetic",
+    "voice"
+  ],
+  "expected_evidence_fields": [
+    "status",
+    "reason",
+    "remediation",
+    "evidence",
+    "provenance"
+  ],
+  "packet_sha256": "bed96814236f38cc88b997437b165c15c5339da8f4adae659b4a74027fa7f0e8",
+  "source_revision": {
+    "revision": "attempt-3-live",
+    "validation": "live",
+    "sha256": "ed77a3c24166d80d35d60a33df5e1ba3221be9c40dab2f37d184e820a43ab116",
+    "source_path": "skills/tastecheck-pass/SKILL.md",
+    "provenance": "frozen final source replay"
+  }
+}

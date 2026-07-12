@@ -44,8 +44,8 @@ A few of Disney's 12 principles translate directly:
 - **Follow-through / overshoot:** a *small* overshoot can feel lively — but on serious/
   professional UI keep it subtle; big bouncy springs read as toy-like. Match energy to
   brand.
-- **Staging:** direct attention to one thing at a time; don't animate everything at
-  once (the 30% rule).
+- **Staging:** direct attention through one causal sequence at a time; animate only
+  elements that explain that sequence.
 
 ## Choreography & stagger
 
@@ -77,6 +77,6 @@ Keep total orchestration under ~800ms or it feels slow. Exits usually skip the s
 - [ ] Only `transform`/`opacity` animated (layout changes via FLIP/View Transitions).
 - [ ] Durations 150–500ms by type; nothing sluggish (>500ms) for UI feedback.
 - [ ] Non-linear easing (ease-out entrances, ease-in exits); linear only for loops.
-- [ ] ≤ ~30% of elements animating; one orchestrated moment, not scattered effects.
+- [ ] Every active transition explains the same current action or a distinct user-facing change.
 - [ ] `prefers-reduced-motion` path: movement gated, fade or none remains, no breakage.
 - [ ] No scroll-jacking; no unstoppable looping motion.

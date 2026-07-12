@@ -68,9 +68,3 @@ varied surfaces shifts the result and can break contrast):
 
 Reuse the same hues across themes; in dark mode raise L and lower C for accents (see
 the `theming` skill) and remap semantic tokens. The palette stays one source of truth.
-
-## Self-check
-- [ ] Every shipped text/bg pair measured: body ≥4.5:1, large/UI ≥3:1.
-- [ ] Components reference semantic tokens, not raw ramp stops.
-- [ ] States derived by L-nudge, not opacity; focus ring ≥3:1 via :focus-visible.
-- [ ] No meaning by color alone; checked in a CVD simulator.

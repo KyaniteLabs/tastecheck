@@ -124,7 +124,7 @@ audit) and reviewed by independent models from different families before shippin
 - **art-direction** — imagery, illustration, and iconography as committed decisions: one treatment, one named icon set, real OG/favicon — no gradient-blob AI graphics.
 - **a11y-pass** — a runnable WCAG 2.2 AA fix pass with a paste-able auditor.
 - **cognitive-a11y** — the layer WCAG barely touches: ADHD, autism, dyslexia and neurodivergent readability (plain language, structure, predictability).
-- **i18n-ready** — multilingual-resilient UI, English/Spanish first-class: +30% expansion, logical properties, `Intl`, native voice per language.
+- **i18n-ready** — multilingual-resilient UI, English/Spanish first-class: longest approved locale fixture, logical properties, `Intl`, native voice per language.
 - **tastecheck-pass** — the ship gate: states the canonical pipeline once, runs every relevant self-check, reports a pass/fail table — with a paste-able (or browser-injectable) auditor that mechanically catches the cold-load tells a self-reported table misses.
 
 Each skill is a folder: `SKILL.md` (decision order, non-negotiables, quick-start,
@@ -133,9 +133,8 @@ self-check) + `references/` (deep guidance + a `decision-records.md` explaining 
 
 ## Not vibes — checkable, and actually tested
 
-Every other "AI design" repo is itself AI slop: untested, hand-wavy, "make it pop." This
-one is the opposite. Every rule is **checkable** (a value, a count, a yes/no), with
-before/after and a self-check the agent runs on its own output:
+Each rule is expressed as a measurable value, count, or yes/no check, and the repository
+ships a repeatable `npm test` verification gate for the authored surfaces:
 
 - *Pill buttons:* `border-radius: 9999px` on a text CTA is a tell → 6–10px.
 - *Dark mode:* never `#000`; base `#121212`, each elevation step **lighter**, not shadowed.

@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "wave": "W1",
+  "description": "Pre-judged calibration examples with anchored 1-5 ground-truth scores. Each calibration status contains six checks (three examples x verdict and total): all six must pass before a live result counts. Scores must remain within one point of each anchor.",
+  "inter_rater_threshold": 1,
+  "max_allowed_divergences": 1,
+  "examples": [
+    {
+      "calibration_id": "cal-001-full-pass",
+      "description": "A component-states output that covers all dimensions with specific values and evidence.",
+      "excerpt": "Loading state: aria-busy=true set on the button container; spinner visible but button label unchanged ('Delete account'). No double-submit: pointer-events:none applied at pressed-down; repeat click on Enter key returns immediately without re-firing. Success: aria-live='polite' announces 'Account deleted' after 200ms; focus moves to the next interactive element. Evidence: Tested with VoiceOver on macOS 14, keyboard-only traversal, and NVDA+Firefox 124. Provenance: design spec §4.2 and WCAG 2.2 SC 4.1.3.",
+      "anchor_scores": {
+        "domain_specificity": 5,
+        "evidence_completeness": 5,
+        "fail_closed": 5,
+        "handoff_readiness": 5,
+        "scope_discipline": 5
+      },
+      "anchor_total": 25,
+      "anchor_verdict": "pass",
+      "anchor_rationale": "Exact values (aria-busy, 200ms, §4.2), all five evidence fields, no invented scope."
+    },
+    {
+      "calibration_id": "cal-002-bare-checkmark",
+      "description": "A deslop-ui output that lists checks as ticks without evidence.",
+      "excerpt": "✓ Gradient removed\n✓ Hero recentered\n✓ Cards differentiated\n✓ Typography replaced\nAll checks passed.",
+      "anchor_scores": {
+        "domain_specificity": 2,
+        "evidence_completeness": 1,
+        "fail_closed": 1,
+        "handoff_readiness": 1,
+        "scope_discipline": 2
+      },
+      "anchor_total": 7,
+      "anchor_verdict": "fail",
+      "anchor_rationale": "Bare checkmarks. No reason, remediation, evidence, or provenance. Cannot determine if checks were actually executed."
+    },
+    {
+      "calibration_id": "cal-003-partial-evidence",
+      "description": "A tastecheck-pass output with most evidence but one n/a without reason.",
+      "excerpt": "Contrast: measured #1C4A6E on #FFFFFF = 8.7:1. PASS. Evidence: Chrome DevTools color picker, Axe 4.8.2. Provenance: WCAG 2.1 SC 1.4.3.\nError state: n/a\nMotion: reduced-motion media query present. PASS. Evidence: CSS @media (prefers-reduced-motion). Provenance: WCAG 2.1 SC 2.3.3.",
+      "anchor_scores": {
+        "domain_specificity": 4,
+        "evidence_completeness": 3,
+        "fail_closed": 1,
+        "handoff_readiness": 3,
+        "scope_discipline": 4
+      },
+      "anchor_total": 15,
+      "anchor_verdict": "fail",
+      "anchor_rationale": "n/a without subject-absence reason violates fail-closed. Evidence otherwise strong but the unsupported skip forces a 0 on fail_closed."
+    }
+  ]
+}
