@@ -51,6 +51,7 @@ function ensureGenerations({ protocol, registry, generations }) {
     if (!seenKeys.has(key)) throw new Error(`buildBlindPackets|generations|unexpected|${key}`);
     if (!expectedArms.has(gen.arm)) throw new Error(`buildBlindPackets|generations|arm|${gen.arm}`);
     if (!presentKeys.has(key)) presentKeys.set(key, new Set());
+    if (presentKeys.get(key).has(gen.arm)) throw new Error(`buildBlindPackets|generations|duplicate|${key}|${gen.arm}`);
     presentKeys.get(key).add(gen.arm);
   }
   for (const key of seenKeys) {
@@ -82,6 +83,8 @@ function ensureRenders({ protocol, registry, renders }) {
   }
 }
 
+const CLOSED_ARM_FIELDS = new Set(["opaque_slot", "artifact_id", "label_id", "artifact_bytes", "artifact_sha256", "brief", "render_evidence"]);
+
 function assertClosedAllowlist(packets) {
   const serialized = JSON.stringify(packets).toLowerCase();
   for (const cue of FORBIDDEN_PACKET_CUES) {
@@ -89,6 +92,9 @@ function assertClosedAllowlist(packets) {
       throw new Error(`candidate|baseline|leak|forbidden|cue|${cue}`);
     }
   }
+  // Rubric must be identical across all packets (frozen common rubric).
+  const rubricJsons = new Set(packets.map((packet) => canonicalJson(packet.rubric)));
+  if (rubricJsons.size !== 1) throw new Error("rubric|asymmetric");
   for (const packet of packets) {
     const requiredFields = ["packet_id", "unit_id", "scenario_id_token", "arms", "brief", "rubric", "viewport_ids"];
     for (const field of requiredFields) {
@@ -97,8 +103,16 @@ function assertClosedAllowlist(packets) {
     if (packet.arms.length !== 2) throw new Error(`packet|arms|count|${packet.arms.length}`);
     const slotKeys = new Set(packet.arms.map((arm) => arm.opaque_slot));
     if (slotKeys.size !== 2 || !slotKeys.has(0) || !slotKeys.has(1)) throw new Error("packet|arms|slots");
-    const armFieldKeys = packet.arms.map((arm) => Object.keys(arm).sort().join("|"));
-    if (new Set(armFieldKeys).size !== 1) throw new Error("asymmetric|field|arm");
+    // Explicit closed per-arm field allowlist: reject unknown fields even if
+    // symmetric across both arms. This makes the validator self-defending
+    // against adapter bugs that inject non-contract fields.
+    for (const arm of packet.arms) {
+      const actualFields = Object.keys(arm);
+      for (const field of actualFields) {
+        if (!CLOSED_ARM_FIELDS.has(field)) throw new Error(`closed|field|arm|unknown|${field}`);
+      }
+      if (actualFields.length !== CLOSED_ARM_FIELDS.size) throw new Error(`closed|field|arm|count|${actualFields.length}`);
+    }
     const briefs = new Set(packet.arms.map((arm) => arm.brief));
     if (briefs.size !== 1) throw new Error("brief|asymmetric");
     if (packet.viewport_ids.join("|") !== VIEWPORT_IDS.join("|")) throw new Error("packet|viewport_ids");
