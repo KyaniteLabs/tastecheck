@@ -6,7 +6,11 @@ import { freezeExecutionManifest, freezeProtocol, validateContract } from "./lib
 assert.equal(validateContract("protocol", fixture).valid, true);
 assert.doesNotThrow(() => freezeProtocol(fixture));
 assert.throws(() => freezeProtocol({ ...fixture, max_external_calls: 161 }), /160/);
-assert.throws(() => freezeProtocol({ ...fixture, human_calibration: true }), /unknown|human/i);
+// human_calibration (unknown field) must be rejected via additionalProperties.
+// Use a regex that matches the rejection REASON, not the field name, so this
+// is not a self-matching tautology. The human_calibration_claimed:true case
+// below exercises the actual frozen-claim prohibition.
+assert.throws(() => freezeProtocol({ ...fixture, human_calibration: true }), /unknown/i);
 assert.throws(() => freezeProtocol({ ...fixture, baseline_revision: "f".repeat(40) }), /baseline/);
 assert.throws(() => freezeProtocol({ ...fixture, exclusions: ["unit-1"] }), /exclusions/);
 assert.throws(() => freezeProtocol({ ...fixture, candidate_preference_floor: 17 }), /candidate_preference_floor/);

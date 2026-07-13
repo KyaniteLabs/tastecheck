@@ -514,11 +514,15 @@ assert.throws(() => projectPublicClaim(blockedResult1), /claim|supported/i, "blo
     assert.throws(() => verifyFrozenRegistryAtCloseout(tempRepo, expectedSha), /missing|count|file/i, "missing file must reject");
     copyFileSync(join(repoRoot, "evals/v2/scenarios", removed), join(tempRepo, "evals/v2/scenarios", removed));
 
-    // 12d. Symlink rejection
+    // 12d. Symlink rejection (valid target and dangling both rejected)
     const targetFile = join(tempRepo, "evals/v2/scenarios", removed);
     rmSync(targetFile, { force: true });
     symlinkSync(join(repoRoot, "evals/v2/scenarios", removed), targetFile);
     assert.throws(() => verifyFrozenRegistryAtCloseout(tempRepo, expectedSha), /symlink|nonregular|regular/i, "symlink must reject");
+    // Dangling symlink must also be reported as symlink, not "missing".
+    rmSync(targetFile, { force: true });
+    symlinkSync(join(tempRepo, "evals/v2/scenarios", "does-not-exist-json"), targetFile);
+    assert.throws(() => verifyFrozenRegistryAtCloseout(tempRepo, expectedSha), /symlink/i, "dangling symlink must reject as symlink");
     rmSync(targetFile, { force: true });
     copyFileSync(join(repoRoot, "evals/v2/scenarios", removed), targetFile);
 

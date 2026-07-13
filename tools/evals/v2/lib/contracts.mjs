@@ -1,24 +1,40 @@
-import { createHash, createHmac } from "node:crypto";
+import { createHmac } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import Ajv from "ajv";
 
+// canonicalJson/sha256/lenPrefix are the single source of truth in the
+// canonical-json closure file. Re-exported here for backward compatibility;
+// new consumers should import from ./canonical-json.mjs.
+export {
+  canonicalJson, sha256, lenPrefix, PACKET_POLICY_DEPENDENCY_FILES,
+  computeDependencyManifestSha256, computeValidatorClosure
+} from "./canonical-json.mjs";
+import { canonicalJson, sha256, lenPrefix, computeValidatorClosure } from "./canonical-json.mjs";
+
 const root = join(dirname(fileURLToPath(import.meta.url)), "../../../..");
+
+/**
+ * B1: closed sorted dependency manifest for the packet validator closure.
+ *
+ * The packet_validator_sha256 bound into the protocol must equal the canonical
+ * digest of this exact closed sorted five-file set. The closure covers the
+ * reject-only packet policy, the judge validator entry, the shared
+ * canonicalizer, and the closed packet and judgment schemas. Placeholder,
+ * missing, extra, manifest-order, path, or digest drift are all rejected at
+ * freeze time by recomputing the closure from the same root.
+ *
+ * The manifest is intentionally a curated closed surface, not a transitive
+ * import closure: it binds exactly the five files whose bytes determine what
+ * the packet/judgment validator accepts and how it hashes evidence.
+ */
 const schemaNames = new Set([
   "protocol", "execution-manifest", "historical-authority", "synthesis-reservation",
   "generation-receipt", "randomization-commitment", "render-receipt", "unmask",
-  "judge-result", "synthesis", "public-claim"
+  "judge-result", "judgment", "packet", "resolver-attestation", "synthesis", "public-claim"
 ]);
 const validators = new Map();
-
-export function canonicalJson(value) {
-  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
-  if (value && typeof value === "object") {
-    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`).join(",")}}`;
-  }
-  return JSON.stringify(value);
-}
 
 /**
  * canonicalPacket(packet)
@@ -58,21 +74,6 @@ export function canonicalPacket(packet) {
     rubric: packet.rubric,
     viewport_ids: packet.viewport_ids
   });
-}
-
-export function sha256(value) {
-  const bytes = typeof value === "string" ? value : canonicalJson(value);
-  return createHash("sha256").update(bytes).digest("hex");
-}
-
-/**
- * lenPrefix(buf)
- * 4-byte big-endian length prefix for HMAC tuple fields.
- */
-export function lenPrefix(buf) {
-  const out = Buffer.alloc(4);
-  out.writeUInt32BE(buf.length, 0);
-  return Buffer.concat([out, buf]);
 }
 
 /**
@@ -127,6 +128,8 @@ function requireValid(name, value) {
   if (!result.valid) throw new TypeError(formatErrors(result.errors));
 }
 
+const validatorClosure = computeValidatorClosure(root);
+
 const frozenProtocol = {
   baseline_revision: "0f99603a603b0243345e7320a52702df67a2194e",
   candidate_revision: "08591213f562073f9ddb0ff9012ec0e3f8ed09c2",
@@ -149,8 +152,8 @@ const frozenProtocol = {
   dimension_floor: 3,
   human_calibration_claimed: false,
   randomization_commitment_sha256: "a".repeat(64),
-  packet_validator_version: "effectiveness-v2-packet-policy-1",
-  packet_validator_sha256: "b".repeat(64)
+  packet_validator_version: validatorClosure.version,
+  packet_validator_sha256: validatorClosure.sha256
 };
 
 export function freezeProtocol(protocol) {
@@ -179,7 +182,9 @@ export function freezeExecutionManifest(manifest) {
   const providers = new Set();
   const lineages = new Set();
   const identities = new Set();
+  const familyIds = new Set();
   for (const family of manifest.evaluator_families) {
+    familyIds.add(family.family_id);
     requireExactVersion(family.model_version, `${family.family_id} model`);
     requireExactVersion(family.runtime_version, `${family.family_id} runtime`);
     if (providers.has(family.provider)) throw new TypeError("evaluator families must have different providers");
@@ -190,6 +195,12 @@ export function freezeExecutionManifest(manifest) {
       if (identities.has(identity)) throw new TypeError("judge identity tuples must be unique");
       identities.add(identity);
     }
+  }
+  if (identities.has(manifest.generator.identity)) {
+    throw new TypeError("generator identity must not collide with a judge identity");
+  }
+  if (familyIds.has(manifest.generator.family_id)) {
+    throw new TypeError("generator family must not collide with an evaluator family");
   }
   const frozen = structuredClone(manifest);
   return { manifest: frozen, canonical_sha256: sha256(frozen) };
