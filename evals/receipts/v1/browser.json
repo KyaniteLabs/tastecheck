@@ -6,16 +6,16 @@
     "id": "tastecheck-live-execution",
     "version": 1
   },
-  "source_tree_sha256": "22305fb5a8c992d9aee3a30153f6f43f6276fc82e704e837bbdc5ce14fb43055",
-  "nonce": "browser-release-v1-131",
+  "source_tree_sha256": "3d4099a9dd210ff4b3d7fbfc4732e432ffc59dbf0bbfb62de0a755712e64036b",
+  "nonce": "browser-release-v1",
   "runtime": {
     "node": "v26.0.0",
     "playwright": "1.61.1",
     "browser": "149.0.7827.55",
     "platform": "darwin"
   },
-  "started_at": "2026-07-13T22:14:36.959Z",
-  "finished_at": "2026-07-13T22:15:04.041Z",
+  "started_at": "2026-07-13T22:31:30.929Z",
+  "finished_at": "2026-07-13T22:31:59.834Z",
   "executed": true,
   "reproducible": true,
   "artifacts": [
@@ -39,20 +39,20 @@
     },
     {
       "id": "demo-02-states-390",
-      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-390-0d40328fcc72cc95634f9681dd5bae3bce87b7acec16d2a4b2243b6b3127a35c.png",
-      "sha256": "0d40328fcc72cc95634f9681dd5bae3bce87b7acec16d2a4b2243b6b3127a35c",
-      "bytes": 25904
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-390-9047112584000f8daeddc0ea353a929fe410e42946dd7223641a5858daabb2af.png",
+      "sha256": "9047112584000f8daeddc0ea353a929fe410e42946dd7223641a5858daabb2af",
+      "bytes": 25902
     },
     {
       "id": "demo-02-states-768",
-      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-768-865f2c22ec335f5879bcc9b84de4e992499b85244bf54f2d2cf708d989209f67.png",
-      "sha256": "865f2c22ec335f5879bcc9b84de4e992499b85244bf54f2d2cf708d989209f67",
-      "bytes": 27214
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-768-e8136e3cb5aaebe453b9fac7756cf7e75c8ef432fb161d3889169c9e5c54b266.png",
+      "sha256": "e8136e3cb5aaebe453b9fac7756cf7e75c8ef432fb161d3889169c9e5c54b266",
+      "bytes": 27213
     },
     {
       "id": "demo-02-states-1280",
-      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-1280-417ce842d3e9d964cca4bc9e1d771ef18a15fbd8bf8018fa8a5a0670a71b1633.png",
-      "sha256": "417ce842d3e9d964cca4bc9e1d771ef18a15fbd8bf8018fa8a5a0670a71b1633",
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-1280-62540641403471946dae266715a101c358ec344abcfe3c85c1161a31a8135396.png",
+      "sha256": "62540641403471946dae266715a101c358ec344abcfe3c85c1161a31a8135396",
       "bytes": 29234
     },
     {
