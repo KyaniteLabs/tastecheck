@@ -52,7 +52,8 @@ Classify every literal by its relationship before replacement: `13px` becomes `1
 or group (24px); do not silently round it. The sole prose exception is documented following-
 paragraph `1em` spacing, because it is relative to type rather than a layout primitive.
 
-Without a CSS fixture, mark the audit `PENDING`, name it and the next audit action; never claim
+Use `assets/spacing-starter.css` as a fixture and starting point. Without a CSS fixture in
+the target project, mark the audit `PENDING`, name it and the next audit action; never claim
 that residual off-scale values are gone. The ladder, map, and migration rules remain required.
 
 ## Completion evidence
@@ -86,6 +87,7 @@ than re-deciding their behavior.
 ## Reference files
 
 - `references/decision-records.md` — novel-case ADR rules.
+- `assets/spacing-starter.css` — copy-paste ladder, layout primitives, and migration helpers.
 
 <!-- contract:v1:start -->
 ## Contract (generated)

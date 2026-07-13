@@ -39,6 +39,14 @@ Deliver a small treatment board with: stance, primary/fallback treatment, two re
 
 Use [decision records](references/decision-records.md) when competing treatments require a documented trade-off.
 
+## Favicons and app icons
+
+Ship an SVG favicon primary (`<link rel="icon" href="/favicon.svg" type="image/svg+xml">`)
+with a PNG fallback. Derive the mark from the committed stance; test legibility at 16×16
+actual pixels — a single bold glyph outperforms a detailed logo. Apple Touch Icon (180),
+manifest icons (192/512), and OG preview are separate deliverables with their own crop and
+contrast needs. See [patterns](references/patterns.md) for worked examples.
+
 ## Ship check
 
 - [ ] The treatment explains a product or content need that copy alone cannot.

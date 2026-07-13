@@ -20,7 +20,7 @@
   "stop_conditions": ["Pause when contradictory or trust-critical direction is unresolved", "Do not continue from multiple candidate systems without identifying the canonical one"],
   "handoff": {
     "receives_from": [],
-    "sends_to": ["color-system", "web-typography", "spacing-system", "theming", "responsive-layout", "art-direction", "micro-motion"]
+    "sends_to": ["color-system", "web-typography", "spacing-system", "theming", "responsive-layout", "art-direction", "micro-motion", "component-states", "data-viz", "deslop-ui", "empty-states", "form-ux", "humanize-copy"]
   },
   "self_check_shape": "table_with_evidence",
   "required_evidence_fields": ["status", "reason", "remediation", "evidence", "provenance"],

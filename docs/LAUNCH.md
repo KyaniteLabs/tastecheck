@@ -1,6 +1,6 @@
 # Launch kit — TasteCheck
 
-Public copy for the 19-skill pack. Attach `docs/hero/six-systems.png`. Before posting,
+Public copy for the 19-skill pack. Attach `docs/hero/seven-systems.png`. Before posting,
 replace placeholders, verify links, and keep claims within the evidence boundary in
 `docs/VERIFICATION.md`.
 
@@ -16,7 +16,7 @@ that was never made explicit. TasteCheck turns that intent into a build contract
 > I built TasteCheck because coding agents need design decisions they can carry through a
 > build—not another prompt that says “make it polished.”
 >
-> [attach `docs/hero/six-systems.png`]
+> [attach `docs/hero/seven-systems.png`]
 
 **Post 2 — the interaction**
 

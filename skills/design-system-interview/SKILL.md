@@ -130,7 +130,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: A new interface or redesign lacks a committed visual direction (+1 in contract.json); avoid: An existing site has sufficient evidence to improve without a new direction interview (+1 in contract.json)
 - Exclude: Do not begin implementation before direction is resolved or explicitly assumed (+1 in contract.json)
-- Stop / handoff: Pause when contradictory or trust-critical direction is unresolved (+1 in contract.json); receives [none] -> sends [color-system, web-typography, spacing-system, theming, responsive-layout, art-direction, micro-motion]
+- Stop / handoff: Pause when contradictory or trust-critical direction is unresolved (+1 in contract.json); receives [none] -> sends [color-system, web-typography, spacing-system, theming, responsive-layout, art-direction, micro-motion, component-states, data-viz, deslop-ui, empty-states, form-ux, humanize-copy]
 - Output: A decision-complete design-system artifact with explicit assumptions and readiness state
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

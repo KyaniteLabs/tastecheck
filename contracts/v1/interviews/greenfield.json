@@ -146,7 +146,7 @@
     "ready_signal": "All required dimensions decided and explicitly confirmed; abstentions retain their evidence-dependent recommendation"
   },
   "handoff": {
-    "downstream": ["color-system", "web-typography", "spacing-system", "theming", "component-states", "art-direction", "micro-motion"],
+    "downstream": ["color-system", "web-typography", "spacing-system", "theming", "responsive-layout", "art-direction", "micro-motion", "component-states", "data-viz", "deslop-ui", "empty-states", "form-ux", "humanize-copy"],
     "downstream_notes": {
       "art-direction": "imagery_iconography dimension feeds directly into art-direction source-and-rights decisions",
       "micro-motion": "optional motion dimension feeds into micro-motion token plan"
