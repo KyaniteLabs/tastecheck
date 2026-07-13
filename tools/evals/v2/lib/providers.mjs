@@ -92,7 +92,7 @@ export function canonicalExecutorDigest(executor) {
   return sha256(canonicalJson(executor));
 }
 
-export function verifyResolverAttestation(attestation, options = {}) {
+export function verifyResolverAttestationFormat(attestation, options = {}) {
   const result = validateContract("resolver-attestation", attestation);
   if (!result.valid) {
     const detail = result.errors.map((error) =>
@@ -119,6 +119,19 @@ export function verifyResolverAttestation(attestation, options = {}) {
   return Object.freeze({ ...structuredClone(attestation), attestation_sha256: attestationDigest(attestation) });
 }
 
+export function verifyResolverAttestation(attestation, options = {}) {
+  const formatted = verifyResolverAttestationFormat(attestation, options);
+  // No pinned trust anchor exists for signed resolver attestations. Until
+  // Dispatch or another already-trusted resolver supplies a signed receipt
+  // verified against a pinned trust anchor, production is unavailable.
+  // Issuer text, schema validity, evidence digest, and self-contained public
+  // keys are NOT authenticity.
+  if (!options.trustAnchor) {
+    throw new Error("resolver|attestation|trusted-signature|required");
+  }
+  return formatted;
+}
+
 const SECRET_KEY = /(?:credential|api[_-]?key|token|secret|password|authorization|endpoint|base[_-]?url|local[_-]?path|environment|env)/i;
 
 export function sanitizeCapability(capability) {
@@ -141,7 +154,7 @@ export function discoverProvisionedFamilies({ capabilities, attestations }) {
   }
   const verified = [];
   for (const attestation of attestations) {
-    try { verified.push(verifyResolverAttestation(attestation)); } catch { /* reject-only */ }
+    try { verified.push(verifyResolverAttestationFormat(attestation)); } catch { /* reject-only */ }
   }
   return Object.freeze(capabilities.flatMap((capability) => {
     if (!capability || capability.incremental_spend_usd !== 0) return [];
@@ -181,7 +194,7 @@ function requireAttestation(attestations, expected) {
     attestation.subject_kind === expected.subject_kind &&
     attestation.subject_canonical_id === expected.subject_canonical_id);
   if (matches.length !== 1) throw new Error(`resolver|attestation|exactly-one|${expected.subject_canonical_id}`);
-  const verified = verifyResolverAttestation(matches[0]);
+  const verified = verifyResolverAttestationFormat(matches[0]);
   for (const field of ["provider", "foundation_lineage"]) {
     if (verified[field] !== expected[field]) throw new Error(`resolver|attestation|${field}|mismatch`);
   }

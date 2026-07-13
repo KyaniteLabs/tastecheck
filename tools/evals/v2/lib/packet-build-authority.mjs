@@ -4,8 +4,9 @@ import {
 import { readFileSync, statSync } from "node:fs";
 import { canonicalJson, canonicalPacket, hmacTuple, lenPrefix } from "./contracts.mjs";
 import { validatePacketArtifact, FROZEN_VALIDATOR_VERSION, FROZEN_VALIDATOR_DIGEST } from "./packet-policy.mjs";
+import { authorityPublicKey } from "./authority-signature.mjs";
 
-const commitment = (domain, seed) => createHash("sha256").update("tastecheck-randomization-v2\0").update(domain).update("\0").update(seed).digest("hex");
+const commitment = (_domain, seed) => createHash("sha256").update(authorityPublicKey(seed)).digest("hex");
 
 const VIEWPORT_IDS = ["mobile", "desktop"];
 

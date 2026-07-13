@@ -235,7 +235,7 @@ export function validateJudgeBatch({ packetSet, anchorSet, anchorMetadata = [], 
         localErrors.push("evidence|binding|minItems");
       } else {
         for (const citation of result.evidence_citations) {
-          const cite = validateEvidenceCitation(citation, packetSet);
+          const cite = validateEvidenceCitation(citation, [referencedPacket]);
           if (!cite.valid) localErrors.push(...cite.errors.map((token) => `evidence|binding|${token}`));
         }
       }
@@ -312,6 +312,27 @@ export function validateJudgeBatch({ packetSet, anchorSet, anchorMetadata = [], 
     }
     if (anchorCount !== expectedAnchor) {
       errors.push(`result|count|anchor|expected|${expectedAnchor}|actual|${anchorCount}`);
+    }
+
+    const expectedTuples = new Set();
+    for (const packet of [...packetSet, ...anchorSet]) {
+      for (const family of families) {
+        for (const identity of family.identities || []) {
+          expectedTuples.add(`${packet.packet_id}\0${family.family_id}\0${identity}`);
+        }
+      }
+    }
+    const actualTuples = new Set();
+    for (const result of schemaValidResults) {
+      const tuple = `${result.packet_id}\0${result.family_id}\0${result.identity_id}`;
+      if (actualTuples.has(tuple)) errors.push(`result|tuple|duplicate|${result.packet_id}|${result.family_id}|${result.identity_id}`);
+      actualTuples.add(tuple);
+    }
+    for (const tuple of expectedTuples) {
+      if (!actualTuples.has(tuple)) errors.push(`result|tuple|missing|${tuple.replaceAll("\0", "|")}`);
+    }
+    for (const tuple of actualTuples) {
+      if (!expectedTuples.has(tuple)) errors.push(`result|tuple|unexpected|${tuple.replaceAll("\0", "|")}`);
     }
   }
 
