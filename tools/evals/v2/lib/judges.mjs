@@ -3,7 +3,7 @@
 // Task 6 synthesis-open authority.
 
 import { createHash } from "node:crypto";
-import { canonicalJson, sha256, validateContract } from "./contracts.mjs";
+import { canonicalJson, sha256, validateContract, canonicalPacket } from "./contracts.mjs";
 
 const VIEWPORT_IDS = ["mobile", "desktop"];
 const DIMENSIONS = ["direction", "structure", "accessibility", "verbal", "integration"];
@@ -28,35 +28,10 @@ function canonicalBytes(value) {
   return canonicalJson(value);
 }
 
-export function canonicalPacket(packet) {
-  // Deterministic, arm-order-stable canonicalisation of a packet.
-  const orderedArms = [...packet.arms].sort((a, b) => a.opaque_slot - b.opaque_slot).map((arm) => ({
-    opaque_slot: arm.opaque_slot,
-    artifact_id: arm.artifact_id,
-    label_id: arm.label_id,
-    artifact_bytes: arm.artifact_bytes,
-    artifact_sha256: arm.artifact_sha256,
-    brief: arm.brief,
-    render_evidence: [...arm.render_evidence].sort((a, b) => a.viewport_id.localeCompare(b.viewport_id)).map((entry) => ({
-      viewport_id: entry.viewport_id,
-      viewport_id_token: entry.viewport_id_token,
-      evidence_id: entry.evidence_id,
-      artifact_sha256: entry.artifact_sha256,
-      screenshot_sha256: entry.screenshot_sha256,
-      dom_sha256: entry.dom_sha256,
-      style_sha256: entry.style_sha256
-    }))
-  }));
-  return canonicalJson({
-    packet_id: packet.packet_id,
-    unit_id: packet.unit_id,
-    scenario_id_token: packet.scenario_id_token,
-    arms: orderedArms,
-    brief: packet.brief,
-    rubric: packet.rubric,
-    viewport_ids: packet.viewport_ids
-  });
-}
+// canonicalPacket is imported from contracts.mjs (single source of truth).
+// Re-exported here for backward compatibility with consumers that import
+// from judges.mjs.
+export { canonicalPacket };
 
 /**
  * validateEvidenceCitation(citation, packetSet)

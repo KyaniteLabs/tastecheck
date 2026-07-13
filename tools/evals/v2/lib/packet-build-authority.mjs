@@ -2,7 +2,7 @@ import {
   createCipheriv, createHash, createHmac, randomBytes
 } from "node:crypto";
 import { readFileSync, statSync } from "node:fs";
-import { canonicalJson } from "./contracts.mjs";
+import { canonicalJson, canonicalPacket } from "./contracts.mjs";
 import { validatePacketArtifact, FROZEN_VALIDATOR_VERSION, FROZEN_VALIDATOR_DIGEST } from "./packet-policy.mjs";
 
 const commitment = (domain, seed) => createHash("sha256").update("tastecheck-randomization-v2\0").update(domain).update("\0").update(seed).digest("hex");
@@ -42,36 +42,11 @@ function loadSeed(privateStateRef) {
 }
 
 function canonicalPacketForDigest(packet) {
-  // Same shape contract as judges.canonicalPacket; implemented locally so the
-  // adapter does not import judges.mjs (judges.mjs is allowed to import the
-  // adapter for its packet_sha256 recompute, but the adapter must remain
-  // dependency-free of judges.mjs).
-  const orderedArms = [...packet.arms].sort((a, b) => a.opaque_slot - b.opaque_slot).map((arm) => ({
-    opaque_slot: arm.opaque_slot,
-    artifact_id: arm.artifact_id,
-    label_id: arm.label_id,
-    artifact_bytes: arm.artifact_bytes,
-    artifact_sha256: arm.artifact_sha256,
-    brief: arm.brief,
-    render_evidence: [...arm.render_evidence].sort((a, b) => a.viewport_id.localeCompare(b.viewport_id)).map((entry) => ({
-      viewport_id: entry.viewport_id,
-      viewport_id_token: entry.viewport_id_token,
-      evidence_id: entry.evidence_id,
-      artifact_sha256: entry.artifact_sha256,
-      screenshot_sha256: entry.screenshot_sha256,
-      dom_sha256: entry.dom_sha256,
-      style_sha256: entry.style_sha256
-    }))
-  }));
-  return canonicalJson({
-    packet_id: packet.packet_id,
-    unit_id: packet.unit_id,
-    scenario_id_token: packet.scenario_id_token,
-    arms: orderedArms,
-    brief: packet.brief,
-    rubric: packet.rubric,
-    viewport_ids: packet.viewport_ids
-  });
+  // Delegates to the shared canonicalPacket in contracts.mjs so the adapter
+  // and judges.mjs never diverge. Kept as a thin local alias for clarity at
+  // the call site; the dependency boundary is respected (contracts.mjs is a
+  // shared low-level module, not judges.mjs).
+  return canonicalPacket(packet);
 }
 
 const COMMON_RUBRIC = Object.freeze({
@@ -121,7 +96,6 @@ function buildArmForSlot({ slot, scenarioId, seed, arms, renderMap, hmacSeed, br
   const artifactSha = createHash("sha256").update(bytes).digest("hex");
   const artifactId = hmacTuple(hmacSeed, "artifact", scenarioId, seed, slot);
   const labelId = hmacTuple(hmacSeed, "label", scenarioId, seed, slot);
-  const armId = hmacTuple(hmacSeed, "arm", scenarioId, seed, slot);
   const renderEvidence = [];
   for (const viewport_id of VIEWPORT_IDS) {
     const render = armRenders.get(viewport_id);
@@ -139,7 +113,6 @@ function buildArmForSlot({ slot, scenarioId, seed, arms, renderMap, hmacSeed, br
   return {
     opaque_slot: slot,
     artifact_id: artifactId,
-    arm_id: armId,
     label_id: labelId,
     artifact_bytes: bytes.toString("utf8"),
     artifact_sha256: artifactSha,
@@ -306,9 +279,10 @@ function buildFullPacketSet(privateStateRef, input) {
       }
     }
     packets.sort((a, b) => a.packet_id.localeCompare(b.packet_id));
-    // Compute packet_set_sha256 over the canonical, packet_id-sorted set.
+    // Compute packet_set_sha256 per brief §3.1 line 154:
+    //   SHA256(canonicalJson(sortBy(packets, packet_id).map(canonicalPacket)))
     const packetSetDigest = createHash("sha256")
-      .update(packets.map(canonicalPacketForDigest).join("\n"))
+      .update(canonicalJson(packets.map(canonicalPacketForDigest)))
       .digest("hex");
     const plaintextMap = { packet_set_sha256: packetSetDigest, mappings };
     const plaintext = Buffer.from(canonicalJson(plaintextMap), "utf8");
