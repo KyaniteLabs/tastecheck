@@ -36,11 +36,11 @@ reference *only* the semantic layer, so re-theming = swap the mapping.
   --color-text:          var(--neutral-900);
   --color-text-muted:    oklch(0.50 0.02 250);
   --color-primary:       var(--brand-600);
-  --color-primary-hover: oklch(0.46 0.14 250);
+  --color-primary-hover: oklch(0.48 0.14 250);
   --color-border:        oklch(0.90 0.01 250);
   --color-focus:         var(--brand-600);
 }
-.btn-primary { background: var(--color-primary); color: white; }
+.btn-primary { background: var(--color-primary); color: var(--color-primary-ink); }
 .btn-primary:hover { background: var(--color-primary-hover); }
 ```
 Never hard-code `--brand-600` in a component; use `--color-primary`. This is also what
