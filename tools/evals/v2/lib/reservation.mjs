@@ -247,9 +247,32 @@ export function openUnmask({
     throw new Error("openUnmask: openCapability.openCommittedMap required");
   }
 
-  // 1. Verify frozen registry at closeout — BEFORE any seed access.
-  const registrySha = computeScenarioRegistrySha256(registryManifest);
-  const verifiedRegistry = verifyFrozenRegistryAtCloseout(repoRoot, registrySha);
+  // 1. Bind the caller manifest and on-disk corpus to the registry digest that
+  // was admitted in the validated ledger. This must finish before any opening
+  // capability can create a marker or read the seed.
+  const ledgerEvents = ledger?.events;
+  if (!Array.isArray(ledgerEvents)) throw new Error("openUnmask: validated ledger events required");
+  try { validateLedger(ledgerEvents); } catch (error) {
+    throw new Error(`openUnmask: ledger chain invalid: ${error.message}`);
+  }
+  const initialized = ledgerEvents.filter((event) => event.type === "run_initialized");
+  const admitted = ledgerEvents.filter((event) => event.type === "production_admitted");
+  if (initialized.length !== 1) throw new Error("openUnmask: exactly one run_initialized event required");
+  if (admitted.length !== 1) throw new Error("openUnmask: exactly one production_admitted event required");
+  const initRegistrySha = initialized[0].scenario_registry_sha256;
+  const admittedRegistrySha = admitted[0].scenario_registry_sha256;
+  const digestPattern = /^[0-9a-f]{64}$/;
+  if (!digestPattern.test(initRegistrySha ?? "") || !digestPattern.test(admittedRegistrySha ?? "")) {
+    throw new Error("openUnmask: admitted scenario registry digest missing or invalid");
+  }
+  if (initRegistrySha !== admittedRegistrySha) {
+    throw new Error("openUnmask: admitted scenario registry digest mismatch");
+  }
+  const callerRegistrySha = computeScenarioRegistrySha256(registryManifest);
+  if (callerRegistrySha !== admittedRegistrySha) {
+    throw new Error("openUnmask: caller registry manifest differs from admitted digest");
+  }
+  const verifiedRegistry = verifyFrozenRegistryAtCloseout(repoRoot, admittedRegistrySha);
 
   // 2. Compute the expected packet_set_sha256 from the provided packet set.
   const sortedPackets = [...packetSet].sort((a, b) => a.packet_id.localeCompare(b.packet_id));

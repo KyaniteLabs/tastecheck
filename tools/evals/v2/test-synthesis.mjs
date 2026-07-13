@@ -229,7 +229,10 @@ function buildSynthesisFixture({ prefFn = allCandidate, scoreFn = defaultScoreFn
     execution_manifest_sha256: manifestSha,
     randomization_commitment_sha256: created.commitment.commitment_sha256
   });
-  const e2 = appendEvent(undefined, e1, { type: "production_admitted", at: "2026-07-12T00:01:00Z", run_id: runId });
+  const e2 = appendEvent(undefined, e1, {
+    type: "production_admitted", at: "2026-07-12T00:01:00Z", run_id: runId,
+    scenario_registry_sha256: registrySha
+  });
   const ledger = [e1, e2];
 
   // Build unmask coordinates object.
@@ -746,7 +749,53 @@ function setupReservation(tempRepo, runId, ledgerEvents) {
     openCapability: openAuth
   });
 
-  // 16a. Swapped arm (arm mapping reversed)
+  // 16a. Admitted-ledger registry binding must reject before opening.
+  withTempRepo((tempRepo) => {
+    const setup = setupReservation(tempRepo, primary.runId, primary.ledger);
+    let opened = false;
+    const params = {
+      ...baseOpenParams(tempRepo, setup),
+      openCapability: { openCommittedMap() { opened = true; throw new Error("must not open"); } }
+    };
+    const cases = [
+      { name: "missing run_initialized", events: primary.ledger.slice(1) },
+      { name: "missing production_admitted", events: primary.ledger.slice(0, 1) },
+      {
+        name: "missing admitted digest",
+        events: [primary.ledger[0], appendEvent(undefined, primary.ledger[0], {
+          type: "production_admitted", at: "2026-07-12T00:01:00Z", run_id: primary.runId
+        })]
+      },
+      {
+        name: "mismatched admitted digest",
+        events: [primary.ledger[0], appendEvent(undefined, primary.ledger[0], {
+          type: "production_admitted", at: "2026-07-12T00:01:00Z", run_id: primary.runId,
+          scenario_registry_sha256: "f".repeat(64)
+        })]
+      }
+    ];
+    for (const testCase of cases) {
+      opened = false;
+      assert.throws(
+        () => openUnmask({ ...params, ledger: { ...params.ledger, events: testCase.events } }),
+        /ledger|run_initialized|production_admitted|registry digest/i,
+        testCase.name
+      );
+      assert.equal(opened, false, `${testCase.name}: opening capability must remain uncalled`);
+    }
+
+    opened = false;
+    const forgedManifest = structuredClone(manifest);
+    forgedManifest.scenarios[0].sha256 = "e".repeat(64);
+    assert.throws(
+      () => openUnmask({ ...params, registryManifest: forgedManifest }),
+      /manifest|admitted digest/i,
+      "caller manifest differing from admitted digest must reject"
+    );
+    assert.equal(opened, false, "forged caller manifest must reject before opening");
+  });
+
+  // 16b. Swapped arm (arm mapping reversed)
   withTempRepo((tempRepo) => {
     const setup = setupReservation(tempRepo, primary.runId, primary.ledger);
     const params = baseOpenParams(tempRepo, setup);
@@ -1037,6 +1086,7 @@ function setupReservation(tempRepo, runId, ledgerEvents) {
   });
   assert.notEqual(r1, r3, "different registry digest → different run ID");
 }
+
 
 // ===========================================================================
 // Cleanup
