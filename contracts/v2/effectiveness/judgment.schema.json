@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/contracts/v2/effectiveness/judgment.schema.json",
+  "title": "Effectiveness v2 machine judgment",
+  "description": "Closed shape of a machine judge's judgment over one opaque packet. Binds exact packet digest, family and identity, unique context and invocation IDs, opaque-slot preference, five-dimension 1-5 scores for both arms, hard-regression flags, and exact codepoint-located evidence citations. Rejects human-calibration fields, arm-identity leaks, and missing or stale evidence. This is the closure-bound judgment schema enforced by validate-judges.mjs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "packet_id", "family_id", "identity_id", "invocation_id", "context_id", "packet_sha256", "preference", "arm_scores", "hard_regressions", "evidence_citations"],
+  "properties": {
+    "schema_version": { "const": 2 },
+    "kind": { "const": "effectiveness-v2-judge-result" },
+    "packet_id": { "$ref": "#/definitions/id" },
+    "family_id": { "$ref": "#/definitions/id" },
+    "identity_id": { "$ref": "#/definitions/id" },
+    "invocation_id": { "$ref": "#/definitions/id" },
+    "context_id": { "$ref": "#/definitions/id" },
+    "packet_sha256": { "$ref": "#/definitions/sha256" },
+    "preference": { "enum": ["slot-0", "slot-1", "tie", "abstain"] },
+    "arm_scores": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "$ref": "#/definitions/armScore" },
+      "allOf": [
+        { "contains": { "type": "object", "properties": { "opaque_slot": { "const": 0 } }, "required": ["opaque_slot"] } },
+        { "contains": { "type": "object", "properties": { "opaque_slot": { "const": 1 } }, "required": ["opaque_slot"] } }
+      ]
+    },
+    "hard_regressions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "enum": ["accessibility", "safety", "contract", "evidence-integrity", "task-completion"] }
+    },
+    "evidence_citations": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/citation" }
+    }
+  },
+  "definitions": {
+    "id": { "type": "string", "minLength": 1 },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "score": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["direction", "structure", "accessibility", "verbal", "integration"],
+      "properties": {
+        "direction": { "$ref": "#/definitions/score" },
+        "structure": { "$ref": "#/definitions/score" },
+        "accessibility": { "$ref": "#/definitions/score" },
+        "verbal": { "$ref": "#/definitions/score" },
+        "integration": { "$ref": "#/definitions/score" }
+      }
+    },
+    "armScore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["opaque_slot", "dimensions"],
+      "properties": {
+        "opaque_slot": { "enum": [0, 1] },
+        "dimensions": { "$ref": "#/definitions/dimensions" }
+      }
+    },
+    "citation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "opaque_slot", "viewport_id", "artifact_sha256", "start_codepoint", "end_codepoint", "exact_span"],
+      "properties": {
+        "artifact_id": { "$ref": "#/definitions/id" },
+        "opaque_slot": { "enum": [0, 1] },
+        "viewport_id": { "enum": ["mobile", "desktop"] },
+        "artifact_sha256": { "$ref": "#/definitions/sha256" },
+        "start_codepoint": { "type": "integer", "minimum": 0 },
+        "end_codepoint": { "type": "integer", "minimum": 1 },
+        "exact_span": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

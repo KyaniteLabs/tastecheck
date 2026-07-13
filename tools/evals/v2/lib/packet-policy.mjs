@@ -6,11 +6,21 @@
 // ORIGINAL bytes byte-for-byte. No rewriting, normalization, or selective
 // field removal is allowed.
 
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { computeValidatorClosure } from "./canonical-json.mjs";
+
 const ISO_TIMESTAMP = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;
 
-// Frozen at protocol-head; matches protocol.packet_validator_{version,sha256}.
-export const FROZEN_VALIDATOR_VERSION = "effectiveness-v2-packet-policy-1";
-export const FROZEN_VALIDATOR_DIGEST = "b".repeat(64);
+// B1: frozen at module load from the exact closed sorted five-file dependency
+// manifest. Matches protocol.packet_validator_{version,sha256}. The closure
+// canonical digest covers packet-policy + the judge validator entry + the
+// shared canonicalizer + the closed packet and judgment schemas;
+// placeholder/missing/extra/path/digest drift is rejected at freeze.
+const moduleRoot = join(dirname(fileURLToPath(import.meta.url)), "../../../..");
+const __closure = computeValidatorClosure(moduleRoot);
+export const FROZEN_VALIDATOR_VERSION = __closure.version;
+export const FROZEN_VALIDATOR_DIGEST = __closure.sha256;
 
 // Closed forbidden-cue allowlist. Each entry is either a substring (matched
 // case-insensitively after lowercasing both inputs) or a RegExp tested against

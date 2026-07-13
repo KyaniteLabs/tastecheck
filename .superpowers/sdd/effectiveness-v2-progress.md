@@ -5,6 +5,10 @@
 | Worker | Executor | Outcome | Tokens in | Tokens out | Turns | Recorded basis |
 | --- | --- | --- | ---: | ---: | ---: | --- |
 | `w-645a-task` | `zai-glm` | `false_success` | 0 | 0 | 0 | Dispatch status reported `done` with exit code 0, but zero tokens and zero turns; protocol classifies this as a failed attempt. |
+| `w-6a50-task` | `zai-glm` | `failed_stale` | 0 | 0 | 0 | Produced partial Task 7 WIP, then stopped advancing for more than three minutes. Wrapper kill left child processes; both child and tee were killed before another writer started. |
+| `w-6014-task` | `zai-glm` | `failed_provider_529` | 101449 | 38500 | 75 | Produced Task 7A foundation WIP, then exhausted ten automatic retries on provider overload before tests or commit. |
+| `w-dc42-task` | `zai-glm` | `failed_provider_529` | 0 | 0 | 0 | Routed continuation immediately repeated the same provider overload; stopped early and orphan children were killed. |
+| `task7a_native_finish` | native fallback | `partial_then_exited` | — | — | — | Dispatch was unavailable in practice after two consecutive 529 failures. Native fallback produced the focused Task 7A test and hardening but exited before refreshing the validator digest, report, or commit; controller resumed from the failing assertion. |
 
 ## Gates
 
@@ -28,7 +32,9 @@
 | 1. Closed contracts and protocol freeze | RED: missing `contracts.mjs`; GREEN: `npm run test:effectiveness-v2` | `APPROVE` after commitment/validator freezing, exact-version, nested-contract, viewport, and opaque-slot corrections | ready to commit |
 | 2. Registry, historical quarantine, and admission ledger | RED: missing `registry.mjs`; GREEN: `node tools/evals/v2/test-registry.mjs` plus Task 1 suite | `APPROVE` after capability isolation, adapter-byte binding, recursive indirection quarantine, full-chain locked ledger durability, and closed corpus corrections | ready to commit |
 | 3. Shared attempted-call and generation runner | RED: missing `admission.mjs`; GREEN: `node tools/evals/v2/test-generation.mjs` and aggregate v2 suite | `APPROVE` after immutable cap/membership, closed routing receipts, strict result shape, and persistence-uncertainty terminality corrections | ready to commit |
-| 6. One-time synthesis and scoped public claims | RED: missing `synthesis.mjs`, `reservation.mjs`, `project-claim.mjs`; GREEN: `node tools/evals/v2/test-synthesis.mjs` plus aggregate v2 suite (6 test modules) | Pending independent review | ready to commit |
+| 5. Machine-only blind judge protocol | RED/GREEN recorded in Task 5 implementer report; aggregate v2 suite | `APPROVE` after packet-set formula, closed arm allowlist, and arm identity corrections | committed and pushed (`37c4f30`) |
+| 6. One-time synthesis and scoped public claims | RED: missing `synthesis.mjs`, `reservation.mjs`, `project-claim.mjs`; GREEN: `node tools/evals/v2/test-synthesis.mjs` plus aggregate v2 suite | `APPROVE` after admitted-ledger registry binding correction | committed and pushed (`48ea9a0`) |
+| 7A. Validator, resolver, executor, and admission foundations | RED: inherited rehearsal test failed on invalid provider regex; GREEN: `node tools/evals/v2/test-foundation.mjs` reports external calls 0 and aggregate v2 suite passes 7 modules | `APPROVE` after trusted selection recomputation, explicit generator identity, judge-owned settings/tool/time binding, semantic five-file closure, and viewport-cardinality fixes | ready to commit |
 
 ## FINAL sequential architect+critic APPROVE correction (Task 6)
 

@@ -30,7 +30,7 @@
     "eval:aggregate": "node tools/evals/aggregate-receipts.mjs",
     "eval:sanitize": "node tools/evals/sanitize-receipts.mjs",
     "test:contracts": "node tools/evals/test-lint-fixtures.mjs && node tools/contracts/test-contracts.mjs && node tools/contracts/test-scenarios.mjs && node tools/contracts/check-generated.mjs && node tools/taste-oracle/test-observations-schema.mjs",
-    "test:effectiveness-v2": "node tools/evals/v2/test-contracts.mjs && node tools/evals/v2/test-registry.mjs && node tools/evals/v2/test-generation.mjs && node tools/evals/v2/test-render.mjs && node tools/evals/v2/test-judges.mjs && node tools/evals/v2/test-synthesis.mjs",
+    "test:effectiveness-v2": "node tools/evals/v2/test-contracts.mjs && node tools/evals/v2/test-registry.mjs && node tools/evals/v2/test-generation.mjs && node tools/evals/v2/test-render.mjs && node tools/evals/v2/test-judges.mjs && node tools/evals/v2/test-synthesis.mjs && node tools/evals/v2/test-foundation.mjs",
     "eval:effectiveness-v2:generate": "node tools/evals/v2/generate.mjs",
     "eval:effectiveness-v2:render": "node tools/evals/v2/render.mjs",
     "test:eval-schema": "node tools/evals/test-sanitizer-fixtures.mjs && node tools/evals/evaluators/test-sanitizer.mjs",
