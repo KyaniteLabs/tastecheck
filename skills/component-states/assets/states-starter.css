@@ -69,8 +69,13 @@ a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; bo
 
 /* ---- Menu item: hover and keyboard focus share the highlight ---- */
 .menu-item { padding: .5em .8em; cursor: pointer; }
-.menu-item:hover, .menu-item:focus-visible { background: var(--color-surface-2); outline: none; }
+.menu-item:hover { background: var(--color-surface-2); }
+.menu-item:focus-visible { background: var(--color-surface-2); outline: 2px solid var(--color-focus); outline-offset: -2px; }
 .menu-item[aria-disabled="true"] { opacity: .5; pointer-events: none; }
+/* NOTE: aria-disabled does not prevent keyboard activation. Add JS:
+   .menu-item[aria-disabled]addEventListener('keydown', e => {
+     if (e.key === 'Enter' || e.key === ' ') e.preventDefault();
+   }); */
 
 /* ---- Toggle: communicate state by position, not only color ---- */
 .switch { width: 2.6em; height: 1.5em; border-radius: 999px;
