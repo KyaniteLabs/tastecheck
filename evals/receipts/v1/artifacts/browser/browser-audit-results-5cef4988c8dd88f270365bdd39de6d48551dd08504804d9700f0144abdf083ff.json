@@ -1,0 +1,1280 @@
+[
+  {
+    "surface_id": "demo-01-foundations",
+    "route": "/demos/01-foundations.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.898,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "demo-01-foundations",
+    "route": "/demos/01-foundations.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.3803,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "demo-01-foundations",
+    "route": "/demos/01-foundations.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.2818,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "demo-02-states",
+    "route": "/demos/02-states.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 6.1699,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "demo-02-states",
+    "route": "/demos/02-states.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 3.4651,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "demo-02-states",
+    "route": "/demos/02-states.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.3444,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "demo-03-responsive",
+    "route": "/demos/03-responsive.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 6× identical div.box in div.grid-auto (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 6.2316,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "demo-03-responsive",
+    "route": "/demos/03-responsive.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 6× identical div.box in div.grid-auto (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 4.9136,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "demo-03-responsive",
+    "route": "/demos/03-responsive.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 6× identical div.box in div.grid-auto (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.2587,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "demo-04-motion-forms-empty",
+    "route": "/demos/04-motion-forms-empty.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "2 skeleton placeholder(s) visible on load (stuck loading state?)",
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 3.6485,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "demo-04-motion-forms-empty",
+    "route": "/demos/04-motion-forms-empty.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "2 skeleton placeholder(s) visible on load (stuck loading state?)",
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 3.9712,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "demo-04-motion-forms-empty",
+    "route": "/demos/04-motion-forms-empty.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "2 skeleton placeholder(s) visible on load (stuck loading state?)",
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 3.368,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "demo-05-deslop",
+    "route": "/demos/05-deslop.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 2
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)",
+        "pill text CTA: \"Get started\" (button.cta, radius 9999px on 34px)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 6.9762,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "demo-05-deslop",
+    "route": "/demos/05-deslop.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 2
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)",
+        "pill text CTA: \"Get started\" (button.cta, radius 9999px on 34px)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 4.6854,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "demo-05-deslop",
+    "route": "/demos/05-deslop.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 2
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)",
+        "pill text CTA: \"Get started\" (button.cta, radius 9999px on 34px)"
+      ],
+      "notes": []
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.5263,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "demo-skill-integration",
+    "route": "/demos/skill-integration.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 0
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "NIMA aesthetic score 4.76/10 below 5.5 threshold"
+      ],
+      "notes": [
+        "display face resolves to \"Georgia\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 4.7624,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "demo-skill-integration",
+    "route": "/demos/skill-integration.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 0
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "NIMA aesthetic score 3.41/10 below 5.5 threshold"
+      ],
+      "notes": [
+        "display face resolves to \"Georgia\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 3.4061,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "demo-skill-integration",
+    "route": "/demos/skill-integration.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 0
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 3× identical article.panel in div.audit-grid (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "uniform card grid: 19× identical div.skill-pill in div.skill-map (equal size, bordered/rounded — the \"three cards\" tell?)"
+      ],
+      "notes": [
+        "display face resolves to \"Georgia\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.3463,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "gallery",
+    "route": "/samples/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 1,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "CLEAN",
+      "fails": [],
+      "warns": [],
+      "notes": [
+        "display face resolves to \"Archivo\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.9143,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "gallery",
+    "route": "/samples/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 1,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "CLEAN",
+      "fails": [],
+      "warns": [],
+      "notes": [
+        "display face resolves to \"Archivo\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 6.1973,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "gallery",
+    "route": "/samples/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 1,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "NIMA aesthetic score 4.92/10 below 5.5 threshold"
+      ],
+      "notes": [
+        "display face resolves to \"Archivo\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 4.9184,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "landing",
+    "route": "/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 3
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.x — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Red0\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 7.5769,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "landing",
+    "route": "/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 3
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.x — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Red0\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 7.0247,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "landing",
+    "route": "/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 3
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.x — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Red0\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 7.1413,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "sample-clay",
+    "route": "/samples/clay/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 12
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Mulish\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.9884,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "sample-clay",
+    "route": "/samples/clay/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Mulish\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 4.4341,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "sample-clay",
+    "route": "/samples/clay/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 1
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Mulish\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.5751,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "sample-concrete",
+    "route": "/samples/concrete/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 17
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Grotesk\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 6.0105,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "sample-concrete",
+    "route": "/samples/concrete/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 10
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Grotesk\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.6814,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "sample-concrete",
+    "route": "/samples/concrete/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 10
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Grotesk\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 7.8349,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "sample-copper",
+    "route": "/samples/copper/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 18
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Red0\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 7.2331,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "sample-copper",
+    "route": "/samples/copper/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 7
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Red0\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 7.3965,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "sample-copper",
+    "route": "/samples/copper/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 7
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Red0\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.9545,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "sample-dispatch",
+    "route": "/samples/dispatch/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 26
+    },
+    "gate": {
+      "verdict": "CLEAN",
+      "fails": [],
+      "warns": [],
+      "notes": [
+        "display face resolves to \"Bric\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.5581,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "sample-dispatch",
+    "route": "/samples/dispatch/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 15
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "NIMA aesthetic score 5.38/10 below 5.5 threshold"
+      ],
+      "notes": [
+        "display face resolves to \"Bric\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.3823,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "sample-dispatch",
+    "route": "/samples/dispatch/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 15
+    },
+    "gate": {
+      "verdict": "CLEAN",
+      "fails": [],
+      "warns": [],
+      "notes": [
+        "display face resolves to \"Bric\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 6.4878,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "sample-maximal",
+    "route": "/samples/maximal/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 100
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Bricolage\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 4.816,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "sample-maximal",
+    "route": "/samples/maximal/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 93
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "uniform card grid: 3× identical div.sk in ol.skills-g (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Bricolage\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.0209,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "sample-maximal",
+    "route": "/samples/maximal/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 93
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Bricolage\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.4829,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "sample-swiss",
+    "route": "/samples/swiss/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 86
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Hanken\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 4.7517,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "sample-swiss",
+    "route": "/samples/swiss/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 86
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Hanken\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.6491,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "sample-swiss",
+    "route": "/samples/swiss/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 86
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Hanken\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.2474,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "sample-verge",
+    "route": "/samples/verge/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 7
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Fraunces\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.4231,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "sample-verge",
+    "route": "/samples/verge/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 7
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Fraunces\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.5253,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "sample-verge",
+    "route": "/samples/verge/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 7
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Fraunces\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.1186,
+      "status": "warn"
+    }
+  }
+]
