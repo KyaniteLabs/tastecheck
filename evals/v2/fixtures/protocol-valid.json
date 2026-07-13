@@ -3,9 +3,19 @@
   "kind": "effectiveness-v2-protocol",
   "baseline_revision": "0f99603a603b0243345e7320a52702df67a2194e",
   "candidate_revision": "08591213f562073f9ddb0ff9012ec0e3f8ed09c2",
-  "strata": ["greenfield-direction", "brownfield-repair", "accessibility-safety", "verbal-copy", "orchestration-gates", "render-integration"],
+  "strata": [
+    "greenfield-direction",
+    "brownfield-repair",
+    "accessibility-safety",
+    "verbal-copy",
+    "orchestration-gates",
+    "render-integration"
+  ],
   "scenarios_per_stratum": 2,
-  "seeds": [101, 202],
+  "seeds": [
+    101,
+    202
+  ],
   "comparison_units": 24,
   "generation_calls": 48,
   "production_judgments": 96,
@@ -23,5 +33,5 @@
   "human_calibration_claimed": false,
   "randomization_commitment_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
   "packet_validator_version": "effectiveness-v2-packet-policy-1",
-  "packet_validator_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  "packet_validator_sha256": "c6b71a2a46f0f087ecb630243000e5696b92e6dc1eacf64cde1be5601a641280"
 }
