@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { createHash, createHmac } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -63,6 +63,39 @@ export function canonicalPacket(packet) {
 export function sha256(value) {
   const bytes = typeof value === "string" ? value : canonicalJson(value);
   return createHash("sha256").update(bytes).digest("hex");
+}
+
+/**
+ * lenPrefix(buf)
+ * 4-byte big-endian length prefix for HMAC tuple fields.
+ */
+export function lenPrefix(buf) {
+  const out = Buffer.alloc(4);
+  out.writeUInt32BE(buf.length, 0);
+  return Buffer.concat([out, buf]);
+}
+
+/**
+ * hmacTuple(seed, domain, scenarioId, generationSeed, opaqueSlot, viewportId)
+ *
+ * Single source of truth for the seed-keyed HMAC ID tuple contract.
+ * Shared by the build authority (packet-build-authority.mjs) and the open
+ * authority (synthesis-open-authority.mjs / reservation.mjs) so that both
+ * sides never diverge. Length-prefixed, domain-separated fields; real arm
+ * identity and input order are excluded.
+ */
+export function hmacTuple(seed, domain, scenarioId, generationSeed, opaqueSlot = null, viewportId = null) {
+  const h = createHmac("sha256", seed);
+  h.update(lenPrefix(Buffer.from(domain, "utf8")));
+  h.update(lenPrefix(Buffer.from(scenarioId, "utf8")));
+  h.update(lenPrefix(Buffer.from(String(generationSeed), "utf8")));
+  if (opaqueSlot !== null) {
+    h.update(lenPrefix(Buffer.from([opaqueSlot])));
+  }
+  if (viewportId !== null) {
+    h.update(lenPrefix(Buffer.from(viewportId, "utf8")));
+  }
+  return h.digest("hex");
 }
 
 export function loadSchema(name) {
