@@ -91,7 +91,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: An existing site or codebase needs improvement while preserving its intended identity (+1 in contract.json); avoid: A greenfield project needs direction before anything exists to inspect (+1 in contract.json)
 - Exclude: Do not prescribe or edit before inspecting evidence (+1 in contract.json)
-- Stop / handoff: Pause when evidence is insufficient for a safe inference (+2 in contract.json); receives [none] -> sends [deslop-ui, color-system, web-typography, theming, responsive-layout, a11y-pass, cognitive-a11y, i18n-ready]
+- Stop / handoff: Pause when evidence is insufficient for a safe inference (+2 in contract.json); receives [none] -> sends [deslop-ui, color-system, web-typography, theming, responsive-layout, a11y-pass, cognitive-a11y, i18n-ready, art-direction, component-states, data-viz, empty-states, humanize-copy, spacing-system]
 - Output: An evidence-labelled inferred system, readiness decision, and scoped repair plan or implementation report
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

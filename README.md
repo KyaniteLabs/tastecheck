@@ -8,7 +8,7 @@ It starts before the first component. Instead of letting “modern” silently b
 usual font, gradient, hero, and card grid, TasteCheck recommends concrete alternatives
 and asks the few questions that would actually change the build.
 
-![TasteCheck — one product story rendered through seven committed design systems](docs/hero/six-systems.png)
+![TasteCheck — one product story rendered through seven committed design systems](docs/hero/seven-systems.png)
 
 *Six real browser renders — the same product story shaped by seven different structures,
 type systems, color systems, and rhythms. Open the

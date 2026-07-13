@@ -2,31 +2,31 @@
   "schema_version": 1,
   "kind": "clean-clone",
   "producer_id": "tastecheck.release.clean-clone.v1",
-  "source_tree_sha256": "3885fc773b4e3e459f134fd4eab8d248e15efde6dc2e1c3439a26f8b15878fa3",
+  "source_tree_sha256": "3d4099a9dd210ff4b3d7fbfc4732e432ffc59dbf0bbfb62de0a755712e64036b",
   "nonce": "clean-clone-release-v1",
-  "started_at": "2026-07-13T06:47:13.630Z",
-  "finished_at": "2026-07-13T06:47:20.034Z",
+  "started_at": "2026-07-13T22:31:14.248Z",
+  "finished_at": "2026-07-13T22:31:30.222Z",
   "checks": [
     {
       "id": "npm-ci",
       "command": "npm ci --ignore-scripts",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "fdcafcc90ca2dc2eb2e40a70daf373de82cedfab792870abcee23c0d17aca055"
+      "output_sha256": "d6feca2a00bccfcebfd14bfb5ca4242b2574bb104afa87ea43e74fb9a2286795"
     },
     {
       "id": "test",
       "command": "npm test",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "1bb965e1592bae70a6781c6b472ab63b7474469485ef7cfa7082ae8c16efe99a"
+      "output_sha256": "e9cbd50d29c0bff2e1fb26aee7fcaf8703b5c50d2ed75d7bdc9f5430cf4396c0"
     },
     {
       "id": "contracts",
       "command": "npm run test:contracts",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "c5d394ec30f86010e00f65a8cf5f671b23635e7db3b93e8847456cbd4b3c4f3e"
+      "output_sha256": "26791ef68645377842783a49e559baab151f10af65c27bc7cd0d2ceb8084c06f"
     },
     {
       "id": "effectiveness-claims",
@@ -40,14 +40,14 @@
       "command": "internal HEAD source digest comparison",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "697c381b840e110fdcc3a503a622fcb444159386e054aaca3afecd1304c40b19"
+      "output_sha256": "3faca9ee7242c2ad72957154c006747f18f65b0f1d03668dc4c5b4f593c3f730"
     },
     {
       "id": "source-stability",
       "command": "internal source digest comparison",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "697c381b840e110fdcc3a503a622fcb444159386e054aaca3afecd1304c40b19"
+      "output_sha256": "3faca9ee7242c2ad72957154c006747f18f65b0f1d03668dc4c5b4f593c3f730"
     }
   ],
   "status": "pass",

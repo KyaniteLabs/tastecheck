@@ -74,7 +74,7 @@
     ]
   },
   "handoff": {
-    "downstream": ["a11y-pass", "cognitive-a11y", "i18n-ready", "deslop-ui", "color-system", "web-typography"],
+    "downstream": ["deslop-ui", "color-system", "web-typography", "theming", "responsive-layout", "a11y-pass", "cognitive-a11y", "i18n-ready", "art-direction", "component-states", "data-viz", "empty-states", "humanize-copy", "spacing-system"],
     "handoff_artifact": "INFERRED-SYSTEM.md"
   }
 }

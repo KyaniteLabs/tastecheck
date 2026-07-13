@@ -68,7 +68,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: A flow imposes avoidable memory, attention, predictability, reading, or recovery load for ADHD, autistic, dyslexic, or other neurodivergent users.; avoid: The issue is only color contrast, semantic markup, or translation expansion.
 - Exclude: Do not flatten personality or remove useful complexity without evidence. (+1 in contract.json)
-- Stop / handoff: Stop when the task context or observed friction is unknown. (+1 in contract.json); receives [improve-existing-website, form-ux, empty-states] -> sends [a11y-pass, humanize-copy, tastecheck-pass]
+- Stop / handoff: Stop when the task context or observed friction is unknown. (+1 in contract.json); receives [improve-existing-website, form-ux, empty-states, theming] -> sends [a11y-pass, humanize-copy, tastecheck-pass]
 - Output: prioritized cognitive repair ledger preserving product voice
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->
