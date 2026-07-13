@@ -41,21 +41,11 @@ Use [decision records](references/decision-records.md) when competing treatments
 
 ## Favicons and app icons
 
-A favicon is the smallest, most repeated brand surface — treat it as a committed art-direction
-decision, not an afterthought.
-
-- Ship an SVG favicon (`<link rel="icon" href="/favicon.svg" type="image/svg+xml">`) as the
-  primary; it scales crisply and supports `prefers-color-scheme` via CSS media queries inside
-  the SVG. Add a PNG fallback (`sizes="32x32"`) for older browsers.
-- Derive the mark from the committed visual stance — same palette, same geometric language.
-  A favicon that contradicts the design system is worse than none.
-- Apple Touch Icon (180×180), web app manifest icon (192/512), and OG/social preview image
-  are separate deliverables with their own crop and contrast requirements. Do not reuse the
-  favicon at these sizes without checking legibility.
-- Test the favicon at 16×16 actual pixels — if the mark illegible, simplify it. A single
-  bold glyph or letterform outperforms a detailed logo at favicon scale.
-- Use [decision records](references/decision-records.md) when competing treatments require a documented trade-off.
-- See [patterns](references/patterns.md) for worked imagery and iconography patterns.
+Ship an SVG favicon primary (`<link rel="icon" href="/favicon.svg" type="image/svg+xml">`)
+with a PNG fallback. Derive the mark from the committed stance; test legibility at 16×16
+actual pixels — a single bold glyph outperforms a detailed logo. Apple Touch Icon (180),
+manifest icons (192/512), and OG preview are separate deliverables with their own crop and
+contrast needs. See [patterns](references/patterns.md) for worked examples.
 
 ## Ship check
 
