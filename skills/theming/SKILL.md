@@ -16,9 +16,11 @@ supported mapping in context. Dark is not inverted light, an authored high-contr
 is not forced colors, and no mode earns an accessibility claim without measurement.
 
 ## The decision order
-1. **Semantic tokens first.** Define roles (`--color-bg`, `--color-surface-1/2`,
-   `--color-text`, `--color-text-muted`, `--color-border`, `--color-accent`,
-   `--color-accent-ink`, `--color-focus` — the canonical contract names). Components
+1. **Semantic tokens first.** Define roles (`--color-bg`, `--color-surface-1/2` (`-3` if elevation needs it),
+   `--color-text`, `--color-text-muted`, `--color-border`, `--color-primary`,
+   `--color-primary-hover`, `--color-primary-ink`, `--color-accent`, `--color-accent-ink`,
+   `--color-success`, `--color-error`, `--color-warning`, `--color-info`,
+   `--color-focus` — the canonical contract names). Components
    use these only. (Palette comes from `color-system`.)
 2. **Choose the product baseline.** Start with the application's default supported mode;
    it may be light, dark, or brand-specific. Set structure and role relationships there.
