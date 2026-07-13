@@ -6,7 +6,7 @@ import { createHash, createDecipheriv } from "node:crypto";
 import { execSync } from "node:child_process";
 import {
   closeSync, existsSync, fsyncSync, lstatSync, mkdirSync, openSync, readFileSync,
-  readdirSync, statSync, writeFileSync
+  readdirSync, writeFileSync
 } from "node:fs";
 import { dirname, join, relative } from "node:path";
 
@@ -51,11 +51,13 @@ export function computeScenarioRegistrySha256(manifest) {
 function assertRegularFileWithinRoot(filePath, repoRoot) {
   const relPath = relative(repoRoot, filePath);
   if (relPath.startsWith("..")) throw new Error(`registry closeout: out-of-root file ${relPath}`);
-  let stats;
-  try { stats = statSync(filePath); } catch { throw new Error(`registry closeout: missing file ${relPath}`); }
-  if (!stats.isFile()) throw new Error(`registry closeout: nonregular file ${relPath}`);
-  const lst = lstatSync(filePath);
+  // lstat FIRST so dangling symlinks are reported as symlinks, not "missing".
+  // statSync follows symlinks; if it ran first, a dangling symlink would throw
+  // a misleading "missing file" error before the symlink check could fire.
+  let lst;
+  try { lst = lstatSync(filePath); } catch { throw new Error(`registry closeout: missing file ${relPath}`); }
   if (lst.isSymbolicLink()) throw new Error(`registry closeout: symlink rejected ${relPath}`);
+  if (!lst.isFile()) throw new Error(`registry closeout: nonregular file ${relPath}`);
 }
 
 export function verifyFrozenRegistryAtCloseout(repoRoot, expectedDigest) {

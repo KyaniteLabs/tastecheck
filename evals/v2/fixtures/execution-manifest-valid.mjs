@@ -9,6 +9,9 @@ const family = (id, provider, lineage, model, marker) => ({
   adapter_sha256: digest(marker),
   system_prompt_sha256: digest(marker === "c" ? "d" : "e"),
   rubric_sha256: digest("f"),
+  settings_sha256: digest(marker === "c" ? "a" : "b"),
+  tool_policy_sha256: digest(marker === "c" ? "6" : "7"),
+  time_budget_seconds: 600,
   identities: [`${id}-judge-1`, `${id}-judge-2`]
 });
 
@@ -16,6 +19,8 @@ const manifest = {
   schema_version: 2,
   kind: "effectiveness-v2-execution-manifest",
   generator: {
+    family_id: "generator-family",
+    identity: "generator-primary",
     provider: "provider-generator",
     foundation_lineage: "generator-lineage",
     model_version: "generator-model-2026-07-01",
