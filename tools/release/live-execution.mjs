@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 import Ajv from "ajv";
 import { chromium } from "playwright";
 import { computeSourceTreeSha256 } from "./engineering-receipt.mjs";
+import { scoreNima, aestheticStatus, NIMA_WARN_THRESHOLD } from "../lib/nima.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const PRODUCER = Object.freeze({ id: "tastecheck-live-execution", version: 1 });
@@ -179,11 +180,23 @@ async function inspectSurface(browser, baseUrl, surface, route, viewport, artifa
     });
     const keyboardPassed = measurements.focusableCount === 0 || (keyboard.reached && keyboard.visible);
     checks.push(check(`${surface}-${viewport.id}-keyboard-focus`, keyboardPassed, measurements.focusableCount === 0 ? "No keyboard-operable elements on this static surface" : keyboard.reached ? "First keyboard target has visible focus treatment" : "No visible keyboard target reached"));
-    auditResults.push({ surface_id: surface, route, width: viewport.width, main_landmarks: measurements.mainLandmarks, running_animations_reduced: measurements.runningAnimations, a11y, gate, keyboard });
+    const auditEntry = { surface_id: surface, route, width: viewport.width, main_landmarks: measurements.mainLandmarks, running_animations_reduced: measurements.runningAnimations, a11y, gate, keyboard };
+    auditResults.push(auditEntry);
     await new Promise((resolve) => setImmediate(resolve));
     checks.push(check(`${surface}-${viewport.id}-no-console-errors`, errors.length === 0, errors.length ? `${errors.length} browser error events` : "No console or page errors"));
     const bytes = await page.screenshot({ fullPage: true, animations: "disabled" });
     artifacts.push(storeArtifact(artifactDir, `${surface}-${viewport.id}`, bytes));
+
+    // ── NIMA aesthetic check #11 (harness layer) ──
+    // DOM-only gate-audit stays untouched; NIMA consumes the viewport PNG just captured.
+    // Phase 1: WARN-only — a low score upgrades a CLEAN gate to REVIEW WARNS, never FAIL.
+    const nima = await scoreNima(bytes);
+    const nimaScore = nima?.score ?? null;
+    auditEntry.aesthetic = { nimaScore, status: aestheticStatus(nimaScore) };
+    if (nimaScore != null && nimaScore < NIMA_WARN_THRESHOLD && gate?.verdict === "CLEAN") {
+      gate.verdict = "REVIEW WARNS";
+      (gate.warns ??= []).push(`NIMA aesthetic score ${nimaScore.toFixed(2)}/10 below ${NIMA_WARN_THRESHOLD} threshold`);
+    }
   } finally {
     await page.close();
   }
