@@ -435,6 +435,25 @@ Map each identity preference to candidate `1`, tie `0.5`, or baseline `0`; abste
 
 `reserve` uses exclusive creation and fsync, then exits without unmasking. The operator commits the current reservation. `synthesize` requires that exact current reservation in `HEAD`, a clean tree, the committed initial ledger root, an intact hash chain, and no prior reservation for the run ID. The unmask opening is verified once and its complete mapping is bound to the admitted commitment, packet set, run ID, current reservation, and immediate ledger predecessor before candidate attribution. A crash after the current reservation is terminal and cannot resume. Ledger deletion, truncation, forks, copied roots, repeated run IDs, swapped or partial maps, invalid openings, or post-reservation replacement fail closed.
 
+**FINAL sequential architect+critic APPROVE correction (Task 6):** The unmask rows require
+`scenario_id` and `generation_seed` (already encrypted in the authenticated map).
+`synthesize` and `openUnmask` interfaces accept the canonical `repoRoot`, `protocol`, and
+`registryManifest`. `scenario_registry_sha256 = sha256(canonicalJson(manifest))` must bind
+run-ID derivation, the committed initial `run_initialized` ledger root, the unique
+`production_admitted` event, and every external-call admission equality check. After the
+committed reservation and clean HEAD, and before any opening-attempt, seed read, decryption,
+or grouping, `verifyFrozenRegistryAtCloseout` uses the same git top-level to verify the
+digest matches the admitted ledger, the closed exact 12 scenario and 4 anchor IDs and file
+hashes, enumerated exact files with no extras or missing, rejection of symlink, nonregular,
+and out-of-root files, single-read then hash+parse of the same bytes, embedded ID and hash
+matching, rerun of closed-shape/strata/anchor/content-separation checks, and return of
+immutable verified coordinates. Any drift is terminal `production_incomplete` with zero
+secret access or output. `openUnmask` requires the exact registry scenario IDs ×
+protocol.seeds coordinates (48 rows/24 units, slots 0/1, baseline+candidate once each,
+coordinate↔unit bijection), recomputes HMAC `unit_id`, `packet_id`, seed-dependent
+`scenario_id_token` and assignment, groups only by authenticated post-unmask
+`scenario_id`, and canonical-sorts for permutation invariance.
+
 - [ ] **Step 4: Verify GREEN and reconstruct from sealed fixtures**
 
 Run: `node tools/evals/v2/test-synthesis.mjs`

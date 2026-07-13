@@ -2,32 +2,12 @@ import {
   createCipheriv, createHash, createHmac, randomBytes
 } from "node:crypto";
 import { readFileSync, statSync } from "node:fs";
-import { canonicalJson, canonicalPacket } from "./contracts.mjs";
+import { canonicalJson, canonicalPacket, hmacTuple, lenPrefix } from "./contracts.mjs";
 import { validatePacketArtifact, FROZEN_VALIDATOR_VERSION, FROZEN_VALIDATOR_DIGEST } from "./packet-policy.mjs";
 
 const commitment = (domain, seed) => createHash("sha256").update("tastecheck-randomization-v2\0").update(domain).update("\0").update(seed).digest("hex");
 
 const VIEWPORT_IDS = ["mobile", "desktop"];
-
-function lenPrefix(buf) {
-  const out = Buffer.alloc(4);
-  out.writeUInt32BE(buf.length, 0);
-  return Buffer.concat([out, buf]);
-}
-
-function hmacTuple(seed, domain, scenarioId, generationSeed, opaqueSlot = null, viewportId = null) {
-  const h = createHmac("sha256", seed);
-  h.update(lenPrefix(Buffer.from(domain, "utf8")));
-  h.update(lenPrefix(Buffer.from(scenarioId, "utf8")));
-  h.update(lenPrefix(Buffer.from(String(generationSeed), "utf8")));
-  if (opaqueSlot !== null) {
-    h.update(lenPrefix(Buffer.from([opaqueSlot])));
-  }
-  if (viewportId !== null) {
-    h.update(lenPrefix(Buffer.from(viewportId, "utf8")));
-  }
-  return h.digest("hex");
-}
 
 function loadSeed(privateStateRef) {
   let stats;
