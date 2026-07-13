@@ -17,7 +17,7 @@
 | Latest design architect review | approved | Fresh post-critic review returned `APPROVE` on the exact current corrected design and plan, including executable aggregate-test and adversarial-QA gates. |
 | Latest plan critic review | approved | Fresh sequential critic review returned `APPROVE` after the fresh architect approval; all prior critic findings were verified resolved. |
 | Implementation | ready | Sequential architect then critic approval passed on the exact latest bytes. |
-| Fake-executor rehearsal | implemented | Focused rehearsal proves exact 48/96/24/4/96/16 counts, 160 contiguous fake ordinals, zero real calls, zero render ordinals, and terminal failures at 1/49/80/160; independent review remains required. |
+| Fake-executor rehearsal | approved | Independent correctness review returned `APPROVE` and architecture review returned `CLEAR` after TDD fixes. Fresh `npm run verify:v2` proves exact 48/96/24/4/96/16 counts, 160 contiguous fake ordinals, zero real calls, zero render ordinals, and terminal failures at 1/49/80/160. |
 | Existing suite | pending | — |
 | Clean-clone reconstruction | pending | — |
 | Independent code review | pending | — |
@@ -36,7 +36,7 @@
 | 6. One-time synthesis and scoped public claims | RED: missing `synthesis.mjs`, `reservation.mjs`, `project-claim.mjs`; GREEN: `node tools/evals/v2/test-synthesis.mjs` plus aggregate v2 suite | `APPROVE` after admitted-ledger registry binding correction | committed and pushed (`48ea9a0`) |
 | 7A. Validator, resolver, executor, and admission foundations | RED: inherited rehearsal test failed on invalid provider regex; GREEN: `node tools/evals/v2/test-foundation.mjs` reports external calls 0 and aggregate v2 suite passes 7 modules | `APPROVE` after trusted selection recomputation, explicit generator identity, judge-owned settings/tool/time binding, semantic five-file closure, and viewport-cardinality fixes | ready to commit |
 | 7B. Exact call schedule, receipt, and route binding | RED: `node tools/evals/v2/test-schedule.mjs` failed on missing `lib/schedule.mjs`, then missing `run-judges.mjs`; GREEN: focused test reports fake calls 160 / real calls 0, aggregate v2 suite passes 8 modules, and `git diff --check` passes | `APPROVE` after canonical-plan reconstruction, durable prepacket/judgment schedule readback, and exact generation executor-class binding fixes | ready to commit |
-| 7C. Full fake-executor rehearsal and operator contract | RED: `node tools/evals/v2/test-rehearsal.mjs` failed because `rehearse.mjs` was absent; GREEN: exact success report, atomic pre-admission ordering, contiguous ordinals, pre-admission stop, and injected failures at 1/49/80/160 pass with zero real calls | pending | ready for independent review |
+| 7C. Full fake-executor rehearsal and operator contract | RED: missing and forged admission cases reached ordinal 1; invalid judge artifacts could complete; GREEN: exact success report, atomic and fully bound admission before ordinal 1, revalidation before every call, source-byte consumption, closed-schema judge/citation validation, 112 schedule-bound judgment receipts, contiguous ordinals, and injected failures at 1/49/80/160 pass with zero real calls | `APPROVE` and architecture `CLEAR` after all Important findings were closed with TDD | approved; Task 8 gates remain |
 
 ## FINAL sequential architect+critic APPROVE correction (Task 6)
 
