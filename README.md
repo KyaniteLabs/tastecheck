@@ -20,8 +20,10 @@ type systems, color systems, and rhythms. Open the
 [![Verified](https://img.shields.io/badge/verified-npm%20test-brightgreen.svg)](docs/VERIFICATION.md)
 
 > **Evidence boundary:** repository checks verify installation, contracts, links, and
-> demo behavior. Effectiveness is unproven; the terminal blind evaluation has not cleared
-> its release threshold.
+> demo behavior. A machine-only blind evaluation protocol (effectiveness v2) is built,
+> rehearsed, and adversarially tested — 160 simulated calls, 0 real calls — but production
+> evaluation has not started. Effectiveness remains unproven. See
+> [docs/EFFECTIVENESS-V2.md](docs/EFFECTIVENESS-V2.md) for the protocol.
 
 ```bash
 git clone https://github.com/KyaniteLabs/tastecheck
