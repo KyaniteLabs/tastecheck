@@ -6,7 +6,7 @@
       {
         "id": "context-budget",
         "path": "evals/receipts/v1/context-budget.json",
-        "sha256": "20f02c5eb3fd14ff6ac4e8fc14ee959042cbf810d71e8e3d0bb30e0746d09cd5",
+        "sha256": "cd1ceb38f48b102b2dcd02f86fe59dd55f914019d6722ff73c97707232fcc79a",
         "producer_id": "context-budget",
         "assertions": {
           "overall_pass": true
@@ -15,7 +15,7 @@
       {
         "id": "browser",
         "path": "evals/receipts/v1/browser.json",
-        "sha256": "b64f52d945ede9a3d4852ccfddcdf10e5841b3fbec8d526d40c79eceb9ce0357",
+        "sha256": "dbf81e4c3c3fef0391824acfd51c91e164ff3e6a1693698857e332c5f0cc590c",
         "producer_id": "browser",
         "assertions": {
           "status": "pass",
@@ -26,7 +26,7 @@
       {
         "id": "e2e",
         "path": "evals/receipts/v1/e2e.json",
-        "sha256": "1660d5f97d36b79087281a0dc643e8e33b29813390997126ff20d25072a9fe00",
+        "sha256": "7e6e3a262c4621066df9e6fc41d11773093b0d48f6e9d07b1b6a35f17d224cdd",
         "producer_id": "e2e",
         "assertions": {
           "status": "pass",
@@ -37,7 +37,7 @@
       {
         "id": "mechanical",
         "path": "evals/receipts/v1/mechanical.json",
-        "sha256": "954c813758bdddd5683d82159d2265b9b2729b9566c276ce832b4d4a11e18f1e",
+        "sha256": "d9846750c816ce2d0dacddf605fb2fc8017770126d3c1b5d1627b8bbf567ed97",
         "producer_id": "mechanical",
         "assertions": {
           "status": "pass",
@@ -48,7 +48,7 @@
       {
         "id": "security",
         "path": "evals/receipts/v1/security.json",
-        "sha256": "412a72c84fc6a9491955621ad799087f9fbb46620e81a1513a5caad72c0875f2",
+        "sha256": "523a45d6616f12d07516dbe7ce906d8016fcfe67c3d9a18371f2b3b328c5f093",
         "producer_id": "security",
         "assertions": {
           "status": "pass",
@@ -59,7 +59,7 @@
       {
         "id": "clean-clone",
         "path": "evals/receipts/v1/clean-clone.json",
-        "sha256": "277ec0c92722fd41cabfd0e6539ea18dd407ca39aeed493c2f8259a36528ec6c",
+        "sha256": "c9354c05acbe94337c3453601b590e9836073c2389f45194955c133c76ac1acd",
         "producer_id": "clean-clone",
         "assertions": {
           "status": "pass",
