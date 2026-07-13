@@ -1,0 +1,38 @@
+{
+  "schema_version": 2,
+  "kind": "effectiveness-v2-synthesis",
+  "run_id": "fixture-inconclusive-run",
+  "status": "inconclusive",
+  "families": [
+    {
+      "family_id": "family-a",
+      "preference_score": 24,
+      "scenario_majorities": 12,
+      "dimension_means": {
+        "direction": 4,
+        "structure": 4,
+        "accessibility": 4,
+        "verbal": 4,
+        "integration": 4
+      },
+      "absolute_mean": 4,
+      "passed": true
+    },
+    {
+      "family_id": "family-b",
+      "preference_score": 12,
+      "scenario_majorities": 0,
+      "dimension_means": {
+        "direction": 4,
+        "structure": 4,
+        "accessibility": 4,
+        "verbal": 4,
+        "integration": 4
+      },
+      "absolute_mean": 4,
+      "passed": false
+    }
+  ],
+  "hard_regressions": [],
+  "claim_allowed": false
+}
