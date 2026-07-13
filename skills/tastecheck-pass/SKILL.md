@@ -85,7 +85,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: A finished frontend artifact needs an evidence-backed ship decision. (+1 in contract.json); avoid: The artifact is still at the direction or implementation stage. (+1 in contract.json)
 - Exclude: Never infer execution from a file existing or a claimed checkmark. (+2 in contract.json)
-- Stop / handoff: Fail when the required spec is absent or the artifact was not built to it. (+2 in contract.json); receives [a11y-pass, cognitive-a11y, i18n-ready, deslop-ui, humanize-copy] -> sends [none]
+- Stop / handoff: Fail when the required spec is absent or the artifact was not built to it. (+2 in contract.json); receives [a11y-pass, cognitive-a11y, i18n-ready, deslop-ui, humanize-copy, art-direction, component-states, data-viz, empty-states, form-ux, micro-motion] -> sends [none]
 - Output: fail-closed evidence ledger with a deterministic verdict and actionable gate report
 - Evidence: `ledger_with_verdict` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

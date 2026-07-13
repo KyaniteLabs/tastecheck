@@ -74,6 +74,7 @@ voice/type/accessibility work.
 ## Reference files
 
 - `references/decision-records.md` — meta-patterns + ADR rules for novel cases.
+- `assets/locale-fixtures.json` — EN/ES message keys, format examples, and longest-string stress fixtures.
 
 <!-- contract:v1:start -->
 ## Contract (generated)
@@ -82,7 +83,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: A UI or copy system must survive English/Spanish expansion, locale formatting, bidi, or locale-native voice.; avoid: The request is only English copy polish or a non-locale accessibility defect.
 - Exclude: Do not translate word-for-word when locale-native meaning is required. (+1 in contract.json)
-- Stop / handoff: Stop when supported locales or source meaning are undefined. (+1 in contract.json); receives [humanize-copy, responsive-layout, form-ux] -> sends [a11y-pass, tastecheck-pass]
+- Stop / handoff: Stop when supported locales or source meaning are undefined. (+1 in contract.json); receives [humanize-copy, responsive-layout, form-ux, improve-existing-website, web-typography] -> sends [a11y-pass, tastecheck-pass]
 - Output: multilingual resilience repair ledger
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

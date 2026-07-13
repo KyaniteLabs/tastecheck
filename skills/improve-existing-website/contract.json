@@ -20,7 +20,7 @@
   "stop_conditions": ["Pause when evidence is insufficient for a safe inference", "Pause for explicit approval before a material redesign", "Ask no more than three questions that each change implementation"],
   "handoff": {
     "receives_from": [],
-    "sends_to": ["deslop-ui", "color-system", "web-typography", "theming", "responsive-layout", "a11y-pass", "cognitive-a11y", "i18n-ready"]
+    "sends_to": ["deslop-ui", "color-system", "web-typography", "theming", "responsive-layout", "a11y-pass", "cognitive-a11y", "i18n-ready", "art-direction", "component-states", "data-viz", "empty-states", "humanize-copy", "spacing-system"]
   },
   "self_check_shape": "table_with_evidence",
   "required_evidence_fields": ["status", "reason", "remediation", "evidence", "provenance"],

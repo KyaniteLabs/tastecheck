@@ -20,7 +20,7 @@
   "stop_conditions": ["Pause when semantic roles are missing and theme values would be raw-color copies", "Do not claim a theme is accessible without per-theme measurements"],
   "handoff": {
     "receives_from": ["design-system-interview", "improve-existing-website", "color-system"],
-    "sends_to": ["a11y-pass", "cognitive-a11y", "responsive-layout"]
+    "sends_to": ["a11y-pass", "cognitive-a11y", "responsive-layout", "component-states"]
   },
   "self_check_shape": "table_with_evidence",
   "required_evidence_fields": ["status", "reason", "remediation", "evidence", "provenance"],

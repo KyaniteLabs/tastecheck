@@ -7,7 +7,7 @@
   "inputs": {"required": ["rendered page or source", "committed design direction or explicit brief", "observable defects"], "optional": ["screenshots", "design tokens", "copy source", "browser/a11y findings"]},
   "outputs": {"primary": "prioritized anti-slop repair specification and committed direction", "artifacts": ["surface/structure/verbal findings", "severity-ranked repair specification", "type, color, shape, and section decisions", "positive commitment statement", "post-repair verification checklist", "evidence-backed self-check"], "handoff_fields": ["plane", "finding", "severity", "preserved_signal", "repair", "concrete_decision", "verification", "evidence"]},
   "stop_conditions": ["Stop before changing a coherent branded choice that is supported by the brief.", "Stop and request direction when no committed aesthetic or acceptance criteria exist.", "Stop when a proposed repair would change content facts, accessibility behavior, or product meaning."],
-  "handoff": {"receives_from": ["design-system-interview", "improve-existing-website", "art-direction"], "sends_to": ["web-typography", "color-system", "humanize-copy", "tastecheck-pass"]},
+  "handoff": {"receives_from": ["design-system-interview", "improve-existing-website", "art-direction", "responsive-layout"], "sends_to": ["web-typography", "color-system", "humanize-copy", "tastecheck-pass", "a11y-pass", "empty-states", "form-ux", "micro-motion"]},
   "self_check_shape": "table_with_evidence",
   "required_evidence_fields": ["status", "reason", "remediation", "evidence", "provenance"],
   "context_budget": {"skill_md_max_tokens": 5000, "resource_max_tokens": 6000},
