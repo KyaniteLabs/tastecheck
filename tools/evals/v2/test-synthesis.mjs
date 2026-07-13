@@ -16,6 +16,7 @@ import { join } from "node:path";
 import { createRandomization } from "./lib/randomization.mjs";
 import { createBuildAuthority, __internal as buildInternal } from "./lib/packet-build-authority.mjs";
 import { createOpenAuthority } from "./lib/synthesis-open-authority.mjs";
+import { recordQaCase } from "./lib/qa-case.mjs";
 import { loadRegistry, validateCorpusSeparation } from "./lib/registry.mjs";
 import { appendEvent, validateLedger } from "./lib/ledger.mjs";
 import { canonicalJson, sha256 } from "./lib/contracts.mjs";
@@ -1095,6 +1096,8 @@ function setupReservation(tempRepo, runId, ledgerEvents) {
 // ===========================================================================
 // Cleanup
 // ===========================================================================
+recordQaCase("ledger-reservation-and-repeat-synthesis");
+recordQaCase("unmask-map-completeness-and-coordinate-forgery");
 rmSync(primary.core.tempDir, { recursive: true, force: true });
 
 console.log("effectiveness-v2 synthesis tests passed");

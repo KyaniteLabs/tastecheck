@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createRandomization } from "./lib/randomization.mjs";
 import { createBuildAuthority } from "./lib/packet-build-authority.mjs";
+import { recordQaCase } from "./lib/qa-case.mjs";
 import { loadRegistry, validateCorpusSeparation } from "./lib/registry.mjs";
 import { canonicalJson, sha256 } from "./lib/contracts.mjs";
 import manifestDefault, { sameLineage } from "../../../evals/v2/fixtures/execution-manifest-valid.mjs";
@@ -710,6 +711,11 @@ for (const packet of [...built.packets, ...built.anchor_packets]) {
 // ---------------------------------------------------------------------------
 // Cleanup
 // ---------------------------------------------------------------------------
+recordQaCase("identifier-ordering-and-rebinding");
+recordQaCase("anchor-aggregation-and-evidence-attacks");
+recordQaCase("unknown-fields-and-validator-drift");
+recordQaCase("failed-anchors-and-family-collapse");
+recordQaCase("citation-span-cross-arm-and-stale-evidence");
 rmSync(primary.tempDir, { recursive: true, force: true });
 rmSync(swapped.tempDir, { recursive: true, force: true });
 rmSync(unbound.tempDir, { recursive: true, force: true });
