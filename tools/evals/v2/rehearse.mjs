@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { closeSync, fsyncSync, mkdirSync, mkdtempSync, openSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -8,11 +9,11 @@ import manifest from "../../../evals/v2/fixtures/execution-manifest-valid.mjs";
 import { appendEvent, validateLedger } from "./lib/ledger.mjs";
 import { buildBlindPackets } from "./lib/blind.mjs";
 import { canonicalJson, computeValidatorClosure, sha256 } from "./lib/canonical-json.mjs";
-import { buildGenerationPlan } from "./lib/admission.mjs";
+import { buildGenerationPlan, verifyProductionAdmission } from "./lib/admission.mjs";
 import { runGenerations } from "./lib/generate.mjs";
 import { createBuildAuthority } from "./lib/packet-build-authority.mjs";
 import {
-  PRODUCTION_NOT_STARTED, REHEARSAL_PASSED, RESOLVER_ATTESTATION_ISSUER_ALLOWLIST,
+  PRODUCTION_ADMITTED, PRODUCTION_NOT_STARTED, REHEARSAL_PASSED, RESOLVER_ATTESTATION_ISSUER_ALLOWLIST,
   freezeExecutionSelection, verifyAdmissionBindings
 } from "./lib/providers.mjs";
 import { createRandomization } from "./lib/randomization.mjs";
@@ -23,6 +24,7 @@ import {
   persistInstantiatedJudgmentSchedule, persistPrepacketSchedule
 } from "./lib/schedule.mjs";
 import { runJudgments } from "./run-judges.mjs";
+import { packetSha256, validateJudgeBatch } from "./validate-judges.mjs";
 
 const BASELINE_REVISION = "0f99603a603b0243345e7320a52702df67a2194e";
 const CANDIDATE_REVISION = "08591213f562073f9ddb0ff9012ec0e3f8ed09c2";
@@ -99,9 +101,11 @@ function summarizeFailure(state, failureOrdinal, phases) {
   const events = readLedger(state.ledger_path);
   const ledgerOrdinals = events.filter(({ type }) => type === "ordinal_reserved").map(({ ordinal }) => ordinal);
   const closeIndex = events.findLastIndex((event) => event.type === "attempt_closed" && event.ordinal === failureOrdinal);
+  const close = events[closeIndex];
   return {
     status: "production_incomplete", failing_ordinal: failureOrdinal,
-    simulated_external_calls: state.admitted, real_external_calls_started: 0,
+    failure_status: close?.status,
+    simulated_external_calls: state.admitted, real_external_calls_started: state.real_external_calls_started,
     ledger_ordinals: ledgerOrdinals, retry_count: 0,
     events_after_failure: closeIndex < 0 ? -1 : events.length - closeIndex - 1,
     unmask_opened: false, production_artifacts_written: false,
@@ -109,12 +113,64 @@ function summarizeFailure(state, failureOrdinal, phases) {
   };
 }
 
-function syntheticBytes(job) {
+function syntheticBytes(job, sourceBinding) {
   const variant = job.arm === "baseline" ? "First" : "Second";
-  return `<main><h1>${variant} rendition</h1><p>${job.scenario.scenario_id} ${job.seed}</p></main>`;
+  return `<main><h1>${variant} rendition</h1><p>${job.scenario.scenario_id} ${job.seed} ${sourceBinding.skill_pack_sha256}</p></main>`;
 }
 
-export function rehearse({ failureOrdinal = null, failPreAdmission = false } = {}) {
+function committedSkillPackSha256(path) {
+  const files = git(["-C", path, "ls-tree", "-r", "--name-only", "HEAD", "--", "skills", "commands", "contracts"])
+    .split("\n").filter(Boolean).sort();
+  if (files.length === 0) throw new Error("source skill-pack content is missing");
+  const digest = createHash("sha256");
+  for (const file of files) {
+    const bytes = execFileSync("git", ["-C", path, "show", `HEAD:${file}`], { stdio: ["ignore", "pipe", "pipe"] });
+    digest.update(file); digest.update("\0"); digest.update(bytes); digest.update("\n");
+  }
+  return digest.digest("hex");
+}
+
+function sourceBinding(path, expectedRevision) {
+  const revision = git(["-C", path, "rev-parse", "HEAD"]);
+  if (revision !== expectedRevision || git(["-C", path, "status", "--porcelain"]) !== "") {
+    throw new Error("source revision binding mismatch");
+  }
+  return Object.freeze({
+    root: path, revision, tree_oid: git(["-C", path, "rev-parse", "HEAD^{tree}"]),
+    skill_pack_sha256: committedSkillPackSha256(path)
+  });
+}
+
+function validJudgeArtifact(entry, packet, anchorMetadata) {
+  const anchor = anchorMetadata.find(({ packet_id }) => packet.packet_id === packet_id);
+  const preference = anchor?.expected ?? "tie";
+  const citedSlot = preference === "slot-1" ? 1 : 0;
+  const arm = packet.arms.find(({ opaque_slot }) => opaque_slot === citedSlot);
+  const codepoints = Array.from(arm.artifact_bytes);
+  const end = Math.min(12, codepoints.length);
+  const dimensions = { direction: 4, structure: 4, accessibility: 4, verbal: 4, integration: 4 };
+  return {
+    schema_version: 2, kind: "effectiveness-v2-judge-result",
+    packet_id: entry.packet_id, family_id: entry.family, identity_id: entry.identity,
+    invocation_id: entry.invocation_id, context_id: entry.context_id,
+    packet_sha256: packetSha256(packet), preference,
+    arm_scores: [
+      { opaque_slot: 0, dimensions: { ...dimensions } },
+      { opaque_slot: 1, dimensions: { ...dimensions } }
+    ],
+    hard_regressions: [],
+    evidence_citations: [{
+      artifact_id: arm.artifact_id, opaque_slot: citedSlot, viewport_id: "mobile",
+      artifact_sha256: arm.artifact_sha256, start_codepoint: 0, end_codepoint: end,
+      exact_span: codepoints.slice(0, end).join("")
+    }]
+  };
+}
+
+export function rehearse({
+  failureOrdinal = null, failPreAdmission = false, invalidJudgeOrdinal = null,
+  swapSourceRoots = false, admissionMutation = null
+} = {}) {
   if (failureOrdinal !== null && ![1, 49, 80, 160].includes(failureOrdinal)) {
     throw new Error("rehearsal failure ordinal must be one of 1, 49, 80, or 160");
   }
@@ -130,6 +186,13 @@ export function rehearse({ failureOrdinal = null, failPreAdmission = false } = {
     addExactWorktree(repoRoot, baselineRoot, BASELINE_REVISION);
     addExactWorktree(repoRoot, candidateRoot, CANDIDATE_REVISION);
     worktreesAdded = true;
+    const sourceRoots = swapSourceRoots
+      ? { baseline: candidateRoot, candidate: baselineRoot }
+      : { baseline: baselineRoot, candidate: candidateRoot };
+    const sourceBindings = {
+      baseline: sourceBinding(sourceRoots.baseline, BASELINE_REVISION),
+      candidate: sourceBinding(sourceRoots.candidate, CANDIDATE_REVISION)
+    };
     const registry = loadRegistry(repoRoot);
     validateCorpusSeparation(registry);
     const registryManifest = loadRegistryManifest(repoRoot);
@@ -189,7 +252,23 @@ export function rehearse({ failureOrdinal = null, failPreAdmission = false } = {
       randomization_commitment_sha256: created.commitment.commitment_sha256,
       exclusions: []
     });
+    if (admissionMutation !== "missing") {
+      const admittedEvent = {
+        type: PRODUCTION_ADMITTED, run_id: runId,
+        protocol_sha256: admission.protocol_sha256,
+        source_sha256: sourceSha256,
+        execution_manifest_sha256: admission.execution_manifest_sha256,
+        scenario_registry_sha256: admissionMutation === "scenario_registry_sha256" ? "0".repeat(64) : scenarioRegistrySha256,
+        randomization_commitment_sha256: created.commitment.commitment_sha256,
+        selection_sha256: admission.selection_sha256,
+        prepacket_schedule_sha256: prepacket.schedule_sha256,
+        exclusions: [], max_external_calls: 160, incremental_spend_cap_usd: 0, retry_policy: "none"
+      };
+      appendEvent(ledgerPath, readLedger(ledgerPath).at(-1), admittedEvent);
+      if (admissionMutation === "duplicate") appendEvent(ledgerPath, readLedger(ledgerPath).at(-1), admittedEvent);
+    }
     phases.push("control_artifacts_persisted");
+    phases.push("production_admitted");
     git(["-C", controlRoot, "add", "."]);
     git([
       "-C", controlRoot, "-c", "user.name=TasteCheck Rehearsal",
@@ -214,8 +293,13 @@ export function rehearse({ failureOrdinal = null, failPreAdmission = false } = {
       source_sha256: sourceSha256, execution_manifest_sha256: admission.execution_manifest_sha256,
       scenario_registry_sha256: scenarioRegistrySha256, run_id: runId,
       prepacket_schedule_sha256: prepacket.schedule_sha256,
-      frozen_execution_selection: selection
+      frozen_execution_selection: selection,
+      require_production_admission: true,
+      randomization_commitment_sha256: created.commitment.commitment_sha256,
+      selection_sha256: admission.selection_sha256,
+      real_external_calls_started: 0
     };
+    verifyProductionAdmission(state);
     const generatorRequest = {
       call_class: "generation", executor: selection.generator.executor,
       executor_digest: selection.generator.executor_digest,
@@ -225,6 +309,7 @@ export function rehearse({ failureOrdinal = null, failPreAdmission = false } = {
       execution_manifest_sha256: state.execution_manifest_sha256
     };
     const generations = [];
+    let consumedSourceBindings = 0;
     const generationOutcome = runGenerations({
       plan: generationPlan, protocol, registry, prepacketSchedulePath: prepacketPath, state,
       requestFor: () => generatorRequest,
@@ -235,7 +320,10 @@ export function rehearse({ failureOrdinal = null, failPreAdmission = false } = {
       invoke: (job, context) => {
         if (context.ordinal === 1) phases.push("ordinal_1_reserved");
         if (failureOrdinal === context.ordinal) return { exit_code: 0, turns: 0, tokens_in: 0, tokens_out: 0, artifacts: [] };
-        const bytes = syntheticBytes(job);
+        const binding = sourceBindings[job.arm];
+        if (!binding || binding.revision !== job.revision) throw new Error("generation source binding mismatch");
+        consumedSourceBindings += 1;
+        const bytes = syntheticBytes(job, binding);
         generations.push({ scenario_id: job.scenario.scenario_id, generation_seed: job.seed, arm: job.arm, bytes });
         return { exit_code: 0, turns: 1, tokens_in: 1, tokens_out: 1, artifacts: [{ artifact_sha256: sha256(bytes) }] };
       }
@@ -260,7 +348,7 @@ export function rehearse({ failureOrdinal = null, failPreAdmission = false } = {
       const path = join(packetRoot, `${packet.packet_id}.json`);
       const bytes = `${canonicalJson(packet)}\n`;
       writeFileSync(path, bytes, { flag: "wx", mode: 0o600 });
-      packetFiles.set(packet.packet_id, { path, file_sha256: sha256(bytes), packet_sha256: sha256(canonicalJson(packet)) });
+      packetFiles.set(packet.packet_id, { path, file_sha256: sha256(bytes), packet });
     }
     const scheduleInput = { packets: built.packets, anchorPackets: built.anchor_packets, selection, runId };
     const judgmentSchedule = buildJudgmentSchedule(scheduleInput);
@@ -293,19 +381,22 @@ export function rehearse({ failureOrdinal = null, failPreAdmission = false } = {
       invoke: (entry, context) => {
         if (failureOrdinal === context.ordinal) return { exit_code: 0, turns: 0, tokens_in: 0, tokens_out: 0, artifacts: [] };
         const packet = packetFiles.get(entry.packet_id);
+        if (invalidJudgeOrdinal === context.ordinal) return {
+          exit_code: 0, turns: 1, tokens_in: 1, tokens_out: 1,
+          artifacts: [JSON.stringify({ ...validJudgeArtifact(entry, packet.packet, built.anchor_metadata), arm_scores: [], evidence_citations: [] })]
+        };
         return {
           exit_code: 0, turns: 1, tokens_in: 1, tokens_out: 1,
-          artifacts: [JSON.stringify({
-            schema_version: 2, kind: "effectiveness-v2-judge-result",
-            packet_id: entry.packet_id, family_id: entry.family, identity_id: entry.identity,
-            invocation_id: entry.invocation_id, context_id: entry.context_id,
-            packet_sha256: packet.packet_sha256, preference: "tie",
-            arm_scores: [], hard_regressions: [], evidence_citations: []
-          })]
+          artifacts: [JSON.stringify(validJudgeArtifact(entry, packet.packet, built.anchor_metadata))]
         };
       }
     });
-    if (judgmentOutcome.run_status !== "running") return summarizeFailure(state, failureOrdinal, phases);
+    if (judgmentOutcome.run_status !== "running") return summarizeFailure(state, failureOrdinal ?? invalidJudgeOrdinal, phases);
+    const batch = validateJudgeBatch({
+      packetSet: built.packets, anchorSet: built.anchor_packets, anchorMetadata: built.anchor_metadata,
+      results: judgmentOutcome.results, families: manifest.evaluator_families
+    });
+    if (!batch.valid) throw new Error(`rehearsal judge batch invalid: ${batch.errors.join("; ")}`);
     if (networkAttempts !== 0) throw new Error("rehearsal network tripwire was reached");
     const events = readLedger(ledgerPath);
     const ledgerOrdinals = events.filter(({ type }) => type === "ordinal_reserved").map(({ ordinal }) => ordinal);
@@ -314,12 +405,30 @@ export function rehearse({ failureOrdinal = null, failPreAdmission = false } = {
       packets: built.packets.length, anchors: built.anchor_packets.length,
       production_judgments: judgmentSchedule.filter(({ call_class }) => call_class === "production_judge").length,
       anchor_judgments: judgmentSchedule.filter(({ call_class }) => call_class === "anchor_judge").length,
-      simulated_external_calls: state.admitted, real_external_calls_started: 0
+      simulated_external_calls: state.admitted, real_external_calls_started: state.real_external_calls_started
     };
     return {
       status: REHEARSAL_PASSED, report, ledger_ordinals: ledgerOrdinals,
       pre_admission_order: phases, human_calibration_claimed: protocol.human_calibration_claimed,
-      unmask_opened: false, production_artifacts_written: false
+      unmask_opened: false, production_artifacts_written: false,
+      production_admission: {
+        count: events.filter(({ type }) => type === PRODUCTION_ADMITTED).length,
+        before_ordinal_1: events.findIndex(({ type }) => type === PRODUCTION_ADMITTED) < events.findIndex(({ type }) => type === "ordinal_reserved"),
+        exclusions: [], max_external_calls: 160, incremental_spend_cap_usd: 0, retry_policy: "none"
+      },
+      source_bindings: {
+        consumed_jobs: consumedSourceBindings,
+        revisions: { baseline: sourceBindings.baseline.revision, candidate: sourceBindings.candidate.revision },
+        content_sha256: {
+          baseline: sourceBindings.baseline.skill_pack_sha256,
+          candidate: sourceBindings.candidate.skill_pack_sha256
+        }
+      },
+      judgment_schedule_bindings: judgmentOutcome.receipts.filter((receipt) =>
+        receipt.instantiated_judgment_schedule_sha256 === state.instantiated_judgment_schedule_sha256 &&
+        receipt.instantiated_judgment_tuple_sha256 === state.instantiated_judgment_tuple_sha256
+      ).length,
+      external_call_capability: { mode: "fake-only", real_calls_started: state.real_external_calls_started }
     };
   } finally {
     globalThis.fetch = originalFetch;

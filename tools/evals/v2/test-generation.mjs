@@ -10,6 +10,7 @@ import { runGenerations } from "./lib/generate.mjs";
 import { canonicalExecutorDigest } from "./lib/providers.mjs";
 import { sha256 } from "./lib/canonical-json.mjs";
 import { buildGenerationSchedule, persistPrepacketSchedule } from "./lib/schedule.mjs";
+import { appendEvent } from "./lib/ledger.mjs";
 
 const root = new URL("../../../", import.meta.url).pathname;
 const protocol = JSON.parse(readFileSync(join(root, "evals/v2/protocol.json"), "utf8"));
@@ -26,8 +27,35 @@ const frozen = {
   zero_cost_proof: { kind: "flat-rate", incremental_spend_usd: 0 }
 };
 const generatorBinding = { executor: frozen, executor_digest: canonicalExecutorDigest(frozen), resolver_attestation_sha256: d("attestation") };
-const request = { call_class: "generation", executor: frozen, cost: { kind: "flat-rate", usd: 0 }, protocol_sha256: "a", source_sha256: "b", execution_manifest_sha256: "c" };
-const state = (path) => ({ admitted: 0, spend_usd: 0, run_status: "running", ledger_path: path, max_external_calls: 160, protocol_sha256: "a", source_sha256: "b", execution_manifest_sha256: "c", frozen_executors: { generation: frozen, production_judge: frozen, anchor_judge: frozen } });
+const request = { call_class: "generation", executor: frozen, cost: { kind: "flat-rate", usd: 0 }, protocol_sha256: d("protocol"), source_sha256: d("source"), execution_manifest_sha256: d("manifest") };
+const state = (path, { withAdmission = true } = {}) => {
+  const value = {
+    admitted: 0, spend_usd: 0, run_status: "running", ledger_path: path, max_external_calls: 160,
+    protocol_sha256: request.protocol_sha256, source_sha256: request.source_sha256,
+    execution_manifest_sha256: request.execution_manifest_sha256,
+    scenario_registry_sha256: d("registry"), run_id: d("run"),
+    randomization_commitment_sha256: d("commitment"), selection_sha256: d("selection"),
+    prepacket_schedule_sha256: d("prepacket"),
+    frozen_executors: { generation: frozen, production_judge: frozen, anchor_judge: frozen }
+  };
+  if (path && withAdmission) {
+    const initialized = appendEvent(path, null, {
+      type: "run_initialized", run_id: value.run_id, protocol_sha256: value.protocol_sha256,
+      source_sha256: value.source_sha256, execution_manifest_sha256: value.execution_manifest_sha256,
+      scenario_registry_sha256: value.scenario_registry_sha256,
+      randomization_commitment_sha256: value.randomization_commitment_sha256, exclusions: []
+    });
+    appendEvent(path, initialized, {
+      type: "production_admitted", run_id: value.run_id, protocol_sha256: value.protocol_sha256,
+      source_sha256: value.source_sha256, execution_manifest_sha256: value.execution_manifest_sha256,
+      scenario_registry_sha256: value.scenario_registry_sha256,
+      randomization_commitment_sha256: value.randomization_commitment_sha256,
+      selection_sha256: value.selection_sha256, prepacket_schedule_sha256: value.prepacket_schedule_sha256,
+      exclusions: [], max_external_calls: 160, incremental_spend_cap_usd: 0, retry_policy: "none"
+    });
+  }
+  return value;
+};
 
 assert.equal(classifyExecution(falseSuccess), "false_success");
 assert.equal(classifyExecution({ ...success, exit_code: 1 }), "transport_failed");
@@ -42,6 +70,34 @@ assert.throws(() => admitCall(state(), { ...request, cost: { kind: "incremental"
 assert.throws(() => admitCall({ ...state(), admitted: 160 }, request), /160/);
 assert.throws(() => admitCall({ ...state(), admitted: 160, max_external_calls: 999 }, request), /160/);
 
+const missingAdmissionDir = mkdtempSync(join(tmpdir(), "effectiveness-v2-missing-admission-"));
+try {
+  const missingAdmission = state(join(missingAdmissionDir, "ledger.jsonl"), { withAdmission: false });
+  assert.throws(() => admitCall(missingAdmission, request), /production admission/i);
+  assert.equal(missingAdmission.admitted, 0);
+} finally { rmSync(missingAdmissionDir, { recursive: true, force: true }); }
+
+const forgedInitializationDir = mkdtempSync(join(tmpdir(), "effectiveness-v2-forged-initialization-"));
+try {
+  const forged = state(join(forgedInitializationDir, "ledger.jsonl"), { withAdmission: false });
+  const initialized = appendEvent(forged.ledger_path, null, {
+    type: "run_initialized", run_id: "0".repeat(64), protocol_sha256: "0".repeat(64),
+    source_sha256: "0".repeat(64), execution_manifest_sha256: "0".repeat(64),
+    scenario_registry_sha256: "0".repeat(64), randomization_commitment_sha256: "0".repeat(64),
+    exclusions: ["tampered"]
+  });
+  appendEvent(forged.ledger_path, initialized, {
+    type: "production_admitted", run_id: forged.run_id, protocol_sha256: forged.protocol_sha256,
+    source_sha256: forged.source_sha256, execution_manifest_sha256: forged.execution_manifest_sha256,
+    scenario_registry_sha256: forged.scenario_registry_sha256,
+    randomization_commitment_sha256: forged.randomization_commitment_sha256,
+    selection_sha256: forged.selection_sha256, prepacket_schedule_sha256: forged.prepacket_schedule_sha256,
+    exclusions: [], max_external_calls: 160, incremental_spend_cap_usd: 0, retry_policy: "none"
+  });
+  assert.throws(() => admitCall(forged, request), /run_initialized|initialization.*binding/i);
+  assert.equal(forged.admitted, 0);
+} finally { rmSync(forgedInitializationDir, { recursive: true, force: true }); }
+
 for (const call_class of ["generation", "production_judge", "anchor_judge"]) {
   const dir = mkdtempSync(join(tmpdir(), "effectiveness-v2-attempt-"));
   try {
@@ -53,7 +109,7 @@ for (const call_class of ["generation", "production_judge", "anchor_judge"]) {
     assert.equal(result.receipt.status, "false_success");
     assert.deepEqual(order, ["route", "invoke"]);
     const events = readFileSync(path, "utf8").trim().split("\n").map(JSON.parse);
-    assert.deepEqual(events.map((event) => event.type), ["ordinal_reserved", "routing_attested", "attempt_closed"]);
+    assert.deepEqual(events.slice(-3).map((event) => event.type), ["ordinal_reserved", "routing_attested", "attempt_closed"]);
     assert.throws(() => admitCall(s, { ...request, call_class }), /terminal|retry/);
 
     const missing = state(join(dir, "missing.jsonl"));
@@ -110,8 +166,10 @@ try {
   const selection = { execution_manifest_sha256: d("manifest"), generator: generatorBinding, judges: [judge("family-a", "judge-1"), judge("family-a", "judge-2"), judge("family-b", "judge-1"), judge("family-b", "judge-2")] };
   const prepacketPath = join(e2eDir, "prepacket.json");
   const prepacket = persistPrepacketSchedule({ path: prepacketPath, generationSchedule: buildGenerationSchedule({ protocol, registry }), generationPlan: e2ePlan, selection, protocol, registry, protocolSha256, scenarioRegistrySha256: registrySha256, runId });
-  const e2eState = { admitted: 0, spend_usd: 0, run_status: "running", ledger_path: join(e2eDir, "ledger.jsonl"), max_external_calls: 160, protocol_sha256: protocolSha256, source_sha256: "b", execution_manifest_sha256: selection.execution_manifest_sha256, scenario_registry_sha256: registrySha256, run_id: runId, prepacket_schedule_sha256: prepacket.schedule_sha256, frozen_execution_selection: selection };
-  const e2eRequest = { call_class: "generation", executor: frozen, executor_digest: generatorBinding.executor_digest, resolver_attestation_sha256: generatorBinding.resolver_attestation_sha256, cost: { kind: "flat-rate", usd: 0 }, protocol_sha256: protocolSha256, source_sha256: "b", execution_manifest_sha256: selection.execution_manifest_sha256 };
+  const e2eState = { admitted: 0, spend_usd: 0, run_status: "running", ledger_path: join(e2eDir, "ledger.jsonl"), max_external_calls: 160, protocol_sha256: protocolSha256, source_sha256: d("source"), execution_manifest_sha256: selection.execution_manifest_sha256, scenario_registry_sha256: registrySha256, run_id: runId, prepacket_schedule_sha256: prepacket.schedule_sha256, randomization_commitment_sha256: d("commitment"), selection_sha256: d("selection"), frozen_execution_selection: selection };
+  const initialized = appendEvent(e2eState.ledger_path, null, { type: "run_initialized", run_id: runId, protocol_sha256: protocolSha256, source_sha256: e2eState.source_sha256, execution_manifest_sha256: selection.execution_manifest_sha256, scenario_registry_sha256: registrySha256, randomization_commitment_sha256: e2eState.randomization_commitment_sha256, exclusions: [] });
+  appendEvent(e2eState.ledger_path, initialized, { type: "production_admitted", run_id: runId, protocol_sha256: protocolSha256, source_sha256: e2eState.source_sha256, execution_manifest_sha256: selection.execution_manifest_sha256, scenario_registry_sha256: registrySha256, randomization_commitment_sha256: e2eState.randomization_commitment_sha256, selection_sha256: e2eState.selection_sha256, prepacket_schedule_sha256: prepacket.schedule_sha256, exclusions: [], max_external_calls: 160, incremental_spend_cap_usd: 0, retry_policy: "none" });
+  const e2eRequest = { call_class: "generation", executor: frozen, executor_digest: generatorBinding.executor_digest, resolver_attestation_sha256: generatorBinding.resolver_attestation_sha256, cost: { kind: "flat-rate", usd: 0 }, protocol_sha256: protocolSha256, source_sha256: e2eState.source_sha256, execution_manifest_sha256: selection.execution_manifest_sha256 };
   const result = runGenerations({
     plan: e2ePlan, protocol, registry, prepacketSchedulePath: prepacketPath,
     state: e2eState,
@@ -122,7 +180,7 @@ try {
   assert.equal(result.run_status, "running");
   assert.equal(result.receipts.length, 48);
   assert.deepEqual(result.receipts.map(({ ordinal }) => ordinal), Array.from({ length: 48 }, (_, index) => index + 1));
-  assert.equal(readFileSync(e2eState.ledger_path, "utf8").trim().split("\n").length, 144);
+  assert.equal(readFileSync(e2eState.ledger_path, "utf8").trim().split("\n").length, 146);
 } finally { rmSync(e2eDir, { recursive: true, force: true }); }
 
 console.log("effectiveness-v2 generation tests passed; 48 arm jobs; budget fail-closed");

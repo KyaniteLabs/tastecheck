@@ -2,8 +2,9 @@
 import { lstatSync, readFileSync } from "node:fs";
 
 import { executeAttempt } from "./lib/admission.mjs";
-import { canonicalJson, sha256 } from "./lib/canonical-json.mjs";
+import { sha256 } from "./lib/canonical-json.mjs";
 import { loadAndVerifyInstantiatedJudgmentSchedule, validateJudgmentSchedule } from "./lib/schedule.mjs";
+import { packetSha256, validateJudgeArtifact } from "./validate-judges.mjs";
 
 const HEX_64 = /^[0-9a-f]{64}$/;
 
@@ -27,10 +28,10 @@ function loadBoundPacket({ state, packetPath, expectedFileSha256, entry }) {
   if (!packet || typeof packet !== "object" || Array.isArray(packet) || packet.packet_id !== entry.packet_id) {
     return failPacket(state, "packet ID does not match instantiated judgment tuple");
   }
-  return { packetSha256: sha256(canonicalJson(packet)), fileSha256 };
+  return { packet, packetSha256: packetSha256(packet), fileSha256 };
 }
 
-function parseStrictJudgeResult(result, entry, packetSha256) {
+function parseStrictJudgeResult(result, entry, packet) {
   if (!Array.isArray(result?.artifacts) || result.artifacts.length !== 1 || typeof result.artifacts[0] !== "string") {
     throw new Error("judge must return exactly one strict JSON artifact");
   }
@@ -45,11 +46,13 @@ function parseStrictJudgeResult(result, entry, packetSha256) {
     identity_id: entry.identity,
     invocation_id: entry.invocation_id,
     context_id: entry.context_id,
-    packet_sha256: packetSha256
+    packet_sha256: packetSha256(packet)
   };
   for (const [field, expectedValue] of Object.entries(expected)) {
     if (value[field] !== expectedValue) throw new Error(`judge artifact ${field} binding mismatch`);
   }
+  const contract = validateJudgeArtifact({ result: value, packet });
+  if (!contract.valid) throw new Error(`judge artifact contract invalid: ${contract.errors.join("; ")}`);
   return Object.freeze(value);
 }
 
@@ -74,12 +77,14 @@ export function runIsolatedJudge({ entry, state, packetPath, packetFileSha256, r
         family: entry.family,
         identity: entry.identity,
         invocation_id: entry.invocation_id,
-        context_id: entry.context_id
+        context_id: entry.context_id,
+        instantiated_judgment_tuple_sha256: state.instantiated_judgment_tuple_sha256,
+        instantiated_judgment_schedule_sha256: state.instantiated_judgment_schedule_sha256
       }
     },
     route,
     invoke: (context) => invoke(entry, { ...context, packetPath }),
-    validateArtifact: (result) => parseStrictJudgeResult(result, entry, bound.packetSha256)
+    validateArtifact: (result) => parseStrictJudgeResult(result, entry, bound.packet)
   });
 }
 
