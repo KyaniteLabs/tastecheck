@@ -18,10 +18,12 @@
 <meta name="twitter:description" content="The same product story and core IA rendered through six committed tastecheck design systems — Copper, Swiss, Maximal, Concrete, Clay and Dispatch. Proof that a real design system makes one pitch read as distinct products, not six recolors.">
 <meta name="twitter:image" content="https://kyanitelabs.github.io/tastecheck/docs/hero/six-systems.png">
 <style>
+@font-face{font-family:"Archivo";src:url("../site/fonts/archivo-600.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Archivo";src:url("../site/fonts/archivo-400.woff2") format("woff2");font-weight:400;font-display:swap}
 :root{
   --bg:#0c0c0d; --s1:#151517; --line:#2a2a2e; --ink:#f4f3f1; --muted:#a3a2a0;
   --copper:#e08a3a; --swiss:#e8482b; --maximal:#ff3d8b; --concrete:#ff4d00; --clay:#d2774a; --dispatch:#2dd4a8;
-  --sans:system-ui,-apple-system,"Segoe UI",sans-serif; --mono:ui-monospace,Menlo,monospace;
+  --sans:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:ui-monospace,Menlo,monospace;
 }
 *{box-sizing:border-box;margin:0}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
@@ -31,7 +33,7 @@ a{color:inherit}:focus-visible{outline:2px solid var(--copper);outline-offset:3p
 header{padding-block:clamp(3.5rem,2rem + 6vw,6rem);border-bottom:1px solid var(--line)}
 .kicker{font-family:var(--mono);font-size:.82rem;color:var(--muted);letter-spacing:.04em;margin-bottom:1.1rem}
 .kicker b{color:var(--copper);font-weight:600}
-h1{font-size:clamp(2.4rem,1.6rem + 3.4vw,4rem);line-height:1.02;letter-spacing:-.025em;max-width:18ch;font-weight:680}
+h1{font-family:var(--sans);font-size:clamp(2.4rem,1.6rem + 3.4vw,4rem);line-height:1.02;letter-spacing:-.025em;max-width:18ch;font-weight:600}
 h1 em{font-style:normal;color:var(--copper)}
 .lede{color:var(--muted);max-width:60ch;margin-top:1.3rem;font-size:clamp(1.05rem,1rem + .4vw,1.25rem)}
 .note{margin-top:1.6rem;font-size:.95rem;color:var(--muted);border-left:2px solid var(--line);padding-left:1rem;max-width:64ch}
