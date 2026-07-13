@@ -3,7 +3,42 @@
 All notable changes to the tastecheck skill pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow semver.
 
-## [Unreleased]
+## [1.3.1] — 2026-07-13
+
+### Fixed — All deferred items closed
+
+- **web-typography**: `--step--2` token added to canonical glossary (was used in
+  starter.css but absent from the documented token list)
+- **spacing-system**: `assets/spacing-starter.css` created (was the only generative
+  skill without a starter asset)
+- **theming**: `light-dark()` CSS function shorthand documented
+- **component-states**: `role="switch"` HTML example added (screen readers
+  previously announced a generic element)
+- **art-direction**: favicon guidance added + `references/patterns.md` created
+  (thinnest skill at 3.8KB, claimed favicon expertise with zero guidance)
+- **i18n-ready**: `assets/locale-fixtures.json` created (built around locale
+  fixtures but shipped none)
+- **a11y-pass**: viewport zoom regex fixed — no longer false-FAILs on
+  `maximum-scale=1.5` or `maximum-scale=10` (word-boundary matched between `1` and `.`)
+
+### Fixed — Release-blocking issues
+
+- **Gallery CSS**: broken `.swatch.verge` (missing semicolon caused contrast failure)
+  and missing `.swatch.dispatch` background fixed
+- **Gallery a11y**: Verge `.open` link contrast fixed (3.6:1 → 5.9:1 on dark card)
+- **Maximal sample**: `html { overflow-x: hidden }` added (390px horizontal overflow)
+- **Browser + e2e receipts**: regenerated (all 495 browser checks pass)
+- **Contract.json handoff graph**: bidirectional edge symmetry verified and fixed
+  across all 19 skills (A.sends_to ∋ B ⟺ B.receives_from ∋ A)
+
+### Changed — Visual evolution
+
+- **Landing page**: audit results strip in hero, Dispatch + Verge in sample nav,
+  gate cell updated with audit stats, version bumped to 1.3.1
+- **Hero image**: regenerated as `seven-systems.png` (7 samples composited, was 6)
+- **llms.txt**: updated from six → seven systems, effectiveness v2 infrastructure noted
+- **Stale worktrees**: effectiveness-v2-* removed (merged via PR #17)
+
 
 ## [1.3.0] — 2026-07-13
 

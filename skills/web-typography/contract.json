@@ -19,8 +19,8 @@
   },
   "stop_conditions": ["Pause when a requested font lacks required language coverage and no fallback is agreed", "Do not claim zero layout shift without measurement"],
   "handoff": {
-    "receives_from": ["design-system-interview", "improve-existing-website"],
-    "sends_to": ["responsive-layout", "i18n-ready", "a11y-pass"]
+    "receives_from": ["design-system-interview", "improve-existing-website", "deslop-ui"],
+    "sends_to": ["responsive-layout", "i18n-ready", "a11y-pass", "spacing-system"]
   },
   "self_check_shape": "table_with_evidence",
   "required_evidence_fields": ["status", "reason", "remediation", "evidence", "provenance"],

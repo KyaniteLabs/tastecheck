@@ -6,276 +6,294 @@
     "id": "tastecheck-live-execution",
     "version": 1
   },
-  "source_tree_sha256": "3885fc773b4e3e459f134fd4eab8d248e15efde6dc2e1c3439a26f8b15878fa3",
+  "source_tree_sha256": "3d4099a9dd210ff4b3d7fbfc4732e432ffc59dbf0bbfb62de0a755712e64036b",
   "nonce": "browser-release-v1",
   "runtime": {
-    "node": "v22.22.2",
+    "node": "v26.0.0",
     "playwright": "1.61.1",
     "browser": "149.0.7827.55",
-    "platform": "linux"
+    "platform": "darwin"
   },
-  "started_at": "2026-07-13T06:46:47.625Z",
-  "finished_at": "2026-07-13T06:47:06.170Z",
+  "started_at": "2026-07-13T22:31:30.929Z",
+  "finished_at": "2026-07-13T22:31:59.834Z",
   "executed": true,
   "reproducible": true,
   "artifacts": [
     {
       "id": "demo-01-foundations-390",
-      "path": "evals/receipts/v1/artifacts/browser/demo-01-foundations-390-df3acb1ef1be692e9817f5b445cdb96b00726b5b79efe26a5b75c884594e6018.png",
-      "sha256": "df3acb1ef1be692e9817f5b445cdb96b00726b5b79efe26a5b75c884594e6018",
-      "bytes": 37712
+      "path": "evals/receipts/v1/artifacts/browser/demo-01-foundations-390-1726befa72884c16cb33631b4ca7f1507b19fc1e37dc08aaa52455d394a1470e.png",
+      "sha256": "1726befa72884c16cb33631b4ca7f1507b19fc1e37dc08aaa52455d394a1470e",
+      "bytes": 32863
     },
     {
       "id": "demo-01-foundations-768",
-      "path": "evals/receipts/v1/artifacts/browser/demo-01-foundations-768-b862e51bade8a9ebd6c30584ab16265edfd33a0690bca9510fee9ed5569b3fda.png",
-      "sha256": "b862e51bade8a9ebd6c30584ab16265edfd33a0690bca9510fee9ed5569b3fda",
-      "bytes": 41876
+      "path": "evals/receipts/v1/artifacts/browser/demo-01-foundations-768-bda52aed222e69e2b3f7f472c973e37675bd40b7ebc2ba84e9a23201da5be6e6.png",
+      "sha256": "bda52aed222e69e2b3f7f472c973e37675bd40b7ebc2ba84e9a23201da5be6e6",
+      "bytes": 38779
     },
     {
       "id": "demo-01-foundations-1280",
-      "path": "evals/receipts/v1/artifacts/browser/demo-01-foundations-1280-d3689a0b79f3392754d04f31678faae057e9a9bbdf20d6fd7b3d3bd031fd25b5.png",
-      "sha256": "d3689a0b79f3392754d04f31678faae057e9a9bbdf20d6fd7b3d3bd031fd25b5",
-      "bytes": 45427
+      "path": "evals/receipts/v1/artifacts/browser/demo-01-foundations-1280-1802014c73623b67fa386f9ce76f21754cb7b8172514fa1de8d041496d4a0ddc.png",
+      "sha256": "1802014c73623b67fa386f9ce76f21754cb7b8172514fa1de8d041496d4a0ddc",
+      "bytes": 42463
     },
     {
       "id": "demo-02-states-390",
-      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-390-16e61dd629c5a84a77395e85cc3405dead1943b3b99c7a33830a885d0de0395b.png",
-      "sha256": "16e61dd629c5a84a77395e85cc3405dead1943b3b99c7a33830a885d0de0395b",
-      "bytes": 24429
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-390-9047112584000f8daeddc0ea353a929fe410e42946dd7223641a5858daabb2af.png",
+      "sha256": "9047112584000f8daeddc0ea353a929fe410e42946dd7223641a5858daabb2af",
+      "bytes": 25902
     },
     {
       "id": "demo-02-states-768",
-      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-768-292fcf25cbb9ecbb5289b23ddafcc7b6572e4099acfc73e424a0991fd7070013.png",
-      "sha256": "292fcf25cbb9ecbb5289b23ddafcc7b6572e4099acfc73e424a0991fd7070013",
-      "bytes": 24907
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-768-e8136e3cb5aaebe453b9fac7756cf7e75c8ef432fb161d3889169c9e5c54b266.png",
+      "sha256": "e8136e3cb5aaebe453b9fac7756cf7e75c8ef432fb161d3889169c9e5c54b266",
+      "bytes": 27213
     },
     {
       "id": "demo-02-states-1280",
-      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-1280-b7f43484fcc6c2261aaef310ee8121f59941cb936183be1b4b8f8f39e9c68393.png",
-      "sha256": "b7f43484fcc6c2261aaef310ee8121f59941cb936183be1b4b8f8f39e9c68393",
-      "bytes": 26651
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-1280-62540641403471946dae266715a101c358ec344abcfe3c85c1161a31a8135396.png",
+      "sha256": "62540641403471946dae266715a101c358ec344abcfe3c85c1161a31a8135396",
+      "bytes": 29234
     },
     {
       "id": "demo-03-responsive-390",
-      "path": "evals/receipts/v1/artifacts/browser/demo-03-responsive-390-c9cb75f63d596e27c916b6dd5889b0d7119de30dbabf10ad0bc1e66edec2576c.png",
-      "sha256": "c9cb75f63d596e27c916b6dd5889b0d7119de30dbabf10ad0bc1e66edec2576c",
-      "bytes": 28431
+      "path": "evals/receipts/v1/artifacts/browser/demo-03-responsive-390-e47fa7f7b0bcdd39c9e7990e2e4e99d565ed6c80db8da06f71f121ed9723ff3b.png",
+      "sha256": "e47fa7f7b0bcdd39c9e7990e2e4e99d565ed6c80db8da06f71f121ed9723ff3b",
+      "bytes": 28406
     },
     {
       "id": "demo-03-responsive-768",
-      "path": "evals/receipts/v1/artifacts/browser/demo-03-responsive-768-c9c5f2c11af9820dadf78529ee9c78bbfc0ca5c5093105e1e5fbc6a810234bb7.png",
-      "sha256": "c9c5f2c11af9820dadf78529ee9c78bbfc0ca5c5093105e1e5fbc6a810234bb7",
-      "bytes": 27150
+      "path": "evals/receipts/v1/artifacts/browser/demo-03-responsive-768-eeed5124aa68d82c4ca5daa4054744678a9a6dc8802607869757746316b05bd2.png",
+      "sha256": "eeed5124aa68d82c4ca5daa4054744678a9a6dc8802607869757746316b05bd2",
+      "bytes": 26983
     },
     {
       "id": "demo-03-responsive-1280",
-      "path": "evals/receipts/v1/artifacts/browser/demo-03-responsive-1280-98816a8a500c10b0afe9fbfa7b78920f32fee103edf313935a671c71a0a614b2.png",
-      "sha256": "98816a8a500c10b0afe9fbfa7b78920f32fee103edf313935a671c71a0a614b2",
-      "bytes": 27599
+      "path": "evals/receipts/v1/artifacts/browser/demo-03-responsive-1280-8cd5f03a8a6cadf9513f9318732bb1439a3a9debae753de13d842802973cad47.png",
+      "sha256": "8cd5f03a8a6cadf9513f9318732bb1439a3a9debae753de13d842802973cad47",
+      "bytes": 27301
     },
     {
       "id": "demo-04-motion-forms-empty-390",
-      "path": "evals/receipts/v1/artifacts/browser/demo-04-motion-forms-empty-390-71c146a9c3edd099f47c21afb24e29f23665aa780b6efbe5022a5155498e91fd.png",
-      "sha256": "71c146a9c3edd099f47c21afb24e29f23665aa780b6efbe5022a5155498e91fd",
-      "bytes": 27150
+      "path": "evals/receipts/v1/artifacts/browser/demo-04-motion-forms-empty-390-224fcfebc0a4b3559e8b16cf1b4cbf480798bf8127d92c6f7ee3ad57efb16357.png",
+      "sha256": "224fcfebc0a4b3559e8b16cf1b4cbf480798bf8127d92c6f7ee3ad57efb16357",
+      "bytes": 27657
     },
     {
       "id": "demo-04-motion-forms-empty-768",
-      "path": "evals/receipts/v1/artifacts/browser/demo-04-motion-forms-empty-768-b3503553d7cada00a6f4b2aaee544e913027c0a6b7437c6ea893f499b962fdfd.png",
-      "sha256": "b3503553d7cada00a6f4b2aaee544e913027c0a6b7437c6ea893f499b962fdfd",
-      "bytes": 27690
+      "path": "evals/receipts/v1/artifacts/browser/demo-04-motion-forms-empty-768-27270c696925fa17c1482e1c72e568364b7d001fc38ce78c1338d8efc00a4019.png",
+      "sha256": "27270c696925fa17c1482e1c72e568364b7d001fc38ce78c1338d8efc00a4019",
+      "bytes": 28555
     },
     {
       "id": "demo-04-motion-forms-empty-1280",
-      "path": "evals/receipts/v1/artifacts/browser/demo-04-motion-forms-empty-1280-1ce34320b0701825ee5fd5a8864e1030fb5578276427e40284340aeced42f017.png",
-      "sha256": "1ce34320b0701825ee5fd5a8864e1030fb5578276427e40284340aeced42f017",
-      "bytes": 28833
+      "path": "evals/receipts/v1/artifacts/browser/demo-04-motion-forms-empty-1280-01f1896ae43183bdbdc1cf1699710439f4b17e45e864ad2b15ac860436aa8774.png",
+      "sha256": "01f1896ae43183bdbdc1cf1699710439f4b17e45e864ad2b15ac860436aa8774",
+      "bytes": 32343
     },
     {
       "id": "demo-05-deslop-390",
-      "path": "evals/receipts/v1/artifacts/browser/demo-05-deslop-390-0d0abd831d1633635ea6b26ed98f389882315eb7d4a854e451cb2d14674186af.png",
-      "sha256": "0d0abd831d1633635ea6b26ed98f389882315eb7d4a854e451cb2d14674186af",
-      "bytes": 42895
+      "path": "evals/receipts/v1/artifacts/browser/demo-05-deslop-390-72aa243d274331f8a18c584c549ad8229fa17caf38fae41c7b0f14b7786b104b.png",
+      "sha256": "72aa243d274331f8a18c584c549ad8229fa17caf38fae41c7b0f14b7786b104b",
+      "bytes": 40084
     },
     {
       "id": "demo-05-deslop-768",
-      "path": "evals/receipts/v1/artifacts/browser/demo-05-deslop-768-8c5aded3abdee3c8eb65c9aa464eb6134a2779445eb7eddd55085f6ec4779b61.png",
-      "sha256": "8c5aded3abdee3c8eb65c9aa464eb6134a2779445eb7eddd55085f6ec4779b61",
-      "bytes": 45396
+      "path": "evals/receipts/v1/artifacts/browser/demo-05-deslop-768-def2d9f2aa10c49c9562d1a16defde447dc129be6fb434bded581d07eba6d112.png",
+      "sha256": "def2d9f2aa10c49c9562d1a16defde447dc129be6fb434bded581d07eba6d112",
+      "bytes": 41454
     },
     {
       "id": "demo-05-deslop-1280",
-      "path": "evals/receipts/v1/artifacts/browser/demo-05-deslop-1280-1733fde911c16128389a6ffbc8571209cd9cdf9f4d9ae0c5dbd2bf85363125a8.png",
-      "sha256": "1733fde911c16128389a6ffbc8571209cd9cdf9f4d9ae0c5dbd2bf85363125a8",
-      "bytes": 45048
+      "path": "evals/receipts/v1/artifacts/browser/demo-05-deslop-1280-adeb3bef87f103cd879ffd9d65bd87df464017a8e15113cd2e57eeeb30b04db5.png",
+      "sha256": "adeb3bef87f103cd879ffd9d65bd87df464017a8e15113cd2e57eeeb30b04db5",
+      "bytes": 42419
     },
     {
       "id": "demo-skill-integration-390",
-      "path": "evals/receipts/v1/artifacts/browser/demo-skill-integration-390-ea9ed4c8a7031242cff84bc451d60fa38f6357362795a1ed2d890827975dca53.png",
-      "sha256": "ea9ed4c8a7031242cff84bc451d60fa38f6357362795a1ed2d890827975dca53",
-      "bytes": 527193
+      "path": "evals/receipts/v1/artifacts/browser/demo-skill-integration-390-cb7d3de395e2cf7cd6d6eedb6346a3fc4bda126dd7a1bc8cf77a922e0c70cbb6.png",
+      "sha256": "cb7d3de395e2cf7cd6d6eedb6346a3fc4bda126dd7a1bc8cf77a922e0c70cbb6",
+      "bytes": 577491
     },
     {
       "id": "demo-skill-integration-768",
-      "path": "evals/receipts/v1/artifacts/browser/demo-skill-integration-768-94371b565816a3b421c4eeb73b21d8cfcaa748f8c0253cdc3b60696177be2457.png",
-      "sha256": "94371b565816a3b421c4eeb73b21d8cfcaa748f8c0253cdc3b60696177be2457",
-      "bytes": 590471
+      "path": "evals/receipts/v1/artifacts/browser/demo-skill-integration-768-f861a98fdb6e246ed007904cf71c60692dc8afaeab74e3ae3e3407594451070c.png",
+      "sha256": "f861a98fdb6e246ed007904cf71c60692dc8afaeab74e3ae3e3407594451070c",
+      "bytes": 620833
     },
     {
       "id": "demo-skill-integration-1280",
-      "path": "evals/receipts/v1/artifacts/browser/demo-skill-integration-1280-8a159fa68dada6b03bc6f46af20eefcfbb0c07e25c77fae5c6fe04a623b207d6.png",
-      "sha256": "8a159fa68dada6b03bc6f46af20eefcfbb0c07e25c77fae5c6fe04a623b207d6",
-      "bytes": 611026
+      "path": "evals/receipts/v1/artifacts/browser/demo-skill-integration-1280-6fb78e445e5bc4d58866c91f355e8a54a152dea65683aca323356c492d728e0a.png",
+      "sha256": "6fb78e445e5bc4d58866c91f355e8a54a152dea65683aca323356c492d728e0a",
+      "bytes": 652478
     },
     {
       "id": "gallery-390",
-      "path": "evals/receipts/v1/artifacts/browser/gallery-390-0a4db7f118e9c3ea55c75d6ecd5f2616e1c59b3e250b9872e8406ca1392405c1.png",
-      "sha256": "0a4db7f118e9c3ea55c75d6ecd5f2616e1c59b3e250b9872e8406ca1392405c1",
-      "bytes": 322758
+      "path": "evals/receipts/v1/artifacts/browser/gallery-390-0b7b3c0fee97f3eea344af4bc6f70da1f9fc3c7b8efee775d6d89997ce30348c.png",
+      "sha256": "0b7b3c0fee97f3eea344af4bc6f70da1f9fc3c7b8efee775d6d89997ce30348c",
+      "bytes": 356941
     },
     {
       "id": "gallery-768",
-      "path": "evals/receipts/v1/artifacts/browser/gallery-768-16cfab01e63a441e7c51924b8c93dbabbd515e697056e3b52400776375e6e6b5.png",
-      "sha256": "16cfab01e63a441e7c51924b8c93dbabbd515e697056e3b52400776375e6e6b5",
-      "bytes": 336049
+      "path": "evals/receipts/v1/artifacts/browser/gallery-768-39666b0e9d1075c70f4eb3124d010b8dc9da7e6bb7a670374cb7087e6b116f8e.png",
+      "sha256": "39666b0e9d1075c70f4eb3124d010b8dc9da7e6bb7a670374cb7087e6b116f8e",
+      "bytes": 376637
     },
     {
       "id": "gallery-1280",
-      "path": "evals/receipts/v1/artifacts/browser/gallery-1280-5e3d92555650a8cd094a57f74ac0bad69f2e89043888730172dc8eb6f818b01e.png",
-      "sha256": "5e3d92555650a8cd094a57f74ac0bad69f2e89043888730172dc8eb6f818b01e",
-      "bytes": 328379
+      "path": "evals/receipts/v1/artifacts/browser/gallery-1280-a686cd98763c51efdaedebc6a1ca8251919f505bb4dcebea052832d30224a918.png",
+      "sha256": "a686cd98763c51efdaedebc6a1ca8251919f505bb4dcebea052832d30224a918",
+      "bytes": 380224
     },
     {
       "id": "landing-390",
-      "path": "evals/receipts/v1/artifacts/browser/landing-390-bf254be7c6ad08d4e1fb69d297f3008bd45e746371e1d564267ae5983ec1c1e3.png",
-      "sha256": "bf254be7c6ad08d4e1fb69d297f3008bd45e746371e1d564267ae5983ec1c1e3",
-      "bytes": 820529
+      "path": "evals/receipts/v1/artifacts/browser/landing-390-f702dffe69af771553e7e0a4bcb65eb4276e1b4243d11478ac00d8de000a9fd1.png",
+      "sha256": "f702dffe69af771553e7e0a4bcb65eb4276e1b4243d11478ac00d8de000a9fd1",
+      "bytes": 960845
     },
     {
       "id": "landing-768",
-      "path": "evals/receipts/v1/artifacts/browser/landing-768-99d2905dd7de64c77fec1e1fc8111d5d7458723312a7055b4d7b6236a1e1bab0.png",
-      "sha256": "99d2905dd7de64c77fec1e1fc8111d5d7458723312a7055b4d7b6236a1e1bab0",
-      "bytes": 1178735
+      "path": "evals/receipts/v1/artifacts/browser/landing-768-c99b16cb2d21e5d14502a912b295e946ee63a62b6f3594b75cc69748eb80cd72.png",
+      "sha256": "c99b16cb2d21e5d14502a912b295e946ee63a62b6f3594b75cc69748eb80cd72",
+      "bytes": 1318753
     },
     {
       "id": "landing-1280",
-      "path": "evals/receipts/v1/artifacts/browser/landing-1280-20c39c3bb304acc844a3ef9c80192c0b0c318b65e796238c9fa28b7a19b825a4.png",
-      "sha256": "20c39c3bb304acc844a3ef9c80192c0b0c318b65e796238c9fa28b7a19b825a4",
-      "bytes": 1726152
+      "path": "evals/receipts/v1/artifacts/browser/landing-1280-3f3e6c0d7ca7855866058a3af299bde3a14edebef9ae13880bf7297d9f479b4f.png",
+      "sha256": "3f3e6c0d7ca7855866058a3af299bde3a14edebef9ae13880bf7297d9f479b4f",
+      "bytes": 2040786
     },
     {
       "id": "sample-clay-390",
-      "path": "evals/receipts/v1/artifacts/browser/sample-clay-390-9a976c34737829795dfae34988880c587896015a41fdf4139b85cce5fded5396.png",
-      "sha256": "9a976c34737829795dfae34988880c587896015a41fdf4139b85cce5fded5396",
-      "bytes": 350104
+      "path": "evals/receipts/v1/artifacts/browser/sample-clay-390-c8bc955564e65365dda8b6240d1e9e6ae9beaad487731173638cdece8aae041b.png",
+      "sha256": "c8bc955564e65365dda8b6240d1e9e6ae9beaad487731173638cdece8aae041b",
+      "bytes": 406904
     },
     {
       "id": "sample-clay-768",
-      "path": "evals/receipts/v1/artifacts/browser/sample-clay-768-bacde2cd1fbf5014f6391763f8e1275cb04a72d89e88819b61dffda231ad1d59.png",
-      "sha256": "bacde2cd1fbf5014f6391763f8e1275cb04a72d89e88819b61dffda231ad1d59",
-      "bytes": 392661
+      "path": "evals/receipts/v1/artifacts/browser/sample-clay-768-2a4caca76c825afc576a9d874bab64c1197a757fbef859ed8ada234f4853c685.png",
+      "sha256": "2a4caca76c825afc576a9d874bab64c1197a757fbef859ed8ada234f4853c685",
+      "bytes": 451138
     },
     {
       "id": "sample-clay-1280",
-      "path": "evals/receipts/v1/artifacts/browser/sample-clay-1280-e0526ffa6b2399b385429560ceb4a1971fc29a80e5cb561edf5164f792b969cf.png",
-      "sha256": "e0526ffa6b2399b385429560ceb4a1971fc29a80e5cb561edf5164f792b969cf",
-      "bytes": 431236
+      "path": "evals/receipts/v1/artifacts/browser/sample-clay-1280-951ceaf3b74e7886d0c728ff5a729754983045a1928a7c06676d8dbdaa89f287.png",
+      "sha256": "951ceaf3b74e7886d0c728ff5a729754983045a1928a7c06676d8dbdaa89f287",
+      "bytes": 501434
     },
     {
       "id": "sample-concrete-390",
-      "path": "evals/receipts/v1/artifacts/browser/sample-concrete-390-3a47006e51004624796c9566d85a7ecd9a8ca45d8c9da5fb3f584287c2e7923c.png",
-      "sha256": "3a47006e51004624796c9566d85a7ecd9a8ca45d8c9da5fb3f584287c2e7923c",
-      "bytes": 267847
+      "path": "evals/receipts/v1/artifacts/browser/sample-concrete-390-83296e62878d227536712241ee270126213abb1a74bb2f0e7c5f8ef8d13edc3b.png",
+      "sha256": "83296e62878d227536712241ee270126213abb1a74bb2f0e7c5f8ef8d13edc3b",
+      "bytes": 335504
     },
     {
       "id": "sample-concrete-768",
-      "path": "evals/receipts/v1/artifacts/browser/sample-concrete-768-d259c4c0e68ce9c51e6730caa26eab7995b57db47c77221202189e62c734bb9f.png",
-      "sha256": "d259c4c0e68ce9c51e6730caa26eab7995b57db47c77221202189e62c734bb9f",
-      "bytes": 270095
+      "path": "evals/receipts/v1/artifacts/browser/sample-concrete-768-ea1e59014893acc85d880a2babc7963cd61ba45ede8b1e5afd46b6695590aced.png",
+      "sha256": "ea1e59014893acc85d880a2babc7963cd61ba45ede8b1e5afd46b6695590aced",
+      "bytes": 350440
     },
     {
       "id": "sample-concrete-1280",
-      "path": "evals/receipts/v1/artifacts/browser/sample-concrete-1280-5b05255ab1f38b381c4b23a5fad711b791c0d167f0ca349cf13ac19cf5b7e456.png",
-      "sha256": "5b05255ab1f38b381c4b23a5fad711b791c0d167f0ca349cf13ac19cf5b7e456",
-      "bytes": 286601
+      "path": "evals/receipts/v1/artifacts/browser/sample-concrete-1280-5e9a09d0383773089c116bdc90f94942884d27a6087dd17dd8f13db73fbbda47.png",
+      "sha256": "5e9a09d0383773089c116bdc90f94942884d27a6087dd17dd8f13db73fbbda47",
+      "bytes": 372195
     },
     {
       "id": "sample-copper-390",
-      "path": "evals/receipts/v1/artifacts/browser/sample-copper-390-c22fba4ceef71634bc86c750bb6f22b392eb3fcdae56aa01738404d7e47858f7.png",
-      "sha256": "c22fba4ceef71634bc86c750bb6f22b392eb3fcdae56aa01738404d7e47858f7",
-      "bytes": 585337
+      "path": "evals/receipts/v1/artifacts/browser/sample-copper-390-f7f2506f55043127427e9aa76da9efc65bc18a868a7cb3190d94963568327698.png",
+      "sha256": "f7f2506f55043127427e9aa76da9efc65bc18a868a7cb3190d94963568327698",
+      "bytes": 661339
     },
     {
       "id": "sample-copper-768",
-      "path": "evals/receipts/v1/artifacts/browser/sample-copper-768-2743db10d96d62822022610ab2d518145672fa46c1bfdf8abab531a1a2689c20.png",
-      "sha256": "2743db10d96d62822022610ab2d518145672fa46c1bfdf8abab531a1a2689c20",
-      "bytes": 860075
+      "path": "evals/receipts/v1/artifacts/browser/sample-copper-768-29bf082c046189eec9cc5dc4bbb5c560335995883a868bc4badf16492cb84a24.png",
+      "sha256": "29bf082c046189eec9cc5dc4bbb5c560335995883a868bc4badf16492cb84a24",
+      "bytes": 926747
     },
     {
       "id": "sample-copper-1280",
-      "path": "evals/receipts/v1/artifacts/browser/sample-copper-1280-100938532634724016108cd6eb9cad9eb8e9c8a01c6ed9eef2ef722ca514e91b.png",
-      "sha256": "100938532634724016108cd6eb9cad9eb8e9c8a01c6ed9eef2ef722ca514e91b",
-      "bytes": 1333272
+      "path": "evals/receipts/v1/artifacts/browser/sample-copper-1280-86146e78d1caa393b4b9326dd3dc72e5c8a16e484490f209cc2aafd0112c6801.png",
+      "sha256": "86146e78d1caa393b4b9326dd3dc72e5c8a16e484490f209cc2aafd0112c6801",
+      "bytes": 1411740
     },
     {
       "id": "sample-dispatch-390",
-      "path": "evals/receipts/v1/artifacts/browser/sample-dispatch-390-8f863fba19611957d50581be645957a875c14812fa60450f01580163b636f76d.png",
-      "sha256": "8f863fba19611957d50581be645957a875c14812fa60450f01580163b636f76d",
-      "bytes": 262049
+      "path": "evals/receipts/v1/artifacts/browser/sample-dispatch-390-3f9740a425cf822ef0c9b94e9d13f37dc1fa6c83e27ea895590f87355bebec30.png",
+      "sha256": "3f9740a425cf822ef0c9b94e9d13f37dc1fa6c83e27ea895590f87355bebec30",
+      "bytes": 363743
     },
     {
       "id": "sample-dispatch-768",
-      "path": "evals/receipts/v1/artifacts/browser/sample-dispatch-768-ebb945d876b483b193f37685d71f8bdefae57c303612255a433fc7294fd889e6.png",
-      "sha256": "ebb945d876b483b193f37685d71f8bdefae57c303612255a433fc7294fd889e6",
-      "bytes": 304862
+      "path": "evals/receipts/v1/artifacts/browser/sample-dispatch-768-7124cc0ff32208bbfc2e02731a8766d53c0dde12ec035752cf12c3c75a4a3f0e.png",
+      "sha256": "7124cc0ff32208bbfc2e02731a8766d53c0dde12ec035752cf12c3c75a4a3f0e",
+      "bytes": 390221
     },
     {
       "id": "sample-dispatch-1280",
-      "path": "evals/receipts/v1/artifacts/browser/sample-dispatch-1280-9fdeebb1b701b24e88d93c0cd422a3a67a562094c3922de9878b4bce6176f4f6.png",
-      "sha256": "9fdeebb1b701b24e88d93c0cd422a3a67a562094c3922de9878b4bce6176f4f6",
-      "bytes": 326283
+      "path": "evals/receipts/v1/artifacts/browser/sample-dispatch-1280-ae4128eb3f06e44a3785c30415c7d77f096658ecd60b0ca84ba5c4c1772ca50b.png",
+      "sha256": "ae4128eb3f06e44a3785c30415c7d77f096658ecd60b0ca84ba5c4c1772ca50b",
+      "bytes": 417036
     },
     {
       "id": "sample-maximal-390",
-      "path": "evals/receipts/v1/artifacts/browser/sample-maximal-390-24517b8f5302d3a3d458820c7d8130262ac28e233833c489c7b685fe471bf998.png",
-      "sha256": "24517b8f5302d3a3d458820c7d8130262ac28e233833c489c7b685fe471bf998",
-      "bytes": 1305184
+      "path": "evals/receipts/v1/artifacts/browser/sample-maximal-390-da21d6670806721f630c7f411e4ba37f76a70aa0b48f1e093eafcc40dd826672.png",
+      "sha256": "da21d6670806721f630c7f411e4ba37f76a70aa0b48f1e093eafcc40dd826672",
+      "bytes": 1355430
     },
     {
       "id": "sample-maximal-768",
-      "path": "evals/receipts/v1/artifacts/browser/sample-maximal-768-773027feb326543092a3a27ced032b14e57864e219c17a552ed79add31a78f53.png",
-      "sha256": "773027feb326543092a3a27ced032b14e57864e219c17a552ed79add31a78f53",
-      "bytes": 1796827
+      "path": "evals/receipts/v1/artifacts/browser/sample-maximal-768-d6db48bbf92aa4cd4e20326e240a316dade9a4ef3cbc82165a0398215c2a5290.png",
+      "sha256": "d6db48bbf92aa4cd4e20326e240a316dade9a4ef3cbc82165a0398215c2a5290",
+      "bytes": 1871718
     },
     {
       "id": "sample-maximal-1280",
-      "path": "evals/receipts/v1/artifacts/browser/sample-maximal-1280-10cad1d8ca81b9c2294dad8009a3ab08023d1ec053204e6f7cd78b53cf94a821.png",
-      "sha256": "10cad1d8ca81b9c2294dad8009a3ab08023d1ec053204e6f7cd78b53cf94a821",
-      "bytes": 2564122
+      "path": "evals/receipts/v1/artifacts/browser/sample-maximal-1280-c5a0e63da068c1d17233448435904e69dc81960f739fe9ba7daee934c3fb2159.png",
+      "sha256": "c5a0e63da068c1d17233448435904e69dc81960f739fe9ba7daee934c3fb2159",
+      "bytes": 2644299
     },
     {
       "id": "sample-swiss-390",
-      "path": "evals/receipts/v1/artifacts/browser/sample-swiss-390-7ec482dec12048da679e85b9fcea7d272e899e2888171d39154ab990788f10f2.png",
-      "sha256": "7ec482dec12048da679e85b9fcea7d272e899e2888171d39154ab990788f10f2",
-      "bytes": 2452202
+      "path": "evals/receipts/v1/artifacts/browser/sample-swiss-390-7202acde19040d49e7e67d18f31e7051d8785229c5015be63aaf8f49e0f53e2f.png",
+      "sha256": "7202acde19040d49e7e67d18f31e7051d8785229c5015be63aaf8f49e0f53e2f",
+      "bytes": 2398613
     },
     {
       "id": "sample-swiss-768",
-      "path": "evals/receipts/v1/artifacts/browser/sample-swiss-768-3d94b93183c1ec41d64c7b8eafea242f23410c803f9eb3f5160d4a88e72051be.png",
-      "sha256": "3d94b93183c1ec41d64c7b8eafea242f23410c803f9eb3f5160d4a88e72051be",
-      "bytes": 2476996
+      "path": "evals/receipts/v1/artifacts/browser/sample-swiss-768-57aec5c2a6d55b94f403da194c60ebc084791771aa37173182f9dd3db7faaf42.png",
+      "sha256": "57aec5c2a6d55b94f403da194c60ebc084791771aa37173182f9dd3db7faaf42",
+      "bytes": 2413892
     },
     {
       "id": "sample-swiss-1280",
-      "path": "evals/receipts/v1/artifacts/browser/sample-swiss-1280-42d9a7a1d17ed158eb9e1f7e2191922186a7aa99260b68820dcde5b5c4c2702e.png",
-      "sha256": "42d9a7a1d17ed158eb9e1f7e2191922186a7aa99260b68820dcde5b5c4c2702e",
-      "bytes": 2588060
+      "path": "evals/receipts/v1/artifacts/browser/sample-swiss-1280-a7f26665c017b2616b4830e71169f2eacde098048da1a89410a5a00342eea97c.png",
+      "sha256": "a7f26665c017b2616b4830e71169f2eacde098048da1a89410a5a00342eea97c",
+      "bytes": 2539620
+    },
+    {
+      "id": "sample-verge-390",
+      "path": "evals/receipts/v1/artifacts/browser/sample-verge-390-ab48566c71d2e072b59aa1288a03c9c432e54f4c4b131a6d6c3a7c02a267ec88.png",
+      "sha256": "ab48566c71d2e072b59aa1288a03c9c432e54f4c4b131a6d6c3a7c02a267ec88",
+      "bytes": 386242
+    },
+    {
+      "id": "sample-verge-768",
+      "path": "evals/receipts/v1/artifacts/browser/sample-verge-768-4c4bc49d7f581531678809c5a32f4cba8417a03ff123cb20e623b4300a2b6442.png",
+      "sha256": "4c4bc49d7f581531678809c5a32f4cba8417a03ff123cb20e623b4300a2b6442",
+      "bytes": 398427
+    },
+    {
+      "id": "sample-verge-1280",
+      "path": "evals/receipts/v1/artifacts/browser/sample-verge-1280-e371aa0b641d85aafa65c40b5c43fe33afbad291daed06d9788ae02ad2dd7ff0.png",
+      "sha256": "e371aa0b641d85aafa65c40b5c43fe33afbad291daed06d9788ae02ad2dd7ff0",
+      "bytes": 423595
     },
     {
       "id": "browser-audit-results",
-      "path": "evals/receipts/v1/artifacts/browser/browser-audit-results-c3f474b3e57f0808ef449cf15ac36cfb8d3fb2c8d3787d2cccded4e2f5c37159.json",
-      "sha256": "c3f474b3e57f0808ef449cf15ac36cfb8d3fb2c8d3787d2cccded4e2f5c37159",
-      "bytes": 25496
+      "path": "evals/receipts/v1/artifacts/browser/browser-audit-results-668cb12e48034f1e90f7fabda610197dbbd8c9827db2882080aa87dac14ed799.json",
+      "sha256": "668cb12e48034f1e90f7fabda610197dbbd8c9827db2882080aa87dac14ed799",
+      "bytes": 28033
     }
   ],
   "checks": [
@@ -1307,7 +1325,7 @@
     {
       "id": "gallery-390-gate-audit",
       "passed": true,
-      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+      "detail": "CLEAN: 0 fails, 0 warns recorded"
     },
     {
       "id": "gallery-390-a11y-audit",
@@ -1362,7 +1380,7 @@
     {
       "id": "gallery-768-gate-audit",
       "passed": true,
-      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+      "detail": "CLEAN: 0 fails, 0 warns recorded"
     },
     {
       "id": "gallery-768-a11y-audit",
@@ -1417,7 +1435,7 @@
     {
       "id": "gallery-1280-gate-audit",
       "passed": true,
-      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+      "detail": "CLEAN: 0 fails, 0 warns recorded"
     },
     {
       "id": "gallery-1280-a11y-audit",
@@ -1477,7 +1495,7 @@
     {
       "id": "landing-390-a11y-audit",
       "passed": true,
-      "detail": "0 measured fails, 0 warnings recorded"
+      "detail": "0 measured fails, 3 warnings recorded"
     },
     {
       "id": "landing-390-keyboard-focus",
@@ -1532,7 +1550,7 @@
     {
       "id": "landing-768-a11y-audit",
       "passed": true,
-      "detail": "0 measured fails, 0 warnings recorded"
+      "detail": "0 measured fails, 3 warnings recorded"
     },
     {
       "id": "landing-768-keyboard-focus",
@@ -1587,7 +1605,7 @@
     {
       "id": "landing-1280-a11y-audit",
       "passed": true,
-      "detail": "0 measured fails, 0 warnings recorded"
+      "detail": "0 measured fails, 3 warnings recorded"
     },
     {
       "id": "landing-1280-keyboard-focus",
@@ -1637,12 +1655,12 @@
     {
       "id": "sample-clay-390-gate-audit",
       "passed": true,
-      "detail": "REVIEW WARNS: 0 fails, 3 warns recorded"
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
     },
     {
       "id": "sample-clay-390-a11y-audit",
       "passed": true,
-      "detail": "0 measured fails, 11 warnings recorded"
+      "detail": "0 measured fails, 12 warnings recorded"
     },
     {
       "id": "sample-clay-390-keyboard-focus",
@@ -1692,7 +1710,7 @@
     {
       "id": "sample-clay-768-gate-audit",
       "passed": true,
-      "detail": "REVIEW WARNS: 0 fails, 6 warns recorded"
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
     },
     {
       "id": "sample-clay-768-a11y-audit",
@@ -1747,7 +1765,7 @@
     {
       "id": "sample-clay-1280-gate-audit",
       "passed": true,
-      "detail": "REVIEW WARNS: 0 fails, 6 warns recorded"
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
     },
     {
       "id": "sample-clay-1280-a11y-audit",
@@ -1807,7 +1825,7 @@
     {
       "id": "sample-concrete-390-a11y-audit",
       "passed": true,
-      "detail": "0 measured fails, 16 warnings recorded"
+      "detail": "0 measured fails, 17 warnings recorded"
     },
     {
       "id": "sample-concrete-390-keyboard-focus",
@@ -1912,7 +1930,7 @@
     {
       "id": "sample-concrete-1280-gate-audit",
       "passed": true,
-      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
     },
     {
       "id": "sample-concrete-1280-a11y-audit",
@@ -1967,12 +1985,12 @@
     {
       "id": "sample-copper-390-gate-audit",
       "passed": true,
-      "detail": "REVIEW WARNS: 0 fails, 3 warns recorded"
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
     },
     {
       "id": "sample-copper-390-a11y-audit",
       "passed": true,
-      "detail": "0 measured fails, 17 warnings recorded"
+      "detail": "0 measured fails, 18 warnings recorded"
     },
     {
       "id": "sample-copper-390-keyboard-focus",
@@ -2022,7 +2040,7 @@
     {
       "id": "sample-copper-768-gate-audit",
       "passed": true,
-      "detail": "REVIEW WARNS: 0 fails, 4 warns recorded"
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
     },
     {
       "id": "sample-copper-768-a11y-audit",
@@ -2077,7 +2095,7 @@
     {
       "id": "sample-copper-1280-gate-audit",
       "passed": true,
-      "detail": "REVIEW WARNS: 0 fails, 4 warns recorded"
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
     },
     {
       "id": "sample-copper-1280-a11y-audit",
@@ -2137,7 +2155,7 @@
     {
       "id": "sample-dispatch-390-a11y-audit",
       "passed": true,
-      "detail": "0 measured fails, 25 warnings recorded"
+      "detail": "0 measured fails, 26 warnings recorded"
     },
     {
       "id": "sample-dispatch-390-keyboard-focus",
@@ -2297,12 +2315,12 @@
     {
       "id": "sample-maximal-390-gate-audit",
       "passed": true,
-      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
     },
     {
       "id": "sample-maximal-390-a11y-audit",
       "passed": true,
-      "detail": "0 measured fails, 98 warnings recorded"
+      "detail": "0 measured fails, 100 warnings recorded"
     },
     {
       "id": "sample-maximal-390-keyboard-focus",
@@ -2352,12 +2370,12 @@
     {
       "id": "sample-maximal-768-gate-audit",
       "passed": true,
-      "detail": "REVIEW WARNS: 0 fails, 3 warns recorded"
+      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
     },
     {
       "id": "sample-maximal-768-a11y-audit",
       "passed": true,
-      "detail": "0 measured fails, 92 warnings recorded"
+      "detail": "0 measured fails, 93 warnings recorded"
     },
     {
       "id": "sample-maximal-768-keyboard-focus",
@@ -2407,12 +2425,12 @@
     {
       "id": "sample-maximal-1280-gate-audit",
       "passed": true,
-      "detail": "REVIEW WARNS: 0 fails, 2 warns recorded"
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
     },
     {
       "id": "sample-maximal-1280-a11y-audit",
       "passed": true,
-      "detail": "0 measured fails, 92 warnings recorded"
+      "detail": "0 measured fails, 93 warnings recorded"
     },
     {
       "id": "sample-maximal-1280-keyboard-focus",
@@ -2467,7 +2485,7 @@
     {
       "id": "sample-swiss-390-a11y-audit",
       "passed": true,
-      "detail": "0 measured fails, 85 warnings recorded"
+      "detail": "0 measured fails, 86 warnings recorded"
     },
     {
       "id": "sample-swiss-390-keyboard-focus",
@@ -2522,7 +2540,7 @@
     {
       "id": "sample-swiss-768-a11y-audit",
       "passed": true,
-      "detail": "0 measured fails, 85 warnings recorded"
+      "detail": "0 measured fails, 86 warnings recorded"
     },
     {
       "id": "sample-swiss-768-keyboard-focus",
@@ -2577,7 +2595,7 @@
     {
       "id": "sample-swiss-1280-a11y-audit",
       "passed": true,
-      "detail": "0 measured fails, 85 warnings recorded"
+      "detail": "0 measured fails, 86 warnings recorded"
     },
     {
       "id": "sample-swiss-1280-keyboard-focus",
@@ -2586,6 +2604,171 @@
     },
     {
       "id": "sample-swiss-1280-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-verge-390-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-verge-390-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-verge-390-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-verge-390-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-verge-390-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-verge-390-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-verge-390-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-verge-390-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "sample-verge-390-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 7 warnings recorded"
+    },
+    {
+      "id": "sample-verge-390-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-verge-390-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-verge-768-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-verge-768-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-verge-768-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-verge-768-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-verge-768-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-verge-768-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-verge-768-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-verge-768-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "sample-verge-768-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 7 warnings recorded"
+    },
+    {
+      "id": "sample-verge-768-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-verge-768-no-console-errors",
+      "passed": true,
+      "detail": "No console or page errors"
+    },
+    {
+      "id": "sample-verge-1280-http",
+      "passed": true,
+      "detail": "HTTP surface loaded"
+    },
+    {
+      "id": "sample-verge-1280-title",
+      "passed": true,
+      "detail": "Document title is present"
+    },
+    {
+      "id": "sample-verge-1280-main",
+      "passed": true,
+      "detail": "Exactly one main landmark rendered"
+    },
+    {
+      "id": "sample-verge-1280-no-overflow",
+      "passed": true,
+      "detail": "No horizontal viewport overflow"
+    },
+    {
+      "id": "sample-verge-1280-meaningful-content",
+      "passed": true,
+      "detail": "First meaningful content rendered"
+    },
+    {
+      "id": "sample-verge-1280-images",
+      "passed": true,
+      "detail": "0 broken rendered images"
+    },
+    {
+      "id": "sample-verge-1280-reduced-motion",
+      "passed": true,
+      "detail": "0 running animations under reduced motion"
+    },
+    {
+      "id": "sample-verge-1280-gate-audit",
+      "passed": true,
+      "detail": "REVIEW WARNS: 0 fails, 1 warns recorded"
+    },
+    {
+      "id": "sample-verge-1280-a11y-audit",
+      "passed": true,
+      "detail": "0 measured fails, 7 warnings recorded"
+    },
+    {
+      "id": "sample-verge-1280-keyboard-focus",
+      "passed": true,
+      "detail": "First keyboard target has visible focus treatment"
+    },
+    {
+      "id": "sample-verge-1280-no-console-errors",
       "passed": true,
       "detail": "No console or page errors"
     }

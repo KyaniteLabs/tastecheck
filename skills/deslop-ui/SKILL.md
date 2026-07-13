@@ -72,7 +72,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: A rendered or coded interface feels generic and needs a structural, visual, and verbal anti-slop audit. (+1 in contract.json); avoid: The task is a greenfield aesthetic interview before a page exists. (+1 in contract.json)
 - Exclude: Do not replace a coherent brand system merely because it is not your preference. (+2 in contract.json)
-- Stop / handoff: Stop before changing a coherent branded choice that is supported by the brief. (+2 in contract.json); receives [design-system-interview, improve-existing-website, art-direction] -> sends [web-typography, color-system, humanize-copy, tastecheck-pass]
+- Stop / handoff: Stop before changing a coherent branded choice that is supported by the brief. (+2 in contract.json); receives [design-system-interview, improve-existing-website, art-direction, responsive-layout] -> sends [web-typography, color-system, humanize-copy, tastecheck-pass, a11y-pass, empty-states, form-ux, micro-motion]
 - Output: prioritized anti-slop repair specification and committed direction
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

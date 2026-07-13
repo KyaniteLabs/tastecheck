@@ -20,6 +20,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.898,
+      "status": "ok"
     }
   },
   {
@@ -43,6 +47,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.3803,
+      "status": "warn"
     }
   },
   {
@@ -66,6 +74,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.2818,
+      "status": "warn"
     }
   },
   {
@@ -89,6 +101,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 6.1699,
+      "status": "ok"
     }
   },
   {
@@ -112,6 +128,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 3.4651,
+      "status": "warn"
     }
   },
   {
@@ -135,6 +155,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.3444,
+      "status": "warn"
     }
   },
   {
@@ -159,6 +183,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 6.2316,
+      "status": "ok"
     }
   },
   {
@@ -183,6 +211,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 4.9136,
+      "status": "warn"
     }
   },
   {
@@ -207,6 +239,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.2587,
+      "status": "warn"
     }
   },
   {
@@ -231,6 +267,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 3.6485,
+      "status": "warn"
     }
   },
   {
@@ -255,6 +295,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 3.9712,
+      "status": "warn"
     }
   },
   {
@@ -279,6 +323,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 3.368,
+      "status": "warn"
     }
   },
   {
@@ -303,6 +351,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 6.9762,
+      "status": "ok"
     }
   },
   {
@@ -327,6 +379,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 4.6854,
+      "status": "warn"
     }
   },
   {
@@ -351,6 +407,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.5263,
+      "status": "ok"
     }
   },
   {
@@ -364,9 +424,11 @@
       "warnings": 0
     },
     "gate": {
-      "verdict": "CLEAN",
+      "verdict": "REVIEW WARNS",
       "fails": [],
-      "warns": [],
+      "warns": [
+        "NIMA aesthetic score 4.76/10 below 5.5 threshold"
+      ],
       "notes": [
         "display face resolves to \"Georgia\""
       ]
@@ -374,6 +436,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 4.7624,
+      "status": "warn"
     }
   },
   {
@@ -387,9 +453,11 @@
       "warnings": 0
     },
     "gate": {
-      "verdict": "CLEAN",
+      "verdict": "REVIEW WARNS",
       "fails": [],
-      "warns": [],
+      "warns": [
+        "NIMA aesthetic score 3.41/10 below 5.5 threshold"
+      ],
       "notes": [
         "display face resolves to \"Georgia\""
       ]
@@ -397,6 +465,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 3.4061,
+      "status": "warn"
     }
   },
   {
@@ -423,6 +495,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.3463,
+      "status": "warn"
     }
   },
   {
@@ -436,16 +512,20 @@
       "warnings": 1
     },
     "gate": {
-      "verdict": "REVIEW WARNS",
+      "verdict": "CLEAN",
       "fails": [],
-      "warns": [
-        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
-      ],
-      "notes": []
+      "warns": [],
+      "notes": [
+        "display face resolves to \"Archivo\""
+      ]
     },
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.8094,
+      "status": "ok"
     }
   },
   {
@@ -459,16 +539,20 @@
       "warnings": 1
     },
     "gate": {
-      "verdict": "REVIEW WARNS",
+      "verdict": "CLEAN",
       "fails": [],
-      "warns": [
-        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
-      ],
-      "notes": []
+      "warns": [],
+      "notes": [
+        "display face resolves to \"Archivo\""
+      ]
     },
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 6.36,
+      "status": "ok"
     }
   },
   {
@@ -485,13 +569,19 @@
       "verdict": "REVIEW WARNS",
       "fails": [],
       "warns": [
-        "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)"
+        "NIMA aesthetic score 4.71/10 below 5.5 threshold"
       ],
-      "notes": []
+      "notes": [
+        "display face resolves to \"Archivo\""
+      ]
     },
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 4.7111,
+      "status": "warn"
     }
   },
   {
@@ -502,7 +592,7 @@
     "running_animations_reduced": 0,
     "a11y": {
       "fails": 0,
-      "warnings": 0
+      "warnings": 3
     },
     "gate": {
       "verdict": "REVIEW WARNS",
@@ -517,6 +607,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 7.3724,
+      "status": "ok"
     }
   },
   {
@@ -527,7 +621,7 @@
     "running_animations_reduced": 0,
     "a11y": {
       "fails": 0,
-      "warnings": 0
+      "warnings": 3
     },
     "gate": {
       "verdict": "REVIEW WARNS",
@@ -542,6 +636,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 6.8602,
+      "status": "ok"
     }
   },
   {
@@ -552,7 +650,7 @@
     "running_animations_reduced": 0,
     "a11y": {
       "fails": 0,
-      "warnings": 0
+      "warnings": 3
     },
     "gate": {
       "verdict": "REVIEW WARNS",
@@ -567,6 +665,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 6.8798,
+      "status": "ok"
     }
   },
   {
@@ -577,14 +679,12 @@
     "running_animations_reduced": 0,
     "a11y": {
       "fails": 0,
-      "warnings": 11
+      "warnings": 12
     },
     "gate": {
       "verdict": "REVIEW WARNS",
       "fails": [],
       "warns": [
-        "pill text CTA: \"Run a taste check →\" (a.btn, radius 999px on 58px)",
-        "pill text CTA: \"See the skills\" (a.btn, radius 999px on 58px)",
         "indigo→violet gradient on div.sw — the canonical AI tell"
       ],
       "notes": [
@@ -594,6 +694,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.9884,
+      "status": "warn"
     }
   },
   {
@@ -610,11 +714,6 @@
       "verdict": "REVIEW WARNS",
       "fails": [],
       "warns": [
-        "uniform card grid: 3× identical div.slop in div.slops (equal size, bordered/rounded — the \"three cards\" tell?)",
-        "pill text CTA: \"How it works\" (div.menu > a:nth-of-type(2), radius 999px on 70px)",
-        "pill text CTA: \"What it refuses\" (div.menu > a:nth-of-type(3), radius 999px on 70px)",
-        "pill text CTA: \"Run a taste check →\" (a.btn, radius 999px on 58px)",
-        "pill text CTA: \"See the skills\" (a.btn, radius 999px on 58px)",
         "indigo→violet gradient on div.sw — the canonical AI tell"
       ],
       "notes": [
@@ -624,6 +723,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 4.4341,
+      "status": "warn"
     }
   },
   {
@@ -640,11 +743,6 @@
       "verdict": "REVIEW WARNS",
       "fails": [],
       "warns": [
-        "uniform card grid: 3× identical div.slop in div.slops (equal size, bordered/rounded — the \"three cards\" tell?)",
-        "pill text CTA: \"How it works\" (div.menu > a:nth-of-type(2), radius 999px on 70px)",
-        "pill text CTA: \"What it refuses\" (div.menu > a:nth-of-type(3), radius 999px on 70px)",
-        "pill text CTA: \"Run a taste check →\" (a.btn, radius 999px on 58px)",
-        "pill text CTA: \"See the skills\" (a.btn, radius 999px on 58px)",
         "indigo→violet gradient on div.sw — the canonical AI tell"
       ],
       "notes": [
@@ -654,87 +752,15 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.5751,
+      "status": "ok"
     }
   },
   {
     "surface_id": "sample-concrete",
     "route": "/samples/concrete/index.html",
-    "width": 390,
-    "main_landmarks": 1,
-    "running_animations_reduced": 0,
-    "a11y": {
-      "fails": 0,
-      "warnings": 16
-    },
-    "gate": {
-      "verdict": "REVIEW WARNS",
-      "fails": [],
-      "warns": [
-        "indigo→violet gradient on div.sw — the canonical AI tell"
-      ],
-      "notes": [
-        "display face resolves to \"Grotesk\""
-      ]
-    },
-    "keyboard": {
-      "reached": true,
-      "visible": true
-    }
-  },
-  {
-    "surface_id": "sample-concrete",
-    "route": "/samples/concrete/index.html",
-    "width": 768,
-    "main_landmarks": 1,
-    "running_animations_reduced": 0,
-    "a11y": {
-      "fails": 0,
-      "warnings": 10
-    },
-    "gate": {
-      "verdict": "REVIEW WARNS",
-      "fails": [],
-      "warns": [
-        "indigo→violet gradient on div.sw — the canonical AI tell"
-      ],
-      "notes": [
-        "display face resolves to \"Grotesk\""
-      ]
-    },
-    "keyboard": {
-      "reached": true,
-      "visible": true
-    }
-  },
-  {
-    "surface_id": "sample-concrete",
-    "route": "/samples/concrete/index.html",
-    "width": 1280,
-    "main_landmarks": 1,
-    "running_animations_reduced": 0,
-    "a11y": {
-      "fails": 0,
-      "warnings": 10
-    },
-    "gate": {
-      "verdict": "REVIEW WARNS",
-      "fails": [],
-      "warns": [
-        "uniform card grid: 3× identical div.lrow in div.ledger (equal size, bordered/rounded — the \"three cards\" tell?)",
-        "indigo→violet gradient on div.sw — the canonical AI tell"
-      ],
-      "notes": [
-        "display face resolves to \"Grotesk\""
-      ]
-    },
-    "keyboard": {
-      "reached": true,
-      "visible": true
-    }
-  },
-  {
-    "surface_id": "sample-copper",
-    "route": "/samples/copper/index.html",
     "width": 390,
     "main_landmarks": 1,
     "running_animations_reduced": 0,
@@ -746,8 +772,93 @@
       "verdict": "REVIEW WARNS",
       "fails": [],
       "warns": [
-        "uniform card grid: 12× identical div.sk in div.skills-g (equal size, bordered/rounded — the \"three cards\" tell?)",
-        "uniform card grid: 4× identical div.sk in div.skills-g (equal size, bordered/rounded — the \"three cards\" tell?)",
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Grotesk\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 6.0105,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "sample-concrete",
+    "route": "/samples/concrete/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 10
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Grotesk\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.6814,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "sample-concrete",
+    "route": "/samples/concrete/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 10
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Grotesk\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 7.8349,
+      "status": "ok"
+    }
+  },
+  {
+    "surface_id": "sample-copper",
+    "route": "/samples/copper/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 18
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
         "indigo→violet gradient on div.sw — the canonical AI tell"
       ],
       "notes": [
@@ -757,6 +868,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 7.2331,
+      "status": "ok"
     }
   },
   {
@@ -773,9 +888,6 @@
       "verdict": "REVIEW WARNS",
       "fails": [],
       "warns": [
-        "uniform card grid: 12× identical div.sk in div.skills-g (equal size, bordered/rounded — the \"three cards\" tell?)",
-        "uniform card grid: 4× identical div.sk in div.skills-g (equal size, bordered/rounded — the \"three cards\" tell?)",
-        "uniform card grid: 3× identical div.slop in div.slops (equal size, bordered/rounded — the \"three cards\" tell?)",
         "indigo→violet gradient on div.sw — the canonical AI tell"
       ],
       "notes": [
@@ -785,6 +897,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 7.3965,
+      "status": "ok"
     }
   },
   {
@@ -801,9 +917,6 @@
       "verdict": "REVIEW WARNS",
       "fails": [],
       "warns": [
-        "uniform card grid: 12× identical div.sk in div.skills-g (equal size, bordered/rounded — the \"three cards\" tell?)",
-        "uniform card grid: 4× identical div.sk in div.skills-g (equal size, bordered/rounded — the \"three cards\" tell?)",
-        "uniform card grid: 3× identical div.slop in div.slops (equal size, bordered/rounded — the \"three cards\" tell?)",
         "indigo→violet gradient on div.sw — the canonical AI tell"
       ],
       "notes": [
@@ -813,6 +926,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.9545,
+      "status": "ok"
     }
   },
   {
@@ -823,7 +940,7 @@
     "running_animations_reduced": 0,
     "a11y": {
       "fails": 0,
-      "warnings": 25
+      "warnings": 26
     },
     "gate": {
       "verdict": "CLEAN",
@@ -836,12 +953,45 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.5581,
+      "status": "ok"
     }
   },
   {
     "surface_id": "sample-dispatch",
     "route": "/samples/dispatch/index.html",
     "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 15
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "NIMA aesthetic score 5.38/10 below 5.5 threshold"
+      ],
+      "notes": [
+        "display face resolves to \"Bric\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.3823,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "sample-dispatch",
+    "route": "/samples/dispatch/index.html",
+    "width": 1280,
     "main_landmarks": 1,
     "running_animations_reduced": 0,
     "a11y": {
@@ -859,29 +1009,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
-    }
-  },
-  {
-    "surface_id": "sample-dispatch",
-    "route": "/samples/dispatch/index.html",
-    "width": 1280,
-    "main_landmarks": 1,
-    "running_animations_reduced": 0,
-    "a11y": {
-      "fails": 0,
-      "warnings": 15
     },
-    "gate": {
-      "verdict": "CLEAN",
-      "fails": [],
-      "warns": [],
-      "notes": [
-        "display face resolves to \"Bric\""
-      ]
-    },
-    "keyboard": {
-      "reached": true,
-      "visible": true
+    "aesthetic": {
+      "nimaScore": 6.4878,
+      "status": "ok"
     }
   },
   {
@@ -892,13 +1023,12 @@
     "running_animations_reduced": 0,
     "a11y": {
       "fails": 0,
-      "warnings": 98
+      "warnings": 100
     },
     "gate": {
       "verdict": "REVIEW WARNS",
       "fails": [],
       "warns": [
-        "stat-counter band: 9 numeric callouts in div.skills-g (the SaaS social-proof tell?)",
         "indigo→violet gradient on div.sw — the canonical AI tell"
       ],
       "notes": [
@@ -908,6 +1038,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 4.8146,
+      "status": "warn"
     }
   },
   {
@@ -918,14 +1052,13 @@
     "running_animations_reduced": 0,
     "a11y": {
       "fails": 0,
-      "warnings": 92
+      "warnings": 93
     },
     "gate": {
       "verdict": "REVIEW WARNS",
       "fails": [],
       "warns": [
-        "uniform card grid: 3× identical div.sk in div.skills-g (equal size, bordered/rounded — the \"three cards\" tell?)",
-        "stat-counter band: 9 numeric callouts in div.skills-g (the SaaS social-proof tell?)",
+        "uniform card grid: 3× identical div.sk in ol.skills-g (equal size, bordered/rounded — the \"three cards\" tell?)",
         "indigo→violet gradient on div.sw — the canonical AI tell"
       ],
       "notes": [
@@ -935,6 +1068,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.021,
+      "status": "warn"
     }
   },
   {
@@ -945,13 +1082,12 @@
     "running_animations_reduced": 0,
     "a11y": {
       "fails": 0,
-      "warnings": 92
+      "warnings": 93
     },
     "gate": {
       "verdict": "REVIEW WARNS",
       "fails": [],
       "warns": [
-        "stat-counter band: 9 numeric callouts in div.skills-g (the SaaS social-proof tell?)",
         "indigo→violet gradient on div.sw — the canonical AI tell"
       ],
       "notes": [
@@ -961,6 +1097,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 5.4829,
+      "status": "warn"
     }
   },
   {
@@ -971,7 +1111,7 @@
     "running_animations_reduced": 0,
     "a11y": {
       "fails": 0,
-      "warnings": 85
+      "warnings": 86
     },
     "gate": {
       "verdict": "REVIEW WARNS",
@@ -986,6 +1126,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 4.7517,
+      "status": "warn"
     }
   },
   {
@@ -996,7 +1140,7 @@
     "running_animations_reduced": 0,
     "a11y": {
       "fails": 0,
-      "warnings": 85
+      "warnings": 86
     },
     "gate": {
       "verdict": "REVIEW WARNS",
@@ -1011,6 +1155,10 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.6491,
+      "status": "warn"
     }
   },
   {
@@ -1021,7 +1169,7 @@
     "running_animations_reduced": 0,
     "a11y": {
       "fails": 0,
-      "warnings": 85
+      "warnings": 86
     },
     "gate": {
       "verdict": "REVIEW WARNS",
@@ -1036,6 +1184,97 @@
     "keyboard": {
       "reached": true,
       "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.2474,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "sample-verge",
+    "route": "/samples/verge/index.html",
+    "width": 390,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 7
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Fraunces\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.4231,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "sample-verge",
+    "route": "/samples/verge/index.html",
+    "width": 768,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 7
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Fraunces\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.5253,
+      "status": "warn"
+    }
+  },
+  {
+    "surface_id": "sample-verge",
+    "route": "/samples/verge/index.html",
+    "width": 1280,
+    "main_landmarks": 1,
+    "running_animations_reduced": 0,
+    "a11y": {
+      "fails": 0,
+      "warnings": 7
+    },
+    "gate": {
+      "verdict": "REVIEW WARNS",
+      "fails": [],
+      "warns": [
+        "indigo→violet gradient on div.sw — the canonical AI tell"
+      ],
+      "notes": [
+        "display face resolves to \"Fraunces\""
+      ]
+    },
+    "keyboard": {
+      "reached": true,
+      "visible": true
+    },
+    "aesthetic": {
+      "nimaScore": 2.1186,
+      "status": "warn"
     }
   }
 ]
