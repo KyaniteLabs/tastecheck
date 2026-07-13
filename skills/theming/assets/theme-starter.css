@@ -13,6 +13,13 @@
   --color-text:      #1a1714;
   --color-text-muted:#5b5650;
   --color-border:    #e4ded3;
+  --color-primary:       oklch(0.54 0.16 250);
+  --color-primary-hover: oklch(0.48 0.14 250);
+  --color-primary-ink:   #ffffff;
+  --color-success:   oklch(0.55 0.14 145);
+  --color-error:     oklch(0.55 0.18 25);
+  --color-warning:   oklch(0.70 0.15 85);
+  --color-info:      oklch(0.55 0.12 230);
   --color-accent:    oklch(0.54 0.16 250);   /* deeper for light-bg contrast */
   --color-accent-ink:#ffffff;
   --color-focus:     var(--color-accent);
@@ -29,6 +36,13 @@
     --color-text:      #ececec;                                   /* example softened text */
     --color-text-muted:#a0a0a6;
     --color-border:    color-mix(in oklab, #fff 14%, var(--color-bg));
+    --color-primary:       oklch(0.68 0.12 250);
+    --color-primary-hover: oklch(0.74 0.10 250);
+    --color-primary-ink:   #0a0a0a;
+    --color-success:   oklch(0.70 0.12 145);
+    --color-error:     oklch(0.70 0.16 25);
+    --color-warning:   oklch(0.80 0.12 85);
+    --color-info:      oklch(0.70 0.10 230);
     --color-accent:    oklch(0.72 0.12 250);                      /* +L, −C for dark */
     --shadow-float: 0 8px 30px rgb(0 0 0 / .5);
   }
