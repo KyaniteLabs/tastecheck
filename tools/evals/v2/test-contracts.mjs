@@ -6,7 +6,11 @@ import { freezeExecutionManifest, freezeProtocol, validateContract } from "./lib
 assert.equal(validateContract("protocol", fixture).valid, true);
 assert.doesNotThrow(() => freezeProtocol(fixture));
 assert.throws(() => freezeProtocol({ ...fixture, max_external_calls: 161 }), /160/);
-assert.throws(() => freezeProtocol({ ...fixture, human_calibration: true }), /unknown|human/i);
+// human_calibration (unknown field) must be rejected via additionalProperties.
+// Use a regex that matches the rejection REASON, not the field name, so this
+// is not a self-matching tautology. The human_calibration_claimed:true case
+// below exercises the actual frozen-claim prohibition.
+assert.throws(() => freezeProtocol({ ...fixture, human_calibration: true }), /unknown/i);
 assert.throws(() => freezeProtocol({ ...fixture, baseline_revision: "f".repeat(40) }), /baseline/);
 assert.throws(() => freezeProtocol({ ...fixture, exclusions: ["unit-1"] }), /exclusions/);
 assert.throws(() => freezeProtocol({ ...fixture, candidate_preference_floor: 17 }), /candidate_preference_floor/);
@@ -39,7 +43,7 @@ const validContracts = {
   "generation-receipt": { schema_version: 2, kind: "effectiveness-v2-generation-receipt", run_id: "run-1", ordinal: 1, scenario_id: "scenario-1", seed: 101, arm: "baseline", revision: "a".repeat(40), cost_classification: "flat-rate", status: "completed", turns: 1, tokens_in: 1, tokens_out: 1, artifacts: ["artifact-1"] },
   "randomization-commitment": { schema_version: 2, kind: "effectiveness-v2-randomization-commitment", domain: "effectiveness-v2", commitment_sha256: h, adapter_sha256: h },
   "render-receipt": { schema_version: 2, kind: "effectiveness-v2-render-receipt", run_id: "run-1", unit_id: "unit-1", arm: "baseline", artifact_id: "artifact-1", evidence_id: h, viewport_id: "mobile", viewport_width: 390, viewport_height: 844, artifact_sha256: h, screenshot_png_base64: "iVBORw0KGgo=", serialized_dom: "<html></html>", computed_styles: [{}], screenshot_sha256: h, dom_sha256: h, style_sha256: h, playwright_version: "1.61.1", chromium_version: "141.0.0.0", font_set_sha256: h, renderer_adapter_sha256: h, render_host_sha256: h },
-  "unmask": { schema_version: 2, kind: "effectiveness-v2-unmask", run_id: "run-1", commitment_sha256: h, packet_set_sha256: h, reservation_sha256: h, ledger_predecessor: h, opening: "opening", mappings: Array.from({ length: 48 }, (_, index) => ({ unit_id: `unit-${Math.floor(index / 2)}`, opaque_slot: index % 2, arm: index % 2 ? "candidate" : "baseline" })) },
+  "unmask": { schema_version: 2, kind: "effectiveness-v2-unmask", run_id: "run-1", commitment_sha256: h, packet_set_sha256: h, reservation_sha256: h, ledger_predecessor: h, opening: "opening", mappings: Array.from({ length: 48 }, (_, index) => ({ unit_id: `unit-${Math.floor(index / 2)}`, opaque_slot: index % 2, arm: index % 2 ? "candidate" : "baseline", scenario_id: `scenario-${Math.floor(index / 4)}`, generation_seed: 101 + (Math.floor(index / 2) % 2) })) },
   "judge-result": { schema_version: 2, kind: "effectiveness-v2-judge-result", packet_id: "packet-1", family_id: "family-a", identity_id: "judge-1", invocation_id: "invoke-1", context_id: "context-1", packet_sha256: h, preference: "slot-1", arm_scores: [{ opaque_slot: 0, dimensions }, { opaque_slot: 1, dimensions }], hard_regressions: [], evidence_citations: [{ artifact_id: "artifact-1", opaque_slot: 1, viewport_id: "mobile", artifact_sha256: h, start_codepoint: 0, end_codepoint: 4, exact_span: "test" }] },
   "synthesis": { schema_version: 2, kind: "effectiveness-v2-synthesis", run_id: "run-1", status: "supported", families: ["a", "b"].map((family_id) => ({ family_id, preference_score: 18, scenario_majorities: 8, dimension_means: dimensions, absolute_mean: 4, passed: true })), hard_regressions: [], claim_allowed: true },
   "public-claim": { schema_version: 2, kind: "effectiveness-v2-public-claim", run_id: "run-1", status: "supported", claim: "Scoped machine-only claim" }

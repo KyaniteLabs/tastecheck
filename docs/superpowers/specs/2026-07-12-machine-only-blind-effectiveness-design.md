@@ -226,7 +226,10 @@ synthesis input is checked against historical exact hashes and normalized finger
 renames, wrappers, symlinks, and indirection cannot launder historical evidence. V1 paths
 remain prohibited. The run ID is derived from the protocol, corpus, source,
 execution-manifest, exact empty-exclusion-set, and randomization-commitment digests, and its
-initial ledger root is committed before admission.
+initial ledger root is committed before admission. The scenario-registry digest
+(`scenario_registry_sha256 = sha256(canonicalJson(manifest))`) is a coordinate of run-ID
+derivation, the committed initial `run_initialized` ledger root, the unique
+`production_admitted` event, and every external-call admission equality check.
 
 Before unmasking, `reserve` atomically creates the current `synthesis-reservation.json`
 with exclusive creation, fsyncs it, and exits. Synthesis is allowed only after that exact reservation is
@@ -235,6 +238,23 @@ or crashed synthesis cannot resume or create another reservation for the same ru
 validator rejects deletion, truncation, a forked predecessor, copied run directories with
 wrong roots, any reservation predating the current admitted ledger predecessor, or any
 prior reservation for the run ID.
+
+After the committed reservation and clean HEAD, and before any opening-attempt, seed read,
+decryption, or grouping, `verifyFrozenRegistryAtCloseout` uses the same git top-level to
+verify: the manifest digest matches the admitted ledger; the closed exact 12 scenario and
+4 anchor IDs and file hashes are present; enumerated exact files have no extras or missing;
+symlinked, non-regular, and out-of-root files are rejected; each file is read once then
+hashed and parsed from the same bytes; embedded IDs and hashes match; closed-shape, strata,
+anchor, and content-separation checks are rerun; and immutable verified coordinates are
+returned. Any drift is terminal `production_incomplete` with zero secret access or output.
+
+The unmask rows require `scenario_id` and `generation_seed` (already encrypted in the
+authenticated map). `synthesize` and `openUnmask` interfaces accept the canonical
+`repoRoot`, `protocol`, and `registryManifest`. `openUnmask` requires the exact registry
+scenario IDs × protocol seeds coordinates: 48 rows / 24 units, slots 0 and 1, baseline and
+candidate once each, a coordinate ↔ unit bijection, recomputed HMAC `unit_id`, `packet_id`,
+seed-dependent `scenario_id_token`, and assignment; groups only by authenticated
+post-unmask `scenario_id`; and canonical-sorts for permutation invariance.
 
 The one-time unmask file binds its digest and verified randomization opening to the admitted
 commitment, complete packet-set digest, run ID, current reservation digest, and immediately
