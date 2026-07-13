@@ -2,31 +2,31 @@
   "schema_version": 1,
   "kind": "clean-clone",
   "producer_id": "tastecheck.release.clean-clone.v1",
-  "source_tree_sha256": "2c4ee0bc837c93fd331f85137eb79792c5e366bb8644abfda499b98cbe8a0e0b",
-  "nonce": "clean-clone-release-v1-131",
-  "started_at": "2026-07-13T22:26:48.404Z",
-  "finished_at": "2026-07-13T22:27:04.199Z",
+  "source_tree_sha256": "99b2c42959088643d57a2c799560d275787a571c7c01b6d437a65b8964c86d5e",
+  "nonce": "clean-clone-release-v1",
+  "started_at": "2026-07-13T22:28:23.733Z",
+  "finished_at": "2026-07-13T22:28:37.746Z",
   "checks": [
     {
       "id": "npm-ci",
       "command": "npm ci --ignore-scripts",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "551541a4d4ba223388362d83f6d21bbc11c672d40dc28da9051673e46ae229e2"
+      "output_sha256": "86c8f73a2b1d2e276ddfd65d218447931bf5633a632053b87c13ca7dfe774206"
     },
     {
       "id": "test",
       "command": "npm test",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "78265197e7a5cb20305bc93a9ef9938aaa66e913ea5747db5fd3bed5a2a59a65"
+      "output_sha256": "991208911cc3e428a3e57def3d850e100a705f89d66b2739f255d0c45c42fd32"
     },
     {
       "id": "contracts",
       "command": "npm run test:contracts",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "33f7895bf1eb9ae5448b4e2fdb639a2f26012f3243615db8c5c3aeda33c9b55a"
+      "output_sha256": "26791ef68645377842783a49e559baab151f10af65c27bc7cd0d2ceb8084c06f"
     },
     {
       "id": "effectiveness-claims",
@@ -38,18 +38,18 @@
     {
       "id": "head-source-match",
       "command": "internal HEAD source digest comparison",
-      "passed": false,
-      "exit_code": 1,
-      "output_sha256": "47113bd07c70f5d2fc7c5ff8470da54e00d3f6ddd12c6abb69836cc33b8ad2d2"
+      "passed": true,
+      "exit_code": 0,
+      "output_sha256": "f4d2b7420f0c3c98a6e740c7c9deb3cd685b1612679949f4125ece091ffd1ac3"
     },
     {
       "id": "source-stability",
       "command": "internal source digest comparison",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "55f2b32be59c4ab8c6eff333dceef825768ddaa1d008dcc5e18efbbc48714742"
+      "output_sha256": "f4d2b7420f0c3c98a6e740c7c9deb3cd685b1612679949f4125ece091ffd1ac3"
     }
   ],
-  "status": "fail",
-  "reproducible": false
+  "status": "pass",
+  "reproducible": true
 }

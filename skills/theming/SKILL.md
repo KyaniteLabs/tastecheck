@@ -108,24 +108,12 @@ nonced or hashed `<head>` script rather than a deferred bundle:
 
 Update supported browser chrome where it materially improves the experience. Treat
 selection and custom scrollbar styling as optional polish, not completion gates.
-### `light-dark()` modern shorthand
+### `light-dark()` shorthand
 
-Where the product lets `color-scheme` drive the switch (no persisted user override),
-`light-dark()` eliminates the media-query duplication:
-
-```css
-:root { color-scheme: light dark; }
-.card {
-  background: light-dark(oklch(96% .02 78), oklch(18% .024 64));
-  color: light-dark(oklch(19% .03 63), oklch(94% .02 78));
-}
-```
-
-Browser support is current Chromium + Firefox + Safari (2024+). It is a progressive
-enhancement — pair it with the semantic-token + `[data-theme]` system so an explicit
-user choice or forced-colors path still overrides. Do not use `light-dark()` as the
-sole theme mechanism when the product ships a manual theme toggle; the `data-theme`
-attribute approach remains authoritative there.
+When `color-scheme` drives the switch (no persisted override), `light-dark()` avoids
+media-query duplication: `background: light-dark(oklch(96% .02 78), oklch(18% .024 64))`.
+Broad browser support (2024+); pair with `[data-theme]` so explicit user choice and
+forced-colors still override. Not the sole mechanism when a manual toggle exists.
 
 ## Reference files
 - `references/surfaces-and-elevation.md` — the **dark** surface ramp + elevation-by-
