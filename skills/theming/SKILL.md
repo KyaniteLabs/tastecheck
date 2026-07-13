@@ -108,6 +108,24 @@ nonced or hashed `<head>` script rather than a deferred bundle:
 
 Update supported browser chrome where it materially improves the experience. Treat
 selection and custom scrollbar styling as optional polish, not completion gates.
+### `light-dark()` modern shorthand
+
+Where the product lets `color-scheme` drive the switch (no persisted user override),
+`light-dark()` eliminates the media-query duplication:
+
+```css
+:root { color-scheme: light dark; }
+.card {
+  background: light-dark(oklch(96% .02 78), oklch(18% .024 64));
+  color: light-dark(oklch(19% .03 63), oklch(94% .02 78));
+}
+```
+
+Browser support is current Chromium + Firefox + Safari (2024+). It is a progressive
+enhancement — pair it with the semantic-token + `[data-theme]` system so an explicit
+user choice or forced-colors path still overrides. Do not use `light-dark()` as the
+sole theme mechanism when the product ships a manual theme toggle; the `data-theme`
+attribute approach remains authoritative there.
 
 ## Reference files
 - `references/surfaces-and-elevation.md` — the **dark** surface ramp + elevation-by-
@@ -148,7 +166,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: An interface needs coherent light, dark, high-contrast, or forced-colors mappings (+1 in contract.json); avoid: The request is to invent the source palette rather than map semantic roles (+1 in contract.json)
 - Exclude: Do not invert a light palette and call it dark mode (+1 in contract.json)
-- Stop / handoff: Pause when semantic roles are missing and theme values would be raw-color copies (+1 in contract.json); receives [design-system-interview, improve-existing-website, color-system] -> sends [a11y-pass, cognitive-a11y, responsive-layout]
+- Stop / handoff: Pause when semantic roles are missing and theme values would be raw-color copies (+1 in contract.json); receives [design-system-interview, improve-existing-website, color-system] -> sends [a11y-pass, cognitive-a11y, responsive-layout, component-states]
 - Output: Semantic mappings for every supported theme, plus forced-colors behavior, preference policy, and measured pairs
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

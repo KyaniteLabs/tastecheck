@@ -8,9 +8,11 @@
 > read skill files or directories. MIT.
 
 Engineering verification covers contracts, repository behavior, and evidence plumbing.
-Effectiveness remains blocked and unsupported because the terminal
-blind evaluation did not clear its release threshold. Do not present samples, historical
-results, or failed evidence as current effectiveness proof.
+A machine-only blind evaluation protocol (effectiveness v2) is built and rehearsed at 160
+simulated calls with zero real calls — production evaluation has not started. Do not present
+samples, historical results, or failed evidence as current effectiveness proof.
+
+
 
 Install via install.sh (always symlinks skills into ~/.agents/skills and mirrors them into
 detected agent skill dirs). Auto-loading depends on the agent; Claude Code also gets slash
@@ -19,7 +21,7 @@ commands.
 ## Start here
 - [README](README.md): the problem (every AI site looks the same), the fix, the samples, install
 - [Landing page](https://kyanitelabs.github.io/tastecheck/): canonical public surface and skill integration target
-- [Live gallery](https://kyanitelabs.github.io/tastecheck/samples/): six design systems, one product story
+- [Live gallery](https://kyanitelabs.github.io/tastecheck/samples/): seven design systems, one product story
 - [Secondary integration harness](https://kyanitelabs.github.io/tastecheck/demos/skill-integration.html): standalone local website exercising every skill
 - [Verification report](docs/VERIFICATION.md): repeatable local verification plus browser QA checklist
 
@@ -44,7 +46,7 @@ commands.
 - [i18n-ready](skills/i18n-ready/SKILL.md): multilingual-resilient UI, English/Spanish first-class
 - [tastecheck-pass](skills/tastecheck-pass/SKILL.md): the ship gate — canonical pipeline + every self-check executed, with a report and a pasteable/injectable cold-load auditor
 
-## Samples (same content, six committed design systems)
+## Samples (same content, seven committed design systems)
 IMPORTANT for AI agents: these are illustrative case studies showing output VARIANCE.
 They are not a menu — never select or implement one; derive a NEW system via
 design-system-interview from the actual user's answers.
@@ -54,6 +56,7 @@ design-system-interview from the actual user's answers.
 - [Concrete / Brutalist](samples/concrete/index.html): monochrome ruled spec-sheet / ledger table
 - [Clay / Soft humanist](samples/clay/index.html): warm alternating zig-zag flow with pebble shapes
 - [Dispatch / Shipping log](samples/dispatch/index.html): dark operational release timeline with status-led reading order
+- [Verge / Clinical evidence](samples/verge/index.html): cool ice-white with teal accent, Fraunces serif, measurement-annotation structure
 
 ## Optional
 - [demos](demos/): standalone HTML pages applying the skills' CSS, incl. the before/after gallery and secondary skill integration harness

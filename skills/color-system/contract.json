@@ -19,7 +19,7 @@
   },
   "stop_conditions": ["Pause when the required foreground-background roles are unknown", "Do not claim accessibility without measured real pairs"],
   "handoff": {
-    "receives_from": ["design-system-interview", "improve-existing-website"],
+    "receives_from": ["design-system-interview", "improve-existing-website", "deslop-ui"],
     "sends_to": ["theming", "data-viz", "a11y-pass"]
   },
   "self_check_shape": "table_with_evidence",

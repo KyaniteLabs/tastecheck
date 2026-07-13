@@ -135,7 +135,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: Data needs a chart, table, uncertainty treatment, or accessible comparison.; avoid: There is no data subject or the request is only a decorative illustration.
 - Exclude: Do not choose a chart before identifying the comparison task. (+1 in contract.json)
-- Stop / handoff: Stop when the data provenance or comparison question is missing. (+1 in contract.json); receives [design-system-interview, improve-existing-website] -> sends [a11y-pass, empty-states, tastecheck-pass]
+- Stop / handoff: Stop when the data provenance or comparison question is missing. (+1 in contract.json); receives [design-system-interview, improve-existing-website, color-system] -> sends [a11y-pass, empty-states, tastecheck-pass]
 - Output: honest chart/table recommendation and implementation plan
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

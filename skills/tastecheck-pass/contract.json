@@ -7,7 +7,7 @@
   "inputs": {"required": ["design-system or inferred-system artifact", "applicable self-check evidence", "browser/measured evidence"], "optional": ["fix log", "screenshots", "console trace", "accessibility auditor output"]},
   "outputs": {"primary": "fail-closed evidence ledger with a deterministic verdict and actionable gate report", "artifacts": ["canonical evidence rows", "deterministic execution report with distinct failed checks", "linked presentation report", "verdict and remediation list"], "handoff_fields": ["skill", "check_id", "status", "reason", "remediation", "evidence", "provenance"]},
   "stop_conditions": ["Fail when the required spec is absent or the artifact was not built to it.", "Fail when any required evidence row is missing, forged, or contradictory.", "Fail when browser, cold-load, keyboard, zoom, theme, or reduced-motion evidence is required but absent."],
-  "handoff": {"receives_from": ["a11y-pass", "cognitive-a11y", "i18n-ready", "deslop-ui", "humanize-copy"], "sends_to": []},
+  "handoff": {"receives_from": ["a11y-pass", "cognitive-a11y", "i18n-ready", "deslop-ui", "humanize-copy", "art-direction", "component-states", "data-viz", "empty-states", "form-ux", "micro-motion"], "sends_to": []},
   "self_check_shape": "ledger_with_verdict",
   "required_evidence_fields": ["status", "reason", "remediation", "evidence", "provenance"],
   "context_budget": {"skill_md_max_tokens": 5000, "resource_max_tokens": 6000},
