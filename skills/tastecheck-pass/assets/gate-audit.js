@@ -153,7 +153,7 @@
   /* 10. WARN — the indigo→violet gradient (computed, any element) */
   for(const el of document.querySelectorAll('body, body *')){
     const bg=cs(el).backgroundImage;
-    if(bg.includes('gradient')&&(/99,\s*102,\s*241|129,\s*140,\s*248/.test(bg))&&(/168,\s*85,\s*247|192,\s*132,\s*252/.test(bg))){
+    if(bg.includes('gradient')&&(/99[,\s]+102[,\s]+241|129[,\s]+140[,\s]+248|#6366f1|#818cf8/.test(bg))&&(/168[,\s]+85[,\s]+247|192[,\s]+132[,\s]+252|#a855f7|#c084fc/.test(bg))){
       warns.push(`indigo→violet gradient on ${name(el)} — the canonical AI tell`);
       break;
     }

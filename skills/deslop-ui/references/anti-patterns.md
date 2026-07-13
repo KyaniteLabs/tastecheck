@@ -158,6 +158,6 @@ grep -rniE "shadow-2xl|shadow-lg" src                                     # heav
 grep -rniE "backdrop-blur|bg-white/10|bg-white/20" src                    # glassmorphism
 grep -rniE "min-h-screen.*flex.*items-center" src                         # center-everything
 grep -rniE "font-(inter|roboto)|'Inter'|\"Inter\"" src                    # safe fonts
-grep -rnE  "<h[1-6][^>]*>\s*[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}]" src   # emoji headers
+grep -rnE "<h[1-6][^>]*>[[:space:]]*" src | grep -E "[😀-🫿☀-➿]"  # emoji headers (two-stage for portability)
 ```
 These are starting signals, not proof — confirm in context before changing.
