@@ -83,7 +83,7 @@
   if(!document.querySelector('main'))warn.push('no <main> landmark');
   // 7) viewport zoom lock
   const vp=document.querySelector('meta[name=viewport]');
-  if(vp&&/user-scalable=no|maximum-scale=1(\b|[^.])/.test(vp.content))fail.push('viewport disables zoom (WCAG 1.4.4)');
+  if(vp&&/user-scalable=no|maximum-scale=1(?:\.0+)?(?![.\d])/.test(vp.content))fail.push('viewport disables zoom (WCAG 1.4.4)');
 
   console.log('%c a11y-pass audit ','background:#0a6c50;color:#fff;font-weight:700;padding:2px 6px');
   console.log(`%cFAILS (${fail.length})`,'color:#e5484d;font-weight:700');fail.forEach(f=>console.log('  ✗ '+f));

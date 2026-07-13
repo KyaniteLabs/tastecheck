@@ -101,6 +101,16 @@ as a verification gate, never as a zero-CLS claim.
 Use `assets/starter.css` for the complete scale and metric-matched font example. Keep
 the operating constraints here: contextual roles, readable measure, fluid sizing,
 language coverage, measured loading/CLS, and no duplicate reduced-motion contract.
+### Canonical tokens
+
+| Token | Role |
+|-------|------|
+| `--step--2` | Fine print / legal / footnotes |
+| `--step--1` | Captions / small labels |
+| `--step-0` | Body text |
+| `--step-1` through `--step-5` | Headings through display |
+| `--font-body` / `--font-display` / `--font-mono` | Font role stacks |
+| `--measure` | Max line length (`~66ch`) |
 
 ## Reference files — read the one you need
 
@@ -160,7 +170,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: A web interface needs a contextual type stance, scale, readable measure, or font-loading plan (+1 in contract.json); avoid: The request is to write or rewrite product copy (+1 in contract.json)
 - Exclude: Do not choose a font from examples instead of the brief (+1 in contract.json)
-- Stop / handoff: Pause when a requested font lacks required language coverage and no fallback is agreed (+1 in contract.json); receives [design-system-interview, improve-existing-website] -> sends [responsive-layout, i18n-ready, a11y-pass]
+- Stop / handoff: Pause when a requested font lacks required language coverage and no fallback is agreed (+1 in contract.json); receives [design-system-interview, improve-existing-website, deslop-ui] -> sends [responsive-layout, i18n-ready, a11y-pass, spacing-system]
 - Output: A contextual type system with tokens, loading plan, and tested reading constraints
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

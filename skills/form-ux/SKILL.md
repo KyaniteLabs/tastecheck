@@ -100,7 +100,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: A form has completion, validation, recovery, autofill, or interruption problems.; avoid: The issue is only a control's visual interaction state.
 - Exclude: Do not hide errors or validate only on blur without a recovery path. (+1 in contract.json)
-- Stop / handoff: Stop when validation rules or data ownership are unknown. (+1 in contract.json); receives [component-states, design-system-interview] -> sends [a11y-pass, i18n-ready, tastecheck-pass]
+- Stop / handoff: Stop when validation rules or data ownership are unknown. (+1 in contract.json); receives [component-states, design-system-interview, deslop-ui, humanize-copy, responsive-layout, spacing-system] -> sends [a11y-pass, i18n-ready, tastecheck-pass, cognitive-a11y]
 - Output: completion-oriented form flow and evidence table
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

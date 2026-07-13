@@ -19,8 +19,8 @@
   },
   "stop_conditions": ["Pause when content priority is unknown and reflow would silently hide required information", "Do not claim completion with unresolved overflow or clipping"],
   "handoff": {
-    "receives_from": ["design-system-interview", "improve-existing-website", "web-typography", "spacing-system", "theming"],
-    "sends_to": ["component-states", "form-ux", "a11y-pass", "deslop-ui"]
+    "receives_from": ["design-system-interview", "improve-existing-website", "web-typography", "spacing-system", "theming", "art-direction"],
+    "sends_to": ["component-states", "form-ux", "a11y-pass", "deslop-ui", "i18n-ready"]
   },
   "self_check_shape": "table_with_evidence",
   "required_evidence_fields": ["status", "reason", "remediation", "evidence", "provenance"],

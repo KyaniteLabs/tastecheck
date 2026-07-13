@@ -72,6 +72,9 @@ token is a gap, never a fallback hex; add the request guard before styling async
 
 - **Button/link:** default, hover, focus-visible, active, disabled/loading as applicable;
   toggles use `aria-pressed`, links retain a non-color cue/visited treatment.
+- **Toggle / switch:** use `role="switch"` (not `role="checkbox"`) with `aria-checked`;
+  Space toggles, Tab moves focus. Example: `<button role="switch" aria-checked="true">Notifications</button>`.
+  Screen readers announce "switch, on/off" instead of "checkbox, checked."
 - **Fields:** focus, disabled, filled/readonly, error, and selected/open/checked states;
   style a real or correctly labelled focusable input (`form-ux` owns validation).
 - **Navigation/list/menu:** current/selected state uses `aria-current`/`aria-selected`;
@@ -103,7 +106,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: A control has interaction states missing or inconsistent with its semantics. (+1 in contract.json); avoid: The request is only about form copy or validation timing. (+1 in contract.json)
 - Exclude: Do not invent page-level empty states or validation policy. (+2 in contract.json)
-- Stop / handoff: Stop when the component semantics or interactive states cannot be identified. (+2 in contract.json); receives [design-system-interview, improve-existing-website, theming] -> sends [form-ux, empty-states, a11y-pass, micro-motion, tastecheck-pass]
+- Stop / handoff: Stop when the component semantics or interactive states cannot be identified. (+2 in contract.json); receives [design-system-interview, improve-existing-website, theming, empty-states, responsive-layout, spacing-system] -> sends [form-ux, empty-states, a11y-pass, micro-motion, tastecheck-pass]
 - Output: component lifecycle contract and implementation guidance
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

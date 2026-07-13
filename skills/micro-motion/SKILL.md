@@ -102,7 +102,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: An interface needs purposeful transition, feedback, choreography, or reduced-motion behavior.; avoid: The request is only static visual styling or decorative animation without an interaction purpose.
 - Exclude: Do not add motion without a user-facing purpose. (+2 in contract.json)
-- Stop / handoff: Stop when no purpose or interruption policy exists. (+1 in contract.json); receives [component-states, design-system-interview] -> sends [a11y-pass, tastecheck-pass]
+- Stop / handoff: Stop when no purpose or interruption policy exists. (+1 in contract.json); receives [component-states, design-system-interview, deslop-ui] -> sends [a11y-pass, tastecheck-pass]
 - Output: purposeful motion choreography and token plan
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

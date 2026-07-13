@@ -66,7 +66,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: A rendered interface needs WCAG 2.2 AA repair findings verified by keyboard, browser, or measurement.; avoid: The request is only cognitive load or multilingual expansion without an accessibility defect.
 - Exclude: Do not self-attest a fix without browser or source evidence. (+1 in contract.json)
-- Stop / handoff: Stop when the user path or target artifact is unavailable. (+1 in contract.json); receives [component-states, form-ux, responsive-layout, theming] -> sends [tastecheck-pass]
+- Stop / handoff: Stop when the user path or target artifact is unavailable. (+1 in contract.json); receives [component-states, form-ux, responsive-layout, theming, art-direction, cognitive-a11y, color-system, data-viz, deslop-ui, empty-states, i18n-ready, improve-existing-website, micro-motion, web-typography] -> sends [tastecheck-pass]
 - Output: prioritized WCAG repair ledger with measured verification
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

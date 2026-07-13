@@ -2,10 +2,10 @@
   "schema_version": 1,
   "kind": "security",
   "producer_id": "tastecheck.release.security.v1",
-  "source_tree_sha256": "3885fc773b4e3e459f134fd4eab8d248e15efde6dc2e1c3439a26f8b15878fa3",
-  "nonce": "security-release-v1",
-  "started_at": "2026-07-13T06:47:13.306Z",
-  "finished_at": "2026-07-13T06:47:13.497Z",
+  "source_tree_sha256": "1070c7bf3ecd98d470b991281d792ed14b78fb97dd1ba16280f51365a168742e",
+  "nonce": "security-release-v1-131",
+  "started_at": "2026-07-13T22:25:43.108Z",
+  "finished_at": "2026-07-13T22:25:43.540Z",
   "checks": [
     {
       "id": "effectiveness-claims",
@@ -33,7 +33,7 @@
       "command": "internal source digest comparison",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "697c381b840e110fdcc3a503a622fcb444159386e054aaca3afecd1304c40b19"
+      "output_sha256": "ef146b68ca07d26efe4a50cd0eced836f73f7f3b5304973651ef655448e7327c"
     }
   ],
   "status": "pass",
