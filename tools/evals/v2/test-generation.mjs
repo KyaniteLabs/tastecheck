@@ -11,6 +11,7 @@ import { canonicalExecutorDigest } from "./lib/providers.mjs";
 import { sha256 } from "./lib/canonical-json.mjs";
 import { buildGenerationSchedule, persistPrepacketSchedule } from "./lib/schedule.mjs";
 import { appendEvent } from "./lib/ledger.mjs";
+import { recordQaCase } from "./lib/qa-case.mjs";
 
 const root = new URL("../../../", import.meta.url).pathname;
 const protocol = JSON.parse(readFileSync(join(root, "evals/v2/protocol.json"), "utf8"));
@@ -69,6 +70,7 @@ assert.throws(() => classifyCost({ kind: "incremental", usd: 0.01 }), /increment
 assert.throws(() => admitCall(state(), { ...request, cost: { kind: "incremental", usd: 0.01 } }), /incremental spend/);
 assert.throws(() => admitCall({ ...state(), admitted: 160 }, request), /160/);
 assert.throws(() => admitCall({ ...state(), admitted: 160, max_external_calls: 999 }, request), /160/);
+recordQaCase("dispatch-cost-and-partial-production");
 
 const missingAdmissionDir = mkdtempSync(join(tmpdir(), "effectiveness-v2-missing-admission-"));
 try {
@@ -157,6 +159,7 @@ assert.throws(() => validateAdmittedPlan({ ...plan, jobs: plan.jobs.map((job, in
 assert.throws(() => validateAdmittedPlan({ ...plan, required_viewports: [{ viewport_id: "mobile", width: 390, height: 844 }] }, planInput), /canonical|exact|mismatch/);
 assert.throws(() => validateAdmittedPlan({ ...plan, required_viewports: [{ viewport_id: "mobile", width: 390, height: 844 }, { viewport_id: "desktop", width: 1280, height: 720 }] }, planInput), /canonical|exact|mismatch/);
 for (const scope of ["scenario", "unit", "arm", "viewport"]) assert.throws(() => addLateExclusion(plan, scope), /exclusion/);
+recordQaCase("late-exclusions-and-packet-transformation");
 
 const e2eDir = mkdtempSync(join(tmpdir(), "effectiveness-v2-generation-e2e-"));
 try {

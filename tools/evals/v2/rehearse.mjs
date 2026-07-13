@@ -169,7 +169,7 @@ function validJudgeArtifact(entry, packet, anchorMetadata) {
 
 export function rehearse({
   failureOrdinal = null, failPreAdmission = false, invalidJudgeOrdinal = null,
-  swapSourceRoots = false, admissionMutation = null
+  swapSourceRoots = false, dirtySourceRoot = false, admissionMutation = null
 } = {}) {
   if (failureOrdinal !== null && ![1, 49, 80, 160].includes(failureOrdinal)) {
     throw new Error("rehearsal failure ordinal must be one of 1, 49, 80, or 160");
@@ -186,6 +186,7 @@ export function rehearse({
     addExactWorktree(repoRoot, baselineRoot, BASELINE_REVISION);
     addExactWorktree(repoRoot, candidateRoot, CANDIDATE_REVISION);
     worktreesAdded = true;
+    if (dirtySourceRoot) writeFileSync(join(candidateRoot, "qa-dirty-source.txt"), "must reject before admission\n");
     const sourceRoots = swapSourceRoots
       ? { baseline: candidateRoot, candidate: baselineRoot }
       : { baseline: baselineRoot, candidate: candidateRoot };
