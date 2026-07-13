@@ -20,6 +20,46 @@ export function canonicalJson(value) {
   return JSON.stringify(value);
 }
 
+/**
+ * canonicalPacket(packet)
+ *
+ * Single source of truth for the canonical packet serialization used by both
+ * the adapter (packet_set_sha256) and the judge validator (packet_sha256).
+ * Placed in contracts.mjs so the adapter does not need to import judges.mjs
+ * (dependency boundary). Omits arm_id (not part of the closed contract).
+ *
+ * Brief §3.1 line 154:
+ *   packet_set_sha256 = SHA256(canonicalJson(sortBy(packets, packet_id).map(canonicalPacket)))
+ */
+export function canonicalPacket(packet) {
+  const orderedArms = [...packet.arms].sort((a, b) => a.opaque_slot - b.opaque_slot).map((arm) => ({
+    opaque_slot: arm.opaque_slot,
+    artifact_id: arm.artifact_id,
+    label_id: arm.label_id,
+    artifact_bytes: arm.artifact_bytes,
+    artifact_sha256: arm.artifact_sha256,
+    brief: arm.brief,
+    render_evidence: [...arm.render_evidence].sort((a, b) => a.viewport_id.localeCompare(b.viewport_id)).map((entry) => ({
+      viewport_id: entry.viewport_id,
+      viewport_id_token: entry.viewport_id_token,
+      evidence_id: entry.evidence_id,
+      artifact_sha256: entry.artifact_sha256,
+      screenshot_sha256: entry.screenshot_sha256,
+      dom_sha256: entry.dom_sha256,
+      style_sha256: entry.style_sha256
+    }))
+  }));
+  return canonicalJson({
+    packet_id: packet.packet_id,
+    unit_id: packet.unit_id,
+    scenario_id_token: packet.scenario_id_token,
+    arms: orderedArms,
+    brief: packet.brief,
+    rubric: packet.rubric,
+    viewport_ids: packet.viewport_ids
+  });
+}
+
 export function sha256(value) {
   const bytes = typeof value === "string" ? value : canonicalJson(value);
   return createHash("sha256").update(bytes).digest("hex");

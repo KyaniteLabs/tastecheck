@@ -16,6 +16,7 @@ import {
   FORBIDDEN_CUES
 } from "./lib/packet-policy.mjs";
 import {
+  canonicalPacket,
   validateEvidenceCitation,
   validateJudgeBatch,
   packetSha256
@@ -586,6 +587,125 @@ assert.equal(Object.keys(stubAuthority).join("|"), "buildPackets", "adapter surf
 const stubResult = stubAuthority.buildPackets({ unit: 1 });
 assert.equal(stubResult.packet_set_sha256.length, 64, "stub build still yields packet_set_sha256");
 rmSync(stubTemp, { recursive: true, force: true });
+
+// ---------------------------------------------------------------------------
+// 11. Brief formula alignment (I-1):
+//     packet_set_sha256 = SHA256(canonicalJson(sortBy(packets, packet_id).map(canonicalPacket)))
+// ---------------------------------------------------------------------------
+{
+  const sortedPackets = [...built.packets].sort((a, b) => a.packet_id.localeCompare(b.packet_id));
+  const briefFormulaDigest = sha256(canonicalJson(sortedPackets.map(canonicalPacket)));
+  assert.equal(
+    built.packet_set_sha256,
+    briefFormulaDigest,
+    "packet_set_sha256 must match brief formula: SHA256(canonicalJson(sortBy(packets, packet_id).map(canonicalPacket)))"
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 12. Closed per-arm field allowlist (I-2): symmetric unknown fields rejected
+// ---------------------------------------------------------------------------
+{
+  const symUnknown = buildFixture({ reuseSeed: primary.created });
+  const realBuild = symUnknown.fixture.buildCapability;
+  symUnknown.fixture.buildCapability = {
+    buildPackets(input) {
+      const result = realBuild.buildPackets(input);
+      for (const arm of result.packets[0].arms) {
+        arm.real_arm_hash = "deadbeef".repeat(8);
+      }
+      return result;
+    }
+  };
+  assert.throws(
+    () => buildBlindPackets(symUnknown.fixture),
+    /closed|field|unknown|arm/i,
+    "symmetric unknown arm field must be rejected by closed allowlist"
+  );
+  rmSync(symUnknown.tempDir, { recursive: true, force: true });
+}
+
+// ---------------------------------------------------------------------------
+// 13. arm_id removed from arm output (I-3) + explicit closed arm-field allowlist
+// ---------------------------------------------------------------------------
+const ARM_FIELD_ALLOWLIST = ["opaque_slot", "artifact_id", "label_id", "artifact_bytes", "artifact_sha256", "brief", "render_evidence"];
+for (const packet of [...built.packets, ...built.anchor_packets]) {
+  for (const arm of packet.arms) {
+    assert.equal("arm_id" in arm, false, "arm_id must not be present in arm output (dead weight removed)");
+    const fields = Object.keys(arm).sort();
+    assert.deepEqual(fields, [...ARM_FIELD_ALLOWLIST].sort(), `arm fields must exactly match closed allowlist: got ${fields.join("|")}`);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 14. High-value missing tests: out-of-bounds codepoint, surrogate-pair,
+//     duplicate generations, asymmetric rubric
+// ---------------------------------------------------------------------------
+
+// 14a. Out-of-bounds codepoint offset (E-10): end > length must be rejected
+{
+  const oobCite = citationInto(referencePacket, 0, "mobile", {
+    mutate: (cite) => {
+      const codepoints = Array.from(referenceText);
+      return { ...cite, start_codepoint: codepoints.length, end_codepoint: codepoints.length + 5, exact_span: "x".repeat(5) };
+    }
+  });
+  expectCitationReject({ description: "out-of-bounds codepoint offset (end > length)", citation: oobCite, token: "offset|bounds" });
+}
+
+// 14b. Surrogate-pair codepoint semantics (E-13): UTF-16 code-unit offset ≠ codepoint offset
+{
+  const codepoints = Array.from(referenceText);
+  const emojiCpIdx = codepoints.indexOf("🦊");
+  const emojiUtf16Idx = referenceText.indexOf("🦊");
+  // 🦊 is U+1F98A: 1 codepoint, 2 UTF-16 code units. After it, UTF-16 indices
+  // drift from codepoint indices by 1.
+  const afterCp = emojiCpIdx + 1;        // codepoint index of char after emoji
+  const afterUtf16 = emojiUtf16Idx + 2;   // UTF-16 index of char after emoji
+  assert.ok(afterUtf16 > afterCp, "UTF-16 index after supplementary char must exceed codepoint index");
+  // Buggy caller uses UTF-16 offset as codepoint offset; the span is correct
+  // in UTF-16 space but the validator slices in codepoint space (1 off).
+  const buggySpan = referenceText.substring(afterUtf16, afterUtf16 + 4);
+  const surrogateBadCite = citationInto(referencePacket, 0, "mobile", {
+    mutate: (cite) => ({
+      ...cite,
+      start_codepoint: afterUtf16,
+      end_codepoint: afterUtf16 + 4,
+      exact_span: buggySpan
+    })
+  });
+  expectCitationReject({ description: "UTF-16 surrogate-pair offset treated as codepoint", citation: surrogateBadCite, token: "nonmatching|span" });
+}
+
+// 14c. Duplicate generation entries rejected (M-8)
+{
+  const dupGen = buildFixture({ reuseSeed: primary.created, mutateGenerations: (gens) => [...gens, { ...gens[0] }] });
+  assert.throws(
+    () => buildBlindPackets(dupGen.fixture),
+    /duplicate|generation/i,
+    "duplicate generation entry must be rejected"
+  );
+  rmSync(dupGen.tempDir, { recursive: true, force: true });
+}
+
+// 14d. Asymmetric rubric across packets rejected (P-19)
+{
+  const asymRubric = buildFixture({ reuseSeed: primary.created });
+  const realBuild = asymRubric.fixture.buildCapability;
+  asymRubric.fixture.buildCapability = {
+    buildPackets(input) {
+      const result = realBuild.buildPackets(input);
+      result.packets[0] = { ...result.packets[0], rubric: { ...result.packets[0].rubric, scale: "1-10 mutated" } };
+      return result;
+    }
+  };
+  assert.throws(
+    () => buildBlindPackets(asymRubric.fixture),
+    /rubric|asymmetric/i,
+    "rubric differing across packets must be rejected"
+  );
+  rmSync(asymRubric.tempDir, { recursive: true, force: true });
+}
 
 // ---------------------------------------------------------------------------
 // Cleanup
