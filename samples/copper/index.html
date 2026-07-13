@@ -91,7 +91,7 @@ h2{font-family:var(--disp);font-weight:700;font-size:clamp(2.1rem,1.4rem + 3vw,3
 @media(max-width:760px){.steps{grid-template-columns:1fr}.steps .step{grid-column:auto;grid-row:auto}}
 /* skills — IRREGULAR TESSELLATED BENTO (varied cell sizes): hero, wide, standard, tall spans */
 .skills-g{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:3rem;grid-auto-flow:dense}
-.sk{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:1.2rem;grid-column:span 2;min-height:9.5rem;display:flex;flex-direction:column;gap:.4rem;transition:border-color .16s,transform .16s}.sk:nth-child(4n+1){min-height:11rem}.sk:nth-child(4n+3){min-height:8rem}
+.sk{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:1.2rem;grid-column:span 2;min-height:9.5rem;display:flex;flex-direction:column;gap:.4rem;transition:border-color .16s,transform .16s}.sk:nth-child(4n+1){min-height:11rem}.sk:nth-child(4n+3){min-height:8rem}.sk.s3{min-height:10.5rem}.sk.s3:nth-of-type(2){min-height:8.5rem}.sk.s3:nth-of-type(4){min-height:12rem}
 .sk:hover{border-color:var(--verd);transform:translateY(-2px)}
 /* iridescent feature border for lead / gate cells */
 .sk.feat{border:1px solid transparent;background:linear-gradient(var(--s1),var(--s1)) padding-box,linear-gradient(120deg,var(--copper),var(--verd)) border-box}
