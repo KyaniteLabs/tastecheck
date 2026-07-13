@@ -35,6 +35,7 @@
 | 5. Machine-only blind judge protocol | RED/GREEN recorded in Task 5 implementer report; aggregate v2 suite | `APPROVE` after packet-set formula, closed arm allowlist, and arm identity corrections | committed and pushed (`37c4f30`) |
 | 6. One-time synthesis and scoped public claims | RED: missing `synthesis.mjs`, `reservation.mjs`, `project-claim.mjs`; GREEN: `node tools/evals/v2/test-synthesis.mjs` plus aggregate v2 suite | `APPROVE` after admitted-ledger registry binding correction | committed and pushed (`48ea9a0`) |
 | 7A. Validator, resolver, executor, and admission foundations | RED: inherited rehearsal test failed on invalid provider regex; GREEN: `node tools/evals/v2/test-foundation.mjs` reports external calls 0 and aggregate v2 suite passes 7 modules | `APPROVE` after trusted selection recomputation, explicit generator identity, judge-owned settings/tool/time binding, semantic five-file closure, and viewport-cardinality fixes | ready to commit |
+| 7B. Exact call schedule, receipt, and route binding | RED: `node tools/evals/v2/test-schedule.mjs` failed on missing `lib/schedule.mjs`, then missing `run-judges.mjs`; GREEN: focused test reports fake calls 160 / real calls 0, aggregate v2 suite passes 8 modules, and `git diff --check` passes | `APPROVE` after canonical-plan reconstruction, durable prepacket/judgment schedule readback, and exact generation executor-class binding fixes | ready to commit |
 
 ## FINAL sequential architect+critic APPROVE correction (Task 6)
 

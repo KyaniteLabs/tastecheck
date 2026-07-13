@@ -7,13 +7,25 @@ import {
   classifyExecution, executeAttempt, validateAdmittedPlan
 } from "./lib/admission.mjs";
 import { runGenerations } from "./lib/generate.mjs";
+import { canonicalExecutorDigest } from "./lib/providers.mjs";
+import { sha256 } from "./lib/canonical-json.mjs";
+import { buildGenerationSchedule, persistPrepacketSchedule } from "./lib/schedule.mjs";
 
 const root = new URL("../../../", import.meta.url).pathname;
 const protocol = JSON.parse(readFileSync(join(root, "evals/v2/protocol.json"), "utf8"));
 const registry = JSON.parse(readFileSync(join(root, "evals/v2/scenario-registry.json"), "utf8"));
 const success = JSON.parse(readFileSync(join(root, "evals/v2/fixtures/generator-success.json"), "utf8"));
 const falseSuccess = JSON.parse(readFileSync(join(root, "evals/v2/fixtures/generator-false-success.json"), "utf8"));
-const frozen = { provider: "provider-generator", model_version: "generator-model-2026-07-01", runtime_version: "dispatch-3.2.1" };
+const d = (value) => sha256(value);
+const frozen = {
+  call_class: "generation", provider: "provider-generator", foundation_lineage: "generator-lineage",
+  model_version: "generator-model-2026-07-01", runtime_version: "dispatch-3.2.1",
+  adapter_sha256: d("adapter"), system_prompt_sha256: d("prompt"), rubric_sha256: null,
+  settings_sha256: d("settings"), tool_policy_sha256: d("tools"), time_budget_seconds: 900,
+  family: "generator-family", identity: "generator-primary",
+  zero_cost_proof: { kind: "flat-rate", incremental_spend_usd: 0 }
+};
+const generatorBinding = { executor: frozen, executor_digest: canonicalExecutorDigest(frozen), resolver_attestation_sha256: d("attestation") };
 const request = { call_class: "generation", executor: frozen, cost: { kind: "flat-rate", usd: 0 }, protocol_sha256: "a", source_sha256: "b", execution_manifest_sha256: "c" };
 const state = (path) => ({ admitted: 0, spend_usd: 0, run_status: "running", ledger_path: path, max_external_calls: 160, protocol_sha256: "a", source_sha256: "b", execution_manifest_sha256: "c", frozen_executors: { generation: frozen, production_judge: frozen, anchor_judge: frozen } });
 
@@ -75,28 +87,36 @@ for (const phase of ["reserve", "route", "close"]) {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }
 
-const current = buildArmJob({ scenario: registry.scenarios[0], seed: 101, arm: "candidate", revision: protocol.candidate_revision, protocol_sha256: "a", skill_pack_content: "candidate-pack" });
-const baseline = buildArmJob({ scenario: registry.scenarios[0], seed: 101, arm: "baseline", revision: protocol.baseline_revision, protocol_sha256: "a", skill_pack_content: "baseline-pack" });
+const current = buildArmJob({ scenario: registry.scenarios[0], seed: 101, arm: "candidate", revision: protocol.candidate_revision, protocol_sha256: "a", skill_pack_content: "candidate-pack", generatorBinding });
+const baseline = buildArmJob({ scenario: registry.scenarios[0], seed: 101, arm: "baseline", revision: protocol.baseline_revision, protocol_sha256: "a", skill_pack_content: "baseline-pack", generatorBinding });
 const stripIdentity = ({ arm, revision, skill_pack_content, ...value }) => value;
 assert.deepEqual(stripIdentity(current), stripIdentity(baseline));
-const plan = buildGenerationPlan({ protocol, registry, protocol_sha256: "a" });
+const planInput = { protocol, registry, protocol_sha256: "a", generatorBinding };
+const plan = buildGenerationPlan(planInput);
 assert.equal(plan.jobs.length, 48);
 assert.equal(new Set(plan.jobs.map((job) => `${job.scenario.scenario_id}:${job.seed}`)).size, 24);
-assert.doesNotThrow(() => validateAdmittedPlan(plan));
-assert.throws(() => validateAdmittedPlan({ ...plan, jobs: plan.jobs.slice(1) }), /24 mandatory units|48/);
-assert.throws(() => validateAdmittedPlan({ ...plan, jobs: plan.jobs.map((job, index) => index < 4 ? { ...job, scenario: { ...job.scenario, scenario_id: "invented-scenario" } } : job) }), /scenario|mandatory/);
-assert.throws(() => validateAdmittedPlan({ ...plan, required_viewports: [{ viewport_id: "mobile", width: 390, height: 844 }] }), /viewport/);
-assert.throws(() => validateAdmittedPlan({ ...plan, required_viewports: [{ viewport_id: "mobile", width: 390, height: 844 }, { viewport_id: "desktop", width: 1280, height: 720 }] }), /viewport/);
+assert.doesNotThrow(() => validateAdmittedPlan(plan, planInput));
+assert.throws(() => validateAdmittedPlan({ ...plan, jobs: plan.jobs.slice(1) }, planInput), /canonical|exact|mismatch/);
+assert.throws(() => validateAdmittedPlan({ ...plan, jobs: plan.jobs.map((job, index) => index < 4 ? { ...job, scenario: { ...job.scenario, scenario_id: "invented-scenario" } } : job) }, planInput), /canonical|exact|mismatch/);
+assert.throws(() => validateAdmittedPlan({ ...plan, required_viewports: [{ viewport_id: "mobile", width: 390, height: 844 }] }, planInput), /canonical|exact|mismatch/);
+assert.throws(() => validateAdmittedPlan({ ...plan, required_viewports: [{ viewport_id: "mobile", width: 390, height: 844 }, { viewport_id: "desktop", width: 1280, height: 720 }] }, planInput), /canonical|exact|mismatch/);
 for (const scope of ["scenario", "unit", "arm", "viewport"]) assert.throws(() => addLateExclusion(plan, scope), /exclusion/);
 
 const e2eDir = mkdtempSync(join(tmpdir(), "effectiveness-v2-generation-e2e-"));
 try {
-  const e2eState = state(join(e2eDir, "ledger.jsonl"));
+  const protocolSha256 = d("protocol"); const registrySha256 = d("registry"); const runId = d("run");
+  const e2ePlan = buildGenerationPlan({ protocol, registry, protocol_sha256: protocolSha256, generatorBinding });
+  const judge = (family, identity) => ({ executor: { family, identity }, executor_digest: d(`${family}|${identity}|executor`), resolver_attestation_sha256: d(`${family}|${identity}|attestation`) });
+  const selection = { execution_manifest_sha256: d("manifest"), generator: generatorBinding, judges: [judge("family-a", "judge-1"), judge("family-a", "judge-2"), judge("family-b", "judge-1"), judge("family-b", "judge-2")] };
+  const prepacketPath = join(e2eDir, "prepacket.json");
+  const prepacket = persistPrepacketSchedule({ path: prepacketPath, generationSchedule: buildGenerationSchedule({ protocol, registry }), generationPlan: e2ePlan, selection, protocol, registry, protocolSha256, scenarioRegistrySha256: registrySha256, runId });
+  const e2eState = { admitted: 0, spend_usd: 0, run_status: "running", ledger_path: join(e2eDir, "ledger.jsonl"), max_external_calls: 160, protocol_sha256: protocolSha256, source_sha256: "b", execution_manifest_sha256: selection.execution_manifest_sha256, scenario_registry_sha256: registrySha256, run_id: runId, prepacket_schedule_sha256: prepacket.schedule_sha256, frozen_execution_selection: selection };
+  const e2eRequest = { call_class: "generation", executor: frozen, executor_digest: generatorBinding.executor_digest, resolver_attestation_sha256: generatorBinding.resolver_attestation_sha256, cost: { kind: "flat-rate", usd: 0 }, protocol_sha256: protocolSha256, source_sha256: "b", execution_manifest_sha256: selection.execution_manifest_sha256 };
   const result = runGenerations({
-    plan,
+    plan: e2ePlan, protocol, registry, prepacketSchedulePath: prepacketPath,
     state: e2eState,
-    requestFor: () => request,
-    route: () => frozen,
+    requestFor: () => e2eRequest,
+    route: ({ request }) => ({ executor: request.executor, executor_digest: request.executor_digest, resolver_attestation_sha256: request.resolver_attestation_sha256 }),
     invoke: () => success
   });
   assert.equal(result.run_status, "running");
