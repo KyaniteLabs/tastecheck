@@ -109,7 +109,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: A design needs a cohesive palette, color ramp, semantic tokens, or contrast repair (+1 in contract.json); avoid: The request is only to map existing semantic tokens between light, dark, or forced-colors themes (+1 in contract.json)
 - Exclude: Do not deliver an unmeasured palette (+1 in contract.json)
-- Stop / handoff: Pause when the required foreground-background roles are unknown (+1 in contract.json); receives [design-system-interview, improve-existing-website, deslop-ui] -> sends [theming, data-viz, a11y-pass]
+- Stop / handoff: Pause when the required foreground-background roles are unknown (+1 in contract.json); receives [chance-design, design-system-interview, deslop-ui, improve-existing-website] -> sends [theming, data-viz, a11y-pass]
 - Output: A brief-derived OKLCH ramp and semantic color-token system with measured pair evidence
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

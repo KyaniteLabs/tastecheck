@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "skill": "chance-design",
+  "class": "generative",
+  "trigger": {
+    "positive": [
+      "A user wants a surprise or procedural design direction without a manual interview",
+      "A product needs varied-but-tasteful design exploration across the valid option space",
+      "A creative exercise or design jam requires rapid, diverse system generation"
+    ],
+    "negative": [
+      "The user wants to commit to a specific direction by hand",
+      "A shipped public surface needs the full strict gate",
+      "The request is to improve an existing site rather than generate a new direction"
+    ],
+    "adjacent_skills": ["design-system-interview", "tastecheck-pass", "color-system"]
+  },
+  "exclusions": [
+    "Do not roll outside the bounded answer space or bypass the design bounds",
+    "Do not present a chance-rolled design as a hand-interviewed committed direction",
+    "Do not skip the relaxed gate — random inputs still need contrast, readability, and self-containment checks"
+  ],
+  "inputs": {
+    "required": ["A numeric seed or instruction to derive one"],
+    "optional": ["Preference constraints (e.g., 'dark mode only')", "Chance MCP endpoint for multi-source entropy"]
+  },
+  "outputs": {
+    "primary": "A seeded, reproducible DESIGN-SYSTEM.md with rolled answers and relaxed-gate evidence",
+    "artifacts": ["DESIGN-SYSTEM.md", "rolled-answer-table", "relaxed-gate-report"],
+    "handoff_fields": ["seed", "reference", "personality", "aesthetic", "type", "color_mode", "density", "rhythm", "signature", "imagery", "motion", "gate_result"]
+  },
+  "stop_conditions": [
+    "Stop when the rolled design will be a shipped public surface — escalate to tastecheck-pass strict gate",
+    "Stop if the user rejects the rolled direction and wants to answer the interview manually — hand off to design-system-interview"
+  ],
+  "handoff": {
+    "receives_from": ["design-system-interview"],
+    "sends_to": ["color-system", "web-typography", "spacing-system", "theming", "responsive-layout", "art-direction", "micro-motion", "component-states", "data-viz", "empty-states", "form-ux", "humanize-copy"]
+  },
+  "self_check_shape": "table_with_evidence",
+  "required_evidence_fields": ["status", "reason", "remediation", "evidence", "provenance"],
+  "context_budget": {"skill_md_max_tokens": 5000, "resource_max_tokens": 6000},
+  "notes": "Chance-design is the proof-of-thesis skill: constraints produce taste even from random inputs. It is explicitly a relaxed-gate entry point for personal artifacts and design exploration, not a replacement for the strict ship gate on public surfaces."
+}
