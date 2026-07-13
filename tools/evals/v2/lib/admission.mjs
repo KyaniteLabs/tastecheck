@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { appendEvent } from "./ledger.mjs";
+import { appendEvent, validateLedger } from "./ledger.mjs";
 import { canonicalJson } from "./canonical-json.mjs";
 
 const MAX_EXTERNAL_CALLS = 160;
@@ -18,6 +18,74 @@ const lastEvent = (path) => {
   try { return readFileSync(path, "utf8").trim().split("\n").filter(Boolean).map(JSON.parse).at(-1) ?? null; } catch { return null; }
 };
 const persist = (state, event) => appendEvent(state.ledger_path, lastEvent(state.ledger_path), event);
+
+export function verifyProductionAdmission(state) {
+  const requiredDigests = [
+    "run_id", "protocol_sha256", "source_sha256", "execution_manifest_sha256",
+    "scenario_registry_sha256", "randomization_commitment_sha256", "selection_sha256",
+    "prepacket_schedule_sha256"
+  ];
+  for (const field of requiredDigests) {
+    if (!/^[0-9a-f]{64}$/.test(state?.[field] ?? "")) throw new Error(`production admission ${field} is required`);
+  }
+  let events;
+  try {
+    const text = readFileSync(state.ledger_path, "utf8").trim();
+    events = text ? text.split("\n").map(JSON.parse) : [];
+    validateLedger(events);
+  } catch (error) {
+    throw new Error(`production admission ledger invalid: ${error.message}`);
+  }
+  const admitted = events.filter((event) => event.type === "production_admitted");
+  const initialized = events.filter((event) => event.type === "run_initialized");
+  if (initialized.length !== 1) throw new Error("production admission requires exactly one run_initialized event");
+  if (admitted.length !== 1) throw new Error("production admission requires exactly one production_admitted event");
+  const initialExpected = {
+    run_id: state.run_id,
+    protocol_sha256: state.protocol_sha256,
+    source_sha256: state.source_sha256,
+    execution_manifest_sha256: state.execution_manifest_sha256,
+    scenario_registry_sha256: state.scenario_registry_sha256,
+    randomization_commitment_sha256: state.randomization_commitment_sha256,
+    exclusions: []
+  };
+  for (const [field, value] of Object.entries(initialExpected)) {
+    if (canonicalJson(initialized[0][field]) !== canonicalJson(value)) {
+      throw new Error(`run_initialized ${field} initialization binding mismatch`);
+    }
+  }
+  const event = admitted[0];
+  const expected = {
+    run_id: state.run_id,
+    protocol_sha256: state.protocol_sha256,
+    source_sha256: state.source_sha256,
+    execution_manifest_sha256: state.execution_manifest_sha256,
+    scenario_registry_sha256: state.scenario_registry_sha256,
+    randomization_commitment_sha256: state.randomization_commitment_sha256,
+    selection_sha256: state.selection_sha256,
+    prepacket_schedule_sha256: state.prepacket_schedule_sha256,
+    exclusions: [],
+    max_external_calls: MAX_EXTERNAL_CALLS,
+    incremental_spend_cap_usd: 0,
+    retry_policy: "none"
+  };
+  for (const [field, value] of Object.entries(expected)) {
+    if (canonicalJson(event[field]) !== canonicalJson(value)) {
+      throw new Error(`production admission ${field} binding mismatch`);
+    }
+  }
+  const firstOrdinal = events.findIndex((entry) => entry.type === "ordinal_reserved");
+  const admissionIndex = events.findIndex((entry) => entry.type === "production_admitted");
+  const initializationIndex = events.findIndex((entry) => entry.type === "run_initialized");
+  if (admissionIndex <= initializationIndex || (firstOrdinal !== -1 && admissionIndex > firstOrdinal)) {
+    throw new Error("production admission must precede ordinal reservation");
+  }
+  const reserved = events.filter((entry) => entry.type === "ordinal_reserved");
+  if (reserved.length !== (state.admitted ?? 0) || reserved.some((entry, index) => entry.ordinal !== index + 1)) {
+    throw new Error("production admission ledger ordinal boundary mismatch");
+  }
+  return event;
+}
 
 export function classifyCost(cost) {
   if (!cost || !["flat-rate", "already-provisioned", "incremental"].includes(cost.kind)) throw new Error("invalid cost classification");
@@ -38,6 +106,7 @@ export function admitCall(state, request) {
   if ((state.admitted ?? 0) >= MAX_EXTERNAL_CALLS) throw new Error(`160 external-call cap reached`);
   if (Number(state.spend_usd ?? 0) !== 0) throw new Error("incremental spend must remain zero");
   const cost_classification = classifyCost(request.cost);
+  verifyProductionAdmission(state);
   for (const key of ["protocol_sha256", "source_sha256", "execution_manifest_sha256"]) if (state[key] !== request[key]) throw new Error(`${key} mismatch`);
   let frozen = state.frozen_executors?.[request.call_class];
   let frozenBinding = null;

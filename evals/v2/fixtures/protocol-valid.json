@@ -33,5 +33,5 @@
   "human_calibration_claimed": false,
   "randomization_commitment_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
   "packet_validator_version": "effectiveness-v2-packet-policy-1",
-  "packet_validator_sha256": "6a8fa4f7c6f70ebe2f9cb22102131b50f46a037cccf18a584e4cabbbc5d66b99"
+  "packet_validator_sha256": "ad625bc547813dbbfcf897d67f0961954a8a9613364a878177d07ce943e26693"
 }

@@ -14,7 +14,7 @@ Effectiveness v2 is a sealed, machine-only blind comparison of the frozen source
 
 Run `npm run eval:v2:rehearse` or the full gate `npm run verify:v2`.
 
-The rehearsal reconstructs both exact source revisions in isolated clean worktrees, verifies the registry and validator closure, creates a real one-time randomization commitment, durably commits the control artifacts, and revalidates clean source identities before ordinal 1. It then drives the same `runGenerations` and `runJudgments` orchestration used by production with injected local fakes.
+The rehearsal reconstructs both exact source revisions in isolated clean worktrees, consumes the committed `skills/`, `commands/`, and `contracts/` bytes, verifies the registry and validator closure, creates a real one-time randomization commitment, and records one fully bound `production_admitted` event. It durably commits the control artifacts and revalidates the clean source identities and admission boundary before ordinal 1. It then drives the same `runGenerations` and `runJudgments` orchestration used by production with injected local fakes.
 
 The only successful count report is:
 
@@ -22,7 +22,7 @@ The only successful count report is:
 {"generations":48,"render_receipts":96,"packets":24,"anchors":4,"production_judgments":96,"anchor_judgments":16,"simulated_external_calls":160,"real_external_calls_started":0}
 ```
 
-Renders consume zero external-call ordinals. The instantiated judgment schedule is durably persisted and verified before ordinal 49. Failures at any reserved ordinal are terminal, consume that ordinal exactly once, and prohibit retry or substitution. Pre-admission failures remain `production_not_started`; post-reservation failures become `production_incomplete`. The rehearsal never opens the unmask authority and deletes its isolated artifacts on exit.
+Renders consume zero external-call ordinals. The instantiated judgment schedule is durably persisted and verified before ordinal 49, and all 112 judgment receipts bind its digests. Judge outputs must satisfy the frozen closed schema and cite exact packet evidence before an attempt may complete. Failures at any reserved ordinal are terminal, consume that ordinal exactly once, and prohibit retry or substitution. Pre-admission failures remain `production_not_started`; post-reservation failures become `production_incomplete`. The rehearsal never opens the unmask authority and deletes its isolated artifacts on exit.
 
 ## Production stop rule
 

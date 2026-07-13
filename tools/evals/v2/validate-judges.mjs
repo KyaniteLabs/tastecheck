@@ -134,6 +134,24 @@ export function validateEvidenceCitation(citation, packetSet) {
   return { valid: errors.length === 0, errors };
 }
 
+export function validateJudgeArtifact({ result, packet }) {
+  const errors = [];
+  const contract = validateContract("judgment", result);
+  if (!contract.valid) {
+    errors.push(...contract.errors.map((error) =>
+      `schema|${error.instancePath || "/"}|${error.keyword || "invalid"}|${error.message || ""}`
+    ));
+  }
+  if (!packet || packet.packet_id !== result?.packet_id || packetSha256(packet) !== result?.packet_sha256) {
+    errors.push("packet|hash|mismatch");
+  }
+  for (const citation of result?.evidence_citations ?? []) {
+    const checked = validateEvidenceCitation(citation, packet ? [packet] : []);
+    if (!checked.valid) errors.push(...checked.errors);
+  }
+  return { valid: errors.length === 0, errors };
+}
+
 function resolveArm(citation, packetSet) {
   if (!packetSet || !Array.isArray(packetSet)) return null;
   // Prefer (artifact_id, opaque_slot) joint resolution; allow artifact_id-only
