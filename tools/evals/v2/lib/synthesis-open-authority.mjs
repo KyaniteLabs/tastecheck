@@ -6,7 +6,6 @@
 // contracts.mjs.
 
 import { createHash, createHmac, createDecipheriv } from "node:crypto";
-import { execSync } from "node:child_process";
 import {
   closeSync, existsSync, fsyncSync, openSync, readFileSync, statSync, writeFileSync
 } from "node:fs";
@@ -14,17 +13,15 @@ import { dirname, join } from "node:path";
 
 import { canonicalJson, sha256, hmacTuple } from "./contracts.mjs";
 import { appendEvent } from "./ledger.mjs";
-
-function gitBool(cwd, args) {
-  try { execSync(`git ${args}`, { cwd, encoding: "utf8", stdio: "pipe" }); return true; } catch { return false; }
-}
+import { assertSafeRunId, verifyCommittedReservation } from "./reservation.mjs";
+import { authorityPublicKey, signAuthorityReceipt } from "./authority-signature.mjs";
 
 function loadSeed(privateStateRef) {
   let stats;
   try { stats = statSync(privateStateRef.secretPath); } catch { throw new Error("randomization secret missing"); }
   if ((stats.mode & 0o777) !== 0o600) throw new Error("randomization secret permission must be 0600");
   const seed = readFileSync(privateStateRef.secretPath);
-  const commitmentCheck = createHash("sha256").update("tastecheck-randomization-v2\0").update(privateStateRef.domain).update("\0").update(seed).digest("hex");
+  const commitmentCheck = createHash("sha256").update(authorityPublicKey(seed)).digest("hex");
   if (seed.length !== 32 || commitmentCheck !== privateStateRef.commitment_sha256) {
     seed.fill(0);
     throw new Error("randomization commitment replacement detected");
@@ -73,25 +70,19 @@ export function createOpenAuthority(privateStateRef) {
         commitment, scenarioIds, seeds
       } = params;
 
-      // 1. Verify committed reservation (clean tree).
-      const isClean = gitBool(reservationRepoRoot, "diff-index --quiet HEAD --");
-      if (!isClean) throw new Error("opening: worktree must be clean (post-reservation replacement detected)");
-
-      // 2. Verify reservation exists in HEAD.
-      let reservationContent;
-      try {
-        reservationContent = execSync(
-          `git show ${head}:evals/v2/runs/${runId}/synthesis-reservation.json`,
-          { cwd: reservationRepoRoot, encoding: "utf8" }
-        ).trim();
-      } catch {
-        throw new Error("opening: committed reservation not found in HEAD");
+      // 1. Verify the safe run identifier, clean tree, exact committed
+      // reservation, and committed ledger using argv-only git execution.
+      assertSafeRunId(runId);
+      const verifiedReservation = verifyCommittedReservation({
+        repoRoot: reservationRepoRoot,
+        runId,
+        reservationSha256: reservation?.sha256,
+        head
+      });
+      if (verifiedReservation.ledger_root !== reservation?.ledger_root) {
+        throw new Error("opening: caller ledger root does not match committed reservation ledger root");
       }
-      const parsedReservation = JSON.parse(reservationContent);
-      const reservationDigest = sha256(canonicalJson(parsedReservation));
-      if (reservation && reservation.sha256 !== reservationDigest) {
-        throw new Error("opening: reservation sha256 mismatch (binding)");
-      }
+      const reservationDigest = sha256(canonicalJson(verifiedReservation.reservation));
 
       // 3. Create terminal opening-attempt marker (exclusive create + fsync).
       const markerPath = join(reservationRepoRoot, "evals/v2/runs", runId, "opening-attempt.json");
@@ -107,13 +98,10 @@ export function createOpenAuthority(privateStateRef) {
       };
       const fd = openSync(markerPath, "wx", 0o600);
       try { writeFileSync(fd, canonicalJson(marker) + "\n", { flush: true }); } finally { closeSync(fd); }
-      try {
-        const dirFd = openSync(dirname(markerPath), "r");
-        try { fsyncSync(dirFd); } finally { closeSync(dirFd); }
-      } catch { /* best-effort */ }
+      const dirFd = openSync(dirname(markerPath), "r");
+      try { fsyncSync(dirFd); } finally { closeSync(dirFd); }
 
       // 4. Append opening_attempted event to ledger.
-      let ledgerPredecessor = null;
       let lastEvent = null;
       if (ledgerPath && ledgerEvents) {
         lastEvent = ledgerEvents[ledgerEvents.length - 1];
@@ -122,7 +110,6 @@ export function createOpenAuthority(privateStateRef) {
         type: "opening_attempted", at: marker.at, run_id: runId,
         reservation_sha256: reservationDigest
       });
-      ledgerPredecessor = openingEvent.event_sha256;
 
       // 5. Read seed, decrypt map, verify commitment, recompute tokens, zero seed.
       const seed = loadSeed(privateStateRef);
@@ -167,14 +154,35 @@ export function createOpenAuthority(privateStateRef) {
           });
         }
 
-        result = {
-          mappings: verifiedMappings,
+        const signedMappings = [...verifiedMappings].sort((left, right) =>
+          left.unit_id.localeCompare(right.unit_id) || left.opaque_slot - right.opaque_slot
+        );
+        const unsignedOpeningBody = {
+          mappings: signedMappings,
           packet_set_sha256: plaintextMap.packet_set_sha256,
           commitment_sha256: actualCommitment,
           reservation_sha256: reservationDigest,
-          ledger_predecessor: ledgerPredecessor,
-          run_id: runId
+          ledger_predecessor: lastEvent?.event_sha256 ?? null,
+          opening_event_sha256: openingEvent.event_sha256,
+          run_id: runId,
+          authority_public_key: authorityPublicKey(seed).toString("base64")
         };
+        const openingBody = {
+          ...unsignedOpeningBody,
+          authority_signature: signAuthorityReceipt(seed, canonicalJson(unsignedOpeningBody))
+        };
+        result = {
+          ...openingBody,
+          opening_receipt_sha256: sha256(canonicalJson(openingBody))
+        };
+        const completed = appendEvent(ledgerPath, openingEvent, {
+          type: "opening_completed", at: marker.at, run_id: runId,
+          reservation_sha256: reservationDigest,
+          opening_receipt_sha256: result.opening_receipt_sha256,
+          packet_set_sha256: result.packet_set_sha256,
+          commitment_sha256: result.commitment_sha256
+        });
+        result.completion_event_sha256 = completed.event_sha256;
       } finally {
         seed.fill(0);
       }

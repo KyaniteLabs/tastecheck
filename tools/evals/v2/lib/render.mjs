@@ -43,7 +43,7 @@ function fileSha256(path) {
 
 const RENDERER_ADAPTER_SHA256 = fileSha256(fileURLToPath(import.meta.url));
 
-function stable(value) {
+export function stable(value) {
   if (Array.isArray(value)) return `[${value.map(stable).join(",")}]`;
   if (value && typeof value === "object") return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${stable(value[key])}`).join(",")}}`;
   return JSON.stringify(value);
@@ -137,7 +137,7 @@ function assertManifest(manifest, identity) {
   }
 }
 
-function evidenceId({ runId, artifact, artifactHash, viewportId }) {
+export function evidenceId({ runId, artifact, artifactHash, viewportId }) {
   return sha256(stable({ domain: "effectiveness-v2-render-evidence-1", run_id: runId, unit_id: artifact.unit_id, arm: artifact.arm, artifact_id: artifact.artifact_id, artifact_sha256: artifactHash, viewport_id: viewportId }));
 }
 
@@ -307,10 +307,8 @@ export async function captureRenders({ runId, artifact, manifest, requiredViewpo
   }
 }
 
-export async function verifyRenderReceipt(receipt, artifact, manifest, runId) {
+export function verifyRenderReceiptBinding(receipt, artifact, manifest, runId) {
   assertString(runId, "run");
-  const identity = await localIdentity();
-  assertManifest(manifest, identity);
   if (receipt?.schema_version !== 2) fail("schema version drift");
   if (receipt?.kind !== "effectiveness-v2-render-receipt") fail("receipt kind drift");
   if (receipt?.run_id !== runId) fail("run identity replay across runs");
@@ -334,6 +332,13 @@ export async function verifyRenderReceipt(receipt, artifact, manifest, runId) {
     if (receipt[field] !== manifest[field]) fail(`${field.replaceAll("_", " ")} lineage drift`);
   }
   return true;
+}
+
+export async function verifyRenderReceipt(receipt, artifact, manifest, runId) {
+  assertString(runId, "run");
+  const identity = await localIdentity();
+  assertManifest(manifest, identity);
+  return verifyRenderReceiptBinding(receipt, artifact, manifest, runId);
 }
 
 export async function verifyRenderReceipts(receipts, artifact, manifest, runId, requiredViewports) {

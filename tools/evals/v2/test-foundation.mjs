@@ -21,12 +21,24 @@ import {
   sanitizeCapability,
   selectFamilies,
   verifyAdmissionBindings,
-  verifyResolverAttestation
+  verifyResolverAttestation,
+  verifyResolverAttestationFormat
 } from "./lib/providers.mjs";
 import { canonicalJson, sha256 } from "./lib/canonical-json.mjs";
 
 const repoRoot = new URL("../../../", import.meta.url).pathname;
 const protocol = JSON.parse(readFileSync(join(repoRoot, "evals/v2/protocol.json"), "utf8"));
+
+const providerPreflight = spawnSync(process.execPath, [join(repoRoot, "tools/evals/v2/generate.mjs"), "preflight"], { encoding: "utf8" });
+assert.notEqual(providerPreflight.status, 0, "provider preflight must not claim success without sealed two-provider proof");
+assert.match(`${providerPreflight.stdout}\n${providerPreflight.stderr}`, /production_not_started/);
+assert.doesNotMatch(`${providerPreflight.stdout}\n${providerPreflight.stderr}`, /preflight passed/i);
+
+const synthesisCli = spawnSync(process.execPath, [
+  join(repoRoot, "tools/evals/v2/synthesize.mjs"), "synthesize", repoRoot, "a".repeat(64)
+], { encoding: "utf8" });
+assert.notEqual(synthesisCli.status, 0, "unsealed synthesis CLI must fail closed");
+assert.match(`${synthesisCli.stdout}\n${synthesisCli.stderr}`, /production_not_started/);
 
 // Exact, closed, sorted five-file validator dependency set.
 assert.equal(PACKET_POLICY_DEPENDENCY_FILES.length, 5);
@@ -159,16 +171,18 @@ for (const family of manifestFixture.evaluator_families) {
   }
 }
 assert.equal(attestations.length, 5);
-for (const item of attestations) assert.doesNotThrow(() => verifyResolverAttestation(item));
-assert.throws(() => verifyResolverAttestation({ ...attestations[0], issuer: "untrusted" }), /issuer/i);
-assert.throws(() => verifyResolverAttestation({ ...attestations[0], introspection_only: false }), /schema|introspection/i);
-assert.throws(() => verifyResolverAttestation({ ...attestations[0], incremental_spend_usd: 0.01 }), /schema|spend/i);
-assert.throws(() => verifyResolverAttestation({ ...attestations[0], subject_canonical_id: "model\u200b" }), /canonical|ascii/i);
-assert.throws(() => verifyResolverAttestation({ ...attestations[0], alias: "latest" }), /schema/i);
-assert.throws(() => verifyResolverAttestation(
+for (const item of attestations) assert.doesNotThrow(() => verifyResolverAttestationFormat(item));
+assert.throws(() => verifyResolverAttestationFormat({ ...attestations[0], issuer: "untrusted" }), /issuer/i);
+assert.throws(() => verifyResolverAttestationFormat({ ...attestations[0], introspection_only: false }), /schema|introspection/i);
+assert.throws(() => verifyResolverAttestationFormat({ ...attestations[0], incremental_spend_usd: 0.01 }), /schema|spend/i);
+assert.throws(() => verifyResolverAttestationFormat({ ...attestations[0], subject_canonical_id: "model\u200b" }), /canonical|ascii/i);
+assert.throws(() => verifyResolverAttestationFormat({ ...attestations[0], alias: "latest" }), /schema/i);
+assert.throws(() => verifyResolverAttestationFormat(
   { ...attestations[0], resolved_version: "generator-model-2099-01-01" },
   { boundVersions: new Map([[attestations[0].subject_canonical_id, attestations[0].resolved_version]]) }
 ), /drift/i);
+// Production path: unsigned attestations must require trusted signature.
+assert.throws(() => verifyResolverAttestation(attestations[0]), /trusted-signature|required/);
 
 const secretCapability = {
   provider: "provider-a",

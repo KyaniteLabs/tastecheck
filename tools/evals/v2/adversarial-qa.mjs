@@ -16,9 +16,9 @@ const SUITES = Object.freeze([
   { id: "registry", file: "tools/evals/v2/test-registry.mjs", source_sha256: "fcafb02924a75c6b1faad47cac30d7fac243b5066aefc529e35b7c1c20f99ed7" },
   { id: "generation", file: "tools/evals/v2/test-generation.mjs", source_sha256: "c8e4dd3c5d9f680a957dd5a05498e7562dc96249aa6a370845c467d91643fc98" },
   { id: "render", file: "tools/evals/v2/test-render.mjs", source_sha256: "b816b77b83d157a5291759b4ee5d939e210d80919ddc9bf6a374706702a83706" },
-  { id: "judges", file: "tools/evals/v2/test-judges.mjs", source_sha256: "a32b46266348ca1448d3f5c864fdb84e2b25de8b45619f08d66d889b3bcc7d25" },
-  { id: "synthesis", file: "tools/evals/v2/test-synthesis.mjs", source_sha256: "5d261a23da1116c07946d3b168a5f5bfe0c19db48aa5f163fc419edadc1ec15b" },
-  { id: "foundation", file: "tools/evals/v2/test-foundation.mjs", source_sha256: "7be38ef71d83251bef2e16287e738c5c054d6180d0b56156e7b3effcb206670a" },
+  { id: "judges", file: "tools/evals/v2/test-judges.mjs", source_sha256: "8c6bdbe704b864c4f64a651b07e78c0ccab1b9128a56347113123f05be649ec5" },
+  { id: "synthesis", file: "tools/evals/v2/test-synthesis.mjs", source_sha256: "99552acb256700e2953ecb2c6371502a1329bf79e7956e09e9331b539b68da4d" },
+  { id: "foundation", file: "tools/evals/v2/test-foundation.mjs", source_sha256: "8393470b2f15ddecdb9a26466e191fd1598c1d1619d29494ce1bb606eff8ec67" },
   { id: "schedule", file: "tools/evals/v2/test-schedule.mjs", source_sha256: "a75f4a72e4b061ebecf669bad5a213061c8c8b77090dd813c71191da77800903" },
   { id: "rehearsal", file: "tools/evals/v2/test-rehearsal.mjs", source_sha256: "1202a242f725e31274dd459ada181e2528ae053a4a643e0b89966cd4740f5aec" }
 ]);

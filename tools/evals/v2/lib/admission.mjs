@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { appendEvent, validateLedger } from "./ledger.mjs";
-import { canonicalJson } from "./canonical-json.mjs";
+import { canonicalJson, sha256 } from "./canonical-json.mjs";
 
 const MAX_EXTERNAL_CALLS = 160;
 const REQUIRED_SCENARIOS = new Set([
@@ -186,6 +186,12 @@ export function executeAttempt({ state, request, invoke, route, validateArtifact
   }
   receipt.status = status;
   if (status === "completed" && request.receipt_kind === "generation") receipt.artifacts = structuredClone(result.artifacts);
+  if (status === "completed") {
+    receipt.raw_artifacts_sha256 = sha256(canonicalJson(result.artifacts));
+    if (validatedArtifact !== undefined) {
+      receipt.validated_artifact_sha256 = sha256(canonicalJson(validatedArtifact));
+    }
+  }
   try { persist(state, { type: "attempt_closed", ...receipt, run_status: status === "completed" ? state.run_status : "production_incomplete" }); }
   catch (error) {
     receipt.status = "close_persist_uncertain";

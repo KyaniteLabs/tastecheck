@@ -373,6 +373,33 @@ expectReject({
   token: "invocation|identity|duplicate"
 });
 
+expectReject({
+  description: "citation from a different packet",
+  resultsOverride: (() => {
+    const batch = buildBatch(built);
+    batch.results[0] = {
+      ...batch.results[0],
+      evidence_citations: [citationInto(built.packets[1], 0, "mobile")]
+    };
+    return batch.results;
+  })(),
+  token: "evidence|binding|locator|unresolved"
+});
+
+expectReject({
+  description: "duplicate packet family identity tuple with aggregate count preserved",
+  resultsOverride: (() => {
+    const batch = buildBatch(built);
+    batch.results[1] = {
+      ...batch.results[0],
+      invocation_id: batch.results[1].invocation_id,
+      context_id: batch.results[1].context_id
+    };
+    return batch.results;
+  })(),
+  token: "result|tuple|duplicate|missing"
+});
+
 // Anchor failures
 for (const [description, anchorId, newPreference] of [
   ["failed tie anchor", "tie-identical-a", "slot-0"],
