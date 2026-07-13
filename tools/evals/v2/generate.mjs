@@ -26,7 +26,19 @@ const generatorBinding = Object.freeze({
   resolver_attestation_sha256: digest("local-preflight-attestation")
 });
 const plan = planGenerations({ protocol, registry: loadRegistry(root), protocol_sha256: digest(protocolBytes), generatorBinding });
-if (command === "preflight") console.log("effectiveness-v2 preflight passed; fake/local planning only");
+if (command === "preflight") {
+  console.log(JSON.stringify({
+    status: "production_not_started",
+    reason: "sealed_two_provider_admissibility_not_proven",
+    required_providers: 2,
+    required_distinct_foundation_lineages: 2,
+    incremental_spend_cap_usd: 0,
+    planned_external_calls: 160,
+    external_calls_started: 0,
+    retries: 0
+  }));
+  process.exitCode = 2;
+}
 else if (command === "plan") console.log(JSON.stringify({ generation_calls: plan.jobs.length, external_calls_started: 0 }));
 else if (command === "run") throw new Error("run requires an injected sealed executor; CLI external execution is disabled before production gates");
 else throw new Error("usage: generate.mjs preflight|plan|run");

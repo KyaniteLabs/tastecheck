@@ -3,12 +3,12 @@
 // HMAC tuple contract is shared via contracts.mjs.
 
 import { createHash, createDecipheriv } from "node:crypto";
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import {
   closeSync, existsSync, fsyncSync, lstatSync, mkdirSync, openSync, readFileSync,
   readdirSync, writeFileSync
 } from "node:fs";
-import { dirname, join, relative } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 
 import { canonicalJson, sha256, hmacTuple, canonicalPacket } from "./contracts.mjs";
 import { loadRegistry, validateCorpusSeparation } from "./registry.mjs";
@@ -150,13 +150,59 @@ export function reservationSha256(reservation) {
   return sha256(canonicalJson(reservation));
 }
 
+const HEX_64 = /^[0-9a-f]{64}$/;
+const COMMIT_OID = /^[0-9a-f]{40}(?:[0-9a-f]{24})?$/;
+
+export function assertSafeRunId(runId) {
+  if (!HEX_64.test(runId ?? "")) throw new Error("runId must be exactly 64 lowercase hex characters");
+  return runId;
+}
+
+function runDirectory(runRoot, runId) {
+  assertSafeRunId(runId);
+  const root = resolve(runRoot);
+  const rootStat = lstatSync(root);
+  if (!rootStat.isDirectory() || rootStat.isSymbolicLink()) throw new Error("run root must be a real directory, not a symlink");
+  const base = resolve(root, "evals/v2/runs");
+  const runDir = resolve(base, runId);
+  if (runDir !== base && !runDir.startsWith(`${base}${sep}`)) throw new Error("runId path escapes run root");
+  let cursor = root;
+  for (const part of relative(root, runDir).split(sep).filter(Boolean)) {
+    cursor = join(cursor, part);
+    if (!existsSync(cursor)) continue;
+    const stat = lstatSync(cursor);
+    if (stat.isSymbolicLink()) throw new Error("run path must not contain symlinks");
+    if (!stat.isDirectory()) throw new Error("run path component must be a directory");
+  }
+  return runDir;
+}
+
+function git(cwd, args) {
+  return execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
+}
+
+function resolveCommit(cwd, head) {
+  if (typeof head !== "string" || !head || /[\r\n\0]/.test(head)) throw new Error("head revision is invalid");
+  let oid;
+  try { oid = git(cwd, ["rev-parse", "--verify", `${head}^{commit}`]); }
+  catch { throw new Error("head revision is not a verified commit"); }
+  if (!COMMIT_OID.test(oid)) throw new Error("head revision did not resolve to a commit OID");
+  return oid;
+}
+
+function assertCleanWorktree(cwd) {
+  const status = git(cwd, ["status", "--porcelain=v1", "--untracked-files=all"]);
+  if (status) throw new Error("worktree must be clean before unmask (dirty or untracked state)");
+}
+
 export function reserveSynthesis({ runRoot, runId, ledgerRoot }) {
   if (!runRoot) throw new Error("reserve: runRoot required");
-  if (!runId) throw new Error("reserve: runId required");
-  if (!ledgerRoot) throw new Error("reserve: ledgerRoot required");
+  assertSafeRunId(runId);
+  if (!HEX_64.test(ledgerRoot ?? "")) throw new Error("reserve: ledgerRoot must be a sha256 digest");
 
-  const runDir = join(runRoot, "evals/v2/runs", runId);
+  const runDir = runDirectory(runRoot, runId);
   mkdirSync(runDir, { recursive: true });
+  runDirectory(runRoot, runId);
   const reservationPath = join(runDir, "synthesis-reservation.json");
 
   if (existsSync(reservationPath)) {
@@ -174,35 +220,25 @@ export function reserveSynthesis({ runRoot, runId, ledgerRoot }) {
 
   const fd = openSync(reservationPath, "wx", 0o600);
   try { writeFileSync(fd, serialized, { flush: true }); } finally { closeSync(fd); }
-  try {
-    const dirFd = openSync(dirname(reservationPath), "r");
-    try { fsyncSync(dirFd); } finally { closeSync(dirFd); }
-  } catch { /* best-effort directory fsync */ }
+  const dirFd = openSync(dirname(reservationPath), "r");
+  try { fsyncSync(dirFd); } finally { closeSync(dirFd); }
 
   return { reservation, reservationPath, reservation_sha256: reservationSha256(reservation) };
 }
 
-// ---------------------------------------------------------------------------
-// verifyCommittedReservation
-// ---------------------------------------------------------------------------
-function git(cwd, args) {
-  return execSync(`git ${args}`, { cwd, encoding: "utf8" }).trim();
-}
-
-function gitBool(cwd, args) {
-  try { execSync(`git ${args}`, { cwd, encoding: "utf8", stdio: "pipe" }); return true; } catch { return false; }
-}
-
 export function verifyCommittedReservation({ repoRoot, runId, reservationSha256: expectedSha, head }) {
   if (!repoRoot) throw new Error("committed reservation: repoRoot required");
-  if (!runId) throw new Error("committed reservation: runId required");
-
-  const isClean = gitBool(repoRoot, "diff-index --quiet HEAD --");
-  if (!isClean) throw new Error("committed reservation: worktree must be clean before unmask (dirty tree)");
+  assertSafeRunId(runId);
+  if (!HEX_64.test(expectedSha ?? "")) throw new Error("committed reservation: reservation sha256 required");
+  runDirectory(repoRoot, runId);
+  assertCleanWorktree(repoRoot);
+  const commitOid = resolveCommit(repoRoot, head);
+  const checkoutOid = resolveCommit(repoRoot, "HEAD");
+  if (commitOid !== checkoutOid) throw new Error("head revision must equal the checkout HEAD commit");
 
   let headContent;
   try {
-    headContent = git(repoRoot, `show ${head}:evals/v2/runs/${runId}/synthesis-reservation.json`);
+    headContent = git(repoRoot, ["show", `${commitOid}:evals/v2/runs/${runId}/synthesis-reservation.json`]);
   } catch { throw new Error("committed reservation: reservation not found in HEAD (deletion or root missing)"); }
   const parsed = JSON.parse(headContent);
   if (parsed.run_id !== runId) {
@@ -215,7 +251,7 @@ export function verifyCommittedReservation({ repoRoot, runId, reservationSha256:
 
   let ledgerContent;
   try {
-    ledgerContent = git(repoRoot, `show ${head}:evals/v2/runs/${runId}/ledger.jsonl`);
+    ledgerContent = git(repoRoot, ["show", `${commitOid}:evals/v2/runs/${runId}/ledger.jsonl`]);
   } catch { throw new Error("committed reservation: ledger deletion or root missing"); }
   const events = ledgerContent.trim().split("\n").filter(Boolean).map(JSON.parse);
   try { validateLedger(events); } catch (error) { throw new Error(`committed reservation: ledger chain invalid (forked predecessor): ${error.message}`); }
@@ -240,7 +276,7 @@ export function verifyCommittedReservation({ repoRoot, runId, reservationSha256:
 // ---------------------------------------------------------------------------
 export function openUnmask({
   repoRoot, protocol, registryManifest, runId, encryptedMap, packetSet,
-  commitment, reservation, ledger, repoRootForReservation, head, openCapability
+  commitment, reservation, ledger, admission, repoRootForReservation, head, openCapability
 }) {
   if (!repoRoot) throw new Error("openUnmask: canonical repoRoot required");
   if (!protocol) throw new Error("openUnmask: protocol required");
@@ -261,6 +297,37 @@ export function openUnmask({
   const admitted = ledgerEvents.filter((event) => event.type === "production_admitted");
   if (initialized.length !== 1) throw new Error("openUnmask: exactly one run_initialized event required");
   if (admitted.length !== 1) throw new Error("openUnmask: exactly one production_admitted event required");
+  if (!admission || typeof admission !== "object" || Array.isArray(admission)) {
+    throw new Error("openUnmask: trusted admission coordinates required");
+  }
+  const initialFields = [
+    "run_id", "protocol_sha256", "source_sha256", "execution_manifest_sha256",
+    "scenario_registry_sha256", "randomization_commitment_sha256", "exclusions"
+  ];
+  const admittedFields = [
+    ...initialFields, "selection_sha256", "prepacket_schedule_sha256",
+    "max_external_calls", "incremental_spend_cap_usd", "retry_policy"
+  ];
+  for (const field of initialFields) {
+    if (canonicalJson(initialized[0][field]) !== canonicalJson(admission[field])) {
+      throw new Error(`openUnmask: run initialization ${field} binding mismatch`);
+    }
+  }
+  for (const field of admittedFields) {
+    if (canonicalJson(admitted[0][field]) !== canonicalJson(admission[field])) {
+      throw new Error(`openUnmask: production admission ${field} binding mismatch`);
+    }
+  }
+  if (admission.run_id !== runId || sha256(canonicalJson(protocol)) !== admission.protocol_sha256) {
+    throw new Error("openUnmask: trusted run or protocol binding mismatch");
+  }
+  if (canonicalJson(admission.exclusions) !== canonicalJson([]) || admission.max_external_calls !== 160 ||
+      admission.incremental_spend_cap_usd !== 0 || admission.retry_policy !== "none") {
+    throw new Error("openUnmask: frozen admission policy mismatch");
+  }
+  if (!reservation?.sha256 || reservation.ledger_root !== ledgerEvents.at(-1)?.event_sha256) {
+    throw new Error("openUnmask: reservation ledger root binding mismatch");
+  }
   const initRegistrySha = initialized[0].scenario_registry_sha256;
   const admittedRegistrySha = admitted[0].scenario_registry_sha256;
   const digestPattern = /^[0-9a-f]{64}$/;
@@ -353,6 +420,11 @@ export function openUnmask({
     commitment_sha256: opened.commitment_sha256,
     reservation_sha256: opened.reservation_sha256,
     ledger_predecessor: opened.ledger_predecessor,
+    opening_event_sha256: opened.opening_event_sha256,
+    opening_receipt_sha256: opened.opening_receipt_sha256,
+    completion_event_sha256: opened.completion_event_sha256,
+    authority_public_key: opened.authority_public_key,
+    authority_signature: opened.authority_signature,
     mappings: Object.freeze(sortedMappings.map(Object.freeze))
   });
 }
