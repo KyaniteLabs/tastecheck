@@ -5,7 +5,52 @@ All notable changes to the tastecheck skill pack. Format follows
 
 ## [Unreleased]
 
-## [1.1.0] — 2026-07-11
+## [1.2.0] — 2026-07-13
+
+### Added — Effectiveness v2 blind evaluation infrastructure
+
+- **Machine-only blind evaluation protocol** — 12 scenarios, 2 seeds, 2 opaque arms,
+  24 comparison units, 48 generation calls, 96 production judgments, 16 anchor judgments,
+  maximum 160 external calls, zero retries, `exclusions=[]`. Production has not started;
+  the 160-call budget is untouched.
+- **Sealed generation and render pipeline** — hash-bound generation receipts, local
+  Playwright render capture with PNG/DOM/style evidence, Ed25519-signed one-time map
+  opening, HMAC-derived packet coordinates.
+- **Reservation and admission system** — strict run IDs, containment/symlink defenses,
+  argv-only Git, exact HEAD binding, untracked cleanliness, fail-closed fsync. Caller
+  ledger root bound to committed reservation.
+- **Synthesis and scoped claims** — family-separated aggregation, hard-regression
+  blocking, pure `aggregateAdmissibleResults` scoring function, `projectPublicClaim`
+  with claim-scope enforcement. Synthesis returns `production_not_started` when
+  trusted signed provider evidence is unavailable.
+- **Adversarial QA gate** — preregistered source-hash drift detection, network
+  isolation enforcement, exact case-set verification. Runs as `npm run eval:v2:qa`.
+- **Fake-only rehearsal** — `npm run eval:v2:rehearse` drives the full pipeline with
+  injected local fakes: 160 simulated calls, 0 real calls, no unmask, no spend.
+
+### Changed — Trust-boundary closeout
+
+- **Render authenticity** — `verifyRenderReceiptBinding` recomputes and verifies all
+  21 receipt fields (schema, kind, run, unit/artifact/arm, viewport dimensions, artifact
+  hash, evidence ID, embedded PNG/DOM/style hashes, manifest fields) from embedded
+  evidence during synthesis. Negative tests cover every field.
+- **Executor manifest binding** — exact `canonicalJson` equality on all 14
+  manifest-derived executor fields (adapter, system prompt, rubric, settings, tool
+  policy, time budget, etc.), not just the 5 previously checked.
+- **Provider authenticity gate** — `verifyResolverAttestation` now requires a trusted
+  signature verified against a pinned trust anchor. Unsigned caller-authored
+  attestations throw `trusted-signature|required`. Scoring extracted to pure
+  `aggregateAdmissibleResults` so fake fixtures cannot create a release claim.
+- **Canonical ledger binding** — `bindAndAppendTerminal` derives the ledger path from
+  `repoRoot` (not `judgeEvidence.ledgerPath`), validates runId against path traversal,
+  rejects symlinks, verifies disk-vs-supplied canonical equality, and appends the
+  terminal event atomically with fsync.
+
+### Changed — Documentation and receipts
+
+- Updated `docs/EFFECTIVENESS-V2.md` with full protocol description.
+- Regenerated all 6 source-bound v1 receipts with current source tree hash.
+- Updated pinned receipt hashes in `contracts/v1/release-receipts.json`.
 
 ### Changed
 
