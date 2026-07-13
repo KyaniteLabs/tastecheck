@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>tastecheck — Verge / Clinical evidence sample</title>
+<meta name="description" content="Verge / Clinical: a cool, measured, evidence-led tastecheck sample — serif display over an ice-white field with teal accent, measurement annotations, and a hypothesis→evidence→verdict reading order. Proof that a real design system makes one pitch read as a distinct product.">
+<meta name="keywords" content="tastecheck, design system, clinical web design, evidence-led, serif typography, Fraunces, Spline Sans, measurement annotations, anti-slop, design sample">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7f9fa">
+<link rel="icon" href="../../favicon.ico">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="tastecheck">
+<meta property="og:title" content="tastecheck — Verge / Clinical evidence sample">
+<meta property="og:description" content="A cool, measured, evidence-led design system: serif display over ice-white with teal accent and measurement annotations.">
+<meta property="og:url" content="https://kyanitelabs.github.io/tastecheck/samples/verge/">
+<meta property="og:image" content="https://kyanitelabs.github.io/tastecheck/docs/hero/six-systems.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="tastecheck — Verge / Clinical evidence sample">
+<meta name="twitter:description" content="A cool, measured, evidence-led design system: serif display over ice-white with teal accent and measurement annotations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Spline+Sans:wght@400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f9fa; --s1:#eef2f4; --s2:#e2e8ec; --line:#cdd5db;
+  --ink:#1a2228; --muted:#5d6b75;
+  --teal:#0d7490; --teal-deep:#0a5a6f; --teal-pale:#e0f0f4;
+  --hazard:#c2410c;
+  --serif:"Fraunces",Georgia,"Times New Roman",serif;
+  --sans:"Spline Sans",system-ui,-apple-system,sans-serif;
+  --mono:"DM Mono",ui-monospace,Menlo,monospace;
+  --r:6px; --r-card:10px;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:3px}
+.skip{position:absolute;left:-999px}.skip:focus{left:14px;top:14px;z-index:99;background:var(--teal);color:#fff;padding:.6em 1em;border-radius:var(--r)}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:clamp(1.25rem,1rem + 3vw,2.8rem)}
+header{position:sticky;top:0;z-index:40;background:rgba(247,249,250,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav{display:flex;justify-content:space-between;align-items:center;min-height:60px}
+.brand{font-family:var(--serif);font-weight:600;font-size:1.4rem;letter-spacing:-.01em}.brand i{font-style:italic;color:var(--teal)}
+.nav details{position:relative}.nav summary{list-style:none;cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600;font-size:.9rem;color:var(--muted)}
+.nav summary::-webkit-details-marker{display:none}
+.menu{display:flex;gap:.2rem}
+.menu a{display:flex;align-items:center;min-height:44px;padding:0 14px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.86rem;border-radius:var(--r)}.menu a:hover{color:var(--ink);background:var(--s1)}
+@media(max-width:680px){.menu{position:absolute;right:0;top:54px;flex-direction:column;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-card);padding:.5rem;min-width:180px}.nav details:not([open]) .menu{display:none}}
+@media(min-width:681px){.nav summary{display:none}}
+
+/* HERO — measured field with annotation marks */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero .wrap{padding-block:clamp(3.5rem,2rem + 6vw,6.5rem);display:grid;grid-template-columns:1.2fr .8fr;gap:clamp(2rem,1rem + 3vw,3.5rem);align-items:center}
+@media(max-width:680px){.hero .wrap{grid-template-columns:1fr}}
+.measure{position:relative;display:flex;flex-direction:column;gap:.6rem;align-items:center;justify-self:center}
+.measure .specimen{width:100%;max-width:260px;aspect-ratio:1/1.15;background:var(--teal-pale);border:1px solid var(--teal);border-radius:var(--r-card);display:grid;place-items:center;position:relative}
+.measure .specimen::before{content:"specimen";position:absolute;top:-.6rem;left:.8rem;background:var(--bg);padding:0 .4rem;font:500 .68rem var(--mono);color:var(--teal);text-transform:uppercase;letter-spacing:.06em}
+.measure .specimen .target{width:60%;height:60%;border:2px dashed var(--teal);border-radius:50%;display:grid;place-items:center}
+.measure .specimen .target::after{content:"n=160";font:500 .72rem var(--mono);color:var(--teal-deep)}
+.measure .ruler{display:flex;align-items:center;gap:.3rem;font:500 .72rem var(--mono);color:var(--muted)}
+.measure .ruler::before,.measure .ruler::after{content:"";height:1px;background:var(--line);flex:1}
+.kicker{display:inline-flex;align-items:center;gap:.4rem;font:500 .74rem var(--mono);color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1.3rem}
+.kicker::before{content:"";width:1.2rem;height:1px;background:var(--teal)}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.4rem,1.6rem + 4vw,4.2rem);line-height:1.04;letter-spacing:-.025em;max-width:14ch}
+h1 em{font-style:italic;color:var(--teal)}
+.lede{font-size:clamp(1.05rem,1rem + .4vw,1.25rem);color:var(--muted);max-width:44ch;margin-top:1.2rem;line-height:1.6}
+.actions{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.9rem}
+.btn{font:600 1rem var(--sans);cursor:pointer;border:1px solid transparent;border-radius:var(--r);padding:.8em 1.5em;min-height:48px;transition:background-color .16s,border-color .16s}
+.btn-primary{background:var(--teal);color:#fff}.btn-primary:hover{background:var(--teal-deep)}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}.btn-ghost:hover{border-color:var(--ink)}
+.trust{margin-top:1.5rem;color:var(--muted);font-size:.88rem}.trust b{color:var(--ink);font-weight:600}
+
+section{padding-block:clamp(3rem,2rem + 4vw,5.5rem)}
+.eyebrow{font:500 .76rem var(--mono);color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.7rem;display:flex;align-items:center;gap:.4rem}
+.eyebrow::before{content:"";width:1rem;height:1px;background:var(--teal)}
+h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,1.4rem + 2.4vw,3rem);line-height:1.08;letter-spacing:-.02em;max-width:18ch}
+.slede{color:var(--muted);max-width:54ch;margin-top:.8rem;font-size:1.08rem}
+
+/* HOW — hypothesis → method → verdict cards with measurement lines */
+.method{display:grid;gap:1rem;margin-top:2.4rem}
+.vrow{display:grid;grid-template-columns:auto 1fr;gap:1.6rem;align-items:start;padding:1.6rem 1.8rem;background:var(--s1);border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:var(--r-card)}.vrow:nth-child(1){padding-block:2.2rem}.vrow:nth-child(3){padding-block:1.2rem}
+.vrow:nth-child(2){border-left-color:var(--teal-deep);background:var(--teal-pale)}
+.vrow:nth-child(3){border-left-color:var(--hazard)}
+.vrow .tag{font:500 .7rem var(--mono);color:var(--teal);text-transform:uppercase;letter-spacing:.08em;writing-mode:vertical-rl;text-orientation:mixed;white-space:nowrap}
+.vrow:nth-child(2) .tag{color:var(--teal-deep)}
+.vrow:nth-child(3) .tag{color:var(--hazard)}
+.vrow h3{font-family:var(--serif);font-weight:600;font-size:1.35rem;margin-bottom:.3rem}
+.vrow p{color:var(--muted);font-size:.95rem}
+.vrow .q{margin-top:.7rem;padding:.5rem .8rem;background:var(--bg);border-radius:var(--r);font:500 .82rem var(--mono);color:var(--ink);border:1px solid var(--line)}
+@media(max-width:680px){.vrow{grid-template-columns:1fr}.vrow .tag{writing-mode:horizontal-tb;margin-bottom:.5rem}}
+
+/* SKILLS — evidence-card grid with index numbers */
+.skills-g{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:2.4rem;grid-auto-flow:dense}
+.sk{background:var(--s1);border:1px solid var(--line);border-radius:var(--r-card);padding:1.1rem 1.2rem;grid-column:span 2;display:flex;flex-direction:column;gap:.3rem;transition:border-color .16s}
+.sk:nth-child(5n+1){min-height:11rem}
+.sk:nth-child(5n+3){min-height:8.5rem}
+.sk:hover{border-color:var(--teal)}
+.sk.feat{grid-column:span 4;border-color:var(--teal);background:var(--teal-pale)}
+.sk.gate{grid-column:span 4;border:1px solid var(--teal);background:linear-gradient(var(--bg),var(--teal-pale))}
+.sk .n{font:500 .72rem var(--mono);color:var(--teal);letter-spacing:.04em}
+.sk h3{font-family:var(--serif);font-weight:600;font-size:1.02rem}
+.sk p{font-size:.84rem;color:var(--muted);line-height:1.5}
+@media(max-width:880px){.skills-g{grid-template-columns:repeat(4,1fr)}.sk.feat,.sk.gate{grid-column:span 4}.sk{grid-column:span 2}}
+@media(max-width:520px){.skills-g{grid-template-columns:1fr}.sk,.sk.feat,.sk.gate{grid-column:span 1}}
+
+/* WHY — three slop findings in asymmetric evidence cards */
+.slops{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:1rem;margin-top:2rem}
+@media(max-width:760px){.slops{grid-template-columns:1fr}}
+.slop{border:1px solid var(--line);border-radius:var(--r-card);padding:1.4rem;background:var(--s1)}
+.slop:nth-child(1){background:var(--teal-pale)}
+.sw{height:44px;border-radius:4px;margin-bottom:.7rem}
+.sw.p{background:linear-gradient(135deg,#6366f1,#a855f7)}
+.sw.c{background:linear-gradient(135deg,#efe7d8,#0d7490)}
+.wf{display:grid;gap:4px;padding:8px;border:1px solid var(--line);border-radius:6px;margin-bottom:.7rem}
+.wf .h{height:10px;width:55%;margin:0 auto;background:var(--muted);border-radius:2px;opacity:.5}
+.wf .r{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.wf .r span{height:20px;background:var(--line);border-radius:2px}
+.slopx{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.7rem}
+.slopx s{border:1px solid var(--line);border-radius:3px;padding:.15em .45em;color:var(--muted);font-size:.78rem}
+.slop h3{font-family:var(--serif);font-weight:600;font-size:1.05rem;margin-bottom:.2rem}
+.slop p{font-size:.86rem;color:var(--muted)}
+
+/* INSTALL — clinical panel */
+.install .wrap{background:var(--ink);color:#e2e8ec;border-radius:var(--r-card);padding:clamp(1.8rem,1rem + 3vw,3rem);max-width:980px}
+.install .eyebrow{color:#5eead4}.install .eyebrow::before{background:#5eead4}
+.install h2{color:#f7f9fa}
+.cmd{font-family:var(--mono);font-size:clamp(.85rem,.7rem + .5vw,1rem);background:rgba(255,255,255,.06);border-radius:var(--r);padding:1.1rem 1.3rem;margin-top:1.2rem;overflow-x:auto}.cmd .c{color:#5eead4}
+
+footer{border-top:1px solid var(--line);padding-block:2rem;color:var(--muted);font-size:.88rem}
+footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}footer b{color:var(--ink);font-weight:600}footer b i{color:var(--teal);font-style:italic}
+
+.js .rv{opacity:0;transform:translateY(14px)}
+.js .rv.in{opacity:1;transform:none;transition:opacity .4s cubic-bezier(.16,1,.3,1),transform .4s cubic-bezier(.16,1,.3,1)}
+@media(prefers-reduced-motion:reduce){.js .rv{opacity:1;transform:none}*{transition-duration:.01ms!important}}
+</style><style id="tc-nav">
+:root{--tc-bg:var(--bg);--tc-ink:var(--ink);--tc-line:var(--line);--tc-muted:var(--muted);--tc-accent:var(--teal)}
+.tc-bar{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem 1.2rem;justify-content:space-between;background:var(--tc-bg);color:var(--tc-ink);border-bottom:1px solid var(--tc-line);padding:.55rem clamp(1rem,3vw,2rem);font:600 .8rem var(--sans)}
+.tc-bar a{color:var(--tc-muted);text-decoration:none;display:inline-flex;align-items:center;min-height:24px;padding-block:.15rem}
+.tc-bar a:hover{color:var(--tc-ink)}
+.tc-home{color:var(--tc-ink)!important;font-weight:700}
+.tc-grp{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .8rem}
+.tc-grp .tc-lbl{color:var(--tc-muted);font-weight:600;opacity:.8}
+.tc-samples a[aria-current=page]{color:var(--tc-ink);font-weight:700;text-decoration:underline;text-decoration-color:var(--tc-accent);text-underline-offset:3px;text-decoration-thickness:2px}
+</style>
+<style>a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="tc-bar"><a class="tc-home" href="../../">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="../copper/">Copper</a><a href="../swiss/">Swiss</a><a href="../maximal/">Maximal</a><a href="../concrete/">Concrete</a><a href="../clay/">Clay</a><a href="../dispatch/">Dispatch</a><a href="../verge/" aria-current="page">Verge</a><a href="../">Gallery</a></nav></div>
+<header><div class="wrap nav">
+  <span class="brand">taste<i>check</i></span>
+  <details><summary aria-label="Menu">Menu ▾</summary><div class="menu"><a href="#skills">Skills</a><a href="#method">Method</a><a href="#why">Findings</a><a href="#install">Install</a></div></details>
+</div></header>
+
+<main id="main">
+<section class="hero"><div class="wrap">
+  <div>
+    <span class="kicker">design intelligence · measured</span>
+    <h1>Make it yours, not the <em>average</em>.</h1>
+    <p class="lede">Every AI builds the same site. tastecheck interviews you into a real design system first — then 19 skills make sure your agent ships taste, not slop.</p>
+    <div class="actions"><a class="btn btn-primary" href="https://github.com/KyaniteLabs/tastecheck">Run a taste check →</a><a class="btn btn-ghost" href="#skills">See the skills</a></div>
+    <p class="trust">Works with <b>Claude Code</b> · <b>Codex</b> · <b>Gemini</b> · <b>Cursor</b> · MIT</p>
+  </div>
+  <div class="measure" aria-hidden="true">
+    <div class="specimen"><div class="target"></div></div>
+    <div class="ruler">0 ─ ─ ─ 160</div>
+  </div>
+</div></section>
+
+<section id="skills"><div class="wrap rv">
+  <p class="eyebrow">nineteen skills</p>
+  <h2>What you get. All of it.</h2>
+  <p class="slede">Each skill is a checkable contract — a real outcome you can hold, not a vibe.</p>
+  <div class="skills-g">
+    <div class="sk feat"><div class="n">00</div><h3>design-system-interview</h3><p>Grills you into a committed system + tokens before a line of code.</p></div>
+    <div class="sk"><div class="n">01</div><h3>improve-existing-website</h3><p>Audit a site, infer its intended system, and make it true.</p></div>
+    <div class="sk"><div class="n">02</div><h3>color-system</h3><p>OKLCH palettes that pass contrast.</p></div>
+    <div class="sk"><div class="n">03</div><h3>web-typography</h3><p>Scale, measure, rhythm, font loading.</p></div>
+    <div class="sk"><div class="n">04</div><h3>spacing-system</h3><p>One --space-* scale; section rhythm.</p></div>
+    <div class="sk"><div class="n">05</div><h3>theming</h3><p>Light + dark + high-contrast from one token set.</p></div>
+    <div class="sk"><div class="n">06</div><h3>responsive-layout</h3><p>Survives any width.</p></div>
+    <div class="sk"><div class="n">07</div><h3>component-states</h3><p>Every interactive state + ARIA.</p></div>
+    <div class="sk"><div class="n">08</div><h3>form-ux</h3><p>Forms people actually finish.</p></div>
+    <div class="sk"><div class="n">09</div><h3>empty-states</h3><p>Empty / loading / error, handled.</p></div>
+    <div class="sk feat"><div class="n">10</div><h3>micro-motion</h3><p>Motion confirms origin and state without taking over.</p></div>
+    <div class="sk"><div class="n">11</div><h3>data-viz</h3><p>Honest, Tufte-informed charts.</p></div>
+    <div class="sk"><div class="n">12</div><h3>art-direction</h3><p>Imagery, illustration, iconography as committed decisions.</p></div>
+    <div class="sk"><div class="n">13</div><h3>a11y-pass</h3><p>Runnable WCAG 2.2 AA audit.</p></div>
+    <div class="sk"><div class="n">14</div><h3>cognitive-a11y</h3><p>ADHD · autism · dyslexia · neurodivergence.</p></div>
+    <div class="sk"><div class="n">15</div><h3>i18n-ready</h3><p>Multilingual-resilient UI; EN/ES first-class.</p></div>
+    <div class="sk"><div class="n">16</div><h3>deslop-ui</h3><p>Strip the AI tells — visual and structural.</p></div>
+    <div class="sk"><div class="n">17</div><h3>humanize-copy</h3><p>Remove the ChatGPT accent from writing.</p></div>
+    <div class="sk gate"><div class="n">18</div><h3>tastecheck-pass</h3><p>The ship gate: every self-check, run + reported. With a pasteable auditor.</p></div>
+  </div>
+</div></section>
+
+<section id="method"><div class="wrap rv">
+  <p class="eyebrow">method</p>
+  <h2>It interviews you first.</h2>
+  <p class="slede">No menus. It surfaces every decision you didn't know you had, precisely and without rush.</p>
+  <div class="method">
+    <div class="vrow"><span class="tag">hypothesis</span><div><h3>It grills you</h3><p>Function first, then references — it finds the pattern across what you love.</p><div class="q">"'Modern' is a non-answer — name one you'd resemble."</div></div></div>
+    <div class="vrow"><span class="tag">method</span><div><h3>It commits</h3><p>OKLCH palette with verified contrast, real type, structure, motion — as tokens.</p><div class="q">"One dominant color, not five. And not indigo→violet."</div></div></div>
+    <div class="vrow"><span class="tag">verdict</span><div><h3>It builds &amp; checks</h3><p>The skills apply the system, then audit the result against your spec.</p><div class="q">"That wine-red is the new tell. For your energy, push here."</div></div></div>
+  </div>
+</div></section>
+
+<section id="why"><div class="wrap rv">
+  <p class="eyebrow">findings</p>
+  <h2>Three planes of slop. All of them.</h2>
+  <p class="slede">It's not only the look — the skeleton repeats, and so does the copy. tastecheck quietly refuses all three.</p>
+  <div class="slops">
+    <div class="slop"><div class="sw p"></div><div class="sw c"></div><h3>The look</h3><p>Purple gradient or editorial serif — the same average, one season apart.</p></div>
+    <div class="slop"><div class="wf" aria-hidden="true"><div class="h"></div><div class="r"><span></span><span></span><span></span></div></div><h3>The structure</h3><p>Centered hero, three cards, equal grid — the same bones under any skin.</p></div>
+    <div class="slop"><div class="slopx" aria-hidden="true"><s>"delve"</s><s>"in today's fast-paced world"</s><s>"it's not just X, it's Y"</s></div><h3>The copy</h3><p>The ChatGPT accent — buzzwords, hedging, one tired rhythm. We strip it.</p></div>
+  </div>
+</div></section>
+
+<section class="install" id="install"><div class="wrap rv">
+  <p class="eyebrow">install</p>
+  <h2>One command. Then just build.</h2>
+  <div class="cmd"><span class="c">$</span> git clone https://github.com/KyaniteLabs/tastecheck<br><span class="c">$</span> ./tastecheck/install.sh</div>
+</div></section>
+</main>
+
+<footer><div class="wrap"><b>taste<i>check</i></b><span>taste is the only moat · MIT · sample · Verge / Clinical evidence</span></div></footer>
+
+<script>
+document.documentElement.classList.add('js');
+document.querySelector('summary')?.addEventListener('click',function(){var s=this;setTimeout(function(){s.setAttribute('aria-expanded',s.closest('details').open)},0)});
+(function(){var rm=matchMedia('(prefers-reduced-motion: reduce)').matches;var els=[].slice.call(document.querySelectorAll('.rv'));
+ if(rm||!('IntersectionObserver'in window)){els.forEach(e=>e.classList.add('in'));return;}
+ var io=new IntersectionObserver(function(es){es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}})},{threshold:0,rootMargin:'0px 0px -8% 0px'});
+ els.forEach(e=>io.observe(e));setTimeout(()=>els.forEach(e=>e.classList.add('in')),1500);})();
+</script>
+</body></html>
