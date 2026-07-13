@@ -3,6 +3,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { captureRenders, getLocalRenderManifest, verifyRenderEvidence, verifyRenderReceipt, verifyRenderReceipts } from "./lib/render.mjs";
+import { recordQaCase } from "./lib/qa-case.mjs";
 
 const repoBase = new URL("../../../", import.meta.url).pathname;
 const fixture = JSON.parse(readFileSync(join(repoBase, "evals/v2/fixtures/render-success.json"), "utf8"));
@@ -84,6 +85,8 @@ try {
   await assert.rejects(() => captureRenders({ ...input, manifest: { ...manifest, renderer_adapter_sha256: h } }), /renderer|render/i);
   await assert.rejects(() => captureRenders({ ...input, manifest: { ...manifest, render_host_sha256: h } }), /host|render/i);
   assert.equal(fixture.admissionState.admitted, 0, "failures must not consume ordinals either");
+  recordQaCase("execution-render-and-replay-drift");
+  recordQaCase("render-viewport-artifact-and-host-tampering");
   console.log("effectiveness-v2 render tests passed; Playwright mobile+desktop PNG/DOM/styles lineage closed; zero ordinals");
 } finally {
   rmSync(evidenceDir, { recursive: true, force: true });

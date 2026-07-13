@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 
 import { rehearse } from "./rehearse.mjs";
+import { recordQaCase } from "./lib/qa-case.mjs";
 
 const expected = {
   generations: 48,
@@ -72,6 +73,11 @@ assert.throws(
   () => rehearse({ swapSourceRoots: true }),
   /source.*revision|revision.*source|source.*binding/i
 );
+assert.throws(
+  () => rehearse({ dirtySourceRoot: true }),
+  /source.*revision|revision.*source|source.*binding|dirty/i
+);
+recordQaCase("dirty-tree-and-source-drift");
 for (const admissionMutation of ["missing", "duplicate", "scenario_registry_sha256"]) {
   assert.throws(
     () => rehearse({ admissionMutation }),
@@ -85,5 +91,7 @@ assert.equal(preAdmission.simulated_external_calls, 0);
 assert.deepEqual(preAdmission.ledger_ordinals, []);
 assert.equal(preAdmission.real_external_calls_started, 0);
 assert.equal(preAdmission.unmask_opened, false);
+
+recordQaCase("ordinal-failure-no-retry-or-substitution");
 
 console.log("effectiveness-v2 rehearsal passed; fake external calls 160; real external calls 0");
