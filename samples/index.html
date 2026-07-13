@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>tastecheck — six design systems, one product story</title>
-<meta name="description" content="The same product story and core IA rendered through six committed tastecheck design systems — Copper, Swiss, Maximal, Concrete, Clay and Dispatch. Proof that a real design system makes one pitch read as distinct products, not six recolors.">
+<title>tastecheck — seven design systems, one product story</title>
+<meta name="description" content="The same product story and core IA rendered through seven committed tastecheck design systems — Copper, Swiss, Maximal, Concrete, Clay and Dispatch. Proof that a real design system makes one pitch read as distinct products, not seven recolors.">
 <meta name="keywords" content="tastecheck, design systems, AI coding agents, anti-slop, design samples, web design gallery, Claude Code, Codex, Cursor">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="author" content="Kyanite Labs">
@@ -9,19 +9,21 @@
 <meta name="theme-color" content="#0c0c0d">
 <link rel="canonical" href="https://kyanitelabs.github.io/tastecheck/samples/">
 <meta property="og:type" content="website"><meta property="og:site_name" content="tastecheck">
-<meta property="og:title" content="tastecheck samples — six design systems, one product story">
-<meta property="og:description" content="The same product story and core IA rendered through six committed tastecheck design systems — Copper, Swiss, Maximal, Concrete, Clay and Dispatch. Proof that a real design system makes one pitch read as distinct products, not six recolors.">
+<meta property="og:title" content="tastecheck samples — seven design systems, one product story">
+<meta property="og:description" content="The same product story and core IA rendered through seven committed tastecheck design systems — Copper, Swiss, Maximal, Concrete, Clay and Dispatch. Proof that a real design system makes one pitch read as distinct products, not seven recolors.">
 <meta property="og:url" content="https://kyanitelabs.github.io/tastecheck/samples/">
 <meta property="og:image" content="https://kyanitelabs.github.io/tastecheck/docs/hero/six-systems.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="tastecheck samples — six design systems, one product story">
-<meta name="twitter:description" content="The same product story and core IA rendered through six committed tastecheck design systems — Copper, Swiss, Maximal, Concrete, Clay and Dispatch. Proof that a real design system makes one pitch read as distinct products, not six recolors.">
+<meta name="twitter:title" content="tastecheck samples — seven design systems, one product story">
+<meta name="twitter:description" content="The same product story and core IA rendered through seven committed tastecheck design systems — Copper, Swiss, Maximal, Concrete, Clay and Dispatch. Proof that a real design system makes one pitch read as distinct products, not seven recolors.">
 <meta name="twitter:image" content="https://kyanitelabs.github.io/tastecheck/docs/hero/six-systems.png">
 <style>
+@font-face{font-family:"Archivo";src:url("../site/fonts/archivo-600.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Archivo";src:url("../site/fonts/archivo-400.woff2") format("woff2");font-weight:400;font-display:swap}
 :root{
   --bg:#0c0c0d; --s1:#151517; --line:#2a2a2e; --ink:#f4f3f1; --muted:#a3a2a0;
-  --copper:#e08a3a; --swiss:#e8482b; --maximal:#ff3d8b; --concrete:#ff4d00; --clay:#d2774a; --dispatch:#2dd4a8;
-  --sans:system-ui,-apple-system,"Segoe UI",sans-serif; --mono:ui-monospace,Menlo,monospace;
+  --copper:#e08a3a; --swiss:#e8482b; --maximal:#ff3d8b; --concrete:#ff4d00; --clay:#d2774a; --dispatch:#2dd4a8; --verge:#0d7490;
+  --sans:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:ui-monospace,Menlo,monospace;
 }
 *{box-sizing:border-box;margin:0}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
@@ -31,7 +33,7 @@ a{color:inherit}:focus-visible{outline:2px solid var(--copper);outline-offset:3p
 header{padding-block:clamp(3.5rem,2rem + 6vw,6rem);border-bottom:1px solid var(--line)}
 .kicker{font-family:var(--mono);font-size:.82rem;color:var(--muted);letter-spacing:.04em;margin-bottom:1.1rem}
 .kicker b{color:var(--copper);font-weight:600}
-h1{font-size:clamp(2.4rem,1.6rem + 3.4vw,4rem);line-height:1.02;letter-spacing:-.025em;max-width:18ch;font-weight:680}
+h1{font-family:var(--sans);font-size:clamp(2.4rem,1.6rem + 3.4vw,4rem);line-height:1.02;letter-spacing:-.025em;max-width:18ch;font-weight:600}
 h1 em{font-style:normal;color:var(--copper)}
 .lede{color:var(--muted);max-width:60ch;margin-top:1.3rem;font-size:clamp(1.05rem,1rem + .4vw,1.25rem)}
 .note{margin-top:1.6rem;font-size:.95rem;color:var(--muted);border-left:2px solid var(--line);padding-left:1rem;max-width:64ch}
@@ -39,22 +41,22 @@ main{padding-block:clamp(3rem,2rem + 4vw,5rem)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(19rem,100%),1fr));gap:1.4rem}
 .card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--s1);text-decoration:none;transition:border-color .18s,transform .18s}
 .card:hover{transform:translateY(-3px)}
-.card.copper:hover{border-color:var(--copper)} .card.swiss:hover{border-color:var(--swiss)} .card.maximal:hover{border-color:var(--maximal)} .card.concrete:hover{border-color:var(--concrete)} .card.clay:hover{border-color:var(--clay)} .card.dispatch:hover{border-color:var(--dispatch)}
+.card.copper:hover{border-color:var(--copper)} .card.swiss:hover{border-color:var(--swiss)} .card.maximal:hover{border-color:var(--maximal)} .card.concrete:hover{border-color:var(--concrete)} .card.clay:hover{border-color:var(--clay)} .card.dispatch:hover,.card.verge:hover{border-color:var(--dispatch)}
 .swatch{height:118px;display:flex;align-items:flex-end;padding:1rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.06em}
 .swatch.copper{background:radial-gradient(120% 140% at 80% 10%,#3a2415,#0b0d12);color:#e08a3a}
 .swatch.swiss{background:#f7f6f2;color:#c5331b}
 .swatch.maximal{background:linear-gradient(120deg,#14101a 40%,#ff3d8b);color:#ffd23e}
 .swatch.concrete{background:#0c0c0c;color:#ff4d00;border-bottom:3px solid #ff4d00}
 .swatch.clay{background:#faf6f0;color:#b5532f}
-.swatch.dispatch{background:radial-gradient(120% 140% at 82% 8%,#12281f,#0a0f0d);color:#2dd4a8}
+.swatch.dispatch{margin-bottom:0}.swatch.verge{background:linear-gradient(135deg,#f7f9fa,#e0f0f4);color:#0d7490background:radial-gradient(120% 140% at 82% 8%,#12281f,#0a0f0d);color:#2dd4a8}
 .body{padding:1.4rem;display:flex;flex-direction:column;gap:.5rem;flex:1}
 .name{font-size:1.35rem;font-weight:660;letter-spacing:-.01em}
 .name .dot{display:inline-block;width:.7rem;height:.7rem;border-radius:50%;margin-right:.55rem;vertical-align:middle}
-.copper .dot{background:var(--copper)} .swiss .dot{background:var(--swiss)} .maximal .dot{background:var(--maximal)} .concrete .dot{background:var(--concrete);border-radius:0} .clay .dot{background:var(--clay)} .dispatch .dot{background:var(--dispatch)}
+.copper .dot{background:var(--copper)} .swiss .dot{background:var(--swiss)} .maximal .dot{background:var(--maximal)} .concrete .dot{background:var(--concrete);border-radius:0} .clay .dot{background:var(--clay)} .verge .dot{background:var(--verge)} .dispatch .dot{background:var(--dispatch)}
 .desc{color:var(--muted);font-size:.94rem}
 .meta{margin-top:auto;padding-top:.9rem;border-top:1px solid var(--line);font-family:var(--mono);font-size:.76rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:.3rem .9rem}
 .open{margin-top:.7rem;font-weight:600;font-size:.95rem;color:var(--ink)}
-.card.copper .open{color:var(--copper)} .card.swiss .open{color:#f0a259} .card.maximal .open{color:var(--maximal)} .card.concrete .open{color:var(--concrete)} .card.clay .open{color:var(--clay)} .card.dispatch .open{color:var(--dispatch)}
+.card.copper .open{color:var(--copper)} .card.swiss .open{color:#f0a259} .card.maximal .open{color:var(--maximal)} .card.concrete .open{color:var(--concrete)} .card.clay .open{color:var(--clay)} .card.verge .open{color:var(--verge)} .card.dispatch .open{color:var(--dispatch)}
 footer{border-top:1px solid var(--line);padding-block:2.4rem;color:var(--muted);font-size:.9rem}
 footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 footer b{color:var(--ink)} footer b i{color:var(--copper);font-style:normal}
@@ -63,10 +65,10 @@ footer b{color:var(--ink)} footer b i{color:var(--copper);font-style:normal}
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header><div class="wrap">
-  <p class="kicker"><b>tastecheck</b> · samples · one product story, six design systems</p>
-  <h1>One page. Six <em>committed</em> design systems.</h1>
+  <p class="kicker"><b>tastecheck</b> · samples · one product story, seven design systems</p>
+  <h1>One page. Seven <em>committed</em> design systems.</h1>
   <p class="lede">Every sample below ships the <strong>same product story</strong>. The variable is the committed design system — so the difference you see is taste, not a new pitch.</p>
-  <p class="note">That's the whole point of the interview: a real design system makes one product read as distinct products through <strong>structure</strong>, rhythm, type, color, and interaction. These six don't share a section order or a skills layout — the spec-sheet leads with its index, the shipping log with a timeline, the bento demonstrates first. Not six recolors of one skeleton. Run the repo verification gate and browser QA checklist before making release claims.</p>
+  <p class="note">That's the whole point of the interview: a real design system makes one product read as distinct products through <strong>structure</strong>, rhythm, type, color, and interaction. These seven don't share a section order or a skills layout — the spec-sheet leads with its index, the shipping log with a timeline, the bento demonstrates first. Not seven recolors of one skeleton. Run the repo verification gate and browser QA checklist before making release claims.</p>
 </div></header>
 
 <main id="main"><div class="wrap">
@@ -122,6 +124,15 @@ footer b{color:var(--ink)} footer b i{color:var(--copper);font-style:normal}
         <div class="name"><span class="dot" aria-hidden="true"></span>Dispatch / Shipping log</div>
         <p class="desc">Dark, emerald, structural. A reverse-chronological release timeline on a teal-tinted ground — the design system IS the changelog. Bricolage display, a left-rail feed with colored change-tags.</p>
         <div class="meta"><span>Bricolage</span><span>Hanken</span><span>release timeline</span><span>emerald on slate</span></div>
+        <span class="open">Open sample →</span>
+      </div>
+    </a>
+    <a class="card verge" href="verge/index.html">
+      <div class="swatch verge" aria-hidden="true">#f7f9fa · #0d7490 · #1a2228</div>
+      <div class="body">
+        <div class="name"><span class="dot" aria-hidden="true"></span>Verge / Clinical evidence</div>
+        <p class="desc">Cool, measured, evidence-led. Serif display over ice-white with teal accent and measurement annotations — a hypothesis→method→verdict reading order. The first serif system in the gallery.</p>
+        <div class="meta"><span>Fraunces</span><span>Spline Sans</span><span>evidence cards</span><span>teal on ice</span></div>
         <span class="open">Open sample →</span>
       </div>
     </a>
