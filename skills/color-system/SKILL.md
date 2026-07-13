@@ -28,7 +28,7 @@ real), **H** 0–360 hue. Benefits that matter:
 1. **Choose a palette structure from evidence.** A restrained product may need one hue
    and neutrals; a data or editorial system may need several. Record what each hue does.
 2. **Build a lightness ramp** at fixed steps. A 10–12 stop ramp from ~0.97 (50) down
-   to ~0.20 (900). Keep H constant; vary L; let C peak in the mid-tones and taper at
+   to ~0.30 (900). Keep H constant; vary L; let C peak in the mid-tones and taper at
    the extremes (very light and very dark can't hold high chroma).
 3. **Choose neutral temperature deliberately.** Low-chroma brand tinting can create
    cohesion; true neutrals can be better for data, photography, or strict status colors.
