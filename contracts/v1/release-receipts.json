@@ -6,44 +6,66 @@
       {
         "id": "context-budget",
         "path": "evals/receipts/v1/context-budget.json",
-        "sha256": "6873f551472ee24556cc218494566b572c1ccdf228793964f59c73d47fe23195",
+        "sha256": "be9b818ba03a01f8d5e3290decfc6f14d5daee75eec8b4b9f69aabf7a3755496",
         "producer_id": "context-budget",
-        "assertions": { "overall_pass": true }
+        "assertions": {
+          "overall_pass": true
+        }
       },
       {
         "id": "browser",
         "path": "evals/receipts/v1/browser.json",
-        "sha256": "654e8c1a677585379e38e462b05bf53bbd691e41a190cc17eb01b7de84bb571c",
+        "sha256": "2e436e569393270e366cc9aac1ed634ba8bf5830dd36ffa9cc1bb6c1d4cd856c",
         "producer_id": "browser",
-        "assertions": { "status": "pass", "reproducible": true, "producer_id": "tastecheck.release.live-execution.v1" }
+        "assertions": {
+          "status": "pass",
+          "reproducible": true,
+          "producer_id": "tastecheck.release.live-execution.v1"
+        }
       },
       {
         "id": "e2e",
         "path": "evals/receipts/v1/e2e.json",
-        "sha256": "6bf0f2110067c5ba631af88420decab23856c5ff2d9f861da09a5d81ab102231",
+        "sha256": "6d1ca3994ca7076ee888050996bf97fbba93908a91c06c95262089e9050dbe5d",
         "producer_id": "e2e",
-        "assertions": { "status": "pass", "reproducible": true, "producer_id": "tastecheck.release.live-execution.v1" }
+        "assertions": {
+          "status": "pass",
+          "reproducible": true,
+          "producer_id": "tastecheck.release.live-execution.v1"
+        }
       },
       {
         "id": "mechanical",
         "path": "evals/receipts/v1/mechanical.json",
-        "sha256": "e3d7da1556f6b523a992151df568eb0b4a8d199587c318a2e1d9c2334ec011b0",
+        "sha256": "56f47e1eed5e1b0cfab61e5fd7cf3e83fd723941f124a38947724a72def55968",
         "producer_id": "mechanical",
-        "assertions": { "status": "pass", "reproducible": true, "producer_id": "tastecheck.release.mechanical.v1" }
+        "assertions": {
+          "status": "pass",
+          "reproducible": true,
+          "producer_id": "tastecheck.release.mechanical.v1"
+        }
       },
       {
         "id": "security",
         "path": "evals/receipts/v1/security.json",
-        "sha256": "f0d1d6c52ea97f70ec3ffb0fc41f6ff1534c248d79dd3e313f08829a529bb20b",
+        "sha256": "d36090512397f8dd0af085c32465f705276ab957a6214bdbdbf811eb82179027",
         "producer_id": "security",
-        "assertions": { "status": "pass", "reproducible": true, "producer_id": "tastecheck.release.security.v1" }
+        "assertions": {
+          "status": "pass",
+          "reproducible": true,
+          "producer_id": "tastecheck.release.security.v1"
+        }
       },
       {
         "id": "clean-clone",
         "path": "evals/receipts/v1/clean-clone.json",
-        "sha256": "84318e771f356ba8328a682a5ac26546d1bc880c4100756843fb25c57e548ec0",
+        "sha256": "121efce33a8bcfcb21aaf84fa1eb1ba53d45a744b855baaea8a671adf4cdd5bc",
         "producer_id": "clean-clone",
-        "assertions": { "status": "pass", "reproducible": true, "producer_id": "tastecheck.release.clean-clone.v1" }
+        "assertions": {
+          "status": "pass",
+          "reproducible": true,
+          "producer_id": "tastecheck.release.clean-clone.v1"
+        }
       }
     ]
   },

@@ -9,6 +9,7 @@ import { verifyHistoricalAuthority, verifyHistoricalSeparation, validateV2InputP
 import { assertProductionCommitment, createRandomization } from "./lib/randomization.mjs";
 import { createBuildAuthority } from "./lib/packet-build-authority.mjs";
 import { createOpenAuthority } from "./lib/synthesis-open-authority.mjs";
+import { recordQaCase } from "./lib/qa-case.mjs";
 
 const root = new URL("../../../", import.meta.url).pathname;
 assert.doesNotMatch(readFileSync(join(root, "tools/evals/v2/lib/packet-build-authority.mjs"), "utf8"), /openCommittedMap|synthesis-open-authority/);
@@ -70,6 +71,7 @@ try {
   const near = join(temp, "near.txt");
   writeFileSync(near, readFileSync(historical, "utf8").replace(/"/g, "").replace(/,/g, " "));
   assert.throws(() => verifyHistoricalSeparation([near], authority, root), /historical|overlap/);
+  recordQaCase("historical-copy-and-indirection");
 
   const secretRoot = join(temp, "secrets");
   mkdirSync(secretRoot);
@@ -88,6 +90,8 @@ try {
   assert.throws(() => createBuildAuthority(created.privateStateRef).buildPackets({}), /commitment|replacement/);
   rmSync(created.privateStateRef.secretPath);
   assert.throws(() => createBuildAuthority(created.privateStateRef).buildPackets({}), /missing/);
+  recordQaCase("commitment-and-opening-attacks");
+  recordQaCase("secret-lifecycle-and-disclosure");
 } finally {
   rmSync(temp, { recursive: true, force: true });
 }
