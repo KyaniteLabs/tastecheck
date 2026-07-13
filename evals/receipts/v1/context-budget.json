@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_tree_sha256": "3d4099a9dd210ff4b3d7fbfc4732e432ffc59dbf0bbfb62de0a755712e64036b",
+  "source_tree_sha256": "b08ac9741c3a7155907737732e408d165fab4e1297e656c9ac29d95fb5e397be",
   "skills": [
     {
       "skill": "a11y-pass",
@@ -18,16 +18,30 @@
     },
     {
       "skill": "art-direction",
-      "skill_md_bytes": 4398,
-      "skill_md_tokens": 1100,
+      "skill_md_bytes": 4413,
+      "skill_md_tokens": 1104,
       "baseline_tokens": 982,
-      "contract_block_tokens": 200,
+      "contract_block_tokens": 203,
       "checks": {
         "within_absolute_cap": true,
         "within_growth_cap": true,
         "contract_block_within_cap": true
       },
-      "growth_ratio": 0.12,
+      "growth_ratio": 0.124,
+      "pass": true
+    },
+    {
+      "skill": "chance-design",
+      "skill_md_bytes": 8303,
+      "skill_md_tokens": 2076,
+      "baseline_tokens": 2058,
+      "contract_block_tokens": 248,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": 0.009,
       "pass": true
     },
     {
@@ -46,58 +60,58 @@
     },
     {
       "skill": "color-system",
-      "skill_md_bytes": 6214,
-      "skill_md_tokens": 1554,
+      "skill_md_bytes": 6229,
+      "skill_md_tokens": 1558,
       "baseline_tokens": 1544,
-      "contract_block_tokens": 213,
+      "contract_block_tokens": 217,
       "checks": {
         "within_absolute_cap": true,
         "within_growth_cap": true,
         "contract_block_within_cap": true
       },
-      "growth_ratio": 0.006,
+      "growth_ratio": 0.009,
       "pass": true
     },
     {
       "skill": "component-states",
-      "skill_md_bytes": 6208,
-      "skill_md_tokens": 1552,
+      "skill_md_bytes": 6223,
+      "skill_md_tokens": 1556,
       "baseline_tokens": 1470,
-      "contract_block_tokens": 224,
+      "contract_block_tokens": 228,
       "checks": {
         "within_absolute_cap": true,
         "within_growth_cap": true,
         "contract_block_within_cap": true
       },
-      "growth_ratio": 0.056,
+      "growth_ratio": 0.059,
       "pass": true
     },
     {
       "skill": "data-viz",
-      "skill_md_bytes": 7909,
-      "skill_md_tokens": 1978,
+      "skill_md_bytes": 7924,
+      "skill_md_tokens": 1981,
       "baseline_tokens": 1965,
-      "contract_block_tokens": 198,
+      "contract_block_tokens": 202,
       "checks": {
         "within_absolute_cap": true,
         "within_growth_cap": true,
         "contract_block_within_cap": true
       },
-      "growth_ratio": 0.007,
+      "growth_ratio": 0.008,
       "pass": true
     },
     {
       "skill": "design-system-interview",
-      "skill_md_bytes": 7084,
-      "skill_md_tokens": 1771,
+      "skill_md_bytes": 7099,
+      "skill_md_tokens": 1775,
       "baseline_tokens": 1745,
-      "contract_block_tokens": 241,
+      "contract_block_tokens": 245,
       "checks": {
         "within_absolute_cap": true,
         "within_growth_cap": true,
         "contract_block_within_cap": true
       },
-      "growth_ratio": 0.015,
+      "growth_ratio": 0.017,
       "pass": true
     },
     {
@@ -116,44 +130,44 @@
     },
     {
       "skill": "empty-states",
-      "skill_md_bytes": 5268,
-      "skill_md_tokens": 1317,
+      "skill_md_bytes": 5283,
+      "skill_md_tokens": 1321,
       "baseline_tokens": 1302,
-      "contract_block_tokens": 198,
+      "contract_block_tokens": 202,
       "checks": {
         "within_absolute_cap": true,
         "within_growth_cap": true,
         "contract_block_within_cap": true
       },
-      "growth_ratio": 0.012,
+      "growth_ratio": 0.015,
       "pass": true
     },
     {
       "skill": "form-ux",
-      "skill_md_bytes": 5370,
-      "skill_md_tokens": 1343,
+      "skill_md_bytes": 5385,
+      "skill_md_tokens": 1347,
       "baseline_tokens": 1320,
-      "contract_block_tokens": 206,
-      "checks": {
-        "within_absolute_cap": true,
-        "within_growth_cap": true,
-        "contract_block_within_cap": true
-      },
-      "growth_ratio": 0.017,
-      "pass": true
-    },
-    {
-      "skill": "humanize-copy",
-      "skill_md_bytes": 4847,
-      "skill_md_tokens": 1212,
-      "baseline_tokens": 1199,
       "contract_block_tokens": 209,
       "checks": {
         "within_absolute_cap": true,
         "within_growth_cap": true,
         "contract_block_within_cap": true
       },
-      "growth_ratio": 0.011,
+      "growth_ratio": 0.02,
+      "pass": true
+    },
+    {
+      "skill": "humanize-copy",
+      "skill_md_bytes": 4862,
+      "skill_md_tokens": 1216,
+      "baseline_tokens": 1199,
+      "contract_block_tokens": 213,
+      "checks": {
+        "within_absolute_cap": true,
+        "within_growth_cap": true,
+        "contract_block_within_cap": true
+      },
+      "growth_ratio": 0.014,
       "pass": true
     },
     {
@@ -186,44 +200,44 @@
     },
     {
       "skill": "micro-motion",
-      "skill_md_bytes": 5739,
-      "skill_md_tokens": 1435,
+      "skill_md_bytes": 5754,
+      "skill_md_tokens": 1439,
       "baseline_tokens": 1430,
-      "contract_block_tokens": 193,
+      "contract_block_tokens": 196,
       "checks": {
         "within_absolute_cap": true,
         "within_growth_cap": true,
         "contract_block_within_cap": true
       },
-      "growth_ratio": 0.003,
+      "growth_ratio": 0.006,
       "pass": true
     },
     {
       "skill": "responsive-layout",
-      "skill_md_bytes": 4048,
-      "skill_md_tokens": 1012,
+      "skill_md_bytes": 4063,
+      "skill_md_tokens": 1016,
       "baseline_tokens": 1001,
-      "contract_block_tokens": 236,
+      "contract_block_tokens": 240,
       "checks": {
         "within_absolute_cap": true,
         "within_growth_cap": true,
         "contract_block_within_cap": true
       },
-      "growth_ratio": 0.011,
+      "growth_ratio": 0.015,
       "pass": true
     },
     {
       "skill": "spacing-system",
-      "skill_md_bytes": 5555,
-      "skill_md_tokens": 1389,
+      "skill_md_bytes": 5570,
+      "skill_md_tokens": 1393,
       "baseline_tokens": 1342,
-      "contract_block_tokens": 217,
+      "contract_block_tokens": 221,
       "checks": {
         "within_absolute_cap": true,
         "within_growth_cap": true,
         "contract_block_within_cap": true
       },
-      "growth_ratio": 0.035,
+      "growth_ratio": 0.038,
       "pass": true
     },
     {
@@ -242,30 +256,30 @@
     },
     {
       "skill": "theming",
-      "skill_md_bytes": 9255,
-      "skill_md_tokens": 2314,
+      "skill_md_bytes": 9270,
+      "skill_md_tokens": 2318,
       "baseline_tokens": 2207,
-      "contract_block_tokens": 231,
+      "contract_block_tokens": 235,
       "checks": {
         "within_absolute_cap": true,
         "within_growth_cap": true,
         "contract_block_within_cap": true
       },
-      "growth_ratio": 0.048,
+      "growth_ratio": 0.05,
       "pass": true
     },
     {
       "skill": "web-typography",
-      "skill_md_bytes": 10637,
-      "skill_md_tokens": 2660,
+      "skill_md_bytes": 10652,
+      "skill_md_tokens": 2663,
       "baseline_tokens": 2553,
-      "contract_block_tokens": 220,
+      "contract_block_tokens": 224,
       "checks": {
         "within_absolute_cap": true,
         "within_growth_cap": true,
         "contract_block_within_cap": true
       },
-      "growth_ratio": 0.042,
+      "growth_ratio": 0.043,
       "pass": true
     }
   ],
