@@ -5,7 +5,41 @@ All notable changes to the tastecheck skill pack. Format follows
 
 ## [Unreleased]
 
-## [1.2.0] — 2026-07-13
+## [1.3.0] — 2026-07-13
+
+### Fixed — Full 19-skill audit (3 P0, 8 P1)
+
+- **deslop-ui**: emoji-header grep detector rewritten (was silently broken on macOS BSD
+  grep — `\x{}` Unicode escapes require PCRE `-P`)
+- **theming**: `--color-primary`/`--color-primary-hover`/`--color-primary-ink` and
+  `--color-success`/`--color-error`/`--color-warning`/`--color-info` added to the
+  canonical token list and `theme-starter.css` light + dark (components using
+  `var(--color-primary)` got undefined variables with no dark-mode mapping)
+- **micro-motion**: shipped asset no longer implements the anti-pattern the SKILL.md
+  prohibits — `html.js .reveal { opacity: 0; }` replaced with the visible-by-default
+  `data-reveal="pending"` pattern (content was permanently invisible if JS failed or
+  bfcache restored)
+- **color-system**: hover L-nudge corrected (0.08 → 0.06, matching the stated rule),
+  hardcoded `white` → `var(--color-primary-ink)`, ramp endpoint corrected (~0.20 → ~0.30)
+- **component-states**: `.menu-item:focus-visible` no longer removes the focus outline
+  without an adequate replacement (was ~1.5:1 contrast, below WCAG minimum); added
+  aria-disabled keyboard activation note
+- **tastecheck-pass**: gate-audit gradient regex now catches Tailwind v3 space-separated
+  rgb and hex forms of the indigo→violet AI tell (was comma-rgb-only)
+- **micro-motion**: `.popover[data-open]` → `.popover[data-open="true"]` (presence-based
+  selector matched `data-open="false"`)
+
+### Audited — 19-skill systematic review
+
+Full per-skill audit across all 19 skills for staleness, gaps, bugs, swallowed errors,
+missed opportunities, blind spots, and integration debt. 3 P0, 15 P1, ~40 P2, ~30 P3
+findings triaged. P0 and key P1 fixed; P2+ deferred with documented rationale.
+
+### Changed
+
+- Gallery samples gate-audit cleaned (all 11 surface/mode combinations)
+- Gallery index: system-ui → Archivo committed display face
+- Gallery now shows seven design systems (Verge added in v1.2)
 
 ### Added — Effectiveness v2 blind evaluation infrastructure
 
