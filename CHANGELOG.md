@@ -3,6 +3,39 @@
 All notable changes to the tastecheck skill pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow semver.
 
+## [1.4.0] — 2026-07-13
+
+### Added — 20th skill: `chance-design`
+
+Procedural design-system generation through seeded randomness. The feature
+originated as C8 ("Chance-Styled Notes") in Rutile/FeatherMark's SPEC — a dice
+button that uses Chance (kyanitelabs/chance) to auto-answer every
+design-system-interview question from a bounded option space.
+
+- **New skill `chance-design`** — seeded PRNG (xoshiro128++) picks from curated
+  options for each design dimension (reference, personality, aesthetic, type,
+  color_mode, density, rhythm, signature, imagery, motion)
+- **`assets/bounded-space.json`** — the complete answer space with 8 reference
+  territories, 8 personalities, 8 aesthetic approaches, 5 type directions, 8
+  signature moves, 10 accent hue ranges, and the design bounds (measure 58–75ch,
+  line-height 1.5–1.8, etc.)
+- **`assets/chance-engine.js`** — pasteable zero-dependency PRNG with `pick`,
+  `range`, `float`, `shuffle`, `chance` (same seed → same design, always)
+- **Relaxed gate** — chance-generated designs need readable + WCAG AA contrast +
+  self-contained + inert, not the full 19-skill strict gate (LD-8b pattern)
+- **Landing page**: "Roll the dice" button in the bento grid with live seeded
+  randomness demonstration
+- **References Chance** (kyanitelabs/chance) as the conceptual source and
+  optional MCP upgrade path for multi-source entropy mixing
+
+### Changed
+
+- Skill count: 19 → 20 across landing page, llms.txt, integration demo
+- Version bumped to 1.4.0
+- Contract handoff graph: design-system-interview now sends to chance-design;
+  12 downstream skills receive from chance-design
+- Context budget baseline rebaselined to include chance-design
+
 ## [1.3.1] — 2026-07-13
 
 ### Fixed — All deferred items closed

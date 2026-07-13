@@ -61,7 +61,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: A product needs a committed imagery, illustration, or iconography system with source and rights decisions.; avoid: The request is only a color, type, or layout decision.
 - Exclude: Do not use placeholder imagery when the brief requires a real asset plan. (+1 in contract.json)
-- Stop / handoff: Stop when source or rights constraints cannot be verified. (+1 in contract.json); receives [design-system-interview, improve-existing-website] -> sends [responsive-layout, a11y-pass, deslop-ui, tastecheck-pass]
+- Stop / handoff: Stop when source or rights constraints cannot be verified. (+1 in contract.json); receives [chance-design, design-system-interview, improve-existing-website] -> sends [responsive-layout, a11y-pass, deslop-ui, tastecheck-pass]
 - Output: source-aware visual treatment and asset plan
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

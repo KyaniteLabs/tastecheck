@@ -385,6 +385,7 @@ footer{border-top:1px solid var(--line);padding:1.5rem 0 3rem;color:var(--muted)
       <div class="skill-pill" data-skill="cognitive-a11y"><code>cognitive-a11y</code><br>TL;DR, one idea per line, stable states.</div>
       <div class="skill-pill" data-skill="humanize-copy"><code>humanize-copy</code><br>Concrete kitchen verbs replace generic prose.</div>
       <div class="skill-pill" data-skill="design-system-interview"><code>design-system-interview</code><br>Committed direction and tokens.</div>
+      <div class="skill-pill" data-skill="chance-design"><code>chance-design</code><br>Roll the dice — seeded procedural design.</div>
       <div class="skill-pill" data-skill="improve-existing-website"><code>improve-existing-website</code><br>Audit signal, drift, inferred system.</div>
       <div class="skill-pill" data-skill="a11y-pass"><code>a11y-pass</code><br>Manual and runnable accessibility gates.</div>
       <div class="skill-pill" data-skill="spacing-system"><code>spacing-system</code><br>One --space-* scale and section rhythm.</div>
@@ -469,7 +470,7 @@ document.querySelector('[data-test="retry-list"]').addEventListener("click", () 
 });
 
 window.tastecheckIntegration = {
-  skillCount: 19,
+  skillCount: 20,
   skillNames: [...new Set([...document.querySelectorAll("[data-skill]")].map((node) => node.dataset.skill))].sort(),
   setTheme,
   cycleState: () => cycle.click(),
