@@ -91,7 +91,7 @@ h2{font-family:var(--disp);font-weight:700;font-size:clamp(2.1rem,1.4rem + 3vw,3
 @media(max-width:760px){.steps{grid-template-columns:1fr}.steps .step{grid-column:auto;grid-row:auto}}
 /* skills — IRREGULAR TESSELLATED BENTO (varied cell sizes): hero, wide, standard, tall spans */
 .skills-g{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:3rem;grid-auto-flow:dense}
-.sk{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:1.2rem;grid-column:span 2;min-height:9.5rem;display:flex;flex-direction:column;gap:.4rem;transition:border-color .16s,transform .16s}
+.sk{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:1.2rem;grid-column:span 2;min-height:9.5rem;display:flex;flex-direction:column;gap:.4rem;transition:border-color .16s,transform .16s}.sk:nth-child(4n+1){min-height:11rem}.sk:nth-child(4n+3){min-height:8rem}
 .sk:hover{border-color:var(--verd);transform:translateY(-2px)}
 /* iridescent feature border for lead / gate cells */
 .sk.feat{border:1px solid transparent;background:linear-gradient(var(--s1),var(--s1)) padding-box,linear-gradient(120deg,var(--copper),var(--verd)) border-box}
@@ -126,7 +126,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 @media(max-width:560px){.tc-bar{font-size:.74rem}}
 </style>
 <style>a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}</style>
-<style id="tc-slop">#why .slops{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2rem}@media(max-width:760px){#why .slops{grid-template-columns:1fr}}#why .sw{height:44px;border-radius:6px;margin:0 0 .45rem}.wf{display:grid;gap:5px;padding:9px;border:1px solid var(--tc-line);border-radius:8px;margin-bottom:.9rem}.wf .h{height:11px;width:55%;margin:0 auto;background:var(--tc-muted);border-radius:2px;opacity:.65}.wf .r{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.wf .r span{height:22px;background:var(--tc-line);border-radius:3px}.slopx{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.9rem}.slopx s{border:1px solid var(--tc-line);border-radius:4px;padding:.18em .5em;color:var(--tc-muted);font-size:.8rem;text-decoration-thickness:1px}</style>
+<style id="tc-slop">#why .slops{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:1rem;margin-top:2rem}@media(max-width:760px){#why .slops{grid-template-columns:1fr}}#why .sw{height:44px;border-radius:6px;margin:0 0 .45rem}.wf{display:grid;gap:5px;padding:9px;border:1px solid var(--tc-line);border-radius:8px;margin-bottom:.9rem}.wf .h{height:11px;width:55%;margin:0 auto;background:var(--tc-muted);border-radius:2px;opacity:.65}.wf .r{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.wf .r span{height:22px;background:var(--tc-line);border-radius:3px}.slopx{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.9rem}.slopx s{border:1px solid var(--tc-line);border-radius:4px;padding:.18em .5em;color:var(--tc-muted);font-size:.8rem;text-decoration-thickness:1px}</style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
