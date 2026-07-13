@@ -1,6 +1,6 @@
 # tastecheck
 
-> Nineteen connected frontend craft skills for AI coding agents. The headline skill turns
+> Twenty connected frontend craft skills for AI coding agents. The headline skill turns
 > a brief into a confirmed design system before code; improve-existing-website infers a
 > system from existing sites; the rest (typography, color/OKLCH, theming, layout, states, forms,
 > motion, data-viz, a11y, cognitive-a11y, deslop, humanize-copy) apply checkable craft so

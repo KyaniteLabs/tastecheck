@@ -96,7 +96,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: An interface needs a spacing scale, content-derived rhythm, or gap consistency (+1 in contract.json); avoid: The request is only responsive reflow or component state behavior (+1 in contract.json)
 - Exclude: Do not impose one uniform cadence across dissimilar content (+1 in contract.json)
-- Stop / handoff: Pause when content hierarchy is absent and spacing would be arbitrary (+1 in contract.json); receives [design-system-interview, improve-existing-website, web-typography] -> sends [responsive-layout, component-states, form-ux]
+- Stop / handoff: Pause when content hierarchy is absent and spacing would be arbitrary (+1 in contract.json); receives [chance-design, design-system-interview, improve-existing-website, web-typography] -> sends [responsive-layout, component-states, form-ux]
 - Output: A tokenized spacing scale and stated section-rhythm strategy tied to content hierarchy
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->
