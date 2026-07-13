@@ -414,12 +414,18 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
       <p class="cap">Imagery &amp; icons as decisions — no gradient-blob AI graphics.</p></div>
 
     <div class="cell w3 tall" data-skill="tastecheck-pass"><div class="lab"><span class="n">18</span><h3>tastecheck-pass</h3></div>
-      <div class="stage" style="gap:.55rem"><div class="note" style="line-height:1.95">✓ tokens · ✓ contrast ≥ 4.5:1 · ✓ keyboard<br>✓ cold-load render · ✓ no slop tells · ✓ structural</div><span class="aa">Gate: PASS ✓</span></div>
+      <div class="stage" style="gap:.55rem"><div class="note" style="line-height:1.95">✓ tokens · ✓ contrast ≥ 4.5:1 · ✓ keyboard<br>✓ cold-load render · ✓ no slop tells · ✓ structural<br>✓ blind eval rehearsal · 160 sim / 0 real</div><span class="aa">Gate: PASS ✓</span></div>
       <p class="cap">The ship gate: runs every self-check, reports a pass/fail table — with a pasteable auditor.</p></div>
 
     <div class="cell w2"><div class="lab"><span class="n">+</span><h3>plain markdown</h3></div>
       <div class="stage" style="font:600 .9rem var(--body);color:var(--muted)">Claude · Codex · Gemini · Cursor · Kimi<br><span class="note" style="margin-top:.5rem;display:block">plain markdown · no runtime</span></div>
       <p class="cap">Canonical .agents links plus detected skill dirs.</p></div>
+    <div class="cell w3" style="border-color:var(--copper-deep)"><div class="lab"><span class="n">v2</span><h3>blind evaluation</h3></div>
+      <div class="stage" style="gap:.45rem">
+        <div class="note" style="line-height:1.8">12 scenarios · 48 generations · 96 judgments · 16 anchors<br>160 simulated calls · 0 real calls · zero spend<br>sealed randomization · signed authority · trust-boundary gates</div>
+        <span class="aa" style="background:var(--s3);color:var(--muted)">production_not_started</span>
+      </div>
+      <p class="cap">Machine-only blind comparison — built, rehearsed, adversarially tested. Production has not started.</p></div>
 
   </div>
 </div></section>
@@ -442,7 +448,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 <section id="proof"><div class="wrap rv">
   <div class="mark"><s></s>proof</div>
   <h2>This landing page is the integration surface.</h2>
-  <p class="slede">The GitHub Pages homepage represents every skill concern directly and demonstrates named interactions: existing-site audit, inferred design system, OKLCH themes, type, states, form validation, empty/error/retry paths, chart/table parity, accessibility, human copy, motion, and responsive layout.</p>
+  <p class="slede">The GitHub Pages homepage represents every skill concern directly and demonstrates named interactions: existing-site audit, inferred design system, OKLCH themes, type, states, form validation, empty/error/retry paths, chart/table parity, accessibility, human copy, motion, and responsive layout. A machine-only blind evaluation protocol (effectiveness v2) is built, rehearsed at 160 simulated calls with zero real calls, and adversarially tested — but production evaluation has not started.</p>
   <div class="actions">
     <a class="btn btn-primary" href="#skills">Review the live skill cells →</a>
     <a class="btn btn-ghost" href="https://github.com/KyaniteLabs/tastecheck/blob/main/docs/VERIFICATION.md">Read verification notes</a>
