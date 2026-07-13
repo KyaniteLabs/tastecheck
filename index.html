@@ -420,12 +420,17 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
     <div class="cell w2"><div class="lab"><span class="n">+</span><h3>plain markdown</h3></div>
       <div class="stage" style="font:600 .9rem var(--body);color:var(--muted)">Claude · Codex · Gemini · Cursor · Kimi<br><span class="note" style="margin-top:.5rem;display:block">plain markdown · no runtime</span></div>
       <p class="cap">Canonical .agents links plus detected skill dirs.</p></div>
-    <div class="cell w3" style="border-color:var(--copper-deep)"><div class="lab"><span class="n">v2</span><h3>blind evaluation</h3></div>
-      <div class="stage" style="gap:.45rem">
-        <div class="note" style="line-height:1.8">12 scenarios · 48 generations · 96 judgments · 16 anchors<br>160 simulated calls · 0 real calls · zero spend<br>sealed randomization · signed authority · trust-boundary gates</div>
-        <span class="aa" style="background:var(--s3);color:var(--muted)">production_not_started</span>
+    <div class="cell w3"><div class="lab"><span class="n">v2</span><h3>blind evaluation</h3></div>
+      <div class="stage" style="gap:.5rem">
+        <div style="display:flex;flex-wrap:wrap;gap:2px" aria-hidden="true" id="ordinal-grid"></div>
+        <div style="display:flex;gap:.8rem;flex-wrap:wrap;font:600 .72rem var(--mono)">
+          <span style="color:var(--copper)">■ 48 generation</span>
+          <span style="color:var(--verd)">■ 96 judgment</span>
+          <span style="color:var(--muted)">■ 16 anchor</span>
+        </div>
+        <span class="note">160 simulated · 0 real · zero spend · sealed authority</span>
       </div>
-      <p class="cap">Machine-only blind comparison — built, rehearsed, adversarially tested. Production has not started.</p></div>
+      <p class="cap">Machine-only blind comparison: rehearsed, adversarially tested, production not started.</p></div>
 
   </div>
 </div></section>
@@ -536,6 +541,20 @@ function runLandingA11yAudit(){
   return {failures:failures,warnings:warnings};
 }
 window.a11yAudit=runLandingA11yAudit;
+/* effectiveness v2: render the 160-ordinal protocol grid */
+(function(){
+  var grid=document.getElementById('ordinal-grid');if(!grid)return;
+  var cs=getComputedStyle(document.documentElement);
+  var gen=cs.getPropertyValue('--copper').trim();
+  var jud=cs.getPropertyValue('--verd').trim();
+  var anc=cs.getPropertyValue('--muted').trim();
+  for(var i=0;i<160;i++){
+    var b=document.createElement('i');
+    b.style.cssText='width:7px;height:7px;border-radius:1px;flex:none';
+    b.style.background=i<48?gen:i<144?jud:anc;
+    grid.appendChild(b);
+  }
+})();
 window.tastecheckLanding={
   skillCount:19,
   skillNames:[].slice.call(document.querySelectorAll('[data-skill]')).map(function(node){return node.dataset.skill;}).filter(function(name,index,list){return list.indexOf(name)===index;}).sort(),
