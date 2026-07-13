@@ -8,9 +8,9 @@ It starts before the first component. Instead of letting “modern” silently b
 usual font, gradient, hero, and card grid, TasteCheck recommends concrete alternatives
 and asks the few questions that would actually change the build.
 
-![TasteCheck — one product story rendered through six committed design systems](docs/hero/six-systems.png)
+![TasteCheck — one product story rendered through seven committed design systems](docs/hero/six-systems.png)
 
-*Six real browser renders — the same product story shaped by six different structures,
+*Six real browser renders — the same product story shaped by seven different structures,
 type systems, color systems, and rhythms. Open the
 [live gallery →](https://kyanitelabs.github.io/tastecheck/samples/)*
 
@@ -32,7 +32,7 @@ git clone https://github.com/KyaniteLabs/tastecheck
 ```
 
 **Live:** the [landing page](https://kyanitelabs.github.io/tastecheck/) ·
-the [six-design-system gallery](https://kyanitelabs.github.io/tastecheck/samples/) ·
+the [seven-design-system gallery](https://kyanitelabs.github.io/tastecheck/samples/) ·
 the [secondary integration harness](https://kyanitelabs.github.io/tastecheck/demos/skill-integration.html)
 
 ---
@@ -78,7 +78,7 @@ page-level light/dark/high-contrast theme paths, component states, form validati
 empty/error/retry recovery, chart/table parity, keyboard/focus affordances, reduced-motion
 guards, forced-colors support, humanized copy, and the existing-site audit story.
 
-The second demonstration takes the same product story through six committed systems.
+The second demonstration takes the same product story through seven committed systems.
 They differ in composition and reading rhythm, not only color. The repo includes a repeatable verification
 gate for local links, install paths, command targets, CSS parse traps, starter accessibility,
 homepage skill coverage, and chart data-table parity.
@@ -95,6 +95,7 @@ homepage skill coverage, and chart data-table parity.
 | [Concrete](samples/concrete/) | raw, mechanical, monochrome | ruled spec-sheet + dense ledger table; achromatic + one hazard accent | Space Grotesk + Space Mono |
 | [Clay](samples/clay/) | warm, soft, humanist | alternating zig-zag soft-card flow with organic "pebble" shapes | Mulish |
 | [Dispatch](samples/dispatch/) | dark, operational, exact | release timeline with status-led reading order | system sans + mono |
+| [Verge](samples/verge/) | cool, clinical, evidence-led | measurement-annotated evidence cards with hypothesis→method→verdict reading order | Fraunces + Spline Sans |
 
 Each follows the same pipeline: direction → `DESIGN-SYSTEM.md` → implementation skills →
 render → audit → ship gate.
