@@ -53,13 +53,13 @@
   ],
   "handoff": {
     "receives_from": [
-      "chance-design",
       "component-states",
       "design-system-interview",
       "deslop-ui",
       "humanize-copy",
       "responsive-layout",
-      "spacing-system"
+      "spacing-system",
+      "tasteroll"
     ],
     "sends_to": [
       "a11y-pass",

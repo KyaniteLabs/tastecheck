@@ -54,12 +54,12 @@
   ],
   "handoff": {
     "receives_from": [
-      "chance-design",
       "cognitive-a11y",
       "design-system-interview",
       "deslop-ui",
       "empty-states",
-      "improve-existing-website"
+      "improve-existing-website",
+      "tasteroll"
     ],
     "sends_to": [
       "form-ux",
