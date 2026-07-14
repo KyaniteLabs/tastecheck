@@ -75,7 +75,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: A layout needs intrinsic reflow, responsive hierarchy, container behavior, or overflow repair (+1 in contract.json); avoid: The request is only to choose a spacing scale or type system (+1 in contract.json)
 - Exclude: Do not choose breakpoints from device names (+1 in contract.json)
-- Stop / handoff: Pause when content priority is unknown and reflow would silently hide required information (+1 in contract.json); receives [art-direction, chance-design, design-system-interview, improve-existing-website, spacing-system, theming, web-typography] -> sends [component-states, form-ux, a11y-pass, deslop-ui, i18n-ready]
+- Stop / handoff: Pause when content priority is unknown and reflow would silently hide required information (+1 in contract.json); receives [art-direction, design-system-interview, improve-existing-website, spacing-system, tasteroll, theming, web-typography] -> sends [component-states, form-ux, a11y-pass, deslop-ui, i18n-ready]
 - Output: An intrinsic layout strategy with justified breakpoints and responsive verification evidence
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->
