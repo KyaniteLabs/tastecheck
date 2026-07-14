@@ -427,7 +427,7 @@
       "verdict": "REVIEW WARNS",
       "fails": [],
       "warns": [
-        "NIMA aesthetic score 4.76/10 below 5.5 threshold"
+        "NIMA aesthetic score 4.15/10 below 5.5 threshold"
       ],
       "notes": [
         "display face resolves to \"Georgia\""
@@ -438,7 +438,7 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 4.7624,
+      "nimaScore": 4.1501,
       "status": "warn"
     }
   },
@@ -456,7 +456,7 @@
       "verdict": "REVIEW WARNS",
       "fails": [],
       "warns": [
-        "NIMA aesthetic score 3.41/10 below 5.5 threshold"
+        "NIMA aesthetic score 3.49/10 below 5.5 threshold"
       ],
       "notes": [
         "display face resolves to \"Georgia\""
@@ -467,7 +467,7 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 3.4061,
+      "nimaScore": 3.4944,
       "status": "warn"
     }
   },
@@ -486,7 +486,7 @@
       "fails": [],
       "warns": [
         "uniform card grid: 3× identical article.panel in div.audit-grid (equal size, bordered/rounded — the \"three cards\" tell?)",
-        "uniform card grid: 19× identical div.skill-pill in div.skill-map (equal size, bordered/rounded — the \"three cards\" tell?)"
+        "uniform card grid: 20× identical div.skill-pill in div.skill-map (equal size, bordered/rounded — the \"three cards\" tell?)"
       ],
       "notes": [
         "display face resolves to \"Georgia\""
@@ -497,7 +497,7 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 2.3463,
+      "nimaScore": 2.2755,
       "status": "warn"
     }
   },
@@ -592,7 +592,7 @@
     "running_animations_reduced": 0,
     "a11y": {
       "fails": 0,
-      "warnings": 3
+      "warnings": 4
     },
     "gate": {
       "verdict": "REVIEW WARNS",
@@ -609,7 +609,7 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 7.3724,
+      "nimaScore": 7.5035,
       "status": "ok"
     }
   },
@@ -621,7 +621,7 @@
     "running_animations_reduced": 0,
     "a11y": {
       "fails": 0,
-      "warnings": 3
+      "warnings": 4
     },
     "gate": {
       "verdict": "REVIEW WARNS",
@@ -638,7 +638,7 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 6.8602,
+      "nimaScore": 6.6646,
       "status": "ok"
     }
   },
@@ -650,7 +650,7 @@
     "running_animations_reduced": 0,
     "a11y": {
       "fails": 0,
-      "warnings": 3
+      "warnings": 4
     },
     "gate": {
       "verdict": "REVIEW WARNS",
@@ -667,7 +667,7 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 6.8798,
+      "nimaScore": 7.4641,
       "status": "ok"
     }
   },

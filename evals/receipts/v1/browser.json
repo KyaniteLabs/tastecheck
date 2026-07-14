@@ -6,7 +6,7 @@
     "id": "tastecheck-live-execution",
     "version": 1
   },
-  "source_tree_sha256": "3d4099a9dd210ff4b3d7fbfc4732e432ffc59dbf0bbfb62de0a755712e64036b",
+  "source_tree_sha256": "8c46e798d558fcc819acd635975717d45a632bc476d83d09ecc06865697b2564",
   "nonce": "browser-release-v1",
   "runtime": {
     "node": "v26.0.0",
@@ -14,8 +14,8 @@
     "browser": "149.0.7827.55",
     "platform": "darwin"
   },
-  "started_at": "2026-07-13T22:31:30.929Z",
-  "finished_at": "2026-07-13T22:31:59.834Z",
+  "started_at": "2026-07-14T00:18:12.795Z",
+  "finished_at": "2026-07-14T00:18:38.815Z",
   "executed": true,
   "reproducible": true,
   "artifacts": [
@@ -45,14 +45,14 @@
     },
     {
       "id": "demo-02-states-768",
-      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-768-e8136e3cb5aaebe453b9fac7756cf7e75c8ef432fb161d3889169c9e5c54b266.png",
-      "sha256": "e8136e3cb5aaebe453b9fac7756cf7e75c8ef432fb161d3889169c9e5c54b266",
-      "bytes": 27213
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-768-865f2c22ec335f5879bcc9b84de4e992499b85244bf54f2d2cf708d989209f67.png",
+      "sha256": "865f2c22ec335f5879bcc9b84de4e992499b85244bf54f2d2cf708d989209f67",
+      "bytes": 27214
     },
     {
       "id": "demo-02-states-1280",
-      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-1280-62540641403471946dae266715a101c358ec344abcfe3c85c1161a31a8135396.png",
-      "sha256": "62540641403471946dae266715a101c358ec344abcfe3c85c1161a31a8135396",
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-1280-417ce842d3e9d964cca4bc9e1d771ef18a15fbd8bf8018fa8a5a0670a71b1633.png",
+      "sha256": "417ce842d3e9d964cca4bc9e1d771ef18a15fbd8bf8018fa8a5a0670a71b1633",
       "bytes": 29234
     },
     {
@@ -111,21 +111,21 @@
     },
     {
       "id": "demo-skill-integration-390",
-      "path": "evals/receipts/v1/artifacts/browser/demo-skill-integration-390-cb7d3de395e2cf7cd6d6eedb6346a3fc4bda126dd7a1bc8cf77a922e0c70cbb6.png",
-      "sha256": "cb7d3de395e2cf7cd6d6eedb6346a3fc4bda126dd7a1bc8cf77a922e0c70cbb6",
-      "bytes": 577491
+      "path": "evals/receipts/v1/artifacts/browser/demo-skill-integration-390-9a034b768e8cfa7e3e8e0cb547abc5aba68a79cd87004477337fc50574890322.png",
+      "sha256": "9a034b768e8cfa7e3e8e0cb547abc5aba68a79cd87004477337fc50574890322",
+      "bytes": 583639
     },
     {
       "id": "demo-skill-integration-768",
-      "path": "evals/receipts/v1/artifacts/browser/demo-skill-integration-768-f861a98fdb6e246ed007904cf71c60692dc8afaeab74e3ae3e3407594451070c.png",
-      "sha256": "f861a98fdb6e246ed007904cf71c60692dc8afaeab74e3ae3e3407594451070c",
-      "bytes": 620833
+      "path": "evals/receipts/v1/artifacts/browser/demo-skill-integration-768-ddfe67ea4970bf2e0361e6ee57c77e3f61040b6d5c0f88cc279ca7ff4d51ea7f.png",
+      "sha256": "ddfe67ea4970bf2e0361e6ee57c77e3f61040b6d5c0f88cc279ca7ff4d51ea7f",
+      "bytes": 624346
     },
     {
       "id": "demo-skill-integration-1280",
-      "path": "evals/receipts/v1/artifacts/browser/demo-skill-integration-1280-6fb78e445e5bc4d58866c91f355e8a54a152dea65683aca323356c492d728e0a.png",
-      "sha256": "6fb78e445e5bc4d58866c91f355e8a54a152dea65683aca323356c492d728e0a",
-      "bytes": 652478
+      "path": "evals/receipts/v1/artifacts/browser/demo-skill-integration-1280-6eaa6f3971f889d717393e56e9d1db558e7e6925ef3b1ee2381f5b821fba29c7.png",
+      "sha256": "6eaa6f3971f889d717393e56e9d1db558e7e6925ef3b1ee2381f5b821fba29c7",
+      "bytes": 656623
     },
     {
       "id": "gallery-390",
@@ -147,21 +147,21 @@
     },
     {
       "id": "landing-390",
-      "path": "evals/receipts/v1/artifacts/browser/landing-390-f702dffe69af771553e7e0a4bcb65eb4276e1b4243d11478ac00d8de000a9fd1.png",
-      "sha256": "f702dffe69af771553e7e0a4bcb65eb4276e1b4243d11478ac00d8de000a9fd1",
-      "bytes": 960845
+      "path": "evals/receipts/v1/artifacts/browser/landing-390-dd02446181caae3b6e7f82ac337dd94d13b5c34edf10be5a678f377a87064468.png",
+      "sha256": "dd02446181caae3b6e7f82ac337dd94d13b5c34edf10be5a678f377a87064468",
+      "bytes": 973332
     },
     {
       "id": "landing-768",
-      "path": "evals/receipts/v1/artifacts/browser/landing-768-c99b16cb2d21e5d14502a912b295e946ee63a62b6f3594b75cc69748eb80cd72.png",
-      "sha256": "c99b16cb2d21e5d14502a912b295e946ee63a62b6f3594b75cc69748eb80cd72",
-      "bytes": 1318753
+      "path": "evals/receipts/v1/artifacts/browser/landing-768-9110b04f0a17ac49a6eb8fa77b8f730d57abbadc1cbc45328e283eb3fab1db95.png",
+      "sha256": "9110b04f0a17ac49a6eb8fa77b8f730d57abbadc1cbc45328e283eb3fab1db95",
+      "bytes": 1330766
     },
     {
       "id": "landing-1280",
-      "path": "evals/receipts/v1/artifacts/browser/landing-1280-3f3e6c0d7ca7855866058a3af299bde3a14edebef9ae13880bf7297d9f479b4f.png",
-      "sha256": "3f3e6c0d7ca7855866058a3af299bde3a14edebef9ae13880bf7297d9f479b4f",
-      "bytes": 2040786
+      "path": "evals/receipts/v1/artifacts/browser/landing-1280-88a007394df9769da2ec015400a66a42abb745171e9057518bc64d2cad4a555b.png",
+      "sha256": "88a007394df9769da2ec015400a66a42abb745171e9057518bc64d2cad4a555b",
+      "bytes": 2044872
     },
     {
       "id": "sample-clay-390",
@@ -291,8 +291,8 @@
     },
     {
       "id": "browser-audit-results",
-      "path": "evals/receipts/v1/artifacts/browser/browser-audit-results-668cb12e48034f1e90f7fabda610197dbbd8c9827db2882080aa87dac14ed799.json",
-      "sha256": "668cb12e48034f1e90f7fabda610197dbbd8c9827db2882080aa87dac14ed799",
+      "path": "evals/receipts/v1/artifacts/browser/browser-audit-results-29770ebe5282af2f66f69d33fe571a58cfdca31251b26d09b38c2254aa79985e.json",
+      "sha256": "29770ebe5282af2f66f69d33fe571a58cfdca31251b26d09b38c2254aa79985e",
       "bytes": 28033
     }
   ],
@@ -1495,7 +1495,7 @@
     {
       "id": "landing-390-a11y-audit",
       "passed": true,
-      "detail": "0 measured fails, 3 warnings recorded"
+      "detail": "0 measured fails, 4 warnings recorded"
     },
     {
       "id": "landing-390-keyboard-focus",
@@ -1550,7 +1550,7 @@
     {
       "id": "landing-768-a11y-audit",
       "passed": true,
-      "detail": "0 measured fails, 3 warnings recorded"
+      "detail": "0 measured fails, 4 warnings recorded"
     },
     {
       "id": "landing-768-keyboard-focus",
@@ -1605,7 +1605,7 @@
     {
       "id": "landing-1280-a11y-audit",
       "passed": true,
-      "detail": "0 measured fails, 3 warnings recorded"
+      "detail": "0 measured fails, 4 warnings recorded"
     },
     {
       "id": "landing-1280-keyboard-focus",
