@@ -54,9 +54,9 @@
   ],
   "handoff": {
     "receives_from": [
-      "chance-design",
       "design-system-interview",
-      "improve-existing-website"
+      "improve-existing-website",
+      "tasteroll"
     ],
     "sends_to": [
       "responsive-layout",

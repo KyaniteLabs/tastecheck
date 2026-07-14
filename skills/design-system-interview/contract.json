@@ -59,7 +59,6 @@
     "receives_from": [],
     "sends_to": [
       "art-direction",
-      "chance-design",
       "color-system",
       "component-states",
       "data-viz",
@@ -70,6 +69,7 @@
       "micro-motion",
       "responsive-layout",
       "spacing-system",
+      "tasteroll",
       "theming",
       "web-typography"
     ]
