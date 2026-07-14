@@ -6,7 +6,7 @@
     "id": "tastecheck-live-execution",
     "version": 1
   },
-  "source_tree_sha256": "8c46e798d558fcc819acd635975717d45a632bc476d83d09ecc06865697b2564",
+  "source_tree_sha256": "d6561d5371b263a5e84f15fd392b25da4045133e6015edeff92698c114df825b",
   "nonce": "e2e-release-v1-0001",
   "runtime": {
     "node": "v26.0.0",
@@ -14,8 +14,8 @@
     "browser": "149.0.7827.55",
     "platform": "darwin"
   },
-  "started_at": "2026-07-14T00:18:41.976Z",
-  "finished_at": "2026-07-14T00:18:44.625Z",
+  "started_at": "2026-07-14T00:22:07.930Z",
+  "finished_at": "2026-07-14T00:22:09.900Z",
   "executed": true,
   "reproducible": true,
   "artifacts": [

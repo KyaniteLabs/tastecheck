@@ -6,7 +6,7 @@
     "id": "tastecheck-live-execution",
     "version": 1
   },
-  "source_tree_sha256": "8c46e798d558fcc819acd635975717d45a632bc476d83d09ecc06865697b2564",
+  "source_tree_sha256": "d6561d5371b263a5e84f15fd392b25da4045133e6015edeff92698c114df825b",
   "nonce": "browser-release-v1",
   "runtime": {
     "node": "v26.0.0",
@@ -14,8 +14,8 @@
     "browser": "149.0.7827.55",
     "platform": "darwin"
   },
-  "started_at": "2026-07-14T00:18:12.795Z",
-  "finished_at": "2026-07-14T00:18:38.815Z",
+  "started_at": "2026-07-14T00:21:43.576Z",
+  "finished_at": "2026-07-14T00:22:07.540Z",
   "executed": true,
   "reproducible": true,
   "artifacts": [
@@ -45,14 +45,14 @@
     },
     {
       "id": "demo-02-states-768",
-      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-768-865f2c22ec335f5879bcc9b84de4e992499b85244bf54f2d2cf708d989209f67.png",
-      "sha256": "865f2c22ec335f5879bcc9b84de4e992499b85244bf54f2d2cf708d989209f67",
-      "bytes": 27214
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-768-e8136e3cb5aaebe453b9fac7756cf7e75c8ef432fb161d3889169c9e5c54b266.png",
+      "sha256": "e8136e3cb5aaebe453b9fac7756cf7e75c8ef432fb161d3889169c9e5c54b266",
+      "bytes": 27213
     },
     {
       "id": "demo-02-states-1280",
-      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-1280-417ce842d3e9d964cca4bc9e1d771ef18a15fbd8bf8018fa8a5a0670a71b1633.png",
-      "sha256": "417ce842d3e9d964cca4bc9e1d771ef18a15fbd8bf8018fa8a5a0670a71b1633",
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-1280-62540641403471946dae266715a101c358ec344abcfe3c85c1161a31a8135396.png",
+      "sha256": "62540641403471946dae266715a101c358ec344abcfe3c85c1161a31a8135396",
       "bytes": 29234
     },
     {
