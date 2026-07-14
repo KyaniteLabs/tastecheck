@@ -99,7 +99,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: A data region needs first-use, no-results, loading, permission, or error states.; avoid: The issue is only a button or field state.
 - Exclude: Do not use a spinner as the only loading communication. (+1 in contract.json)
-- Stop / handoff: Stop when the cause of absence cannot be distinguished. (+1 in contract.json); receives [chance-design, component-states, data-viz, design-system-interview, deslop-ui, improve-existing-website] -> sends [component-states, a11y-pass, humanize-copy, tastecheck-pass, cognitive-a11y]
+- Stop / handoff: Stop when the cause of absence cannot be distinguished. (+1 in contract.json); receives [component-states, data-viz, design-system-interview, deslop-ui, improve-existing-website, tasteroll] -> sends [component-states, a11y-pass, humanize-copy, tastecheck-pass, cognitive-a11y]
 - Output: domain-specific data-region state plan
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

@@ -62,12 +62,12 @@
   ],
   "handoff": {
     "receives_from": [
-      "chance-design",
       "design-system-interview",
       "empty-states",
       "improve-existing-website",
       "responsive-layout",
       "spacing-system",
+      "tasteroll",
       "theming"
     ],
     "sends_to": [

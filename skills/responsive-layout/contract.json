@@ -56,10 +56,10 @@
   "handoff": {
     "receives_from": [
       "art-direction",
-      "chance-design",
       "design-system-interview",
       "improve-existing-website",
       "spacing-system",
+      "tasteroll",
       "theming",
       "web-typography"
     ],
