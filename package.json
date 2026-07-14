@@ -103,7 +103,9 @@
     "oracle:judges": "node tools/taste-oracle/validate-judges.mjs",
     "test:oracle-judges": "node tools/taste-oracle/test-judges.mjs",
     "test:oracle-e2e": "node tools/taste-oracle/test-collector-e2e.mjs",
-    "test:oracle": "npm run test:oracle-contracts && npm run test:oracle-capture && npm run test:oracle-statistics && npm run test:oracle-judges && npm run test:oracle-e2e"
+    "test:oracle": "npm run test:oracle-contracts && npm run test:oracle-capture && npm run test:oracle-statistics && npm run test:oracle-judges && npm run test:oracle-e2e",
+    "mint:tasteroll": "node tools/tasteroll/mint-inventory.mjs",
+    "test:tasteroll": "node tools/tasteroll/test-inventory.mjs && node tools/tasteroll/test-demo-page.mjs"
   },
   "devDependencies": {
     "ajv": "8.20.0",
