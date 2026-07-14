@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en" data-mode="dark" data-ref="mineral" data-vibe="refined" data-sig="needle">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>tasteroll — live whole-page dice | tastecheck</title>
+<meta name="description" content="Smash the dice: the whole page re-rolls under TasteCheck rails. Roll results minted with Chance.">
+<style>
+*{box-sizing:border-box;margin:0}
+html{overflow-x:hidden}
+:root{
+  --r:4px;--pad:1.25rem;--measure:66ch;--lh:1.6;--fw:600;
+  --font:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-display:Georgia,"Times New Roman",serif;
+  --font-mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  --bg:#14110e;--s1:#1c1814;--s2:#241e18;--line:#3a3228;--ink:#f3ebe1;--muted:#b8a994;--acc:#c9921e;--on-acc:#1a1005;
+  --chrome-bg:#0c0b0a;--chrome-ink:#e8e0d6;--chrome-line:#2a2620;--chrome-acc:#c9921e;
+}
+html[data-mode="light"]{--bg:#f7f4ef;--s1:#fff;--s2:#f0ebe3;--line:#d4ccc0;--ink:#1a1612;--muted:#5c5348;--acc:#9a6b12;--on-acc:#fff}
+html[data-mode="dual"]{--bg:#12141a;--s1:#1a1e28;--s2:#222836;--line:#343c4e;--ink:#e8ecf4;--muted:#9aa3b5;--acc:#5b8def;--on-acc:#0a1020}
+
+/* vibe personality */
+html[data-vibe="warm"]{--r:6px;--lh:1.7;--fw:600}
+html[data-vibe="serious"]{--r:2px;--lh:1.55;--fw:700;letter-spacing:-.01em}
+html[data-vibe="playful"]{--r:6px;--lh:1.65;--fw:700}
+html[data-vibe="refined"]{--r:4px;--lh:1.65;--fw:600}
+html[data-vibe="stark"]{--r:0px;--lh:1.5;--fw:700}
+html[data-vibe="editorial"]{--r:2px;--lh:1.7;--fw:600}
+html[data-vibe="operational"]{--r:4px;--lh:1.55;--fw:600;--font:system-ui,sans-serif}
+html[data-vibe="decorative"]{--r:6px;--lh:1.65;--fw:600}
+
+/* ref material accents */
+html[data-ref="mineral"]{--acc:#c9921e;--bg:#1a1410;--s1:#241e16;--line:#3a3026}
+html[data-ref="Swiss"]{--acc:#3b82f6;--bg:#0f1419;--s1:#1a2028;--line:#2a3441;--font:system-ui,sans-serif}
+html[data-ref="brutalist"]{--acc:#ff4d00;--bg:#0c0c0c;--s1:#161616;--line:#333;--r:0px;--font:var(--font-mono)}
+html[data-ref="folio"]{--acc:#b5532f;--bg:#1c1814;--s1:#262019;--line:#3a3128}
+html[data-ref="shipping"]{--acc:#2dd4a8;--bg:#0a0f0d;--s1:#0f1815;--line:#1a2820}
+html[data-ref="clinical"]{--acc:#0d7490;--bg:#f7f9fa;--s1:#fff;--line:#d4dde2;--ink:#1a2228;--muted:#5a6a72;--on-acc:#fff}
+html[data-ref="humanist"]{--acc:#6b9a6a;--bg:#1a1f1a;--s1:#232a23;--line:#33402f}
+html[data-ref="maximalist"]{--acc:#ff3d8b;--bg:#14101a;--s1:#1e1828;--line:#2e2638}
+
+body{background:var(--bg);color:var(--ink);font:400 1.05rem/var(--lh) var(--font);min-height:100vh}
+a{color:inherit}
+.skip{position:absolute;left:-999px}.skip:focus{left:1rem;top:1rem;z-index:100;background:var(--chrome-acc);color:#111;padding:.5rem 1rem;border-radius:4px}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+/* chrome — never rolls */
+.chrome{position:sticky;top:0;z-index:50;background:var(--chrome-bg);color:var(--chrome-ink);border-bottom:1px solid var(--chrome-line)}
+.chrome-inner{max-width:1100px;margin:0 auto;padding:.65rem 1.25rem;display:flex;flex-wrap:wrap;gap:.75rem 1rem;align-items:center;justify-content:space-between}
+.brand{font-weight:700;text-decoration:none;font-size:1rem}.brand b{color:var(--chrome-acc)}
+.controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.roll-id{font:600 .78rem var(--font-mono);color:var(--chrome-acc);min-width:4.5rem}
+.btn{font:600 .85rem system-ui;cursor:pointer;border-radius:5px;padding:.5em .95em;border:1px solid transparent;background:var(--chrome-acc);color:#1a1005}
+.btn:hover{filter:brightness(1.08)}
+.btn-ghost{background:transparent;color:var(--chrome-ink);border-color:var(--chrome-line)}
+.btn-ghost:hover{border-color:var(--chrome-acc)}
+.locks{display:flex;flex-wrap:wrap;gap:.35rem}
+.lock{font:600 .68rem var(--font-mono);padding:.3em .55em;border-radius:4px;border:1px solid var(--chrome-line);color:#888;background:transparent;cursor:pointer}
+.lock[aria-pressed="true"]{border-color:#2dd4a8;color:#2dd4a8;background:#0a1a14}
+.credit{font-size:.72rem;color:#777;width:100%;order:3}
+@media(min-width:720px){.credit{width:auto;order:0;margin-left:auto}}
+
+/* rolled stage */
+.stage{max-width:1100px;margin:0 auto;padding:2rem 1.25rem 4rem;transition:background .25s,color .25s}
+.stage h1,.stage h2,.stage h3{font-weight:var(--fw);line-height:1.15;letter-spacing:-.02em}
+.stage h1{font-family:var(--font-display);font-size:clamp(2rem,1.2rem+3.5vw,3.4rem);margin-bottom:.6rem;max-width:18ch}
+.stage h2{font-size:1.45rem;margin-bottom:.75rem}
+.stage p{max-width:var(--measure);color:var(--muted);margin-bottom:1rem}
+.stage .lead{font-size:1.15rem;color:var(--ink);max-width:42ch}
+.section{margin-top:2.75rem;padding-top:1.5rem;border-top:1px solid var(--line)}
+.section:first-of-type{border:0;padding-top:0;margin-top:0}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:1rem 1.1rem}
+.grid{display:grid;gap:.85rem}
+.cta{display:inline-block;background:var(--acc);color:var(--on-acc);padding:.65em 1.2em;border-radius:var(--r);font-weight:700;text-decoration:none;margin-top:.5rem}
+.cta:hover{filter:brightness(1.06)}
+.meta{font:600 .72rem var(--font-mono);color:var(--acc);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+.list{list-style:none;display:grid;gap:.5rem}
+.list li{padding:.55rem .75rem;background:var(--s1);border:1px solid var(--line);border-radius:var(--r);font-size:.92rem}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;margin:1rem 0}
+.chip{font:600 .75rem var(--font-mono);padding:.35em .6em;border:1px solid var(--line);border-radius:var(--r);background:var(--s2)}
+footer.site{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--line);font-size:.88rem;color:var(--muted)}
+
+/* signature moves */
+.sig-slot{margin:1rem 0 1.25rem}
+.sig-needle{width:3px;height:48px;background:var(--acc);border-radius:1px}
+.sig-rule{height:3px;background:var(--acc);width:min(12rem,40%);border-radius:1px}
+.sig-display{font:800 clamp(2.5rem,2rem+4vw,4.5rem)/.9 var(--font-display);color:var(--acc);letter-spacing:-.04em;max-width:12ch}
+.sig-block{display:inline-block;background:var(--acc);color:var(--on-acc);padding:.4em .7em;font-weight:800;border-radius:var(--r);font-size:.95rem}
+.sig-bento{display:grid;grid-template-columns:1.2fr 1fr;gap:.5rem;max-width:22rem}
+.sig-bento i{display:block;height:2.2rem;background:var(--s2);border:1px solid var(--line);border-radius:var(--r)}
+.sig-bento i:first-child{grid-row:span 2;height:auto;background:var(--acc);opacity:.85}
+.sig-timeline{display:flex;flex-direction:column;gap:.45rem;max-width:16rem}
+.sig-timeline span{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--muted)}
+.sig-timeline span::before{content:"";width:.55rem;height:.55rem;border-radius:50%;background:var(--acc);flex:none}
+.sig-annotation{border-left:3px solid var(--acc);padding:.35rem 0 .35rem .8rem;font-size:.9rem;color:var(--muted);max-width:36ch}
+.sig-sixling{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;max-width:10rem}
+.sig-sixling i{aspect-ratio:1;background:var(--s2);border:1px solid var(--line);border-radius:var(--r)}
+.sig-sixling i:nth-child(1){background:var(--acc)}
+
+/* ref layout worlds */
+html[data-ref="mineral"] .hero-layout{display:grid;gap:1.5rem;border-left:3px solid var(--acc);padding-left:1.25rem}
+html[data-ref="Swiss"] .hero-layout{display:grid;grid-template-columns:repeat(6,1fr);gap:.5rem}
+html[data-ref="Swiss"] .hero-layout .hero-main{grid-column:1/5}
+html[data-ref="Swiss"] .hero-layout .hero-aside{grid-column:5/7;border:1px solid var(--line);padding:.75rem;font-size:.85rem}
+html[data-ref="Swiss"] .stage{background-image:linear-gradient(to right,var(--line) 1px,transparent 1px);background-size:calc(100%/6) 100%;background-position:center}
+html[data-ref="brutalist"] body,html[data-ref="brutalist"] .stage{font-family:var(--font-mono)}
+html[data-ref="brutalist"] .hero-layout{border:3px solid var(--ink);padding:1rem;box-shadow:6px 6px 0 var(--acc)}
+html[data-ref="brutalist"] .section{border-top:3px solid var(--ink)}
+html[data-ref="folio"] .stage{max-width:42rem;padding-left:8vw;padding-right:8vw}
+html[data-ref="folio"] h1{font-size:clamp(2.2rem,1.5rem+3vw,3rem)}
+html[data-ref="folio"] .hero-layout .lead::first-letter{font-size:3.2em;float:left;line-height:.85;padding-right:.12em;color:var(--acc);font-weight:700}
+html[data-ref="shipping"] .hero-layout{display:grid;grid-template-columns:minmax(7rem,10rem) 1fr;gap:1.25rem}
+html[data-ref="shipping"] .rail{border-right:1px solid var(--line);padding-right:1rem;font-size:.8rem}
+html[data-ref="shipping"] .rail div{display:flex;align-items:center;gap:.4rem;margin:.45rem 0;color:var(--muted)}
+html[data-ref="shipping"] .rail div::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:var(--acc)}
+html[data-ref="clinical"] .hero-layout{display:grid;gap:1rem}
+html[data-ref="clinical"] .anno{font:600 .75rem var(--font-mono);color:var(--acc)}
+html[data-ref="clinical"] .bars{display:flex;gap:.35rem;align-items:flex-end;height:3rem;margin:1rem 0}
+html[data-ref="clinical"] .bars i{flex:1;background:var(--acc);opacity:.35;border-radius:2px 2px 0 0}
+html[data-ref="clinical"] .bars i:nth-child(2){height:70%;opacity:.7}
+html[data-ref="clinical"] .bars i:nth-child(3){height:100%;opacity:1}
+html[data-ref="humanist"] .cluster{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:1rem}
+html[data-ref="humanist"] .card{border-radius:10px;box-shadow:0 8px 24px color-mix(in oklab,var(--bg) 40%,transparent)}
+html[data-ref="maximalist"] h1{font-size:clamp(2.6rem,1.5rem+5vw,4.2rem);transform:rotate(-1.5deg);transform-origin:left}
+html[data-ref="maximalist"] .blob{position:absolute;width:8rem;height:8rem;border-radius:40% 60% 70% 30%;background:var(--acc);opacity:.25;filter:blur(2px);pointer-events:none}
+html[data-ref="maximalist"] .hero-wrap{position:relative}
+html[data-ref="maximalist"] .sticker{display:inline-block;transform:rotate(4deg);border:2px dashed var(--acc);padding:.35rem .6rem;font-weight:800;font-size:.8rem;margin-top:.5rem}
+
+.how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:.75rem}
+.floor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.65rem}
+.links{display:flex;flex-wrap:wrap;gap:.75rem 1.25rem;margin-top:.5rem}
+.links a{font-weight:700;text-decoration:underline;text-underline-offset:3px}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+}
+@media(max-width:640px){
+  html[data-ref="Swiss"] .hero-layout{grid-template-columns:1fr}
+  html[data-ref="Swiss"] .hero-layout .hero-main,html[data-ref="Swiss"] .hero-layout .hero-aside{grid-column:auto}
+  html[data-ref="shipping"] .hero-layout{grid-template-columns:1fr}
+  html[data-ref="shipping"] .rail{border:0;border-bottom:1px solid var(--line);padding:0 0 .75rem}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="chrome" role="banner">
+  <div class="chrome-inner">
+    <a class="brand" href="./">taste<b>check</b></a>
+    <div class="controls" role="group" aria-label="Roll controls">
+      <span class="roll-id" id="rollId" aria-live="polite">—</span>
+      <button type="button" class="btn" id="diceBtn" data-test="dice">Roll</button>
+      <div class="locks" role="group" aria-label="Lock dimensions">
+        <button type="button" class="lock" data-dim="ref" aria-pressed="false" title="Lock ref">ref</button>
+        <button type="button" class="lock" data-dim="vibe" aria-pressed="false" title="Lock vibe">vibe</button>
+        <button type="button" class="lock" data-dim="mode" aria-pressed="false" title="Lock mode">mode</button>
+        <button type="button" class="lock" data-dim="sig" aria-pressed="false" title="Lock sig">sig</button>
+      </div>
+    </div>
+    <p class="credit">TasteCheck rails · Chance-minted rolls</p>
+  </div>
+</header>
+
+<main id="main" class="stage" data-roll-surface>
+  <section class="section hero-wrap" id="hero" aria-labelledby="hero-title">
+    <div class="blob" aria-hidden="true" style="top:-1rem;right:10%"></div>
+    <div class="hero-layout">
+      <div class="rail" aria-hidden="true">
+        <div>queued</div><div>rolling</div><div>gated</div>
+      </div>
+      <div class="hero-main">
+        <p class="meta" id="faceMeta">ref · vibe · mode · sig</p>
+        <div class="sig-slot" id="sigSlot" aria-hidden="true"></div>
+        <h1 id="hero-title">Roll for taste. Keep what sticks.</h1>
+        <p class="lead">The whole page re-rolls under TasteCheck rules. Every smash of the dice stays high quality — constrained randomness, not free chaos.</p>
+        <p class="anno">01 · evidence: rails + banlist + a11y on every apply</p>
+        <div class="bars" aria-hidden="true"><i style="height:40%"></i><i></i><i></i><i style="height:55%"></i><i style="height:80%"></i></div>
+        <span class="sticker" aria-hidden="true">live demo</span>
+        <a class="cta" href="#how">How the dice works</a>
+      </div>
+      <aside class="hero-aside card">
+        <strong>Dual product</strong>
+        <p style="margin:0.4rem 0 0;font-size:.88rem">TasteCheck constrains. Chance orders the deck.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section" id="what" aria-labelledby="what-title">
+    <h2 id="what-title">What it is</h2>
+    <p>Tasteroll is where <strong style="color:var(--ink)">TasteCheck</strong> meets <strong style="color:var(--ink)">Chance</strong>. TasteCheck is the craft floor — contrast, anti-slop, structure, access. Chance mints the roll-result inventory (order and ids) so the demo dogfoods real entropy without needing a live Chance server for visitors.</p>
+    <div class="cluster how-grid">
+      <div class="card"><h3 style="font-size:1rem;margin-bottom:.35rem">TasteCheck</h3><p style="margin:0;font-size:.9rem">Rails, banlist, a11y. The page cannot leave the safe region.</p></div>
+      <div class="card"><h3 style="font-size:1rem;margin-bottom:.35rem">Chance</h3><p style="margin:0;font-size:.9rem">Inventory of roll results minted with Chance. You draw from a legal deck.</p></div>
+      <div class="card"><h3 style="font-size:1rem;margin-bottom:.35rem">Apply</h3><p style="margin:0;font-size:.9rem">Each result re-skins visual system <em>and</em> layout structure on this page.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="how" aria-labelledby="how-title">
+    <h2 id="how-title">How the dice works</h2>
+    <p>Click <strong style="color:var(--ink)">Roll</strong> to walk a shuffled deck of legal roll results. Lock any chip (ref, vibe, mode, sig) to keep it while the rest re-rolls. Share the URL to reopen the same roll id.</p>
+    <div class="how-grid">
+      <div class="card"><span class="meta">01</span><strong>Load</strong><p style="margin:.4rem 0 0;font-size:.9rem">Random legal entry every visit.</p></div>
+      <div class="card"><span class="meta">02</span><strong>Roll</strong><p style="margin:.4rem 0 0;font-size:.9rem">Full re-roll of unlocked dimensions.</p></div>
+      <div class="card"><span class="meta">03</span><strong>Lock</strong><p style="margin:.4rem 0 0;font-size:.9rem">Pin what works; explore the rest.</p></div>
+      <div class="card"><span class="meta">04</span><strong>Share</strong><p style="margin:.4rem 0 0;font-size:.9rem">Roll id in the header and URL.</p></div>
+    </div>
+    <div class="chips" id="faceChips" aria-label="Current roll faces" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="section" id="quality" aria-labelledby="quality-title">
+    <h2 id="quality-title">Quality floor</h2>
+    <p>This page <em>is</em> the demo. There is no quality opt-out. Every apply must stay inside the floor.</p>
+    <div class="floor-grid">
+      <div class="card"><strong>Rails</strong><p style="margin:.35rem 0 0;font-size:.88rem">Measure, line-height, radius set, one accent, contrast mins.</p></div>
+      <div class="card"><strong>Anti-slop</strong><p style="margin:.35rem 0 0;font-size:.88rem">No indigo–magenta gradients, glass, pill-999 CTAs, or centered three-card hero tells.</p></div>
+      <div class="card"><strong>Access</strong><p style="margin:.35rem 0 0;font-size:.88rem">Skip, main, focus-visible, keyboard, reduced-motion.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="install" aria-labelledby="install-title">
+    <h2 id="install-title">Install / skill</h2>
+    <p>Agents use the tasteroll skill for project-scoped GENERATE → ROLL → LOCK. This page freezes a discrete deck so you can feel whole-page apply without a browser LLM.</p>
+    <div class="links">
+      <a href="skills/tasteroll/SKILL.md">Skill definition</a>
+      <a href="README.md">TasteCheck README</a>
+      <a href="./">Landing</a>
+    </div>
+  </section>
+
+  <section class="section" id="sample" aria-labelledby="sample-title">
+    <h2 id="sample-title">Sample / gallery</h2>
+    <p>Static specimens in the gallery show committed directions. This page is the live one — smash the dice here.</p>
+    <div class="links">
+      <a href="samples/tasteroll/">Seed specimen</a>
+      <a href="samples/">Full gallery</a>
+    </div>
+  </section>
+
+  <footer class="site" id="footer">
+    <p><strong style="color:var(--acc)">tastecheck</strong> · taste is the only moat · MIT</p>
+    <p style="margin-top:.35rem">Live demo inventory minted with Chance; applied under TasteCheck rails.</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var INVENTORY_URL = 'skills/tasteroll/assets/tasteroll-inventory.json';
+  var DIMS = ['ref', 'vibe', 'mode', 'sig'];
+  var state = {
+    rolls: [],
+    deck: [],
+    cursor: -1,
+    current: null,
+    locked: { ref: false, vibe: false, mode: false, sig: false }
+  };
+
+  var el = {
+    rollId: document.getElementById('rollId'),
+    dice: document.getElementById('diceBtn'),
+    chips: document.getElementById('faceChips'),
+    meta: document.getElementById('faceMeta'),
+    sig: document.getElementById('sigSlot'),
+    root: document.documentElement
+  };
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function sigHtml(sig) {
+    switch (sig) {
+      case 'needle': return '<div class="sig-needle"></div>';
+      case 'rule': return '<div class="sig-rule"></div>';
+      case 'display-word': return '<div class="sig-display">ROLL</div>';
+      case 'color-block': return '<div class="sig-block">committed move</div>';
+      case 'bento': return '<div class="sig-bento" aria-hidden="true"><i></i><i></i><i></i></div>';
+      case 'timeline': return '<div class="sig-timeline"><span>audit floor</span><span>roll faces</span><span>lock &amp; share</span></div>';
+      case 'annotation': return '<div class="sig-annotation">Findings are invariants. Chance only moves above the floor.</div>';
+      case 'sixling': return '<div class="sig-sixling" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>';
+      default: return '';
+    }
+  }
+
+  function apply(roll) {
+    if (!roll) return;
+    state.current = roll;
+    el.root.setAttribute('data-ref', roll.ref);
+    el.root.setAttribute('data-vibe', roll.vibe);
+    el.root.setAttribute('data-mode', roll.mode);
+    el.root.setAttribute('data-sig', roll.sig);
+    el.rollId.textContent = roll.id;
+    el.meta.textContent = roll.ref + ' · ' + roll.vibe + ' · ' + roll.mode + ' · ' + roll.sig;
+    el.sig.innerHTML = sigHtml(roll.sig);
+    el.chips.innerHTML = DIMS.map(function (d) {
+      var lock = state.locked[d] ? ' 🔒' : '';
+      return '<span class="chip"><b>' + d + '</b> ' + roll[d] + lock + '</span>';
+    }).join('');
+    var url = new URL(location.href);
+    url.searchParams.set('roll', roll.id);
+    history.replaceState(null, '', url.pathname + url.search + url.hash);
+  }
+
+  function pickNext() {
+    if (!state.rolls.length) return null;
+    if (!state.deck.length) state.deck = shuffle(state.rolls.map(function (r) { return r.id; }));
+    // find next that respects locks relative to current
+    var tries = state.deck.length;
+    while (tries--) {
+      var id = state.deck.shift();
+      if (!state.deck.length) state.deck = shuffle(state.rolls.map(function (r) { return r.id; }));
+      var cand = state.rolls.find(function (r) { return r.id === id; });
+      if (!cand) continue;
+      if (!state.current) return cand;
+      var ok = true;
+      for (var i = 0; i < DIMS.length; i++) {
+        var d = DIMS[i];
+        if (state.locked[d] && cand[d] !== state.current[d]) { ok = false; break; }
+      }
+      if (ok) {
+        // if all locked, allow any (same faces) — still advance id when possible
+        return mergeLocked(cand);
+      }
+    }
+    return mergeLocked(state.current || state.rolls[0]);
+  }
+
+  function mergeLocked(cand) {
+    if (!state.current) return cand;
+    var out = { id: cand.id, ref: cand.ref, vibe: cand.vibe, mode: cand.mode, sig: cand.sig };
+    DIMS.forEach(function (d) {
+      if (state.locked[d]) out[d] = state.current[d];
+    });
+    // if locks forced a composite not in inventory, keep synthetic id of cand for share of unlocked exploration
+    if (DIMS.some(function (d) { return state.locked[d]; })) {
+      var match = state.rolls.find(function (r) {
+        return r.ref === out.ref && r.vibe === out.vibe && r.mode === out.mode && r.sig === out.sig;
+      });
+      if (match) out.id = match.id;
+      else out.id = out.id + '*';
+    }
+    return out;
+  }
+
+  function rollDice() {
+    var next = pickNext();
+    if (next) apply(next);
+  }
+
+  function byId(id) {
+    return state.rolls.find(function (r) { return r.id === id; }) || null;
+  }
+
+  function initLocks() {
+    document.querySelectorAll('.lock').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var d = btn.getAttribute('data-dim');
+        state.locked[d] = !state.locked[d];
+        btn.setAttribute('aria-pressed', state.locked[d] ? 'true' : 'false');
+        if (state.current) apply(state.current);
+      });
+    });
+  }
+
+  el.dice.addEventListener('click', rollDice);
+  initLocks();
+
+  fetch(INVENTORY_URL)
+    .then(function (r) {
+      if (!r.ok) throw new Error('inventory ' + r.status);
+      return r.json();
+    })
+    .then(function (doc) {
+      state.rolls = doc.rolls || [];
+      state.deck = shuffle(state.rolls.map(function (r) { return r.id; }));
+      var want = new URL(location.href).searchParams.get('roll');
+      var start = (want && byId(want)) || pickNext();
+      apply(start);
+    })
+    .catch(function (err) {
+      console.error(err);
+      el.rollId.textContent = 'offline';
+      el.meta.textContent = 'inventory unavailable — serve from repo root';
+      // minimal offline face so shell still readable
+      apply({ id: 'local', ref: 'mineral', vibe: 'refined', mode: 'dark', sig: 'needle' });
+    });
+})();
+</script>
+</body>
+</html>
