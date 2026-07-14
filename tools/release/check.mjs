@@ -280,7 +280,7 @@ function claims() {
   const commandCount = readdirSync(join(root, "commands")).filter((name) => name.endsWith(".md")).length;
   if (manifest.version !== pkg.version) errors.push(`skills.json version is ${manifest.version}; expected package version ${pkg.version}`);
   const manifestNames = new Set(manifest.skills.map((skill) => skill.name));
-  if (new Set(dirs).size !== 19 || dirs.some((name) => !manifestNames.has(name)) || manifestNames.size !== new Set(dirs).size) errors.push(`skill inventory is not an exact 19-entry manifest parity`);
+  if (new Set(dirs).size !== 20 || dirs.some((name) => !manifestNames.has(name)) || manifestNames.size !== new Set(dirs).size) errors.push(`skill inventory is not an exact 20-entry manifest parity`);
   if (commandCount !== 20) errors.push(`command inventory is ${commandCount}; expected 20`);
   const index = readFileSync(join(root, "index.html"), "utf8");
   if (/set of 15|set of 14|set of 13/.test(index)) errors.push("index.html contains a stale skill-count claim");
