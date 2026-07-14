@@ -203,3 +203,16 @@ Schema may expand later; v1 is these four.
 - Canonical in-repo spec path: `docs/spec/tasteroll-live-demo.md` (this file).
 - Supersedes prior ralplan wizard/specimen approaches and the voided 951 soft-ban matrix.
 - Success for Simon: smash dice many times → always a different high-quality whole page; dual product clear; no theater.
+
+## Amendment (2026-07-14) — sequence correction
+
+**Wrong (v1 ship):** TasteCheck pre-filters the deck; Chance only shuffles already-legal rows; apply looks “done” with no pack pass.
+
+**Correct product sequence (live demo):**
+
+1. **Chance roll** — direction lands, page may show **raw** out-of-floor tells.
+2. **TasteCheck pack** — remediates findings (deslop, color, a11y, type, states, spacing, …) visibly.
+3. **Settled** — only after remediation is the surface on the floor.
+
+Copy should not repeat the dual-product lecture in four sections; the living sequence is the product.
+
