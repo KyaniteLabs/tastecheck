@@ -91,7 +91,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: UI or product copy is factually correct but generic, hedged, clichéd, or unlike the intended author voice.; avoid: The request requires changing product facts, legal meaning, or interaction behavior.
 - Exclude: Do not invent claims, testimonials, or product facts. (+1 in contract.json)
-- Stop / handoff: Stop when source facts or approval constraints are missing. (+1 in contract.json); receives [chance-design, cognitive-a11y, design-system-interview, deslop-ui, empty-states, improve-existing-website] -> sends [form-ux, i18n-ready, tastecheck-pass]
+- Stop / handoff: Stop when source facts or approval constraints are missing. (+1 in contract.json); receives [cognitive-a11y, design-system-interview, deslop-ui, empty-states, improve-existing-website, tasteroll] -> sends [form-ux, i18n-ready, tastecheck-pass]
 - Output: fact-preserving copy revision with voice rationale
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

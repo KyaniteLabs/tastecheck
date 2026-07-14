@@ -307,7 +307,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 <section class="hero" data-skill="design-system-interview"><div class="bg" aria-hidden="true"></div><div class="scrim" aria-hidden="true"></div><div class="wrap">
   <div class="rule" aria-hidden="true"></div>
   <div class="hcol">
-    <div class="idx"><s></s>design intelligence · 20 skills · v1.4.0 audited</div>
+    <div class="idx"><s></s>design intelligence · 20 skills · v1.4.1 audited</div>
     <h1>Make it <span class="j">yours</span>, <span class="not">not</span> the average.</h1>
     <p class="lede">Every AI builds the same site. tastecheck interviews you or audits what you already have into a real design system first — then nineteen skills make sure your agent ships taste, not slop.</p>
     <div class="actions">
@@ -316,8 +316,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
     </div>
     <p class="status-line" role="status" aria-live="polite" data-test="hero-status">Landing page audit ready.</p>
     <p class="trust">Works with <b>Claude Code</b> · <b>Codex</b> · <b>Gemini</b> · <b>Cursor</b> · MIT</p>
-    <div class="audit-strip" role="status" aria-label="v1.4.0 results">
-      <b>v1.4.0</b>
+    <div class="audit-strip" role="status" aria-label="v1.4.1 results">
+      <b>v1.4.1</b>
       <span><span class="d ok" aria-hidden="true"></span> 20 skills</span>
       <span><span class="d ok" aria-hidden="true"></span> 3 P0 fixed</span>
       <span><span class="d ok" aria-hidden="true"></span> 8 P1 fixed</span>
@@ -341,9 +341,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
         <div class="out">→ tokens committed</div>
       </div><p class="cap">Grills you into a system + tokens before any code.</p></div>
 
-    <div class="cell" data-skill="chance-design"><div class="lab"><span class="n">🎲</span><h3>chance-design</h3></div>
-      <div class="stage" style="gap:.5rem"><button class="dbtn" type="button" id="roll-btn" data-test="roll-dice" style="background:var(--copper-deep);color:#ffe6cf">Roll the dice</button><span class="note" id="roll-output" role="status" aria-live="polite">seed 42 → click to roll</span></div>
-      <p class="cap">Seeded randomness answers the interview — every roll a valid design system.</p></div>
+    <div class="cell" data-skill="tasteroll"><div class="lab"><span class="n">🎲</span><h3>tasteroll</h3></div>
+      <div class="stage" style="gap:.5rem">
+        <div class="row"><button class="dbtn" type="button" id="roll-btn" data-test="roll-dice" style="background:var(--copper-deep);color:#ffe6cf">Roll</button><button class="dbtn" type="button" id="lock-btn" data-test="roll-lock" style="background:transparent;color:var(--ink);border-color:var(--line);font-size:.78rem;padding:.4em .7em">Lock</button></div>
+        <span class="note" id="roll-output" role="status" aria-live="polite" style="line-height:1.5;font-size:.72rem">seed 42 · click roll</span>
+      </div>
+      <p class="cap">Audit fixes what is broken. Roll picks the rest. Lock what works, re-roll.</p></div>
 
     <div class="cell w3" data-skill="improve-existing-website"><div class="lab"><span class="n">01</span><h3>improve-existing-website</h3></div>
       <div class="stage" style="gap:.45rem">
@@ -572,21 +575,31 @@ window.a11yAudit=runLandingA11yAudit;
     grid.appendChild(b);
   }
 })();
-/* chance-design: seeded dice roll on the landing page */
+/* tasteroll: seeded roll with lock/reroll on the landing page */
 (function(){
-  var btn=document.getElementById('roll-btn'),out=document.getElementById('roll-output');
+  var btn=document.getElementById('roll-btn'),lockBtn=document.getElementById('lock-btn'),out=document.getElementById('roll-output');
   if(!btn||!out)return;
-  var seed=42;
-  var refs=['mineral','Swiss grid','brutalist','folio','shipping','clinical','humanist','maximalist'];
-  var pers=['warm','serious','playful','refined','stark','editorial','operational','decorative'];
-  var modes=['light','dark','dual'];
-  var sigs=['needle-accent','structural-rule','display-word','color-block','tessellated-bento','timeline-feed','measurement-annotation','sixling-divider'];
+  var seed=42,locked={};
+  var dims={
+    ref:['mineral','Swiss','brutalist','folio','shipping','clinical','humanist','maximalist'],
+    pers:['warm','serious','playful','refined','stark','editorial','operational','decorative'],
+    mode:['light','dark','dual'],
+    sig:['needle','rule','display-word','color-block','bento','timeline','annotation','sixling']
+  };
+  var labels={ref:'ref',pers:'vibe',mode:'mode',sig:'sig'};
   function xoshiro(s){s=s>>>0||1;var st=[0,0,0,0];for(var i=0;i<4;i++){s=(s+0x9E3779B9)>>>0;var z=s;z=(z^(z>>>16))*0x85EBCA6B>>>0;z=(z^(z>>>13))*0xC2B2AE35>>>0;st[i]=z^(z>>>16);}return function(){var r=((st[0]+st[3])<<7|0)+st[0];var t=(st[1]<<9)>>>0;st[2]^=st[0];st[3]^=st[1];st[1]^=st[2];st[0]^=st[3];st[2]^=t;st[3]=((st[3]<<21)|(st[3]>>>11));return r/0x100000000;};}
   function pick(rng,arr){return arr[Math.floor(rng()*arr.length)];}
-  btn.addEventListener('click',function(){
-    seed++;var rng=xoshiro(seed);
-    var r=pick(rng,refs),p=pick(rng,pers),m=pick(rng,modes),sg=pick(rng,sigs);
-    out.textContent='seed '+seed+': '+r+' · '+p+' · '+m+' · '+sg;
+  function roll(){
+    seed++;var rng=xoshiro(seed);var parts=[];
+    for(var d in dims){if(locked[d]){parts.push(labels[d]+'='+locked[d]+' 🔒');}else{var v=pick(rng,dims[d]);parts.push(labels[d]+'='+v);}}
+    out.textContent='seed '+seed+' · '+parts.join(' · ');
+  }
+  btn.addEventListener('click',roll);
+  if(lockBtn)lockBtn.addEventListener('click',function(){
+    var text=out.textContent;if(!text||text.indexOf('seed')===-1)return;
+    var dims_list=['ref','pers','mode','sig'];var d=dims_list[Object.keys(locked).length%dims_list.length];
+    var m=text.match(new RegExp(labels[d]+'=([^·🔒]+)'));if(m)locked[d]=m[1].trim();
+    out.textContent=out.textContent+' → locked '+labels[d];
   });
 })();
 window.tastecheckLanding={

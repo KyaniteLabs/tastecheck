@@ -53,12 +53,12 @@
   ],
   "handoff": {
     "receives_from": [
-      "chance-design",
       "component-states",
       "data-viz",
       "design-system-interview",
       "deslop-ui",
-      "improve-existing-website"
+      "improve-existing-website",
+      "tasteroll"
     ],
     "sends_to": [
       "component-states",

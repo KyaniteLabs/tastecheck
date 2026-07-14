@@ -53,10 +53,10 @@
   ],
   "handoff": {
     "receives_from": [
-      "chance-design",
       "design-system-interview",
       "deslop-ui",
-      "improve-existing-website"
+      "improve-existing-website",
+      "tasteroll"
     ],
     "sends_to": [
       "theming",

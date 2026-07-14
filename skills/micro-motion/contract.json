@@ -55,10 +55,10 @@
   ],
   "handoff": {
     "receives_from": [
-      "chance-design",
       "component-states",
       "design-system-interview",
-      "deslop-ui"
+      "deslop-ui",
+      "tasteroll"
     ],
     "sends_to": [
       "a11y-pass",

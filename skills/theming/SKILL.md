@@ -154,7 +154,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: An interface needs coherent light, dark, high-contrast, or forced-colors mappings (+1 in contract.json); avoid: The request is to invent the source palette rather than map semantic roles (+1 in contract.json)
 - Exclude: Do not invert a light palette and call it dark mode (+1 in contract.json)
-- Stop / handoff: Pause when semantic roles are missing and theme values would be raw-color copies (+1 in contract.json); receives [chance-design, color-system, design-system-interview, improve-existing-website] -> sends [a11y-pass, cognitive-a11y, responsive-layout, component-states]
+- Stop / handoff: Pause when semantic roles are missing and theme values would be raw-color copies (+1 in contract.json); receives [color-system, design-system-interview, improve-existing-website, tasteroll] -> sends [a11y-pass, cognitive-a11y, responsive-layout, component-states]
 - Output: Semantic mappings for every supported theme, plus forced-colors behavior, preference policy, and measured pairs
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

@@ -170,7 +170,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: A web interface needs a contextual type stance, scale, readable measure, or font-loading plan (+1 in contract.json); avoid: The request is to write or rewrite product copy (+1 in contract.json)
 - Exclude: Do not choose a font from examples instead of the brief (+1 in contract.json)
-- Stop / handoff: Pause when a requested font lacks required language coverage and no fallback is agreed (+1 in contract.json); receives [chance-design, design-system-interview, deslop-ui, improve-existing-website] -> sends [responsive-layout, i18n-ready, a11y-pass, spacing-system]
+- Stop / handoff: Pause when a requested font lacks required language coverage and no fallback is agreed (+1 in contract.json); receives [design-system-interview, deslop-ui, improve-existing-website, tasteroll] -> sends [responsive-layout, i18n-ready, a11y-pass, spacing-system]
 - Output: A contextual type system with tokens, loading plan, and tested reading constraints
 - Evidence: `table_with_evidence` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

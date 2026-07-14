@@ -53,10 +53,10 @@
   ],
   "handoff": {
     "receives_from": [
-      "chance-design",
       "color-system",
       "design-system-interview",
-      "improve-existing-website"
+      "improve-existing-website",
+      "tasteroll"
     ],
     "sends_to": [
       "a11y-pass",

@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "description": "Design rails for tasteroll. These are HARD CONSTRAINTS that never change — the floor beneath every roll. The actual options on each dimension are generated fresh from context at roll time; this file defines what dimensions exist and what values are always valid or invalid.",
+  "dimensions": {
+    "_description": "Each dimension is a die. The FACES are generated fresh by the AI from audit + intake context. These entries define what dimensions exist, not what the options are.",
+    "personality": { "description": "Emotional tone of the design" },
+    "aesthetic": { "description": "Overall visual approach / territory" },
+    "type": { "description": "Typography direction" },
+    "color_mode": { "description": "Light/dark posture" },
+    "density": { "description": "Spacing density" },
+    "rhythm": { "description": "Layout rhythm" },
+    "signature": { "description": "The one committed visual move" },
+    "imagery": { "description": "Imagery and iconography stance" },
+    "motion": { "description": "Motion approach" },
+    "accent": { "description": "Accent hue territory (derived from aesthetic)" }
+  },
+  "rails": {
+    "_description": "Hard bounds. Any roll that violates these fails the gate. These are non-negotiable regardless of seed.",
+    "measure_ch": { "min": 58, "max": 75 },
+    "line_height": { "min": 1.5, "max": 1.8 },
+    "heading_weight": { "min": 600, "max": 800 },
+    "body_size_rem": { "min": 1.0, "max": 1.125 },
+    "density_scale": { "min": 0.85, "max": 1.15 },
+    "texture_opacity_pct": { "min": 0, "max": 5 },
+    "corner_radius_px": { "allowed": [0, 2, 4, 6] },
+    "accent_count": { "max": 1 },
+    "contrast_body": { "min_ratio": 4.5 },
+    "contrast_ui": { "min_ratio": 3.0 },
+    "section_rhythm": { "allowed": ["compact", "standard", "airy"] }
+  },
+  "audit_scope": {
+    "_description": "What the audit phase scans for. Findings here are MANDATORY fixes — resolved before Chance runs, seed-independent.",
+    "contrast": "Body text < 4.5:1 or UI < 3:1 on actual rendered surfaces",
+    "spacing": "No spacing scale — arbitrary margins/padding with no token system",
+    "states": "Interactive elements missing hover/focus/active/disabled/loading states",
+    "tells": "Named AI slop patterns present (purple gradient, centered hero, 3 equal cards, pill buttons, glassmorphism)",
+    "accessibility": "Missing alt text, unlabeled controls, broken heading order, viewport zoom lock",
+    "structure": "Missing main landmark, no skip link, no focus-visible treatment"
+  },
+  "audit_non_scope": {
+    "_description": "What the audit does NOT fix — these get flagged and handed off, not resolved by tasteroll.",
+    "copy": "Bad writing, generic prose, ChatGPT accent — hand to humanize-copy",
+    "content_ia": "Missing sections, bad information architecture — flag for product decision",
+    "functionality": "Broken features, missing routes — flag for engineering"
+  },
+  "intake_questions": {
+    "_description": "The 3-question mini-interview, used when inference from conversation/repo is insufficient.",
+    "q1": { "text": "What are you building?", "unlocks": ["structure", "density", "information_architecture"] },
+    "q2": { "text": "Who is it for?", "unlocks": ["personality", "accessibility_posture", "complexity"] },
+    "q3": { "text": "One word for how it should feel?", "unlocks": ["aesthetic", "accent_direction", "signature"] }
+  },
+  "compatibility_rules": {
+    "_description": "Constraints between dimensions to prevent incoherent rolls. The generation step must respect these.",
+    "density_rhythm": "compact pairs with metronomic; airy pairs with syncopated or asymmetrical; standard is universal",
+    "aesthetic_motion": "brutalist and operational pair with restrained or none; maximalist and humanist tolerate kinetic",
+    "color_mode_accent": "in dark mode, accent lightness floor is 0.60 OKLCH; in light mode, ceiling is 0.72"
+  }
+}

@@ -12,7 +12,7 @@ if (replayManifests.length !== 1 || replayManifests[0] !== "remediation7-replay.
   throw new Error(`expected one immutable remediation replay manifest, found ${replayManifests.join(", ") || "none"}`);
 }
 const files = allFiles.filter((name) => !replayManifests.includes(name));
-if (files.length !== 20) throw new Error(`expected 20 scenarios, found ${files.length}`);
+if (files.length !== 21) throw new Error(`expected 21 scenarios, found ${files.length}`);
 const skillScenarios = new Set();
 const W1_REMEDIATION = {
   "component-states.json": ["lifecycle_depth_requirement", "thin_ledger_rejection"],
@@ -50,5 +50,5 @@ for (const name of files) {
   }
   if (name !== "cross-skill.json") skillScenarios.add(scenario.skill);
 }
-if (skillScenarios.size !== 19) throw new Error(`expected 19 skill scenarios, found ${skillScenarios.size}`);
-console.log(`scenario assertion tests passed (20 scenarios, ${skillScenarios.size} skills)`);
+if (skillScenarios.size !== 20) throw new Error(`expected 20 skill scenarios, found ${skillScenarios.size}`);
+console.log(`scenario assertion tests passed (21 scenarios, ${skillScenarios.size} skills)`);
