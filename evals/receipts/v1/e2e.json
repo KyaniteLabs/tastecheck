@@ -6,7 +6,7 @@
     "id": "tastecheck-live-execution",
     "version": 1
   },
-  "source_tree_sha256": "3d4099a9dd210ff4b3d7fbfc4732e432ffc59dbf0bbfb62de0a755712e64036b",
+  "source_tree_sha256": "8c46e798d558fcc819acd635975717d45a632bc476d83d09ecc06865697b2564",
   "nonce": "e2e-release-v1-0001",
   "runtime": {
     "node": "v26.0.0",
@@ -14,22 +14,22 @@
     "browser": "149.0.7827.55",
     "platform": "darwin"
   },
-  "started_at": "2026-07-13T22:32:00.296Z",
-  "finished_at": "2026-07-13T22:32:02.637Z",
+  "started_at": "2026-07-14T00:18:41.976Z",
+  "finished_at": "2026-07-14T00:18:44.625Z",
   "executed": true,
   "reproducible": true,
   "artifacts": [
     {
       "id": "operator-desktop",
-      "path": "evals/receipts/v1/artifacts/e2e/operator-desktop-89f1608dcec79bdae3ee645d8e234c0883900573b0d006534ab1b9a740741c8b.png",
-      "sha256": "89f1608dcec79bdae3ee645d8e234c0883900573b0d006534ab1b9a740741c8b",
-      "bytes": 607357
+      "path": "evals/receipts/v1/artifacts/e2e/operator-desktop-fd65835f9b4caa8861bd395655b8bc650f1ed1ec83656aa6f98f1fd12864befe.png",
+      "sha256": "fd65835f9b4caa8861bd395655b8bc650f1ed1ec83656aa6f98f1fd12864befe",
+      "bytes": 611414
     },
     {
       "id": "operator-mobile",
-      "path": "evals/receipts/v1/artifacts/e2e/operator-mobile-08bff55e442c6a3622d50169bc982a97cc04595bcff66c673c624c3bd56aa0ec.png",
-      "sha256": "08bff55e442c6a3622d50169bc982a97cc04595bcff66c673c624c3bd56aa0ec",
-      "bytes": 490552
+      "path": "evals/receipts/v1/artifacts/e2e/operator-mobile-ce8980d0ed2caed13fbd76bff66055dc84185073c2bbbf750317e4772548fbdd.png",
+      "sha256": "ce8980d0ed2caed13fbd76bff66055dc84185073c2bbbf750317e4772548fbdd",
+      "bytes": 495809
     }
   ],
   "checks": [
@@ -41,7 +41,7 @@
     {
       "id": "install-canonical-skills",
       "passed": true,
-      "detail": "19 canonical skill links verified"
+      "detail": "20 canonical skill links verified"
     },
     {
       "id": "install-operator-commands",
@@ -56,7 +56,7 @@
     {
       "id": "operator-skill-coverage",
       "passed": true,
-      "detail": "All 19 skills exposed by browser contract"
+      "detail": "All 20 skills exposed by browser contract"
     },
     {
       "id": "operator-theme-paths",
