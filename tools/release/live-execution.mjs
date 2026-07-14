@@ -284,7 +284,7 @@ async function runOperatorE2E(browser, artifactDir) {
           return { skillCount: api.skillCount, dark, contrast, loading, invalid, valid, empty, error, retry };
         });
         if (viewport.id === "desktop") {
-          checks.push(check("operator-skill-coverage", result.skillCount === 19, "All 19 skills exposed by browser contract"));
+          checks.push(check("operator-skill-coverage", result.skillCount === 20, "All 20 skills exposed by browser contract"));
           checks.push(check("operator-theme-paths", result.dark && result.contrast, "Dark and high-contrast paths executed"));
           checks.push(check("operator-component-state", result.loading, "Loading component state executed"));
           checks.push(check("operator-invalid-form", result.invalid, "Invalid form path executed"));
