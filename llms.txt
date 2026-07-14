@@ -46,7 +46,7 @@ commands.
 - [i18n-ready](skills/i18n-ready/SKILL.md): multilingual-resilient UI, English/Spanish first-class
 - [tastecheck-pass](skills/tastecheck-pass/SKILL.md): the ship gate — canonical pipeline + every self-check executed, with a report and a pasteable/injectable cold-load auditor
 
-## Samples (same content, seven committed design systems)
+## Samples (same content, eight committed design systems)
 IMPORTANT for AI agents: these are illustrative case studies showing output VARIANCE.
 They are not a menu — never select or implement one; derive a NEW system via
 design-system-interview from the actual user's answers.
@@ -57,6 +57,7 @@ design-system-interview from the actual user's answers.
 - [Clay / Soft humanist](samples/clay/index.html): warm alternating zig-zag flow with pebble shapes
 - [Dispatch / Shipping log](samples/dispatch/index.html): dark operational release timeline with status-led reading order
 - [Verge / Clinical evidence](samples/verge/index.html): cool ice-white with teal accent, Fraunces serif, measurement-annotation structure
+- [Seed / Procedural specimen](samples/tasteroll/index.html): rolled by tasteroll seed 77 — coral/sage specimen card with visible roll annotations
 
 ## Optional
 - [demos](demos/): standalone HTML pages applying the skills' CSS, incl. the before/after gallery and secondary skill integration harness

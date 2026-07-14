@@ -256,6 +256,10 @@ h2{font-family:var(--disp);font-weight:700;font-size:clamp(2.1rem,1.4rem + 3vw,3
 .ba{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}.ba .x{padding:.55rem;font:600 .76rem var(--body);text-align:center}
 .ba .bad{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;border-radius:999px}
 .ba .good{background:var(--copper);color:var(--on-copper);border-radius:5px}
+.dchip{font:600 .72rem var(--mono);color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:.3em .55em;background:var(--bg);min-height:0}
+.dchip b{color:var(--copper);font-weight:700;margin-right:.35em}
+.seed-chip{font:700 .74rem var(--mono);color:var(--copper);border:1px solid var(--copper-deep);border-radius:5px;padding:.4em .7em;background:var(--s1);white-space:nowrap}
+.seed-counter{font:700 .76rem var(--mono);color:var(--copper);white-space:nowrap;letter-spacing:.02em}
 .ba small{display:block;font:600 .78rem var(--mono);color:var(--muted);margin-top:.3rem;text-align:center}
 
 /* INSTALL */
@@ -297,7 +301,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<div class="tc-bar"><a class="tc-home" href="./">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="samples/copper/" aria-current="page">Copper</a><a href="samples/swiss/">Swiss</a><a href="samples/maximal/">Maximal</a><a href="samples/concrete/">Concrete</a><a href="samples/clay/">Clay</a><a href="samples/dispatch/">Dispatch</a><a href="samples/verge/">Verge</a><a href="samples/">Gallery</a></nav><div class="tc-theme" data-skill="theming" aria-label="Theme"><span>Theme</span><button type="button" data-test="theme-dark" aria-pressed="true">Dark</button><button type="button" data-test="theme-light" aria-pressed="false">Light</button><button type="button" data-test="theme-contrast" aria-pressed="false">Contrast</button></div></div>
+<div class="tc-bar"><a class="tc-home" href="./">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="samples/copper/" aria-current="page">Copper</a><a href="samples/swiss/">Swiss</a><a href="samples/maximal/">Maximal</a><a href="samples/concrete/">Concrete</a><a href="samples/clay/">Clay</a><a href="samples/dispatch/">Dispatch</a><a href="samples/verge/">Verge</a><a href="samples/tasteroll/">Seed</a><a href="samples/">Gallery</a></nav><div class="tc-theme" data-skill="theming" aria-label="Theme"><span>Theme</span><button type="button" data-test="theme-dark" aria-pressed="true">Dark</button><button type="button" data-test="theme-light" aria-pressed="false">Light</button><button type="button" data-test="theme-contrast" aria-pressed="false">Contrast</button></div></div>
 <header class="nav"><div class="wrap">
   <span class="brand">taste<b>check</b></span>
   <nav class="menu" aria-label="Primary"><a href="#skills">Skills</a><a href="#why">What it refuses</a><a href="#proof">Proof</a><a href="#install">Install</a></nav>
@@ -307,12 +311,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 <section class="hero" data-skill="design-system-interview"><div class="bg" aria-hidden="true"></div><div class="scrim" aria-hidden="true"></div><div class="wrap">
   <div class="rule" aria-hidden="true"></div>
   <div class="hcol">
-    <div class="idx"><s></s>design intelligence · 20 skills · v1.4.1 audited</div>
+    <div class="idx"><s></s>design intelligence · 20 skills · roll for taste</div>
     <h1>Make it <span class="j">yours</span>, <span class="not">not</span> the average.</h1>
     <p class="lede">Every AI builds the same site. tastecheck interviews you or audits what you already have into a real design system first — then nineteen skills make sure your agent ships taste, not slop.</p>
     <div class="actions">
       <a class="btn btn-primary" href="#install" data-test="primary-action">Run a taste check →</a>
       <a class="btn btn-ghost" href="#skills">See every skill</a>
+      <span class="seed-chip" aria-label="tasteroll seed preview">🎲 seed: 77</span>
     </div>
     <p class="status-line" role="status" aria-live="polite" data-test="hero-status">Landing page audit ready.</p>
     <p class="trust">Works with <b>Claude Code</b> · <b>Codex</b> · <b>Gemini</b> · <b>Cursor</b> · MIT</p>
@@ -324,7 +329,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
       <span><span class="d pend" aria-hidden="true"></span> 7 P1 deferred</span>
       <span><span class="d ok" aria-hidden="true"></span> 0 P2 regressions</span>
     </div>
-    <p class="trust">Same content, seven committed design systems → <a href="samples/" style="color:var(--copper);font-weight:600;text-decoration:underline;text-underline-offset:3px;display:inline-block;padding-block:.35rem">see the gallery</a></p>
+    <p class="trust">Same content, eight committed design systems → <a href="samples/" style="color:var(--copper);font-weight:600;text-decoration:underline;text-underline-offset:3px;display:inline-block;padding-block:.35rem">see the gallery</a></p>
   </div>
 </div></section>
 
@@ -341,9 +346,15 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
         <div class="out">→ tokens committed</div>
       </div><p class="cap">Grills you into a system + tokens before any code.</p></div>
 
-    <div class="cell" data-skill="tasteroll"><div class="lab"><span class="n">🎲</span><h3>tasteroll</h3></div>
-      <div class="stage" style="gap:.5rem">
-        <div class="row"><button class="dbtn" type="button" id="roll-btn" data-test="roll-dice" style="background:var(--copper-deep);color:#ffe6cf">Roll</button><button class="dbtn" type="button" id="lock-btn" data-test="roll-lock" style="background:transparent;color:var(--ink);border-color:var(--line);font-size:.78rem;padding:.4em .7em">Lock</button></div>
+    <div class="cell w3" data-skill="tasteroll"><div class="lab"><span class="n">🎲</span><h3>tasteroll</h3></div>
+      <div class="stage" style="gap:.55rem">
+        <div class="row" style="align-items:center"><span class="seed-counter" id="roll-seed">seed 42</span><button class="dbtn" type="button" id="roll-btn" data-test="roll-dice" style="background:var(--copper-deep);color:#ffe6cf">Roll</button><button class="dbtn" type="button" id="lock-btn" data-test="roll-lock" style="background:transparent;color:var(--ink);border-color:var(--line);font-size:.78rem;padding:.4em .7em">Lock</button></div>
+        <div class="row" id="roll-chips" aria-label="Rolled design dimensions" role="status" aria-live="polite">
+          <span class="dchip" data-dim="ref"><b>ref</b>—</span>
+          <span class="dchip" data-dim="vibe"><b>vibe</b>—</span>
+          <span class="dchip" data-dim="mode"><b>mode</b>—</span>
+          <span class="dchip" data-dim="sig"><b>sig</b>—</span>
+        </div>
         <span class="note" id="roll-output" role="status" aria-live="polite" style="line-height:1.5;font-size:.72rem">seed 42 · click roll</span>
       </div>
       <p class="cap">Audit fixes what is broken. Roll picks the rest. Lock what works, re-roll.</p></div>
@@ -473,7 +484,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 <section id="proof"><div class="wrap rv">
   <div class="mark"><s></s>proof</div>
   <h2>This landing page is the integration surface.</h2>
-  <p class="slede">The GitHub Pages homepage represents every skill concern directly and demonstrates named interactions: existing-site audit, inferred design system, OKLCH themes, type, states, form validation, empty/error/retry paths, chart/table parity, accessibility, human copy, motion, and responsive layout. A machine-only blind evaluation protocol (effectiveness v2) is built, rehearsed at 160 simulated calls with zero real calls, and adversarially tested — but production evaluation has not started.</p>
+  <p class="slede">The GitHub Pages homepage represents every skill concern directly and demonstrates named interactions: existing-site audit, inferred design system, OKLCH themes, type, states, form validation, empty/error/retry paths, chart/table parity, accessibility, human copy, motion, and responsive layout. The twentieth skill, <b>tasteroll</b>, is a procedural design generator — it audits what is broken, rolls committed design candidates from a seeded source of randomness, and locks the direction that works. A machine-only blind evaluation protocol (effectiveness v2) is built, rehearsed at 160 simulated calls with zero real calls, and adversarially tested — but production evaluation has not started.</p>
   <div class="actions">
     <a class="btn btn-primary" href="#skills">Review the live skill cells →</a>
     <a class="btn btn-ghost" href="https://github.com/KyaniteLabs/tastecheck/blob/main/docs/VERIFICATION.md">Read verification notes</a>
@@ -590,9 +601,11 @@ window.a11yAudit=runLandingA11yAudit;
   function xoshiro(s){s=s>>>0||1;var st=[0,0,0,0];for(var i=0;i<4;i++){s=(s+0x9E3779B9)>>>0;var z=s;z=(z^(z>>>16))*0x85EBCA6B>>>0;z=(z^(z>>>13))*0xC2B2AE35>>>0;st[i]=z^(z>>>16);}return function(){var r=((st[0]+st[3])<<7|0)+st[0];var t=(st[1]<<9)>>>0;st[2]^=st[0];st[3]^=st[1];st[1]^=st[2];st[0]^=st[3];st[2]^=t;st[3]=((st[3]<<21)|(st[3]>>>11));return r/0x100000000;};}
   function pick(rng,arr){return arr[Math.floor(rng()*arr.length)];}
   function roll(){
-    seed++;var rng=xoshiro(seed);var parts=[];
-    for(var d in dims){if(locked[d]){parts.push(labels[d]+'='+locked[d]+' 🔒');}else{var v=pick(rng,dims[d]);parts.push(labels[d]+'='+v);}}
+    seed++;var rng=xoshiro(seed);var parts=[];var rolled={};
+    for(var d in dims){if(locked[d]){parts.push(labels[d]+'='+locked[d]+' 🔒');rolled[labels[d]]=locked[d];}else{var v=pick(rng,dims[d]);parts.push(labels[d]+'='+v);rolled[labels[d]]=v;}}
     out.textContent='seed '+seed+' · '+parts.join(' · ');
+    var sc=document.getElementById('roll-seed');if(sc)sc.textContent='seed '+seed;
+    [].slice.call(document.querySelectorAll('#roll-chips .dchip')).forEach(function(c){var dim=c.getAttribute('data-dim');if(rolled[dim]!==undefined)c.innerHTML='<b>'+dim+'</b> '+rolled[dim];});
   }
   btn.addEventListener('click',roll);
   if(lockBtn)lockBtn.addEventListener('click',function(){
