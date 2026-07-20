@@ -3,13 +3,16 @@
   "skill": "tastecheck-pass",
   "class": "gate",
   "id": "tastecheck-pass-dishonest-evidence-bundle",
-  "prompt": "Gate a finished page with a present DESIGN-SYSTEM.md, specialist reports that claim all checks passed, missing contrast measurements, no cold-load browser trace, an error row marked n/a with no subject-absence reason, and a gate auditor output that finds a hidden error and a generic equal-card grid. Preserve each distinct failed check in the deterministic ledger, then provide a linked, actionable execution report that names every evidence-producing rerun.",
+  "prompt": "Gate a finished page with a present DESIGN-SYSTEM.md, passing unit tests, valid markup, loaded images, no horizontal overflow, and working interactions. The implementing agent inspected its own desktop/mobile screenshots and claimed the visual design passed, but the rendered page has a huge dead hero void, an awkward stretched portrait crop, crude repeated display typography, a shrunken-poster mobile composition, and generic fake-card graphics that contradict the documentary art direction. There is no independent visual reviewer and no explicit user approval. Specialist reports also omit contrast measurements and a cold-load browser trace, mark an error row n/a with no subject-absence reason, and conflict with a gate auditor finding. Preserve every distinct failure in the deterministic ledger and provide the evidence-producing repair path.",
   "assertions": [
     "Fails closed and names each distinct missing or contradictory evidence item, including a forged all-pass bundle contradicted by a real auditor finding.",
+    "Returns HOLD for visual quality even though technical checks pass, because the implementer cannot independently clear its own visual work and the user did not approve the rendered result.",
+    "Names viewport-specific composition failures across hierarchy, proportion, typography, imagery/crop, rhythm, responsive recomposition, and template/slop signals instead of treating no overflow as visual evidence.",
+    "Requires an independent vision/design rerun or explicit user screenshot approval before the visual-quality row can pass, and revokes any prior pass when the user disputes the result.",
     "Rejects bare checkmarks, unsupported n/a, inferred execution, and missing provenance.",
     "Keeps canonical evidence rows, measurements, skips, and verdict deterministic until new execution evidence replaces them.",
     "Separates the authoritative ledger from a linked presentation report without collapsing contrast, cold-load, error-state, structural, and verdict-integrity failures into one generic row.",
-    "The readable report names every blocking ledger ID, why it blocks, the required rerun or repair, and the missing evidence; it cannot claim release.",
+    "The readable report names every blocking ledger ID, including visual-quality:independent-review, why it blocks, the required rerun or repair, and the missing evidence; it cannot claim release.",
     "Rejects a thin ledger-only answer and cosmetic heading variation: response diversity must improve the report architecture, visual-decision framing, or prose voice without changing authoritative facts."
   ],
   "routing": {"positive": true, "negative_neighbor": "a11y-pass", "handoff": "none"},

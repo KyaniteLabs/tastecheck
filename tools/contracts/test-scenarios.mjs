@@ -48,6 +48,18 @@ for (const name of files) {
   if (name === "spacing-system.json" && !scenario.assertions.some((assertion) => /visible role and step.*fail/i.test(assertion))) {
     throw new Error(`${name}: thin role-and-step map must be rejected`);
   }
+  if (name === "tastecheck-pass.json") {
+    const joined = `${scenario.prompt}\n${scenario.assertions.join("\n")}`;
+    for (const requirement of [
+      /implementer cannot independently clear/i,
+      /technical checks pass/i,
+      /visual-quality:independent-review/i,
+      /user disputes/i,
+      /hierarchy.*proportion.*typography.*imagery\/crop.*rhythm.*responsive recomposition.*template\/slop/i,
+    ]) {
+      if (!requirement.test(joined)) throw new Error(`${name}: visual-quality veto regression missing ${requirement}`);
+    }
+  }
   if (name !== "cross-skill.json") skillScenarios.add(scenario.skill);
 }
 if (skillScenarios.size !== 20) throw new Error(`expected 20 skill scenarios, found ${skillScenarios.size}`);

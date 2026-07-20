@@ -4,7 +4,7 @@ import { evaluateTastecheckGate } from "./evaluators/tastecheck-gate.mjs";
 
 const contract = {
   expected_verdict: "FAIL",
-  required_ledger_ids: ["contrast:body-on-surface", "cold-load:initial-render", "error-state:invalid-skip"],
+  required_ledger_ids: ["visual-quality:independent-review", "contrast:body-on-surface", "cold-load:initial-render", "error-state:invalid-skip"],
   required_evidence_fields: ["status", "reason", "remediation", "evidence", "provenance"],
   preference_lift_required: false,
 };
@@ -18,7 +18,7 @@ function run(seed, architecture) {
     gate_evidence: {
       verdict: "FAIL",
       ledger_ids: contract.required_ledger_ids,
-      canonical_facts: { hidden_error: true, equal_card_grid: true, contrast_measured: false, cold_load_trace: false },
+      canonical_facts: { technical_checks_pass: true, visual_self_review_only: true, visual_quality_hold: true, hidden_error: true, equal_card_grid: true, contrast_measured: false, cold_load_trace: false },
       presentation_architecture: architecture,
     },
   };
