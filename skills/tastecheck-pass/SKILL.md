@@ -34,6 +34,30 @@ Create one authoritative row per applicable check: `skill`, `check_id`, `status`
 absent; it never means “not tested.” Keep measurements and skip reasons in this table.
 The release brief links to the rows instead of paraphrasing them into softer claims.
 
+## Visual-quality veto
+
+Technical correctness cannot clear visual quality. Passing tests, valid markup, loaded
+images, absence of overflow, working interactions, and screenshots that merely exist are
+necessary evidence for their own rows; none of them proves that the composition is good.
+
+When visual design, art direction, layout, typography, hierarchy, or responsive
+composition changed, **SHIP requires one of these approval paths**:
+
+1. an independent vision/design reviewer who did not implement the surface inspects the
+   rendered wide and narrow states; or
+2. the user explicitly approves the rendered result after seeing it.
+
+The implementer may find and repair defects, but cannot clear the final visual-quality
+row alone. If neither approval path exists, the verdict is **HOLD**. If the user disputes
+the visual result, that dispute immediately invalidates any prior visual pass and remains
+HOLD until a fresh rendered review resolves it.
+
+The visual review must cite viewport-specific observations for hierarchy, proportion,
+typography, imagery/crop, whitespace and rhythm, responsive recomposition, and
+template/slop signals. “Looks good,” “responsive,” “no overflow,” and checklist labels
+such as “applied” are not evidence. Record concrete defects even when technical checks
+pass, and keep the visual verdict separate from behavior and accessibility verdicts.
+
 ## What to check, in order
 
 1. Direction: `design-system-interview` (new) or `improve-existing-website` (existing).
@@ -57,7 +81,9 @@ against-spec `deslop-ui` audit are required.
    not replace it.
 4. Audit phrase, tokens, refusals, and signature across surface/structure/verbal planes;
    default template skeleton is a fail.
-5. Fix failed rows and rerun them. Pass only when every non-`n/a` row passes.
+5. Run the visual-quality veto. Record reviewer identity/role, independence or explicit
+   user approval, reviewed viewport artifacts, concrete observations, and verdict.
+6. Fix failed rows and rerun them. Pass only when every non-`n/a` row passes.
 
 ## Turn failures into a release path
 
@@ -74,8 +100,9 @@ reruns the verdict. An ETA never changes **HOLD** to **SHIP**.
 
 ## Gate self-check
 
-Add three final evidence rows confirming: the real artifact and spec were used; required
-browser/numeric checks actually ran; and every blocker has an owner, repair, rerun, and
+Add four final evidence rows confirming: the real artifact and spec were used; required
+browser/numeric checks actually ran; the visual-quality veto was independently cleared
+or explicitly approved by the user; and every blocker has an owner, repair, rerun, and
 acceptance rule. Then deliver the release brief first and the evidence table second.
 
 <!-- contract:v1:start -->
@@ -84,8 +111,8 @@ acceptance rule. Then deliver the release brief first and the evidence table sec
 Canonical detail: [contract.json](contract.json).
 
 - Route: A finished frontend artifact needs an evidence-backed ship decision. (+1 in contract.json); avoid: The artifact is still at the direction or implementation stage. (+1 in contract.json)
-- Exclude: Never infer execution from a file existing or a claimed checkmark. (+2 in contract.json)
-- Stop / handoff: Fail when the required spec is absent or the artifact was not built to it. (+2 in contract.json); receives [a11y-pass, cognitive-a11y, i18n-ready, deslop-ui, humanize-copy, art-direction, component-states, data-viz, empty-states, form-ux, micro-motion] -> sends [none]
+- Exclude: Never infer execution from a file existing or a claimed checkmark. (+3 in contract.json)
+- Stop / handoff: Fail when the required spec is absent or the artifact was not built to it. (+4 in contract.json); receives [a11y-pass, cognitive-a11y, i18n-ready, deslop-ui, humanize-copy, art-direction, component-states, data-viz, empty-states, form-ux, micro-motion] -> sends [none]
 - Output: fail-closed evidence ledger with a deterministic verdict and actionable gate report
 - Evidence: `ledger_with_verdict` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->
