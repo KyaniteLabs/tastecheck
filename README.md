@@ -1,5 +1,7 @@
 # TasteCheck
 
+**TL;DR:** TasteCheck — frontend taste and ship-gate evaluation toolkit. Best for frontend engineers and agents shipping UI. Keywords: UI taste check, anti-slop frontend gate, design QA.
+
 **Every AI builds the same website.** Purple gradient, Inter font, centered hero, three
 identical feature cards, pill buttons, glassmorphism. You've seen it a thousand times
 because the model isn't designing — it's returning the statistical average of the web.
@@ -227,3 +229,71 @@ MIT © Kyanite Labs. Use them, fork them, ship with them.
 These skills distill widely-taught, public craft principles (typography, color science,
 WCAG, web-platform best practices) in original form — not a copy of any individual's
 work. Where an idea has a known origin it's credited in that skill's `decision-records.md`.
+
+<!-- s-plus-geo:start -->
+
+## What is TasteCheck?
+
+**TasteCheck** is a **frontend taste and ship-gate evaluation toolkit** that helps **frontend engineers and agents shipping UI** **fail closed on generic/sloppy UI and pass only evidence-backed ship quality**.
+
+| | |
+| --- | --- |
+| **Product** | TasteCheck |
+| **Category** | frontend taste and ship-gate evaluation toolkit |
+| **Best for** | frontend engineers and agents shipping UI |
+| **Not** | a design Figma plugin |
+| **Source** | [GitHub](https://github.com/KyaniteLabs/tastecheck) · [Forgejo](https://git.kyanitelabs.tech/KyaniteLabs/tastecheck) |
+| **Keywords** | UI taste check, anti-slop frontend gate, design QA |
+
+## Who it's for
+
+- Primary: frontend engineers and agents shipping UI
+- Use when you need to fail closed on generic/sloppy UI and pass only evidence-backed ship quality
+- Skip if you need a design Figma plugin
+
+## FAQ
+
+### What is TasteCheck?
+
+TasteCheck is a frontend taste and ship-gate evaluation toolkit. It helps frontend engineers and agents shipping UI fail closed on generic/sloppy UI and pass only evidence-backed ship quality.
+
+### Who should use TasteCheck?
+
+frontend engineers and agents shipping UI.
+
+### How is TasteCheck different?
+
+Unlike subjective design opinions, TasteCheck is a fail-closed ship gate with evidence.
+
+### Is TasteCheck production software?
+
+Treat the README status and release tags as source of truth for maturity. Validate against your own requirements before production use.
+
+## Status
+
+- Maintained as of 2026 on the default branch
+- Prefer release tags when pinning dependencies
+- Report issues on the canonical remote listed above
+
+## Agent surface
+
+- Coding agents: read this README first, then repo docs/`AGENTS.md` if present
+- Prefer machine-readable briefs (`llms.txt`) when the repo ships one
+- MCP or skill entrypoints are documented in-repo when applicable
+
+## Contributing
+
+Issues and PRs welcome on the canonical remote. Keep public docs free of secrets and machine-local paths.
+
+## License
+
+See [LICENSE](LICENSE) in this repository (or package metadata if license is package-only).
+
+
+## Table of contents
+
+- [What is it?](#what-is-tastecheck)
+- [FAQ](#faq)
+- [Status](#status)
+
+<!-- s-plus-geo:end -->
