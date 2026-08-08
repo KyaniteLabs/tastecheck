@@ -59,6 +59,10 @@ Prioritize blockers to task completion, then frequent-path defects, then polish.
 - [ ] Automated checks are labeled as discovery, not sign-off.
 - [ ] Focus, announcements, errors, and reduced-motion behavior have an explicit owner.
 
+## Provenance — standard, not opinion
+
+Grounded in the W3C Web Content Accessibility Guidelines (WCAG) 2.2, Level AA — the conformance target named throughout this skill (keyboard, focus, contrast, reflow, target size, reduced motion, error identification, status announcements). Independent Kyanite Labs synthesis of the standard's success criteria, credited — not copied. WCAG 2.2 is a W3C Recommendation; its success criteria are factual conformance requirements. Hand cognitive-load concerns to `cognitive-a11y` (COGA).
+
 <!-- contract:v1:start -->
 ## Contract (generated)
 
