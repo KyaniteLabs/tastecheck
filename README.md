@@ -6,7 +6,7 @@
 identical feature cards, pill buttons, glassmorphism. You've seen it a thousand times
 because the model isn't designing — it's returning the statistical average of the web.
 
-**tastecheck is the fix.** It's a set of **19 craft skills for AI coding agents** that does
+**tastecheck is the fix.** It's a set of **20 craft skills for AI coding agents** that does
 two things no prompt does: it **grills you into a real design system *before* it writes any
 code**, then applies checkable craft skills so the output has a point of view
 instead of a purple gradient.
@@ -18,7 +18,7 @@ five committed design systems. That's the whole pitch: a committed design system
 average. Open the [live gallery →](https://kyanitelabs.github.io/tastecheck/samples/)*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-19-success.svg)](#whats-inside)
+[![Skills](https://img.shields.io/badge/skills-20-success.svg)](#whats-inside)
 [![Portable Markdown](https://img.shields.io/badge/plain%20markdown-portable-black.svg)](#portable-markdown)
 [![Verified](https://img.shields.io/badge/verified-npm%20test-brightgreen.svg)](docs/VERIFICATION.md)
 
@@ -41,7 +41,7 @@ the [secondary integration harness](https://kyanitelabs.github.io/tastecheck/dem
 
 ## What is tastecheck?
 
-tastecheck is a free, open-source (MIT) **pack of 19 frontend craft skills for AI coding
+tastecheck is a free, open-source (MIT) **pack of 20 frontend craft skills for AI coding
 agents** — Claude Code, Codex, Gemini CLI, Cursor, Kilocode, Kimi. The headline skills
 either *interview you into a committed design system before any code is written* or audit
 an existing website to infer the intended system before changes. The rest apply checkable
@@ -77,7 +77,7 @@ skill builds from. Taste is the only moat against AI slop; this operationalizes 
 ## Engineering demonstration: the GitHub Pages landing page runs the skills
 
 The homepage connected to GitHub Pages is not just a brochure. It is now the primary
-integration surface: the live landing page carries `data-skill` coverage for all 19 skills,
+integration surface: the live landing page carries `data-skill` coverage for all 20 skills,
 page-level light/dark/high-contrast theme paths, component states, form validation,
 empty/error/retry recovery, chart/table parity, keyboard/focus affordances, reduced-motion
 guards, forced-colors support, humanized copy, and the existing-site audit story.
@@ -108,6 +108,7 @@ audit) and reviewed by independent models from different families before shippin
 **The headline**
 - **design-system-interview** — grills you into a committed design system before building; emits tokens the rest consume.
 - **improve-existing-website** — audits a current site, infers the intended system, asks only the questions that change the fix, then makes the partial reality true.
+- **tasteroll** — rapid prototyping through constrained randomness: audits what exists, fixes what is broken, then rolls the dice between valid alternatives — lock what works, re-reroll what doesn't.
 
 **Remove the tells**
 - **deslop-ui** — the named AI giveaways (purple gradient, pill CTAs, Inter, 3-card hero, glassmorphism, emoji headers) and the exact fix for each — visual *and* structural.
@@ -153,7 +154,7 @@ of a trust-me receipt. Run `npm test` for structural, installer, command, link, 
 a11y-starter, data-viz, skill-lint, gate-auditor-contract, GitHub Pages landing-page
 coverage, and secondary integration checks. The ship gate's own auditor is dogfooded on
 the landing page: it passes (the one purple-gradient warn is the intentional "before"
-slop swatch). The landing page itself audits its existing direction, then exercises all 19 skills
+slop swatch). The landing page itself audits its existing direction, then exercises all 20 skills
 through real controls: themes, component states, form validation, empty/error/retry,
 chart/table parity, copy, accessibility, cognitive readability, motion, and responsive
 layout. Browser/manual QA remains documented separately in [docs/VERIFICATION.md](docs/VERIFICATION.md)
@@ -197,7 +198,7 @@ also get slash commands:
 ## FAQ
 
 **What is tastecheck?**
-A free, open-source (MIT) pack of 19 craft skills for AI coding agents. It interviews you
+A free, open-source (MIT) pack of 20 craft skills for AI coding agents. It interviews you
 into a committed design system before any code, or audits an existing site to infer the
 system already trying to exist, then applies checkable rules for typography, color,
 accessibility and removing AI "slop" tells — so output has a point of view instead of the
