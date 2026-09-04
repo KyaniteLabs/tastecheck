@@ -45,6 +45,70 @@ while IFS= read -r skill_dir; do
   SKILLS+=("$(basename "$skill_dir")")
 done < <(find "$SKILLS_SRC" -mindepth 1 -maxdepth 1 -type d -name '*' | sort)
 
+# Validate the complete source payload before touching any agent home. This keeps a
+# partially restored skill from being advertised as installable and makes a failed
+# install side-effect free with respect to destination links.
+validate_skill_payload() {
+  local skill_dir="$1"
+  local skill_name
+  local skill_file
+  local contract_file
+  local ref
+  local valid=0
+
+  skill_name="$(basename "$skill_dir")"
+  skill_file="$skill_dir/SKILL.md"
+  contract_file="$skill_dir/contract.json"
+
+  if [ ! -s "$skill_file" ]; then
+    echo "ERROR: $skill_name is missing a non-empty SKILL.md" >&2
+    valid=1
+  elif ! grep -Eq "^name:[[:space:]]*$skill_name[[:space:]]*$" "$skill_file"; then
+    echo "ERROR: $skill_name SKILL.md frontmatter name does not match the directory" >&2
+    valid=1
+  fi
+
+  if [ ! -s "$contract_file" ]; then
+    echo "ERROR: $skill_name is missing a non-empty contract.json" >&2
+    valid=1
+  elif ! node --input-type=module -e 'import { readFileSync } from "node:fs"; import { pathToFileURL } from "node:url"; const [repo, path, expected] = process.argv.slice(1); const { validateSkillContract } = await import(pathToFileURL(`${repo}/tools/contracts/validate.mjs`)); const manifest = JSON.parse(readFileSync(`${repo}/skills.json`, "utf8")); const contract = JSON.parse(readFileSync(path, "utf8")); const knownSkills = new Set(manifest.skills.map(({ name }) => name)); const errors = validateSkillContract(contract, { knownSkills }); if (contract.skill !== expected || errors.length) process.exit(1);' "$REPO" "$contract_file" "$skill_name" >/dev/null 2>&1; then
+    echo "ERROR: $skill_name contract.json is invalid, incomplete, or names a different skill" >&2
+    valid=1
+  fi
+
+  while IFS= read -r ref; do
+    [ -n "$ref" ] || continue
+    if [ ! -f "$skill_dir/$ref" ]; then
+      echo "ERROR: $skill_name SKILL.md references missing $ref" >&2
+      valid=1
+    fi
+  done < <(grep -oE '(assets|references)/[A-Za-z0-9._/-]+' "$skill_file" | sort -u || true)
+
+  return "$valid"
+}
+
+preflight_sources() {
+  local skill_dir
+  local failures=0
+
+  if [ "${#SKILLS[@]}" -eq 0 ]; then
+    echo "ERROR: no skill directories found under $SKILLS_SRC" >&2
+    return 1
+  fi
+
+  for skill_dir in "$SKILLS_SRC"/*; do
+    [ -d "$skill_dir" ] || continue
+    if ! validate_skill_payload "$skill_dir"; then
+      failures=1
+    fi
+  done
+
+  if [ "$failures" -ne 0 ]; then
+    echo "ERROR: source preflight failed; no skill links were changed" >&2
+    return 1
+  fi
+}
+
 # Agent homes that use a ~/<home>/skills/ convention.
 # ~/.agents is canonical because the slash commands load from that path.
 HOMES=(.claude .codex .gemini .cursor .kilocode .kimi)
@@ -77,6 +141,8 @@ if [ "$UNINSTALL" = 1 ]; then
   uninstall_all
   exit 0
 fi
+
+preflight_sources
 
 echo "frontend-skills installer"
 echo "repo: $REPO"

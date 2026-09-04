@@ -73,12 +73,16 @@ describe("combinedVerdict", () => {
     assert.equal(combinedVerdict({ verdict: "FAIL" }, 9.0), "FAIL");
   });
 
-  it("null gate + n/a NIMA → CLEAN (graceful default)", () => {
-    assert.equal(combinedVerdict(null, null), "CLEAN");
-    assert.equal(combinedVerdict(undefined, null), "CLEAN");
+  it("null or undefined gate → HOLD (missing evidence is non-shippable)", () => {
+    assert.equal(combinedVerdict(null, null), "HOLD");
+    assert.equal(combinedVerdict(undefined, null), "HOLD");
   });
 
-  it("missing verdict defaults to CLEAN", () => {
-    assert.equal(combinedVerdict({}, 6.0), "CLEAN");
+  it("missing, malformed, and unknown verdicts → HOLD", () => {
+    assert.equal(combinedVerdict({}, 6.0), "HOLD");
+    assert.equal(combinedVerdict({ verdict: null }, 6.0), "HOLD");
+    assert.equal(combinedVerdict({ verdict: "PENDING" }, 6.0), "HOLD");
+    assert.equal(combinedVerdict("CLEAN", 6.0), "HOLD");
+    assert.equal(combinedVerdict([], 6.0), "HOLD");
   });
 });
