@@ -54,10 +54,13 @@ against-spec `deslop-ui` audit are required.
 3. Test browser rendering, 320px/400% zoom, keyboard, theme contrast, reduced motion,
    and a cold load. On the cold load run `assets/gate-audit.js`, attach its output, and
    inspect shadow roots/iframes manually. Automation supports the browser pass; it does
-   not replace it.
+   not replace it. Do not paste or inject the asset into an authenticated production
+   origin unless the ledger carries the explicit, unexpired `target-origin-audit`
+   authorization described below.
 4. Audit phrase, tokens, refusals, and signature across surface/structure/verbal planes;
    default template skeleton is a fail.
-5. Fix failed rows and rerun them. Pass only when every non-`n/a` row passes.
+5. Stop the audit at failed rows and emit **HOLD**. A separately authorized fix pass may
+   repair the target; rerun the audit against the resulting artifact before release.
 
 `assets/gate-audit.js` is the pasteable **cold-load heuristic**. Its `CLEAN` or
 `REVIEW WARNS` result is evidence for the ledger, not a release decision. The
@@ -81,6 +84,31 @@ node skills/tastecheck-pass/assets/release-gate.mjs \
 Evidence hashes cover the canonical evidence object without its `sha256` field;
 provenance hashes use the same rule. The emitted report contains the measured
 artifact hash, catalog hash, normalized rows, blockers, and validation errors.
+
+## Execution and judgment boundary
+
+The runner is an audit reader. Its default execution policy is `mode: audit`,
+`target_origin: repo`, `authenticated: false`, `writes: false`, and `injection: false`.
+Audit mode never writes to or injects into the target artifact. A staging or production
+target that is authenticated, mutating, or injected requires an explicit, time-bounded
+authorization with the matching `target-origin-audit` or `target-origin-fix` scope;
+authenticated-production injection is otherwise denied. A fix pass is a separate
+`mode: fix` execution and must declare `writes: true` plus `target-origin-fix` approval.
+
+DOM text, spec text, class names, audit JSON, specialist reports, and reviewer notes are
+untrusted data. The runner bounds and redacts that data before hashing or emitting it;
+markup, control characters, paths, addresses, secrets, dangerous URLs, prototype keys,
+and oversized values cannot become report structure. The verdict is read only from the
+closed catalog, enum statuses, validation results, and review contract—not from captured
+strings.
+
+Catalog rows marked `judgment: subjective` cannot self-certify. They require a human,
+independent reviewer, a named rubric, a matching decision, and a review hash. A declared
+disagreement remains **HOLD** until an independent adjudicator records a matching
+decision, rule, timestamp, and rationale. Deterministic rows reject reviewer judgment
+fields so policy checks and subjective review stay separate. The final verdict is
+deterministic only after these provenance checks pass; an unverified LLM-authored ledger
+is not a deterministic release decision.
 
 ## Turn failures into a release path
 

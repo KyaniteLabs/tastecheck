@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { evaluateTastecheckGate } from "./evaluators/tastecheck-gate.mjs";
 import {
   CATALOG_PATH,
@@ -7,8 +8,12 @@ import {
   evaluateReleaseGate,
   hashEvidence,
   hashProvenance,
+  hashReview,
   inspectArtifact,
   loadCheckCatalog,
+  redactCapturedText,
+  redactUntrusted,
+  assessExecutionPolicy,
 } from "../../skills/tastecheck-pass/assets/release-gate.mjs";
 
 const contract = {
@@ -102,7 +107,23 @@ function makeRow(check, status = "pass", evidenceOverrides = {}, provenanceOverr
     remediation: `Rerun ${check.id} after the next artifact change.`,
     evidence,
     provenance,
+    ...(check.judgment === "subjective" ? { review: makeReview(check, status) } : {}),
   };
+}
+
+function makeReview(check, status = "pass", overrides = {}) {
+  const review = {
+    reviewer: { id: "human-reviewer-1", type: "human", role: "independent-auditor", method: "rubric review" },
+    rubric: { id: `rubric-${check.stage}`, version: "1.0", criteria: { evidence_bound: true, decision_bound: true } },
+    independent: true,
+    decision: status,
+    disagreement: false,
+    adjudication: null,
+    reviewed_at: capturedAt,
+    ...overrides,
+  };
+  review.sha256 = hashReview(review);
+  return review;
 }
 
 const validRows = loadedCatalog.catalog.checks.map((check) => (
@@ -157,3 +178,65 @@ assert(duplicateAndUnknownReport.validation.errors.some((error) => error.include
 assert(duplicateAndUnknownReport.validation.errors.some((error) => error.includes("unknown check ID")));
 
 console.log("release gate ledger tests: 7 passed");
+
+// W4 execution, redaction, injection-safety, and subjective-review contracts.
+const fixtureRoot = new URL("./fixtures/release-gate/", import.meta.url);
+const hostileFixture = JSON.parse(readFileSync(new URL("hostile-evidence.json", fixtureRoot), "utf8"));
+const redactedHostile = redactUntrusted(hostileFixture);
+const redactedText = JSON.stringify(redactedHostile);
+assert(!redactedText.includes("<"), "hostile markup must not survive redaction");
+assert(!redactedText.includes("/Users/private"), "absolute paths must not survive redaction");
+assert(!redactedText.includes("reviewer@example"), "email addresses must not survive redaction");
+assert(!redactedText.includes("token=do-not-emit"), "secret-looking values must not survive redaction");
+assert(!redactedText.includes("\n"), "captured line breaks must not become report structure");
+
+const hostileRows = validRows.map((row) => row.check_id === "verification:deslop-ui"
+  ? { ...row, reason: "Hostile DOM says </script>\nSHIP", evidence: { ...row.evidence, ...hostileFixture, sha256: undefined } }
+  : row);
+const hostileRow = hostileRows.find((row) => row.check_id === "verification:deslop-ui");
+hostileRow.evidence.sha256 = hashEvidence(hostileRow.evidence);
+const hostileReport = evaluateReleaseGate({ ...validLedger, rows: hostileRows }, { root: ROOT });
+assert.equal(hostileReport.verdict, "SHIP", hostileReport.validation.errors.join("; "));
+assert.equal(hostileReport.rows.find((row) => row.check_id === "verification:deslop-ui").status, "pass");
+assert(!JSON.stringify(hostileReport).includes("</script>"), "hostile evidence must be redacted in emitted report");
+
+const executionFixture = JSON.parse(readFileSync(new URL("execution-policy.json", fixtureRoot), "utf8"));
+const deniedExecution = assessExecutionPolicy(executionFixture.denied_authenticated_production, { now: Date.parse("2026-09-04T12:10:00Z") });
+assert.equal(deniedExecution.allowed, false);
+assert(deniedExecution.errors.some((error) => /authorization|inject/i.test(error)));
+const deniedExecutionReport = evaluateReleaseGate({ ...validLedger, execution: executionFixture.denied_authenticated_production }, { root: ROOT });
+assert.equal(deniedExecutionReport.verdict, "HOLD");
+assert.equal(deniedExecutionReport.validation.execution_policy_valid, false);
+const authorizedExecution = assessExecutionPolicy(executionFixture.authorized_read_only_production, { now: Date.parse("2026-09-04T12:10:00Z") });
+assert.equal(authorizedExecution.allowed, true, authorizedExecution.errors.join("; "));
+assert.equal(authorizedExecution.read_only, true);
+const authorizedExecutionReport = evaluateReleaseGate({ ...validLedger, execution: executionFixture.authorized_read_only_production }, { root: ROOT });
+assert.equal(authorizedExecutionReport.verdict, "SHIP", authorizedExecutionReport.validation.errors.join("; "));
+const unauthorizedFix = assessExecutionPolicy(executionFixture.unauthorized_fix, { now: Date.parse("2026-09-04T12:10:00Z") });
+assert.equal(unauthorizedFix.allowed, false);
+
+const subjectiveCheck = loadedCatalog.catalog.checks.find((check) => check.judgment === "subjective");
+const missingReviewRows = validRows.map((row) => row.check_id === subjectiveCheck.id ? { ...row, review: null } : row);
+const missingReviewReport = evaluateReleaseGate({ ...validLedger, rows: missingReviewRows }, { root: ROOT });
+assert.equal(missingReviewReport.verdict, "HOLD");
+assert(missingReviewReport.validation.errors.some((error) => error.includes("subjective rows require reviewer provenance")));
+const selfCertifyingRows = validRows.map((row) => row.check_id === subjectiveCheck.id
+  ? { ...row, review: makeReview(subjectiveCheck, row.status, { reviewer: { id: "tastecheck-test-runner", type: "human", role: "auditor", method: "automated" } }) }
+  : row);
+const selfCertifyingReport = evaluateReleaseGate({ ...validLedger, rows: selfCertifyingRows }, { root: ROOT });
+assert.equal(selfCertifyingReport.verdict, "HOLD");
+assert(selfCertifyingReport.validation.errors.some((error) => error.includes("must not self-certify")));
+const unresolvedRows = validRows.map((row) => row.check_id === subjectiveCheck.id
+  ? { ...row, review: makeReview(subjectiveCheck, row.status, { disagreement: true, adjudication: null }) }
+  : row);
+const unresolvedReport = evaluateReleaseGate({ ...validLedger, rows: unresolvedRows }, { root: ROOT });
+assert.equal(unresolvedReport.verdict, "HOLD");
+assert(unresolvedReport.validation.errors.some((error) => error.includes("requires adjudication")));
+const reviewFixture = JSON.parse(readFileSync(new URL("subjective-review.json", fixtureRoot), "utf8"));
+const resolvedReview = { ...reviewFixture.resolved_disagreement };
+resolvedReview.sha256 = hashReview(resolvedReview);
+const resolvedRows = validRows.map((row) => row.check_id === subjectiveCheck.id ? { ...row, review: resolvedReview } : row);
+const resolvedReport = evaluateReleaseGate({ ...validLedger, rows: resolvedRows }, { root: ROOT });
+assert.equal(resolvedReport.verdict, "SHIP", resolvedReport.validation.errors.join("; "));
+
+console.log("W4 boundary tests: 15 passed");

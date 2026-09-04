@@ -19,7 +19,7 @@
     "check": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "label", "stage", "required", "applicability", "na_policy", "manual_inspector_required"],
+      "required": ["id", "label", "stage", "required", "applicability", "na_policy", "manual_inspector_required", "judgment"],
       "properties": {
         "id": { "type": "string", "pattern": "^[a-z0-9]+(?::[a-z0-9-]+)+$" },
         "label": { "type": "string", "minLength": 1 },
@@ -32,7 +32,8 @@
           ]
         },
         "na_policy": { "enum": ["forbidden", "subject_absence"] },
-        "manual_inspector_required": { "type": "boolean" }
+        "manual_inspector_required": { "type": "boolean" },
+        "judgment": { "enum": ["deterministic", "subjective"] }
       }
     }
   }
