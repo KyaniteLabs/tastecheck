@@ -9,6 +9,7 @@ import { computeSourceTreeSha256 } from "./engineering-receipt.mjs";
 import { buildContextBudgetReport } from "../evals/context-budget.mjs";
 import { scanUnsupportedEffectivenessClaims } from "./check-effectiveness-claims.mjs";
 import { checkEffectivenessProjections } from "./project-effectiveness-evidence.mjs";
+import { checkPublicStatus } from "./project-public-status.mjs";
 
 export const root = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 export const TERMINAL_V5_SYNTHESIS = "evals/replays/remediation7-v5-spacing-final-2026-07-11/blind-judge/synthesis.json";
@@ -285,6 +286,7 @@ function claims() {
   const index = readFileSync(join(root, "index.html"), "utf8");
   if (/set of 15|set of 14|set of 13/.test(index)) errors.push("index.html contains a stale skill-count claim");
   if (/19 commands/i.test(readFileSync(join(root, "README.md"), "utf8"))) errors.push("README.md claims 19 commands; release truth is 20 command files");
+  errors.push(...checkPublicStatus(root));
   return errors;
 }
 
