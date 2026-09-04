@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/contracts/v1/release-gate.schema.json",
+  "title": "TasteCheck release gate output v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "catalog", "artifact", "rows", "verdict", "release_eligible", "blockers", "validation"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "kind": { "const": "tastecheck-release-gate" },
+    "catalog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "check_ids"],
+      "properties": { "path": { "type": "string" }, "sha256": { "$ref": "#/$defs/sha256" }, "check_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string" } } }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "identity", "sha256", "bytes", "hash_verified"],
+      "properties": { "type": { "enum": ["file", "directory", "url"] }, "identity": { "type": "string" }, "sha256": { "$ref": "#/$defs/sha256" }, "bytes": { "type": "integer", "minimum": 0 }, "hash_verified": { "type": "boolean" } }
+    },
+    "rows": { "type": "array", "items": { "$ref": "#/$defs/outputRow" } },
+    "verdict": { "enum": ["SHIP", "HOLD"] },
+    "release_eligible": { "type": "boolean" },
+    "blockers": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_valid", "catalog_complete", "artifact_hash_verified", "evidence_hashes_verified", "provenance_hashes_verified", "errors"],
+      "properties": { "input_valid": { "type": "boolean" }, "catalog_complete": { "type": "boolean" }, "artifact_hash_verified": { "type": "boolean" }, "evidence_hashes_verified": { "type": "boolean" }, "provenance_hashes_verified": { "type": "boolean" }, "errors": { "type": "array", "items": { "type": "string" } } }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "outputRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skill", "check_id", "status", "reason", "remediation", "evidence", "provenance", "validation_errors"],
+      "properties": {
+        "skill": { "const": "tastecheck-pass" },
+        "check_id": { "type": "string" },
+        "status": { "enum": ["pass", "fail", "n/a"] },
+        "reason": { "type": "string" },
+        "remediation": { "type": "string" },
+        "evidence": { "type": ["object", "null"] },
+        "provenance": { "type": ["object", "null"] },
+        "validation_errors": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}
