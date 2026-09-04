@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "kind": "deslop-ui-byte-exact-checksums",
+  "generated_by": "_retrofit-2026-09-04/generate-deslop-ui-checksums.mjs",
+  "source": {
+    "kind": "git-tree",
+    "label": "local canonical W1-parent payload",
+    "revision": "b3cb1155e076feb6176ee210eb62f3b03363337a"
+  },
+  "files": [
+    {
+      "path": "skills/deslop-ui/SKILL.md",
+      "bytes": 4584,
+      "current_sha256": "c8563d4a278a948ef536a4bd26992e503e78df2cbeee563297655eb1cf5969c6",
+      "vendor_sha256": "c8563d4a278a948ef536a4bd26992e503e78df2cbeee563297655eb1cf5969c6",
+      "match": true
+    },
+    {
+      "path": "skills/deslop-ui/contract.json",
+      "bytes": 2629,
+      "current_sha256": "920986b97425a9bcc0057b295fcb5e8bf293cd8e7e08d2ec7e74be8a8625635b",
+      "vendor_sha256": "920986b97425a9bcc0057b295fcb5e8bf293cd8e7e08d2ec7e74be8a8625635b",
+      "match": true
+    },
+    {
+      "path": "skills/deslop-ui/references/anti-patterns.md",
+      "bytes": 7205,
+      "current_sha256": "a82dec9a2716ef67082d60e885bc03d66362b518131bd252df6ca6e442226c03",
+      "vendor_sha256": "a82dec9a2716ef67082d60e885bc03d66362b518131bd252df6ca6e442226c03",
+      "match": true
+    },
+    {
+      "path": "skills/deslop-ui/references/decision-records.md",
+      "bytes": 4285,
+      "current_sha256": "150f269dde12200ca01d4cbac6f6deb9f5dc9be39a5624f78f2edce85e250a03",
+      "vendor_sha256": "150f269dde12200ca01d4cbac6f6deb9f5dc9be39a5624f78f2edce85e250a03",
+      "match": true
+    },
+    {
+      "path": "skills/deslop-ui/references/design-direction.md",
+      "bytes": 4517,
+      "current_sha256": "d06cd8a2aafcdf99220491b4b399f6dbc37ab89af43400b0de1fdc5928e2b249",
+      "vendor_sha256": "d06cd8a2aafcdf99220491b4b399f6dbc37ab89af43400b0de1fdc5928e2b249",
+      "match": true
+    },
+    {
+      "path": "skills/deslop-ui/references/structural-tells.md",
+      "bytes": 1133,
+      "current_sha256": "ff635baefb5071157d17822943f97e30403907b209cb49e14a9824910087172f",
+      "vendor_sha256": "ff635baefb5071157d17822943f97e30403907b209cb49e14a9824910087172f",
+      "match": true
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "matches": 6,
+    "mismatches": 0,
+    "byte_exact": true
+  }
+}

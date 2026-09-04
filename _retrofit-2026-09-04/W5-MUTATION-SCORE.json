@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "kind": "w5-verification-mutation-score",
+  "generated_by": "tools/test/test-verification-failures.mjs",
+  "mutations": [
+    {
+      "id": "unknown-skill-reference",
+      "expected": "reject",
+      "exit_code": 1,
+      "observed_rejection": true,
+      "evidence_matched": true,
+      "killed": true
+    },
+    {
+      "id": "missing-contracts-accumulated",
+      "expected": "reject",
+      "exit_code": 1,
+      "observed_rejection": true,
+      "evidence_matched": true,
+      "killed": true
+    },
+    {
+      "id": "stale-generated-projection",
+      "expected": "reject",
+      "exit_code": 1,
+      "observed_rejection": true,
+      "evidence_matched": true,
+      "killed": true
+    },
+    {
+      "id": "false-landing-claim",
+      "expected": "reject",
+      "exit_code": 1,
+      "observed_rejection": true,
+      "evidence_matched": true,
+      "killed": true
+    }
+  ],
+  "summary": {
+    "total": 4,
+    "killed": 4,
+    "survived": 0,
+    "kill_rate": 1,
+    "all_expected_rejections_killed": true
+  }
+}
