@@ -10,26 +10,24 @@ Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21
 identical feature cards, pill buttons, glassmorphism. You've seen it a thousand times
 because the model isn't designing — it's returning the statistical average of the web.
 
-**tastecheck is the fix.** It's a set of **20 craft skills for AI coding agents** that does
+**tastecheck closes that gap.** It's a set of **20 craft skills for AI coding agents** that does
 two things no prompt does: it **grills you into a real design system *before* it writes any
 code**, then applies checkable craft skills so the output has a point of view
 instead of a purple gradient.
 
 ![tastecheck — a montage from the tastecheck gallery of committed design systems](docs/hero/six-systems.png)
 
-*Eight **real browser renders** — the same product story and core IA pushed through
-eight committed design systems. That's the whole pitch: a committed design system beats the AI
-average. Open the [live gallery →](https://kyanitelabs.github.io/tastecheck/samples/)*
+*Eight browser-rendered snapshots — the same product story and core IA pushed through
+eight committed design systems. Current browser proof is receipt-bound below. Open the [live gallery →](https://kyanitelabs.github.io/tastecheck/samples/)*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-20-success.svg)](#whats-inside)
 [![Portable Markdown](https://img.shields.io/badge/plain%20markdown-portable-black.svg)](#portable-markdown)
-[![Verified](https://img.shields.io/badge/verified-npm%20test-brightgreen.svg)](docs/VERIFICATION.md)
-
-> **Release status:** 1.0 engineering readiness covers contracts, static checks, and
-> evidence plumbing. Effectiveness remains blocked and unsupported: the terminal blind
-> evaluation did not clear its release threshold. Samples and local checks demonstrate
-> the toolkit's structure; they are not effectiveness evidence.
+<!-- release-status:v1:start -->
+[![Release status: UNVERIFIED](https://img.shields.io/badge/release-unverified-c47b44.svg)](docs/VERIFICATION.md)
+> **Release status:** UNVERIFIED — a required source-bound release receipt is missing, stale, or malformed.
+> **Effectiveness status:** BLOCKED — historical evidence did not clear its release threshold.
+<!-- release-status:v1:end -->
 
 ```bash
 git clone https://github.com/KyaniteLabs/tastecheck
