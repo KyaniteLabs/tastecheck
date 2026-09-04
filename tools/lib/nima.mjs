@@ -9,7 +9,7 @@
 // NIMA is a WARN-only heuristic. A low score can upgrade a CLEAN gate to REVIEW WARNS,
 // but it NEVER produces a FAIL, and a missing service is "n/a" with zero verdict impact.
 
-const NIMA_BASE = "http://127.0.0.1:8765";
+const NIMA_BASE = "http://127.0.0.1:8767";
 const HEALTH_TIMEOUT_MS = 2000;
 const SCORE_TIMEOUT_MS = 10_000;
 const HEALTH_CACHE_MS = 60_000;
@@ -64,7 +64,7 @@ export async function scoreNima(imageBuffer) {
 //   score <  NIMA_WARN_THRESHOLD → "warn"
 //   score >= NIMA_WARN_THRESHOLD → "ok"
 export function aestheticStatus(score) {
-  if (score == null) return "n/a";
+  if (score == null || typeof score !== "number" || !Number.isFinite(score)) return "n/a";
   return score < NIMA_WARN_THRESHOLD ? "warn" : "ok";
 }
 
@@ -81,11 +81,18 @@ export function _resetNimaHealthCache() {
 export const NIMA_FAIL = Infinity; // disabled in Phase 1 — WARN-only (see plan §7)
 export { scoreNima as nimaScore, isNimaAvailable as nimaAvailable, NIMA_WARN_THRESHOLD as NIMA_WARN };
 export function nimaVerdict(score) {
-  if (score == null) return "n/a";
+  if (score == null || typeof score !== "number" || !Number.isFinite(score)) return "n/a";
   return score < NIMA_WARN_THRESHOLD ? "warn" : "pass";
 }
+
+const VALID_GATE_VERDICTS = new Set(["CLEAN", "REVIEW WARNS", "FAIL"]);
+
 export function combinedVerdict(gate, nimaScore) {
-  const gateVerdict = gate?.verdict ?? "CLEAN";
+  // A missing or malformed gate is never equivalent to a clean gate. HOLD is a
+  // deliberate non-shippable result until a valid gate record is supplied.
+  if (!gate || typeof gate !== "object" || Array.isArray(gate)) return "HOLD";
+  const gateVerdict = gate.verdict;
+  if (!VALID_GATE_VERDICTS.has(gateVerdict)) return "HOLD";
   if (gateVerdict === "FAIL") return "FAIL";
   if (gateVerdict === "REVIEW WARNS" || nimaVerdict(nimaScore) === "warn") return "REVIEW WARNS";
   return "CLEAN";
