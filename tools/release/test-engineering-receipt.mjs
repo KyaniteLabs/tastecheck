@@ -10,6 +10,7 @@ import {
   computeHeadSourceTreeSha256,
   deriveReceipt,
   isExcludedReceiptPath,
+  isExcludedSourcePath,
 } from "./engineering-receipt.mjs";
 
 function git(cwd, ...args) {
@@ -23,8 +24,12 @@ try {
   git(temp, "config", "user.email", "test@example.invalid");
   mkdirSync(join(temp, "src"));
   mkdirSync(join(temp, "evals", "receipts", "v1"), { recursive: true });
+  mkdirSync(join(temp, "_retrofit-2026-09-04"));
   writeFileSync(join(temp, "src", "input.txt"), "alpha\n");
   writeFileSync(join(temp, "evals", "receipts", "v1", "mechanical.json"), "{}\n");
+  writeFileSync(join(temp, "_retrofit-2026-09-04", "REPORT.md"), "first report\n");
+  writeFileSync(join(temp, "README.md"), "<!-- release-status:v1:start -->\nRelease status: UNVERIFIED\n<!-- release-status:v1:end -->\n");
+  writeFileSync(join(temp, "index.html"), "<!-- release-status-gate:v1:start -->Gate: UNVERIFIED<!-- release-status-gate:v1:end -->\n");
   git(temp, "add", ".");
   git(temp, "commit", "-qm", "fixture");
 
@@ -32,6 +37,10 @@ try {
   assert.equal(computeHeadSourceTreeSha256(temp), first);
   writeFileSync(join(temp, "evals", "receipts", "v1", "mechanical.json"), "{\"changed\":true}\n");
   assert.equal(computeSourceTreeSha256(temp), first, "generated release receipts must not affect the source digest");
+  writeFileSync(join(temp, "_retrofit-2026-09-04", "REPORT.md"), "second report\n");
+  writeFileSync(join(temp, "README.md"), "<!-- release-status:v1:start -->\nRelease status: PASS\n<!-- release-status:v1:end -->\n");
+  writeFileSync(join(temp, "index.html"), "<!-- release-status-gate:v1:start -->Gate: PASS ✓<!-- release-status-gate:v1:end -->\n");
+  assert.equal(computeSourceTreeSha256(temp), first, "generated public surfaces and retrofit reports must not affect the source digest");
 
   writeFileSync(join(temp, "src", "input.txt"), "beta\n");
   assert.notEqual(computeSourceTreeSha256(temp), first, "tracked source changes must invalidate the source digest");
@@ -41,6 +50,7 @@ try {
   assert.equal(isExcludedReceiptPath("evals/receipts/v1/artifacts/browser/proof.png"), true);
   assert.equal(isExcludedReceiptPath("evals/receipts/v1/contracts/generated.json"), true);
   assert.equal(isExcludedReceiptPath("evals/receipts/v1/immutable/w1-effectiveness.json"), false);
+  assert.equal(isExcludedSourcePath("_retrofit-2026-09-04/TPS2-REPORT.md"), true);
 
   const passed = deriveReceipt({
     kind: "mechanical",
