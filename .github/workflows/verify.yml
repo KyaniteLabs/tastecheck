@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [main]
 jobs:
-  verify:
+  structural:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,5 +14,18 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run preflight:structural
+      - run: npm run test:structural
+  oracle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run preflight:oracle
       - run: npx playwright install --with-deps chromium
-      - run: npm test
+      - run: npm run preflight:browser
+      - run: npm run test:oracle
