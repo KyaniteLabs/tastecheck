@@ -1,24 +1,28 @@
 # TasteCheck
 
+<!-- release-facts:v1:start -->
+Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
+<!-- release-facts:v1:end -->
+
 **TL;DR:** TasteCheck — frontend taste and ship-gate evaluation toolkit. Best for frontend engineers and agents shipping UI. Keywords: UI taste check, anti-slop frontend gate, design QA.
 
 **Every AI builds the same website.** Purple gradient, Inter font, centered hero, three
 identical feature cards, pill buttons, glassmorphism. You've seen it a thousand times
 because the model isn't designing — it's returning the statistical average of the web.
 
-**tastecheck is the fix.** It's a set of **19 craft skills for AI coding agents** that does
+**tastecheck is the fix.** It's a set of **20 craft skills for AI coding agents** that does
 two things no prompt does: it **grills you into a real design system *before* it writes any
 code**, then applies checkable craft skills so the output has a point of view
 instead of a purple gradient.
 
-![tastecheck — one landing-page pitch rendered as five committed design systems: Copper, Swiss, Maximal, Concrete and Clay](docs/hero/six-systems.png)
+![tastecheck — a montage from the tastecheck gallery of committed design systems](docs/hero/six-systems.png)
 
-*Five **real browser renders** — the same product story and core IA pushed through
-five committed design systems. That's the whole pitch: a committed design system beats the AI
+*Eight **real browser renders** — the same product story and core IA pushed through
+eight committed design systems. That's the whole pitch: a committed design system beats the AI
 average. Open the [live gallery →](https://kyanitelabs.github.io/tastecheck/samples/)*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-19-success.svg)](#whats-inside)
+[![Skills](https://img.shields.io/badge/skills-20-success.svg)](#whats-inside)
 [![Portable Markdown](https://img.shields.io/badge/plain%20markdown-portable-black.svg)](#portable-markdown)
 [![Verified](https://img.shields.io/badge/verified-npm%20test-brightgreen.svg)](docs/VERIFICATION.md)
 
@@ -34,14 +38,14 @@ git clone https://github.com/KyaniteLabs/tastecheck
 ```
 
 **Live:** the [landing page](https://kyanitelabs.github.io/tastecheck/) ·
-the [five-design-system gallery](https://kyanitelabs.github.io/tastecheck/samples/) ·
+the [eight-design-system gallery](https://kyanitelabs.github.io/tastecheck/samples/) ·
 the [secondary integration harness](https://kyanitelabs.github.io/tastecheck/demos/skill-integration.html)
 
 ---
 
 ## What is tastecheck?
 
-tastecheck is a free, open-source (MIT) **pack of 19 frontend craft skills for AI coding
+tastecheck is a free, open-source (MIT) **pack of 20 frontend craft skills for AI coding
 agents** — Claude Code, Codex, Gemini CLI, Cursor, Kilocode, Kimi. The headline skills
 either *interview you into a committed design system before any code is written* or audit
 an existing website to infer the intended system before changes. The rest apply checkable
@@ -77,13 +81,13 @@ skill builds from. Taste is the only moat against AI slop; this operationalizes 
 ## Engineering demonstration: the GitHub Pages landing page runs the skills
 
 The homepage connected to GitHub Pages is not just a brochure. It is now the primary
-integration surface: the live landing page carries `data-skill` coverage for all 19 skills,
+integration surface: the live landing page carries `data-skill` coverage for all 20 skills,
 page-level light/dark/high-contrast theme paths, component states, form validation,
 empty/error/retry recovery, chart/table parity, keyboard/focus affordances, reduced-motion
 guards, forced-colors support, humanized copy, and the existing-site audit story.
 
-The second proof: take the **same product story and core IA** and run it through five
-different committed systems. You don't get five recolors — you get five different
+The second proof: take the **same product story and core IA** and run it through eight
+different committed systems. You don't get eight recolors — you get eight different
 visual/rhythm treatments on the same pitch. The repo includes a repeatable verification
 gate for local links, install paths, command targets, CSS parse traps, starter accessibility,
 homepage skill coverage, and chart data-table parity.
@@ -99,6 +103,9 @@ homepage skill coverage, and chart data-table parity.
 | [Maximal](samples/maximal/) | loud, kinetic | display word bleeding into a magenta block; sticker-wall collage | Bricolage Grotesque |
 | [Concrete](samples/concrete/) | raw, mechanical, monochrome | ruled spec-sheet + dense ledger table; achromatic + one hazard accent | Space Grotesk + Space Mono |
 | [Clay](samples/clay/) | warm, soft, humanist | alternating zig-zag soft-card flow with organic "pebble" shapes | Mulish |
+| [Dispatch](samples/dispatch/) | dark, operational, emerald | reverse-chronological release timeline | Bricolage + Hanken |
+| [Verge](samples/verge/) | cool, clinical, measured | hypothesis → method → verdict evidence cards | Fraunces + Spline Sans |
+| [Seed](samples/tasteroll/) | warm, procedural, annotated | seeded specimen card with rolled dimensions | system serif |
 
 Each was built through the same pipeline (interview → `DESIGN-SYSTEM.md` → skills → render →
 audit) and reviewed by independent models from different families before shipping.
@@ -107,6 +114,7 @@ audit) and reviewed by independent models from different families before shippin
 
 **The headline**
 - **design-system-interview** — grills you into a committed design system before building; emits tokens the rest consume.
+- **tasteroll** — rolls unresolved design dimensions from a seeded source, then locks the direction the evidence supports.
 - **improve-existing-website** — audits a current site, infers the intended system, asks only the questions that change the fix, then makes the partial reality true.
 
 **Remove the tells**
@@ -153,7 +161,7 @@ of a trust-me receipt. Run `npm test` for structural, installer, command, link, 
 a11y-starter, data-viz, skill-lint, gate-auditor-contract, GitHub Pages landing-page
 coverage, and secondary integration checks. The ship gate's own auditor is dogfooded on
 the landing page: it passes (the one purple-gradient warn is the intentional "before"
-slop swatch). The landing page itself audits its existing direction, then exercises all 19 skills
+slop swatch). The landing page itself audits its existing direction, then exercises all 20 skills
 through real controls: themes, component states, form validation, empty/error/retry,
 chart/table parity, copy, accessibility, cognitive readability, motion, and responsive
 layout. Browser/manual QA remains documented separately in [docs/VERIFICATION.md](docs/VERIFICATION.md)
@@ -189,7 +197,7 @@ The installer creates canonical links in `~/.agents/skills/` and mirrors them in
 agent skill directories. In agents with skill auto-loading enabled, matching requests can
 load the relevant skill; otherwise use the `SKILL.md` path directly. In Claude Code you
 also get slash commands:
-`/designsystem`, `/deslop`, `/humanize`, `/typography`, `/colorsystem`, `/spacing`,
+`/designsystem`, `/tasteroll`, `/deslop`, `/humanize`, `/typography`, `/colorsystem`, `/spacing`,
 `/theming`, `/responsive`, `/states`, `/formux`, `/emptystates`, `/motion`, `/dataviz`,
 `/artdirection`, `/a11y`, `/cognitive`, `/i18n`, `/improvesite`, `/tastecheckpass`
 (plus `/darkmode`, an alias of `/theming`).
@@ -197,7 +205,7 @@ also get slash commands:
 ## FAQ
 
 **What is tastecheck?**
-A free, open-source (MIT) pack of 19 craft skills for AI coding agents. It interviews you
+A free, open-source (MIT) pack of 20 craft skills for AI coding agents. It interviews you
 into a committed design system before any code, or audits an existing site to infer the
 system already trying to exist, then applies checkable rules for typography, color,
 accessibility and removing AI "slop" tells — so output has a point of view instead of the
@@ -217,7 +225,7 @@ Gemini CLI, Cursor, Kilocode, and Kimi skill dirs. Auto-loading depends on the a
 Most clean up *after* generation. tastecheck works *before* the build, its rules are
 checkable rather than vibes, and the repo includes a repeatable `npm test` verification
 gate where the GitHub Pages landing page itself exercises every skill end to end. Same
-product story through it = five visibly different design systems, not five recolors.
+product story through it = eight visibly different design systems, not eight recolors.
 
 **Is it free?**
 Yes — MIT licensed. Clone the repo and run `install.sh`.

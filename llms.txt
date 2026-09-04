@@ -1,5 +1,9 @@
 # tastecheck
 
+<!-- release-facts:v1:start -->
+Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
+<!-- release-facts:v1:end -->
+
 > Twenty connected frontend craft skills for AI coding agents. The headline skill turns
 > a brief into a confirmed design system before code; improve-existing-website infers a
 > system from existing sites; the rest (typography, color/OKLCH, theming, layout, states, forms,
@@ -21,12 +25,13 @@ commands.
 ## Start here
 - [README](README.md): the problem (every AI site looks the same), the fix, the samples, install
 - [Landing page](https://kyanitelabs.github.io/tastecheck/): canonical public surface and skill integration target
-- [Live gallery](https://kyanitelabs.github.io/tastecheck/samples/): seven design systems, one product story
+- [Live gallery](https://kyanitelabs.github.io/tastecheck/samples/): eight design systems, one product story
 - [Secondary integration harness](https://kyanitelabs.github.io/tastecheck/demos/skill-integration.html): standalone local website exercising every skill
 - [Verification report](docs/VERIFICATION.md): repeatable local verification plus browser QA checklist
 
 ## Skills
 - [design-system-interview](skills/design-system-interview/SKILL.md): grills you into a committed design system + tokens before building (the headline)
+- [tasteroll](skills/tasteroll/SKILL.md): rolls unresolved design dimensions from a seeded source, then locks the direction the evidence supports
 - [improve-existing-website](skills/improve-existing-website/SKILL.md): audit an existing site, infer its intended system, ask only targeted questions, then improve it
 - [deslop-ui](skills/deslop-ui/SKILL.md): remove the named AI visual + structural tells; commit to a direction
 - [humanize-copy](skills/humanize-copy/SKILL.md): strip the ChatGPT accent from writing with a checkable kill-list
@@ -61,4 +66,4 @@ design-system-interview from the actual user's answers.
 
 ## Optional
 - [demos](demos/): standalone HTML pages applying the skills' CSS, incl. the before/after gallery and secondary skill integration harness
-- [commands](commands/): Claude Code slash-command wrappers (/designsystem, /deslop, …)
+- [commands](commands/): 20 canonical Claude Code slash-command wrappers plus /darkmode as the approved /theming alias
