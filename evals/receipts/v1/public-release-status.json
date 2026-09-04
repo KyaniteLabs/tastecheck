@@ -2,7 +2,7 @@
   "schema_version": 1,
   "kind": "tastecheck-public-release-status",
   "target_release": "1.4.1",
-  "source_tree_sha256": "1b00a2414b6907758ad990ae1702f8b507097f456dc26d151c6defefc91e11e3",
+  "source_tree_sha256": "a2508d9ae5fddfb85f032db542d6b7e75db29fcff499354d4f3816f251d309f0",
   "manifest": {
     "id": "release-manifest",
     "path": "contracts/v1/release-receipts.json",
