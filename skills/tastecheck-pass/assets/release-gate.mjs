@@ -21,9 +21,137 @@ const SHA256 = /^[a-f0-9]{64}$/;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?Z$/;
 const RUNTIME_KEYS = ["name", "version"];
 const INSPECTOR_KEYS = ["name", "role", "method"];
+const EXECUTION_KEYS = ["mode", "target_origin", "authenticated", "writes", "injection", "authorization"];
+const AUTHORIZATION_KEYS = ["scope", "approved_by", "approved_at", "expires_at", "reason"];
+const REVIEW_KEYS = ["reviewer", "rubric", "independent", "decision", "disagreement", "adjudication", "reviewed_at", "sha256"];
+const REVIEWER_KEYS = ["id", "type", "role", "method"];
+const ADJUDICATION_KEYS = ["adjudicator", "rule", "decision", "resolved_at", "rationale"];
+const DANGEROUS_KEYS = new Set(["__proto__", "prototype", "constructor"]);
+const MAX_CAPTURE_TEXT = 4096;
+const MAX_CAPTURE_DEPTH = 8;
+const MAX_CAPTURE_KEYS = 64;
+const MAX_CAPTURE_ITEMS = 64;
+
+const DEFAULT_EXECUTION = Object.freeze({
+  mode: "audit",
+  target_origin: "repo",
+  authenticated: false,
+  writes: false,
+  injection: false,
+  authorization: null,
+});
+
+const REDACTION_PATTERNS = [
+  ["ABSOLUTE_PATH", /\/(?:Users|home|root|tmp|var|etc|opt)\/[^\s"'<>]+/gi],
+  ["WINDOWS_PATH", /\b[A-Za-z]:\\[^\s"'<>]+/g],
+  ["HOME_DIRECTORY", /~\/[^\s"'<>]+/g],
+  ["EMAIL_ADDRESS", /\b[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}\b/g],
+  ["SECRET_MATERIAL", /\b(?:token|secret|password|api[_-]?key|auth[_-]?token|bearer|sk-|pk-)\s*[=:]\s*[^\s"'<>]+/gi],
+  ["DANGEROUS_URL", /\b(?:javascript|data|vbscript):[^\s"'<>]+/gi],
+  ["MARKUP", /<\/?\s*(?:script|style|iframe|object|embed|form|svg|img|meta|link)\b[^>]*>/gi],
+];
 
 function isObject(value) {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function safeString(value) {
+  let text = String(value)
+    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, "�")
+    .replace(/[\r\n\t\u2028\u2029]+/g, " ");
+  for (const [code, pattern] of REDACTION_PATTERNS) {
+    pattern.lastIndex = 0;
+    text = text.replace(pattern, `[REDACTED:${code}]`);
+  }
+  // Do not let a captured string become markup or a line/control injection in
+  // any downstream Markdown/HTML presentation. JSON escaping alone is not a
+  // sufficient boundary for consumers that later interpolate strings.
+  text = text.replace(/[<>]/g, (character) => character === "<" ? "‹" : "›");
+  const truncationMarker = " [REDACTED:TRUNCATED]";
+  if (text.length > MAX_CAPTURE_TEXT) text = `${text.slice(0, MAX_CAPTURE_TEXT - truncationMarker.length)}${truncationMarker}`;
+  return text;
+}
+
+/**
+ * Redact data captured from a DOM, spec, audit, or specialist report before it
+ * is hashed or emitted. The result is JSON-shaped, bounded, and has no object
+ * prototype, so hostile keys cannot pollute the verifier or alter its output.
+ */
+export function redactUntrusted(value, depth = 0) {
+  if (typeof value === "string") return safeString(value);
+  if (value === null || typeof value === "boolean") return value;
+  if (typeof value === "number") return Number.isFinite(value) ? value : "[REDACTED:NON_FINITE_NUMBER]";
+  if (depth >= MAX_CAPTURE_DEPTH) return "[REDACTED:DEPTH_LIMIT]";
+  if (Array.isArray(value)) {
+    const items = value.slice(0, MAX_CAPTURE_ITEMS).map((item) => redactUntrusted(item, depth + 1));
+    if (value.length > MAX_CAPTURE_ITEMS) items.push("[REDACTED:ITEM_LIMIT]");
+    return items;
+  }
+  if (isObject(value)) {
+    const out = Object.create(null);
+    const entries = Object.entries(value).slice(0, MAX_CAPTURE_KEYS);
+    for (const [key, item] of entries) {
+      const safeKey = DANGEROUS_KEYS.has(key) ? "[REDACTED:DANGEROUS_KEY]" : safeString(key);
+      out[safeKey] = redactUntrusted(item, depth + 1);
+    }
+    if (Object.keys(value).length > MAX_CAPTURE_KEYS) out["[REDACTED:KEY_LIMIT]"] = true;
+    return out;
+  }
+  return "[REDACTED:UNSUPPORTED_VALUE]";
+}
+
+export const redactCapturedText = safeString;
+
+function normalizedExecution(execution) {
+  if (execution === undefined) return { ...DEFAULT_EXECUTION };
+  return redactUntrusted(execution);
+}
+
+function validateAuthorization(authorization, mode, errors, now) {
+  if (!isObject(authorization)) {
+    errors.push("authenticated or mutating target-origin execution requires explicit authorization");
+    return;
+  }
+  if (!hasOnlyKeys(authorization, AUTHORIZATION_KEYS)) errors.push("execution authorization contains unknown fields");
+  const expectedScope = mode === "audit" ? "target-origin-audit" : "target-origin-fix";
+  if (authorization.scope !== expectedScope) errors.push(`execution authorization scope must be ${expectedScope}`);
+  for (const key of ["approved_by", "reason"]) if (!nonempty(authorization[key])) errors.push(`execution authorization.${key} must be non-empty`);
+  for (const key of ["approved_at", "expires_at"]) {
+    if (!ISO_DATE.test(authorization[key] ?? "") || Number.isNaN(Date.parse(authorization[key]))) errors.push(`execution authorization.${key} must be an ISO-8601 UTC timestamp`);
+  }
+  if (ISO_DATE.test(authorization.expires_at ?? "") && Date.parse(authorization.expires_at) <= now) errors.push("execution authorization is expired");
+}
+
+/**
+ * Validate the boundary before any target-origin audit is attempted. Audit is
+ * always read-only and never injects a fixer. Authenticated or mutating
+ * non-repository execution needs a separately scoped, time-bounded approval.
+ */
+export function assessExecutionPolicy(execution, { now = Date.now() } = {}) {
+  const policy = normalizedExecution(execution);
+  const errors = [];
+  if (!isObject(policy)) return { policy: { ...DEFAULT_EXECUTION }, allowed: false, read_only: false, errors: ["execution policy must be an object"] };
+  if (!hasOnlyKeys(policy, EXECUTION_KEYS)) errors.push("execution policy contains unknown fields");
+  if (!["audit", "fix"].includes(policy.mode)) errors.push("execution.mode must be audit or fix");
+  if (!["repo", "staging", "production"].includes(policy.target_origin)) errors.push("execution.target_origin must be repo, staging, or production");
+  for (const key of ["authenticated", "writes", "injection"]) if (typeof policy[key] !== "boolean") errors.push(`execution.${key} must be boolean`);
+  if (policy.mode === "audit" && policy.writes === true) errors.push("audit mode is read-only and may not write");
+  if (policy.mode === "audit" && policy.injection === true) errors.push("audit mode may not inject scripts or fixes");
+  if (policy.mode === "fix" && policy.writes !== true) errors.push("fix mode must explicitly declare writes=true");
+  if (policy.target_origin === "repo" && policy.authenticated === true) errors.push("repository execution may not be marked authenticated");
+
+  const protectedExecution = policy.target_origin !== "repo" && (policy.authenticated === true || policy.writes === true || policy.injection === true);
+  if (protectedExecution) validateAuthorization(policy.authorization, policy.mode, errors, now);
+  else if (policy.authorization !== null && policy.authorization !== undefined) errors.push("authorization is only valid for authenticated or mutating target-origin execution");
+
+  const expectedScope = policy.mode === "audit" ? "target-origin-audit" : "target-origin-fix";
+  if (policy.target_origin === "production" && policy.injection === true && policy.authorization?.scope !== expectedScope) errors.push("authenticated-production injection is denied without target-origin authorization");
+  return {
+    policy,
+    allowed: errors.length === 0,
+    read_only: policy.mode === "audit" && policy.writes === false && policy.injection === false,
+    errors: [...new Set(errors)],
+  };
 }
 
 export function canonical(value) {
@@ -42,13 +170,19 @@ function hashJson(value) {
 
 export function hashEvidence(evidence) {
   if (!isObject(evidence)) return null;
-  const { sha256: ignored, ...unsigned } = evidence;
+  const { sha256: ignored, ...unsigned } = redactUntrusted(evidence);
   return hashJson(unsigned);
 }
 
 export function hashProvenance(provenance) {
   if (!isObject(provenance)) return null;
-  const { sha256: ignored, ...unsigned } = provenance;
+  const { sha256: ignored, ...unsigned } = redactUntrusted(provenance);
+  return hashJson(unsigned);
+}
+
+export function hashReview(review) {
+  if (!isObject(review)) return null;
+  const { sha256: ignored, ...unsigned } = redactUntrusted(review);
   return hashJson(unsigned);
 }
 
@@ -151,7 +285,7 @@ function catalogErrors(catalog) {
   for (const [index, check] of catalog.checks.entries()) {
     const label = `catalog check ${index + 1}`;
     if (!isObject(check)) { errors.push(`${label} must be an object`); continue; }
-    for (const key of ["id", "label", "stage", "required", "applicability", "na_policy", "manual_inspector_required"]) if (!(key in check)) errors.push(`${label} missing ${key}`);
+    for (const key of ["id", "label", "stage", "required", "applicability", "na_policy", "manual_inspector_required", "judgment"]) if (!(key in check)) errors.push(`${label} missing ${key}`);
     if (!nonempty(check.id)) errors.push(`${label}.id must be non-empty`);
     if (ids.has(check.id)) errors.push(`${label}: duplicate check ID ${check.id}`);
     ids.add(check.id);
@@ -163,6 +297,7 @@ function catalogErrors(catalog) {
     if (check.required && check.na_policy !== "forbidden") errors.push(`${label}: required checks must forbid n/a`);
     if (!check.required && check.na_policy !== "subject_absence") errors.push(`${label}: optional checks require subject-absence n/a policy`);
     if (typeof check.manual_inspector_required !== "boolean") errors.push(`${label}.manual_inspector_required must be boolean`);
+    if (!["deterministic", "subjective"].includes(check.judgment)) errors.push(`${label}.judgment must be deterministic or subjective`);
   }
   return errors;
 }
@@ -184,6 +319,52 @@ function validateInspector(value, label, errors) {
   if (!isObject(value)) { errors.push(`${label} is required for manual evidence`); return; }
   if (!hasOnlyKeys(value, INSPECTOR_KEYS)) errors.push(`${label} contains unknown fields`);
   for (const key of INSPECTOR_KEYS) if (!nonempty(value[key])) errors.push(`${label}.${key} must be non-empty`);
+}
+
+function validateReviewer(value, label, errors) {
+  if (!isObject(value)) { errors.push(`${label} is required`); return; }
+  if (!hasOnlyKeys(value, REVIEWER_KEYS)) errors.push(`${label} contains unknown fields`);
+  if (!nonempty(value.id)) errors.push(`${label}.id must be non-empty`);
+  if (value.type !== "human") errors.push(`${label}.type must be human`);
+  if (!nonempty(value.role)) errors.push(`${label}.role must be non-empty`);
+  if (!nonempty(value.method)) errors.push(`${label}.method must be non-empty`);
+}
+
+function validateAdjudication(value, status, reviewer, errors) {
+  if (!isObject(value)) { errors.push("subjective disagreement requires adjudication"); return; }
+  if (!hasOnlyKeys(value, ADJUDICATION_KEYS)) errors.push("adjudication contains unknown fields");
+  validateReviewer(value.adjudicator, "adjudication.adjudicator", errors);
+  if (value.adjudicator?.id === reviewer?.id) errors.push("adjudicator must be independent from the primary reviewer");
+  if (!nonempty(value.rule)) errors.push("adjudication.rule must be non-empty");
+  if (value.decision !== status) errors.push("adjudication.decision must match the row status");
+  if (!ISO_DATE.test(value.resolved_at ?? "") || Number.isNaN(Date.parse(value.resolved_at))) errors.push("adjudication.resolved_at must be an ISO-8601 UTC timestamp");
+  if (!nonempty(value.rationale)) errors.push("adjudication.rationale must be non-empty");
+}
+
+function validateReview(review, check, status, provenance, errors) {
+  if (check.judgment !== "subjective") {
+    if (review !== undefined && review !== null) errors.push(`${check.id}: deterministic rows may not carry reviewer judgment`);
+    return;
+  }
+  if (!isObject(review)) { errors.push(`${check.id}: subjective rows require reviewer provenance`); return; }
+  if (!hasOnlyKeys(review, REVIEW_KEYS)) errors.push(`${check.id}: review contains unknown fields`);
+  validateReviewer(review.reviewer, `${check.id}: review.reviewer`, errors);
+  if (!isObject(review.rubric)) errors.push(`${check.id}: review.rubric is required`);
+  else {
+    if (!hasOnlyKeys(review.rubric, ["id", "version", "criteria"])) errors.push(`${check.id}: review.rubric contains unknown fields`);
+    if (!nonempty(review.rubric.id)) errors.push(`${check.id}: review.rubric.id must be non-empty`);
+    if (!nonempty(review.rubric.version)) errors.push(`${check.id}: review.rubric.version must be non-empty`);
+    if (!("criteria" in review.rubric)) errors.push(`${check.id}: review.rubric.criteria is required`);
+  }
+  if (review.independent !== true) errors.push(`${check.id}: subjective review must be marked independent=true`);
+  if (review.decision !== status) errors.push(`${check.id}: review.decision must match the row status`);
+  if (typeof review.disagreement !== "boolean") errors.push(`${check.id}: review.disagreement must be boolean`);
+  if (!ISO_DATE.test(review.reviewed_at ?? "") || Number.isNaN(Date.parse(review.reviewed_at))) errors.push(`${check.id}: review.reviewed_at must be an ISO-8601 UTC timestamp`);
+  if (review.disagreement === true) validateAdjudication(review.adjudication, status, review.reviewer, errors);
+  else if (review.adjudication !== null) errors.push(`${check.id}: adjudication must be null when reviewers do not disagree`);
+  if (review.reviewer?.id && provenance?.tool?.name && review.reviewer.id.toLowerCase() === provenance.tool.name.toLowerCase()) errors.push(`${check.id}: reviewer must not self-certify as the execution tool`);
+  if (!SHA256.test(review.sha256 ?? "")) errors.push(`${check.id}: review.sha256 must be a lowercase SHA-256`);
+  else if (hashReview(review) !== review.sha256) errors.push(`${check.id}: review.sha256 does not match canonical review content`);
 }
 
 function validateEvidence(evidence, check, status, errors) {
@@ -225,6 +406,7 @@ function missingRow(check) {
     remediation: "Run this check on the real artifact and attach complete evidence and provenance.",
     evidence: null,
     provenance: null,
+    review: null,
     validation_errors: ["missing ledger row"],
   };
 }
@@ -232,20 +414,24 @@ function missingRow(check) {
 function normalizeRow(row, check, artifact) {
   const errors = [];
   if (!isObject(row)) return missingRow(check);
-  if (!hasOnlyKeys(row, ["skill", "check_id", "status", "reason", "remediation", "evidence", "provenance"])) errors.push(`${check.id}: ledger row contains unknown fields`);
+  if (!hasOnlyKeys(row, ["skill", "check_id", "status", "reason", "remediation", "evidence", "provenance", "review"])) errors.push(`${check.id}: ledger row contains unknown fields`);
   const status = ["pass", "fail", "n/a"].includes(row.status) ? row.status : "fail";
+  const safeEvidence = row.evidence === null || row.evidence === undefined ? row.evidence : redactUntrusted(row.evidence);
+  const safeProvenance = row.provenance === null || row.provenance === undefined ? row.provenance : redactUntrusted(row.provenance);
+  const safeReview = row.review === null || row.review === undefined ? row.review : redactUntrusted(row.review);
   if (row.skill !== SKILL) errors.push(`${check.id}: skill must be ${SKILL}`);
   if (!["pass", "fail", "n/a"].includes(row.status)) errors.push("status must be pass, fail, or n/a");
   for (const field of ["reason", "remediation"]) if (!nonempty(row[field])) errors.push(`${field} must be non-empty`);
-  validateEvidence(row.evidence, check, status, errors);
-  validateProvenance(row.provenance, artifact, row.evidence, check, errors);
-  return { skill: SKILL, check_id: check.id, status, reason: row.reason || "Invalid ledger row.", remediation: row.remediation || "Repair the ledger row and rerun the release gate.", evidence: row.evidence ?? null, provenance: row.provenance ?? null, validation_errors: errors };
+  validateEvidence(safeEvidence, check, status, errors);
+  validateProvenance(safeProvenance, artifact, safeEvidence, check, errors);
+  validateReview(safeReview, check, status, safeProvenance, errors);
+  return { skill: SKILL, check_id: check.id, status, reason: redactCapturedText(row.reason || "Invalid ledger row."), remediation: redactCapturedText(row.remediation || "Repair the ledger row and rerun the release gate."), evidence: safeEvidence ?? null, provenance: safeProvenance ?? null, review: safeReview ?? null, validation_errors: errors };
 }
 
 function structuralInputErrors(input) {
   const errors = [];
   if (!isObject(input)) return ["ledger input must be an object"];
-  if (!hasOnlyKeys(input, ["schema_version", "catalog", "artifact", "rows"])) errors.push("ledger input contains unknown fields");
+  if (!hasOnlyKeys(input, ["schema_version", "catalog", "artifact", "execution", "rows"])) errors.push("ledger input contains unknown fields");
   if (input.schema_version !== SCHEMA_VERSION) errors.push("ledger schema_version must be 1");
   if (!isObject(input.artifact)) errors.push("ledger artifact is required");
   if (!Array.isArray(input.rows)) errors.push("ledger rows must be an array");
@@ -255,6 +441,8 @@ function structuralInputErrors(input) {
 
 export function evaluateReleaseGate(input, { root = ROOT } = {}) {
   const errors = structuralInputErrors(input);
+  const execution = assessExecutionPolicy(input?.execution);
+  errors.push(...execution.errors.map((error) => `execution: ${error}`));
   let loaded;
   try { loaded = loadCheckCatalog({ root }); }
   catch (error) {
@@ -262,8 +450,9 @@ export function evaluateReleaseGate(input, { root = ROOT } = {}) {
       schema_version: SCHEMA_VERSION, kind: KIND,
       catalog: { path: CATALOG_PATH, sha256: "0".repeat(64), check_ids: [] },
       artifact: { type: "file", identity: "unresolved", sha256: "0".repeat(64), bytes: 0, hash_verified: false },
-      rows: [], verdict: "HOLD", release_eligible: false, blockers: ["catalog"],
-      validation: { input_valid: false, catalog_complete: false, artifact_hash_verified: false, evidence_hashes_verified: false, provenance_hashes_verified: false, errors: [`cannot load check catalog: ${error.message}`] },
+      execution: execution.policy,
+      rows: [], verdict: "HOLD", release_eligible: false, blockers: ["catalog", ...(execution.allowed ? [] : ["execution"])],
+      validation: { input_valid: false, execution_policy_valid: execution.allowed, catalog_complete: false, artifact_hash_verified: false, evidence_hashes_verified: false, provenance_hashes_verified: false, errors: [`cannot load check catalog: ${error.message}`, ...execution.errors.map((item) => `execution: ${item}`)] },
     };
   }
   errors.push(...loaded.errors.map((error) => `catalog: ${error}`));
@@ -280,7 +469,7 @@ export function evaluateReleaseGate(input, { root = ROOT } = {}) {
   const grouped = new Map();
   for (const row of supplied) {
     const id = row?.check_id;
-    if (!known.has(id)) { errors.push(`unknown check ID: ${id ?? "<missing>"}`); continue; }
+    if (!known.has(id)) { errors.push(`unknown check ID: ${redactCapturedText(id ?? "<missing>")}`); continue; }
     const list = grouped.get(id) || [];
     list.push(row);
     grouped.set(id, list);
@@ -309,19 +498,22 @@ export function evaluateReleaseGate(input, { root = ROOT } = {}) {
   }).map((row) => row.check_id);
   if (!inspected.artifact.hash_verified) blockers.push("artifact");
   if (errors.some((error) => error.startsWith("unknown check ID") || error.startsWith("catalog:") || error.startsWith("catalog path") || error.startsWith("input catalog"))) blockers.push("catalog");
+  if (!execution.allowed) blockers.push("execution");
   const uniqueBlockers = [...new Set(blockers)];
   const validation = {
     input_valid: errors.length === 0,
+    execution_policy_valid: execution.allowed,
     catalog_complete: catalogComplete,
     artifact_hash_verified: inspected.artifact.hash_verified,
     evidence_hashes_verified: evidenceHashesVerified,
     provenance_hashes_verified: provenanceHashesVerified,
     errors: [...new Set(errors)],
   };
-  const releaseEligible = validation.input_valid && catalogComplete && inspected.artifact.hash_verified && evidenceHashesVerified && provenanceHashesVerified && uniqueBlockers.length === 0;
+  const releaseEligible = validation.input_valid && execution.allowed && catalogComplete && inspected.artifact.hash_verified && evidenceHashesVerified && provenanceHashesVerified && uniqueBlockers.length === 0;
   return {
     schema_version: SCHEMA_VERSION,
     kind: KIND,
+    execution: execution.policy,
     catalog: { path: CATALOG_PATH, sha256: loaded.sha256, check_ids: checkIds },
     artifact: inspected.artifact,
     rows,
@@ -361,7 +553,7 @@ function cli() {
   let result;
   try { result = evaluateReleaseGate(readInput(ROOT, inputPath), { root: ROOT }); }
   catch (error) {
-    result = { schema_version: SCHEMA_VERSION, kind: KIND, catalog: { path: CATALOG_PATH, sha256: "0".repeat(64), check_ids: [] }, artifact: { type: "file", identity: "unresolved", sha256: "0".repeat(64), bytes: 0, hash_verified: false }, rows: [], verdict: "HOLD", release_eligible: false, blockers: ["input"], validation: { input_valid: false, catalog_complete: false, artifact_hash_verified: false, evidence_hashes_verified: false, provenance_hashes_verified: false, errors: [error.message] } };
+    result = { schema_version: SCHEMA_VERSION, kind: KIND, catalog: { path: CATALOG_PATH, sha256: "0".repeat(64), check_ids: [] }, artifact: { type: "file", identity: "unresolved", sha256: "0".repeat(64), bytes: 0, hash_verified: false }, execution: { ...DEFAULT_EXECUTION }, rows: [], verdict: "HOLD", release_eligible: false, blockers: ["input"], validation: { input_valid: false, execution_policy_valid: true, catalog_complete: false, artifact_hash_verified: false, evidence_hashes_verified: false, provenance_hashes_verified: false, errors: [error.message] } };
   }
   const output = `${JSON.stringify(result, null, 2)}\n`;
   if (outPath && !outPath.startsWith("--")) {
