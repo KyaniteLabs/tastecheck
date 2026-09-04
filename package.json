@@ -4,8 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "npm run test:oracle && node tools/verify.mjs && node tools/lint-skills.mjs && node tools/verify-landing.mjs && node tools/verify-integration.mjs && node tools/verify-gate-audit.mjs && node --test tools/test/nima.test.mjs && node tools/lib/test-nima.mjs",
+    "test": "npm run preflight:all && npm run test:structural && npm run test:oracle",
     "verify": "npm test",
+    "preflight:structural": "node tools/preflight-dependencies.mjs --lane=structural",
+    "preflight:oracle": "node tools/preflight-dependencies.mjs --lane=oracle",
+    "preflight:browser": "node tools/preflight-dependencies.mjs --lane=browser",
+    "preflight:all": "node tools/preflight-dependencies.mjs --lane=all",
+    "test:structural": "npm run preflight:structural && npm run test:contracts && node tools/verify.mjs && node tools/lint-skills.mjs && node tools/verify-landing.mjs && node tools/verify-integration.mjs && node tools/verify-gate-audit.mjs && node --test tools/test/nima.test.mjs && node tools/lib/test-nima.mjs && node tools/test/test-verification-failures.mjs",
     "verify:skills": "node tools/verify.mjs",
     "lint:skills": "node tools/lint-skills.mjs",
     "verify:landing": "node tools/verify-landing.mjs",
@@ -30,7 +35,7 @@
     "eval:aggregate": "node tools/evals/aggregate-receipts.mjs",
     "eval:sanitize": "node tools/evals/sanitize-receipts.mjs",
     "release:inventory": "node tools/release/project-facts.mjs --check",
-    "test:contracts": "npm run release:inventory && node tools/evals/test-lint-fixtures.mjs && node tools/contracts/test-contracts.mjs && node tools/contracts/test-scenarios.mjs && node tools/contracts/check-generated.mjs && node tools/taste-oracle/test-observations-schema.mjs",
+    "test:contracts": "npm run release:inventory && node tools/evals/test-lint-fixtures.mjs && node tools/contracts/test-contracts.mjs && node tools/contracts/test-scenarios.mjs && node tools/contracts/check-generated.mjs",
     "test:effectiveness-v2": "node tools/evals/v2/test-contracts.mjs && node tools/evals/v2/test-registry.mjs && node tools/evals/v2/test-generation.mjs && node tools/evals/v2/test-render.mjs && node tools/evals/v2/test-judges.mjs && node tools/evals/v2/test-synthesis.mjs && node tools/evals/v2/test-foundation.mjs && node tools/evals/v2/test-schedule.mjs",
     "test:effectiveness-v2-qa": "node tools/evals/v2/test-adversarial-qa.mjs",
     "eval:v2:preflight": "node tools/evals/v2/generate.mjs preflight",
@@ -104,7 +109,7 @@
     "oracle:judges": "node tools/taste-oracle/validate-judges.mjs",
     "test:oracle-judges": "node tools/taste-oracle/test-judges.mjs",
     "test:oracle-e2e": "node tools/taste-oracle/test-collector-e2e.mjs",
-    "test:oracle": "npm run test:oracle-contracts && npm run test:oracle-capture && npm run test:oracle-statistics && npm run test:oracle-judges && npm run test:oracle-e2e"
+    "test:oracle": "npm run preflight:oracle && npm run test:oracle-contracts && npm run test:oracle-capture && npm run test:oracle-statistics && npm run test:oracle-judges && npm run test:oracle-e2e"
   },
   "devDependencies": {
     "ajv": "8.20.0",
