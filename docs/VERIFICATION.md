@@ -1,5 +1,9 @@
 # Verification
 
+<!-- release-facts:v1:start -->
+Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
+<!-- release-facts:v1:end -->
+
 ## BLUF
 
 `npm test` verifies the repository, installer, contracts, links, demo surfaces, and the
@@ -37,7 +41,7 @@ file-backed CLI tests. It then runs `tools/verify.mjs`, `tools/lint-skills.mjs`,
 
 `tools/verify.mjs` checks:
 
-- 19 skill directories exist and each `SKILL.md` frontmatter `name` matches its directory.
+- 20 skill directories exist and each `SKILL.md` frontmatter `name` matches its directory.
 - Referenced `references/*` and `assets/*` files exist.
 - Slash commands target real `~/.agents/skills/<name>/SKILL.md` paths.
 - `install.sh --yes` creates canonical `~/.agents/skills` links and detected Claude links.
@@ -52,7 +56,7 @@ file-backed CLI tests. It then runs `tools/verify.mjs`, `tools/lint-skills.mjs`,
 
 `tools/lint-skills.mjs` checks the skill *content* (what static link checks miss): dead
 skill cross-references, design tokens outside the canonical glossary, and frontmatter
-drift across all 19 skills.
+drift across all 20 skills.
 
 `tools/verify-gate-audit.mjs` executes `tastecheck-pass/assets/gate-audit.js` against a
 minimal fake DOM and asserts its automation contract — `window.__gateAudit` is a
@@ -89,7 +93,7 @@ GitHub Pages:
 
 Run this before publishing visual claims or screenshots:
 
-- Open `index.html`, `samples/index.html`, all six committed `samples/*/index.html`, and every `demos/*.html`.
+- Open `index.html`, `samples/index.html`, all eight committed `samples/*/index.html`, and every `demos/*.html`.
 - Check 390px, 768px, and 1280px widths.
 - Confirm first meaningful content renders, fonts/images resolve, and there is no horizontal overflow.
 - Open DevTools console; record any errors or warnings relevant to the page.
@@ -167,7 +171,7 @@ Date: 2026-06-06
 - Homepage `skills/a11y-pass/assets/audit.js` result after the landing-page pass:
   0 measured failures and 0 warnings at desktop 1440px and mobile 390px.
 
-Additional landing-page 19-skill evidence:
+Historical landing-page 19-skill evidence (receipt dated 2026-06-06):
 
 - Page: `index.html`, served as the GitHub Pages homepage.
 - Static gate: all 19 installed skills are represented by `data-skill` on the homepage.
