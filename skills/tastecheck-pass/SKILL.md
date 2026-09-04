@@ -59,6 +59,29 @@ against-spec `deslop-ui` audit are required.
    default template skeleton is a fail.
 5. Fix failed rows and rerun them. Pass only when every non-`n/a` row passes.
 
+`assets/gate-audit.js` is the pasteable **cold-load heuristic**. Its `CLEAN` or
+`REVIEW WARNS` result is evidence for the ledger, not a release decision. The
+dependency-free `assets/release-gate.mjs` is the release runner and consumes a
+JSON ledger against the closed `assets/check-catalog.json` catalog. Accepted
+artifacts are repo-relative files or directories, which the runner hashes
+itself, and HTTPS URLs with a declared hash. URL content is not independently
+fetched by this read-only runner and therefore remains **HOLD**.
+
+The runner emits exactly one row per catalog ID. Missing, duplicate, unknown,
+malformed, or contradictory rows remain **HOLD**; required rows may not be
+`n/a`, and optional `n/a` requires hashed evidence naming the absent subject.
+Every row carries an evidence hash, artifact identity/hash, UTC timestamp, tool
+and browser identity, and an inspector when its evidence is manual. Run it with:
+
+```sh
+node skills/tastecheck-pass/assets/release-gate.mjs \
+  path/to/release-ledger.json > path/to/release-gate.json
+```
+
+Evidence hashes cover the canonical evidence object without its `sha256` field;
+provenance hashes use the same rule. The emitted report contains the measured
+artifact hash, catalog hash, normalized rows, blockers, and validation errors.
+
 ## Turn failures into a release path
 
 For every blocking ID, provide:
@@ -85,7 +108,7 @@ Canonical detail: [contract.json](contract.json).
 
 - Route: A finished frontend artifact needs an evidence-backed ship decision. (+1 in contract.json); avoid: The artifact is still at the direction or implementation stage. (+1 in contract.json)
 - Exclude: Never infer execution from a file existing or a claimed checkmark. (+2 in contract.json)
-- Stop / handoff: Fail when the required spec is absent or the artifact was not built to it. (+2 in contract.json); receives [a11y-pass, cognitive-a11y, i18n-ready, deslop-ui, humanize-copy, art-direction, component-states, data-viz, empty-states, form-ux, micro-motion] -> sends [none]
+- Stop / handoff: Fail when the required spec is absent or the artifact was not built to it. (+3 in contract.json); receives [a11y-pass, cognitive-a11y, i18n-ready, deslop-ui, humanize-copy, art-direction, component-states, data-viz, empty-states, form-ux, micro-motion] -> sends [none]
 - Output: fail-closed evidence ledger with a deterministic verdict and actionable gate report
 - Evidence: `ledger_with_verdict` with `status`, `reason`, `remediation`, `evidence`, `provenance`.
 <!-- contract:v1:end -->

@@ -84,6 +84,14 @@ Deliver the revised copy first when that is what the user asked for. Follow with
 brief and 2–5 high-leverage changes by mechanism when rationale is useful. Preserve facts
 and register; pair non-English work with `i18n-ready`.
 
+## Information-architecture gate
+
+Humanizing edits must respect the Writing Constitution (`~/workspaces/agent-policy/policy/writing.md`):
+old-before-new (topic = doorstep, comment = room), stress position, pattern by job
+(anchor / linking / umbrella / preview), echo key terms exactly — no elegant variation — three-pass
+audit before delivery. Note the two "repetition" rules own different objects: echo the terms that
+carry the argument; kill the formulaic cadence around them.
+
 <!-- contract:v1:start -->
 ## Contract (generated)
 
