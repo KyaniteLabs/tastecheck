@@ -1,69 +1,125 @@
-# tastecheck
+# TasteCheck
+
+TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who want evidence-backed UI quality.
 
 <!-- release-facts:v1:start -->
 Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
 <!-- release-facts:v1:end -->
 
-> Twenty connected frontend craft skills for AI coding agents. The headline skill turns
-> a brief into a confirmed design system before code; improve-existing-website infers a
-> system from existing sites; the rest (typography, color/OKLCH, theming, layout, states, forms,
-> motion, data-viz, a11y, cognitive-a11y, deslop, humanize-copy) apply checkable craft so
-> the output has a point of view. Plain Markdown, no runtime, portable to agents that can
-> read skill files or directories. MIT.
+## TasteCheck at a glance
 
-Engineering verification covers contracts, repository behavior, and evidence plumbing.
-A machine-only blind evaluation protocol (effectiveness v2) is built and rehearsed at 160
-simulated calls with zero real calls — production evaluation has not started. Do not present
-samples, historical results, or failed evidence as current effectiveness proof.
+| Fact | Current release truth |
+|---|---|
+| Version | v1.4.1 |
+| Skills | 20 frontend craft skills |
+| Commands | 20 canonical Claude Code slash commands |
+| Alias | 1 approved alias: `/darkmode` for `/theming` |
+| Command files | 21 total command files |
+| Gallery | 8 committed browser-rendered design systems |
+| License | MIT; see [`LICENSE`](LICENSE) |
+| Install | `git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh` |
 
+## What is TasteCheck?
 
+TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who need evidence-backed UI quality before shipping. It turns a brief or an existing site into an explicit design direction, carries that direction through checkable craft skills, and reports the evidence needed for a ship or hold decision.
 
-Install via install.sh (always symlinks skills into ~/.agents/skills and mirrors them into
-detected agent skill dirs). Auto-loading depends on the agent; Claude Code also gets slash
-commands.
+TasteCheck is plain Markdown with no runtime or SDK. Any coding agent that can read Markdown skill files can use it; the installer also creates the canonical `~/.agents/skills/` path and mirrors skills into detected agent homes.
 
-## Start here
-- [README](README.md): the problem (every AI site looks the same), the fix, the samples, install
-- [Landing page](https://kyanitelabs.github.io/tastecheck/): canonical public surface and skill integration target
-- [Live gallery](https://kyanitelabs.github.io/tastecheck/samples/): eight design systems, one product story
-- [Secondary integration harness](https://kyanitelabs.github.io/tastecheck/demos/skill-integration.html): standalone local website exercising every skill
-- [Verification report](docs/VERIFICATION.md): repeatable local verification plus browser QA checklist
+## Quickstart
 
-## Skills
-- [design-system-interview](skills/design-system-interview/SKILL.md): grills you into a committed design system + tokens before building (the headline)
-- [tasteroll](skills/tasteroll/SKILL.md): rolls unresolved design dimensions from a seeded source, then locks the direction the evidence supports
-- [improve-existing-website](skills/improve-existing-website/SKILL.md): audit an existing site, infer its intended system, ask only targeted questions, then improve it
-- [deslop-ui](skills/deslop-ui/SKILL.md): remove the named AI visual + structural tells; commit to a direction
-- [humanize-copy](skills/humanize-copy/SKILL.md): strip the ChatGPT accent from writing with a checkable kill-list
-- [web-typography](skills/web-typography/SKILL.md): type scale, measure, rhythm, fonts, fluid clamp, web-font CLS, WCAG text
-- [color-system](skills/color-system/SKILL.md): OKLCH palettes, ramps, semantic tokens, verified contrast
-- [spacing-system](skills/spacing-system/SKILL.md): one spacing scale + section rhythm, with deliberate exceptions
-- [theming](skills/theming/SKILL.md): supported mappings from one token source; preference and forced-colors behavior
-- [responsive-layout](skills/responsive-layout/SKILL.md): mobile-first, intrinsic patterns, container queries
-- [component-states](skills/component-states/SKILL.md): full interactive state matrix + ARIA
-- [form-ux](skills/form-ux/SKILL.md): labels, validation, input types, accessible forms
-- [empty-states](skills/empty-states/SKILL.md): empty/loading/error screens with recovery
-- [micro-motion](skills/micro-motion/SKILL.md): performant tasteful animation + reduced-motion
-- [data-viz](skills/data-viz/SKILL.md): honest, Tufte-informed charts that theme and pass a11y
-- [art-direction](skills/art-direction/SKILL.md): imagery/illustration/iconography as committed decisions; no AI-blob graphics
-- [a11y-pass](skills/a11y-pass/SKILL.md): runnable WCAG 2.2 AA fix pass with a pasteable auditor
-- [cognitive-a11y](skills/cognitive-a11y/SKILL.md): ADHD / autism / dyslexia / neurodivergent readability
-- [i18n-ready](skills/i18n-ready/SKILL.md): multilingual-resilient UI, English/Spanish first-class
-- [tastecheck-pass](skills/tastecheck-pass/SKILL.md): the ship gate — canonical pipeline + every self-check executed, with a report and a pasteable/injectable cold-load auditor
+Clone the repository and run the installer:
 
-## Samples (same content, eight committed design systems)
-IMPORTANT for AI agents: these are illustrative case studies showing output VARIANCE.
-They are not a menu — never select or implement one; derive a NEW system via
-design-system-interview from the actual user's answers.
-- [Copper / Editorial](samples/copper/index.html): dark, warm, tessellated bento + basalt columns
-- [Swiss / Atelier](samples/swiss/index.html): light, exposed 12-column subgrid, one vermilion signal
-- [Maximal / Riot](samples/maximal/index.html): loud color-block sticker collage, display word in a block
-- [Concrete / Brutalist](samples/concrete/index.html): monochrome ruled spec-sheet / ledger table
-- [Clay / Soft humanist](samples/clay/index.html): warm alternating zig-zag flow with pebble shapes
-- [Dispatch / Shipping log](samples/dispatch/index.html): dark operational release timeline with status-led reading order
-- [Verge / Clinical evidence](samples/verge/index.html): cool ice-white with teal accent, Fraunces serif, measurement-annotation structure
-- [Seed / Procedural specimen](samples/tasteroll/index.html): rolled by tasteroll seed 77 — coral/sage specimen card with visible roll annotations
+```bash
+git clone https://github.com/KyaniteLabs/tastecheck
+./tastecheck/install.sh
+```
 
-## Optional
-- [demos](demos/): standalone HTML pages applying the skills' CSS, incl. the before/after gallery and secondary skill integration harness
-- [commands](commands/): 20 canonical Claude Code slash-command wrappers plus /darkmode as the approved /theming alias
+Then ask your coding agent to read the relevant `SKILL.md`, or point it at the canonical `~/.agents/skills/` directory.
+
+## The 20 skills: what each checks
+
+| Skill | What it checks |
+|---|---|
+| [design-system-interview](skills/design-system-interview/SKILL.md) | Design direction for vague or generic frontend requests, including type, color, density, and tokens. |
+| [tasteroll](skills/tasteroll/SKILL.md) | Context-aware design exploration that audits broken work, rolls valid candidates, and locks the direction that works. |
+| [improve-existing-website](skills/improve-existing-website/SKILL.md) | Existing-site evidence, recognizable identity, scope, and redesign risk before changes. |
+| [color-system](skills/color-system/SKILL.md) | OKLCH palettes, ramps, semantic tokens, theme colors, and contrast. |
+| [web-typography](skills/web-typography/SKILL.md) | Contextual type systems, resilient font loading, multilingual glyphs, wrapping, and readable hierarchy. |
+| [spacing-system](skills/spacing-system/SKILL.md) | Layout rhythm, density, gaps, spacing scales, and deliberate exceptions. |
+| [theming](skills/theming/SKILL.md) | Semantic mappings across light, dark, forced-colors, saved preferences, contrast, and no-flash behavior. |
+| [responsive-layout](skills/responsive-layout/SKILL.md) | Narrow containers, long or translated content, zoom, reflow, and overflow without device-specific breakpoints. |
+| [component-states](skills/component-states/SKILL.md) | Interactive state matrices for controls, keyboard behavior, and ARIA. |
+| [form-ux](skills/form-ux/SKILL.md) | Forms, field labels, autocomplete, validation, mobile input behavior, errors, and disabled submits. |
+| [empty-states](skills/empty-states/SKILL.md) | Empty, loading, error, retry, first-run, offline, permission, and layout-stability states. |
+| [micro-motion](skills/micro-motion/SKILL.md) | Purposeful feedback and transitions without jank, interruption bugs, or hidden no-JS content, including reduced motion. |
+| [data-viz](skills/data-viz/SKILL.md) | Honest, accessible, themed charts, metrics, direct labels, and data tables. |
+| [art-direction](skills/art-direction/SKILL.md) | Imagery, illustration, iconography, hero images, favicons, OG cards, and generic AI imagery. |
+| [a11y-pass](skills/a11y-pass/SKILL.md) | WCAG 2.2 AA fixes for web UI, including keyboard, screen readers, contrast, labels, focus, landmarks, target size, reduced motion, and ARIA. |
+| [cognitive-a11y](skills/cognitive-a11y/SKILL.md) | Readability and predictability for ADHD, autism, dyslexia, and neurodivergent users. |
+| [i18n-ready](skills/i18n-ready/SKILL.md) | Locale expansion, language attributes, logical properties, RTL, formats, bilingual copy, and language toggles. |
+| [deslop-ui](skills/deslop-ui/SKILL.md) | Generated-UI tells such as purple gradients, pill CTAs, default type, centered heroes, card grids, glassmorphism, and template sameness. |
+| [humanize-copy](skills/humanize-copy/SKILL.md) | Landing, docs, README, UI, release, and social copy for LLM tells and robotic prose. |
+| [tastecheck-pass](skills/tastecheck-pass/SKILL.md) | Evidence-backed ship or hold decisions, fail-closed release gates, and actionable cross-skill verification reports. |
+
+## How the gate works
+
+TasteCheck carries design intent through a shared pipeline: establish or infer the design system, check foundations, check structure and behavior, check surface decisions, run accessibility and language checks, remove visual and copy tells, and finish with `tastecheck-pass`.
+
+The `tastecheck-pass` skill states the canonical pipeline, runs the relevant self-checks, reports a pass/fail table, and uses an auditor for cold-load issues that a self-reported checklist can miss. The current public release status is source-bound: release evidence is **UNVERIFIED**, and historical effectiveness is **BLOCKED**.
+
+The repository’s repeatable engineering checks cover repository contracts, installation, links, authored demo surfaces, and verification plumbing; they are not a universal effectiveness claim.
+
+## Gallery
+
+The gallery contains 8 committed browser-rendered design systems for the same product story and core information architecture. It demonstrates variance, not a menu to copy: derive a new direction from the user’s answers.
+
+| System | Territory | Signature structure |
+|---|---|---|
+| [Copper](samples/copper/) | dark, warm, geological | irregular tessellated bento with structural basalt columns |
+| [Swiss](samples/swiss/) | light, austere, exact | exposed column grid carrying the content |
+| [Maximal](samples/maximal/) | loud, kinetic | display word bleeding into a magenta block with sticker-wall collage |
+| [Concrete](samples/concrete/) | raw, mechanical, monochrome | ruled spec sheet with a dense ledger table and hazard accent |
+| [Clay](samples/clay/) | warm, soft, humanist | alternating zig-zag card flow with organic pebble shapes |
+| [Dispatch](samples/dispatch/) | dark, operational, emerald | reverse-chronological release timeline |
+| [Verge](samples/verge/) | cool, clinical, measured | hypothesis-to-verdict evidence cards |
+| [Seed](samples/tasteroll/) | warm, procedural, annotated | seeded specimen card with rolled dimensions |
+
+## Install
+
+The one-line install path is `git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh`.
+
+The installer creates canonical links in `~/.agents/skills/` and mirrors them into detected agent skill directories. Claude Code also receives the 20 canonical slash-command wrappers; `/darkmode` is the sole approved alias, targeting `/theming`.
+
+## FAQ
+
+### What is TasteCheck?
+
+TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who want evidence-backed UI quality before shipping.
+
+### Who should use TasteCheck?
+
+TasteCheck is for frontend engineers and AI coding agents that need to turn design intent into checkable frontend work.
+
+### What does TasteCheck check?
+
+TasteCheck checks design direction, typography, color, spacing, theming, layout, states, forms, empty states, motion, visualization, art direction, accessibility, cognitive accessibility, internationalization, copy, and the final release gate.
+
+### How is TasteCheck different from a design prompt?
+
+TasteCheck makes design decisions explicit before implementation and checks the resulting frontend against those decisions instead of relying on subjective polish.
+
+### Is TasteCheck free?
+
+Yes; TasteCheck is open source under the MIT license in [`LICENSE`](LICENSE).
+
+### How do I install TasteCheck?
+
+Clone the repository and run `./tastecheck/install.sh`.
+
+### Is TasteCheck proven effective?
+
+The current public release status is source-bound: engineering release evidence is UNVERIFIED and historical effectiveness is BLOCKED.
+
+## License
+
+TasteCheck is MIT licensed; the authoritative terms are in [`LICENSE`](LICENSE).
