@@ -37,6 +37,23 @@ TasteCheck is plain Markdown with no runtime or SDK. Any coding agent that can r
 
 TasteCheck addresses a common failure mode in agent-built interfaces: when hierarchy, density, type, color, and structure remain implicit, familiar defaults accumulate. The interview or existing-site audit makes those decisions explicit before implementation.
 
+## Evidence-bound release behavior
+
+The retrofit makes the release gate account for the evidence it records. These behaviors describe scoped release decisions; they do not turn subjective design judgment into an objective guarantee.
+
+| Capability | Public behavior |
+|---|---|
+| Evidence-derived verdicts | Gate statuses are derived from recorded observations. Missing or contradictory observations produce `HOLD`; declared status alone is not trusted. |
+| Review binding | Human and independent reviews bind to the check ID, rubric, artifact digest, and complete-evidence digest. A transplanted approval produces `HOLD`. |
+| Dependency-manifest capture | File and directory captures hash the entry plus linked local CSS, JavaScript, and font assets. A changed dependency with an unchanged entry produces `HOLD`. |
+| Subject-inventory reconciliation | Browser checks reconcile route × state × viewport members from an authoritative manifest and its gate-computed Cartesian universe; a claimant cannot shrink that scope. Control checks reconcile control × state members. |
+| Complete-capture hashing | Lossy, truncated, depth-limited, or marker-bearing evidence is non-passing. Sanitization is presentation-only; complete evidence is what gets hashed. |
+| Verifier/consumer ROOT SPLIT | The CLI and API separate the pinned verifier root from the explicit target-project root, and record both root identities. |
+| Craft floors and style policies | Invariant craft requirements are separate from brief-dependent defaults. Spacing and tasteroll rails are defaults that can be overridden with evidence. |
+| Scoped authority claims | Subjective checks remain accountable human judgment, not an objective design guarantee. GEO copy keeps claims scoped to the recorded evidence. |
+| Release finalization | `npm run finalize` performs receipt refresh, receipt pins, public status projection, and verify-chain validation together. |
+| ASTRA review closure | The external ASTRA adversarial review found 8 findings, including 5 SEV-1 findings; the closure is recorded in [`ASTRA-REVIEW.md`](_retrofit-2026-09-04/ASTRA-REVIEW.md) and [`ASTRA-FIX-REPORT.md`](_retrofit-2026-09-04/ASTRA-FIX-REPORT.md). |
+
 ## Quickstart
 
 Clone the repository and run the installer:
@@ -146,7 +163,7 @@ TasteCheck is MIT licensed; the authoritative terms are in [`LICENSE`](LICENSE).
 
 ## What is TasteCheck?
 
-**TasteCheck** is a **frontend taste and ship-gate evaluation toolkit** that helps **frontend engineers and agents shipping UI** **fail closed on generic/sloppy UI and organize evidence for scoped ship-quality decisions**. Subjective checks remain accountable human judgments.
+**TasteCheck** is a **frontend taste and ship-gate evaluation toolkit** that helps **frontend engineers and agents shipping UI** **fail closed on generic/sloppy UI and organize evidence for scoped ship-quality decisions**. Subjective checks remain accountable human judgments rather than objective guarantees.
 
 | | |
 | --- | --- |
@@ -167,7 +184,7 @@ TasteCheck is MIT licensed; the authoritative terms are in [`LICENSE`](LICENSE).
 
 ### What is TasteCheck?
 
-TasteCheck is a frontend taste and ship-gate evaluation toolkit. It helps frontend engineers and agents shipping UI fail closed on generic/sloppy UI and organize evidence for scoped ship-quality decisions, while accountable reviewers make subjective calls.
+TasteCheck is a frontend taste and ship-gate evaluation toolkit. It helps frontend engineers and agents shipping UI fail closed on generic/sloppy UI and organize evidence for scoped ship-quality decisions, while accountable reviewers make subjective calls. It does not turn those calls into objective guarantees.
 
 ### Who should use TasteCheck?
 
@@ -175,7 +192,7 @@ frontend engineers and agents shipping UI.
 
 ### How is TasteCheck different?
 
-Unlike subjective design opinions alone, TasteCheck is a fail-closed ship gate that organizes evidence and records accountable human review where judgment is required.
+Unlike subjective design opinions alone, TasteCheck is a fail-closed ship gate that organizes evidence and records accountable human review where judgment is required; it does not turn that review into an objective quality guarantee.
 
 ### Is TasteCheck production software?
 
