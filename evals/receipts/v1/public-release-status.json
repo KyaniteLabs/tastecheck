@@ -2,7 +2,7 @@
   "schema_version": 1,
   "kind": "tastecheck-public-release-status",
   "target_release": "1.4.1",
-  "source_tree_sha256": "f3247549cf6f8b534b62ab4551eeb7be64a49f704d59ee44df973f01a9051332",
+  "source_tree_sha256": "9b04d4d9179ec208c4341984cd86c8a458cd4cf804d8199e2b9f6811d55e4c86",
   "manifest": {
     "id": "release-manifest",
     "path": "contracts/v1/release-receipts.json",
@@ -45,7 +45,7 @@
         }
       ],
       "reasons": [
-        "context-budget: receipt is stale for the current source revision",
+        "context-budget: receipt bytes are missing or do not match the manifest SHA-256",
         "browser: receipt is stale for the current source revision",
         "e2e: receipt is stale for the current source revision",
         "mechanical: receipt is stale for the current source revision",
