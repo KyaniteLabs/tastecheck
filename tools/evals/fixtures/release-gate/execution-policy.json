@@ -1,0 +1,32 @@
+{
+  "denied_authenticated_production": {
+    "mode": "audit",
+    "target_origin": "production",
+    "authenticated": true,
+    "writes": false,
+    "injection": true,
+    "authorization": null
+  },
+  "authorized_read_only_production": {
+    "mode": "audit",
+    "target_origin": "production",
+    "authenticated": true,
+    "writes": false,
+    "injection": false,
+    "authorization": {
+      "scope": "target-origin-audit",
+      "approved_by": "operator-audit-1",
+      "approved_at": "2026-09-04T12:00:00Z",
+      "expires_at": "2099-01-01T00:00:00Z",
+      "reason": "Read-only release evidence capture"
+    }
+  },
+  "unauthorized_fix": {
+    "mode": "fix",
+    "target_origin": "production",
+    "authenticated": true,
+    "writes": true,
+    "injection": true,
+    "authorization": null
+  }
+}

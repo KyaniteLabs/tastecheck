@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -10,6 +11,8 @@ import {
   checkEngineeringReadiness,
   checkReleaseManifest,
   deriveEffectivenessClaim,
+  PUBLIC_STATUS_RECEIPT,
+  verifyFinalSourceReceiptDigests,
 } from "./check.mjs";
 
 const root = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
@@ -17,6 +20,7 @@ const hash = (text) => createHash("sha256").update(text).digest("hex");
 const SOURCE_SHA = "a".repeat(64);
 const ARTIFACT_PATH = "artifacts/proof.png";
 const ARTIFACT_BYTES = Buffer.from("proof");
+
 const w1Payload = JSON.stringify({
   schema_version: 1,
   kind: "immutable-w1-effectiveness-projection",
@@ -98,6 +102,7 @@ function manifestFixture() {
 
 const texts = new Map([
   ...Object.entries(ENGINEERING_PRODUCERS).map(([id, { path }]) => [path, JSON.stringify(receiptFixture(id))]),
+  [PUBLIC_STATUS_RECEIPT, JSON.stringify({ source_tree_sha256: SOURCE_SHA })],
   [EFFECTIVENESS_SOURCES["w1-effectiveness"].path, w1Payload],
   [EFFECTIVENESS_SOURCES["terminal-v5-effectiveness"].path, v5Payload],
 ]);
@@ -113,6 +118,38 @@ const io = {
   requiredLiveArtifactIds: () => ["proof"],
 };
 const valid = manifestFixture();
+
+const finalSourceGate = verifyFinalSourceReceiptDigests(valid, io);
+if (finalSourceGate.status !== "ready" || finalSourceGate.errors.length !== 0) {
+  throw new Error(`valid final-source receipt gate failed: ${finalSourceGate.errors.join("; ")}`);
+}
+
+function rejectFinalSourceGate(label, mutate, expected) {
+  const candidateTexts = new Map(texts);
+  mutate(candidateTexts);
+  const candidateIo = { ...io, readText: (path) => candidateTexts.get(path), hasFile: (path) => candidateTexts.has(path) };
+  const result = verifyFinalSourceReceiptDigests(valid, candidateIo);
+  if (!result.errors.some((error) => error.includes(expected))) {
+    throw new Error(`${label} did not fail with ${expected}: ${result.errors.join("; ")}`);
+  }
+}
+
+rejectFinalSourceGate("stale engineering receipt", (candidateTexts) => {
+  candidateTexts.set(ENGINEERING_PRODUCERS.mechanical.path, JSON.stringify({ ...receiptFixture("mechanical"), source_tree_sha256: "c".repeat(64) }));
+}, "mechanical: receipt source_tree_sha256 does not match final source digest");
+rejectFinalSourceGate("stale public status receipt", (candidateTexts) => {
+  candidateTexts.set(PUBLIC_STATUS_RECEIPT, JSON.stringify({ source_tree_sha256: "c".repeat(64) }));
+}, "public status: source_tree_sha256 does not match final source digest");
+
+let sourceReads = 0;
+const changingSourceIo = {
+  ...io,
+  sourceTreeSha256: () => (++sourceReads === 1 ? SOURCE_SHA : "d".repeat(64)),
+};
+const changingSource = verifyFinalSourceReceiptDigests(valid, changingSourceIo);
+if (!changingSource.errors.includes("source tree changed while final-source receipt gate was running")) {
+  throw new Error(`source mutation during final-source receipt gate was not detected: ${changingSource.errors.join("; ")}`);
+}
 
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 const releaseSchema = JSON.parse(readFileSync(join(root, "contracts/v1/release-receipts.schema.json"), "utf8"));

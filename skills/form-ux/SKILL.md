@@ -8,13 +8,13 @@ description: >-
 
 # Form UX
 
-A form is a completion path: reduce effort, prevent predictable errors, and make every
-failure truthful, repairable, and accessible.
+A form is a completion path: reduce effort, prevent predictable errors, and make failure
+truthful, repairable, and accessible.
 
-## Model the task before styling fields
+## Model task before styling
 
-Start with outcome, risk, and data authority—not an inherited input array. Remove,
-defer, or explain each field through this contract:
+Start with outcome, risk, and data authority, not an inherited input array. Remove, defer,
+or explain each field through this contract:
 
 | Field contract | What to decide |
 | --- | --- |
@@ -25,64 +25,62 @@ defer, or explain each field through this contract:
 | Recovery | Exact message, preserved value, focus destination, and next available action |
 | Sensitivity | Whether the field is personal, financial, irreversible, or must never be persisted locally |
 
-Unknown rule/ownership stays unresolved; never invent validation. Group by the user’s
-task, not database/API shape.
+Unknown rule/ownership stays unresolved; never invent validation; group by task, not
+database/API shape.
 
 ## Non-negotiables
 
 - Persistent associated label; visible required/optional state; correct type, inputmode,
-  autocomplete, and a one-column task flow (short related pairs excepted).
+  autocomplete, and one-column task flow (short related pairs excepted).
 - Validate on submit. Validate on blur only when the value is complete enough to judge;
   after an error, re-check while the person repairs it. Keep server truth server-owned.
-- Put specific, adjacent “what + fix” errors behind `aria-invalid`/`aria-describedby`;
-  announce and focus first error on failed submit.
+- Put specific adjacent “what + fix” errors behind `aria-invalid`/`aria-describedby`; announce
+  and focus the first error on failed submit.
 - Never silently disable submit; retain visible focus and explain what is missing.
 
-## The error-message formula
+## Error-message formula
 
 Use `[what is wrong] + [how to fix it] (+ example)`, plainly and without blame. Tie it
-visually/programmatically to the field; a top summary links to inline errors on long forms.
+visually/programmatically to the field; long-form summaries link to inline errors.
 
-## Validation is a conversation, not a trap
+## Validation is a conversation
 
 Give feedback at the earliest truthful moment; browser checks never impersonate server
 truth. On submit distinguish field errors (focus/retain), conflict (correct branch),
 transient failure (preserved draft/safe retry), authorization (boundary/route), and
-irreversible payment (duplicate lock plus receipt/status). Pending work has an accessible
-label/status and rejects duplicates; failure restores a usable explained route. Cancel or
-ignore stale asynchronous validation responses so an older result cannot overwrite the
-current value.
+irreversible payment (duplicate lock plus receipt/status). Pending work has accessible
+label/status, rejects duplicates, and restores an explained route on failure. Ignore stale
+responses so older validation cannot overwrite current value.
 
-### Worked field contract
+### Worked contract
 
 | Field | Rule owner | When to check | Repair path |
 | --- | --- | --- | --- |
 | Email | server owns account availability; client owns basic shape | submit; blur after a complete address; re-check while repairing | “Enter an address like name@example.com.” Preserve the value; announce an account conflict only after the server responds. |
 
-The row separates a local affordance from server authority. Apply that distinction to
-cross-field rules, invitation codes, inventory, pricing, and payment status.
+The row separates local affordance from server authority. Apply it to cross-field rules,
+invitation codes, inventory, pricing, and payment status.
 
 ## Quick-start
 
-Use `references/patterns.md` for markup/wiring; retain the field contract above.
+Use `references/patterns.md` for markup/wiring; retain this field contract.
 
-## Reduce effort (completion-rate wins)
+## Reduce effort
 
-Ask only necessary fields; defer optional data. Use safe defaults/autofill, helpful
-nonblocking formatting, password reveal/paste, inline help, preserved input, and saved
-progress for long flows.
+Ask only necessary fields; defer optional data. Use safe defaults/autofill, nonblocking
+formatting, password reveal/paste, inline help, preserved input, and saved progress.
 
 ## Reference files
 
 - `references/patterns.md` — types, validation, mobile/autofill, and a11y wiring.
 - `references/decision-records.md` — novel-case ADR rules.
 
-## Decision order and evidence
+## Evidence
 
 Establish task, fields, rule owner, success/risk/interruption before styling. Record each
-field/state plus validation owner/recovery; `n/a` needs subject absence, never an unknown rule.
+field/state, validation owner, and recovery; `n/a` needs subject absence, not unknown rule.
 
-## Self-check (before shipping a form)
+## Self-check
 
 1. Field contract, labels, required state, types/autofill, and keyboard/screen-reader wiring complete?
 2. Submit/blur/repair timing, stale async responses, specific adjacent errors, first-error focus, and retained input work?
@@ -90,8 +88,8 @@ field/state plus validation owner/recovery; `n/a` needs subject absence, never a
 
 ## How to deliver
 
-Deliver one field/state matrix with source rule, affordance, owner/timing, recovery,
-pending behavior, evidence, and remaining risk; hand adjacent concerns to their skills.
+Deliver one field/state matrix with source rule, affordance, owner/timing, recovery, pending
+behavior, evidence, and risk; hand adjacent concerns to their skills.
 
 <!-- contract:v1:start -->
 ## Contract (generated)

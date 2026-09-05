@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/contracts/v1/check-catalog.schema.json",
+  "title": "TasteCheck release check catalog v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "catalog_id", "checks"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "kind": { "const": "tastecheck-release-check-catalog" },
+    "catalog_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/check" }
+    }
+  },
+  "$defs": {
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "stage", "required", "applicability", "na_policy", "manual_inspector_required", "judgment"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?::[a-z0-9-]+)+$" },
+        "label": { "type": "string", "minLength": 1 },
+        "stage": { "enum": ["direction", "foundations", "structure", "surface", "verification", "browser", "gate"] },
+        "required": { "type": "boolean" },
+        "applicability": {
+          "oneOf": [
+            { "type": "object", "additionalProperties": false, "required": ["kind"], "properties": { "kind": { "const": "always" } } },
+            { "type": "object", "additionalProperties": false, "required": ["kind", "subject"], "properties": { "kind": { "const": "optional_subject" }, "subject": { "type": "string", "minLength": 1 } } }
+          ]
+        },
+        "na_policy": { "enum": ["forbidden", "subject_absence"] },
+        "manual_inspector_required": { "type": "boolean" },
+        "judgment": { "enum": ["deterministic", "subjective"] }
+      }
+    }
+  }
+}

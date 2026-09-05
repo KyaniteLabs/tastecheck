@@ -18,6 +18,24 @@ const excludedReceipts = new Set([
   "evals/receipts/v1/clean-clone.json",
   "contracts/v1/release-receipts.json",
 ]);
+const publicStatusSurfaces = new Set(["README.md", "index.html"]);
+const publicStatusMarkers = [
+  ["<!-- release-status:v1:start -->", "<!-- release-status:v1:end -->"],
+  ["<!-- release-status-gate:v1:start -->", "<!-- release-status-gate:v1:end -->"],
+];
+
+function normalizePublicStatusSurface(path, content) {
+  if (!publicStatusSurfaces.has(path)) return content;
+  let normalized = content.toString("utf8");
+  for (const [start, end] of publicStatusMarkers) {
+    const startIndex = normalized.indexOf(start);
+    const endIndex = normalized.indexOf(end, startIndex + start.length);
+    if (startIndex !== -1 && endIndex !== -1) {
+      normalized = `${normalized.slice(0, startIndex)}${start}${normalized.slice(endIndex)}`;
+    }
+  }
+  return Buffer.from(normalized, "utf8");
+}
 
 export function isExcludedReceiptPath(path) {
   const normalized = path.replaceAll("\\", "/");
@@ -25,13 +43,18 @@ export function isExcludedReceiptPath(path) {
     || (normalized.startsWith("evals/receipts/v1/") && !normalized.startsWith("evals/receipts/v1/immutable/"));
 }
 
+export function isExcludedSourcePath(path) {
+  const normalized = path.replaceAll("\\", "/");
+  return isExcludedReceiptPath(normalized) || normalized.startsWith("_retrofit-");
+}
+
 export function computeSourceTreeSha256(root = defaultRoot) {
   const output = execFileSync("git", ["ls-files", "-z"], { cwd: root });
   const paths = output.toString("utf8").split("\0").filter(Boolean).sort();
   const digest = createHash("sha256");
   for (const path of paths) {
-    if (isExcludedReceiptPath(path)) continue;
-    const content = readFileSync(join(root, path));
+    if (isExcludedSourcePath(path)) continue;
+    const content = normalizePublicStatusSurface(path, readFileSync(join(root, path)));
     digest.update(path);
     digest.update("\0");
     digest.update(createHash("sha256").update(content).digest("hex"));
@@ -78,8 +101,8 @@ export function computeHeadSourceTreeSha256(root = defaultRoot) {
     .toString("utf8").split("\0").filter(Boolean).sort();
   const digest = createHash("sha256");
   for (const path of paths) {
-    if (isExcludedReceiptPath(path)) continue;
-    const content = execFileSync("git", ["show", `HEAD:${path}`], { cwd: root, maxBuffer: 20 * 1024 * 1024 });
+    if (isExcludedSourcePath(path)) continue;
+    const content = normalizePublicStatusSurface(path, execFileSync("git", ["show", `HEAD:${path}`], { cwd: root, maxBuffer: 20 * 1024 * 1024 }));
     digest.update(path);
     digest.update("\0");
     digest.update(createHash("sha256").update(content).digest("hex"));
