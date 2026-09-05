@@ -1,4 +1,4 @@
-/* tastecheck-pass — gate audit. Paste into the browser devtools Console on a FRESH,
+/* tastecheck-pass — cold-load heuristic audit. Paste into the browser devtools Console on a FRESH,
    untouched load of the finished page (no clicks, no scrolling, no toggles first).
    It checks the claims that self-reported gate tables most often get wrong: cold-load
    state honesty (errors showing before input, hidden defeated by CSS, unrevealed
@@ -7,7 +7,8 @@
    a11y-pass audit.js — run both.
    Usage: copy this whole file → devtools Console → Enter. Or: gateAudit() to re-run.
    Paste the printed lines into the TASTECHECK PASS report Notes — script output is
-   the evidence; a checkmark without it is a claim. */
+   the evidence; a checkmark without it is a claim. This asset is not the release
+   authority: bind its output into release-gate.mjs instead. */
 (function gateAudit(){
   const fails=[], warns=[], notes=[];
   const cs=el=>getComputedStyle(el);

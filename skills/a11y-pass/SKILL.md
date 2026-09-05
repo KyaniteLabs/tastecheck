@@ -8,11 +8,13 @@ description: >-
 
 # Accessibility Pass (WCAG 2.2 AA)
 
-Accessibility is whether a person can finish a real task without an avoidable barrier. Repair the failing path, then prove the repair in the rendered interface.
+Accessibility means finishing a real task without an avoidable barrier. Repair the failing path;
+prove it in the rendered interface.
 
 ## Triage one rendered user path
 
-Write one path before opening a checker: **entry → action → result/recovery**. Name the user-facing outcome, the affected UI, and the smallest viewport or assistive setup that can expose the failure.
+Write one path before opening a checker: **entry → action → result/recovery**. Name outcome,
+affected UI, and smallest viewport or assistive setup that exposes failure.
 
 | Path point | Inspect | Repair when it fails |
 | --- | --- | --- |
@@ -22,17 +24,24 @@ Write one path before opening a checker: **entry → action → result/recovery*
 | Recovery | error copy, focus destination, retained input, retry | return the person to a specific next action |
 | Layout | 200% and 400% zoom, reflow, narrow viewport | remove horizontal loss and clipped controls |
 
-Start with native HTML. Use ARIA only to express a relationship or live behavior native elements cannot supply. Never use a role, audit score, or automated pass as proof that the path works.
+Start with native HTML. Use ARIA only for relationships or live behavior native elements
+cannot supply. A role, audit score, or automated pass never proves the path.
 
 ## Prove the path in the interface
 
-1. Tab forward and backward from the browser chrome through completion. Record focus order, visible indicator, and any trap.
-2. Trigger the failure state with the keyboard. Confirm focus stays purposeful, the error is programmatically associated, and entered data survives.
-3. Read the affected region with a screen reader or inspect its computed name, role, value, state, and description. Check the update is announced once.
-4. Measure the final rendered foreground/background pair and test reflow at 200% and 400%. Include text over imagery and disabled-looking controls if they carry meaning.
-5. Repeat with reduced motion when the interaction animates. The non-motion path must still expose progress and completion.
+1. Tab forward/back from browser chrome through completion; record order, visible indicator,
+   and traps.
+2. Trigger failure by keyboard; confirm purposeful focus, programmatic error association,
+   and retained data.
+3. Read the region with a screen reader or inspect computed name, role, value, state, and
+   description; confirm one announcement.
+4. Measure the rendered foreground/background pair; test reflow at 200% and 400%, including
+   meaningful text over imagery and disabled-looking controls.
+5. Repeat animated interactions with reduced motion; the static path still exposes progress
+   and completion.
 
-A screenshot can support a claim; it cannot prove keyboard order or announcements. An automated audit can find candidates; it cannot clear the path.
+A screenshot supports a claim but cannot prove keyboard order or announcements. Automated
+audits find candidates, not path clearance.
 
 ## Report a repair ledger
 
@@ -42,11 +51,14 @@ Use this row format for every finding:
 | --- | --- | --- | --- | --- |
 | Submit → invalid email | focus lands on an unnamed summary; inline error is silent | move focus to named summary, link field error with `aria-describedby`, retain value | keyboard trace; computed accessibility tree; 400% capture | screen-reader wording needs product review |
 
-Separate a confirmed defect from a design concern. State the browser, assistive technology or inspection method, viewport/zoom, and exact reproduction step. If the artifact is unavailable, stop and ask for the rendered path rather than inventing evidence.
+Separate confirmed defect from design concern. State browser, assistive technology or
+inspection method, viewport/zoom, and exact reproduction step. If the artifact is absent,
+stop and ask for the rendered path; never invent evidence.
 
-## Delivery and handoff
+## Delivery/handoff
 
-Prioritize blockers to task completion, then frequent-path defects, then polish. Send component lifecycle or form-state questions to the owning skill when the defect is a state-design problem rather than a WCAG repair.
+Prioritize task blockers, frequent-path defects, then polish. Send component lifecycle or
+form-state questions to the owning skill when the defect is state design, not WCAG repair.
 
 - [Audit method](references/audit.md)
 - [Keyboard and focus helper](assets/audit.js)
@@ -54,10 +66,10 @@ Prioritize blockers to task completion, then frequent-path defects, then polish.
 
 ## Ship check
 
-- [ ] A named user path has keyboard, semantic, zoom/reflow, and dynamic-state evidence.
-- [ ] Every finding names a concrete control or region, repair, and verification result.
-- [ ] Automated checks are labeled as discovery, not sign-off.
-- [ ] Focus, announcements, errors, and reduced-motion behavior have an explicit owner.
+- [ ] Named path has keyboard, semantic, zoom/reflow, and dynamic-state evidence.
+- [ ] Every finding names control/region, repair, and verification result.
+- [ ] Automated checks are discovery, not sign-off.
+- [ ] Focus, announcements, errors, and reduced-motion behavior have an owner.
 
 ## Provenance — standard, not opinion
 

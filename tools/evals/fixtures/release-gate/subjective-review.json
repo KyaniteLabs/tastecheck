@@ -1,0 +1,26 @@
+{
+  "valid": {
+    "reviewer": { "id": "human-reviewer-1", "type": "human", "role": "independent-auditor", "method": "rubric review" },
+    "rubric": { "id": "rubric-verification", "version": "1.0", "criteria": { "evidence_bound": true, "decision_bound": true } },
+    "independent": true,
+    "decision": "pass",
+    "disagreement": false,
+    "adjudication": null,
+    "reviewed_at": "2026-09-04T12:00:00Z"
+  },
+  "resolved_disagreement": {
+    "reviewer": { "id": "human-reviewer-1", "type": "human", "role": "independent-auditor", "method": "rubric review" },
+    "rubric": { "id": "rubric-verification", "version": "1.0", "criteria": { "evidence_bound": true, "decision_bound": true } },
+    "independent": true,
+    "decision": "pass",
+    "disagreement": true,
+    "adjudication": {
+      "adjudicator": { "id": "human-adjudicator-2", "type": "human", "role": "release-adjudicator", "method": "contradiction review" },
+      "rule": "independent-adjudicator",
+      "decision": "pass",
+      "resolved_at": "2026-09-04T12:05:00Z",
+      "rationale": "The evidence row and rubric support the passing decision."
+    },
+    "reviewed_at": "2026-09-04T12:00:00Z"
+  }
+}

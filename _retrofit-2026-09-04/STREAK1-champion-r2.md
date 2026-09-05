@@ -1,0 +1,8 @@
+# streak r1 retry — champion (corrected pack: current-state, not audit register)
+
+FULLY-GREEN: no
+
+Reasons:
+1. **Unproven/Too-Good Claims**: The claim of "byte-exact" restoration with "committed sha256 checksums" is technically sound *only if* the checksums are verified against a trusted, immutable baseline (e.g., a signed release artifact or a previously verified state). If the "baseline" is just another local file that could have been tampered with, "byte-exact" is circular. Additionally, "scored mutation kill-rate" is a metric, not a proof of correctness; a high kill-rate does not guarantee the absence of bugs, only that the test suite catches *some* mutations. This is a strong indicator, not a definitive proof of "cured" or "fixed."
+2. **Reproducibility**: A user cannot independently reproduce "inventory truthed 20/20/8@1.4.1" without access to the specific internal inventory system and the definition of "truthed." This is an internal state assertion, not a verifiable external fact. Similarly, "projection self-reference cured WITH committed proof artifact" requires the user to understand and execute the specific proof verification logic, which may not be trivially reproducible without the full context of the proof system.
+3. **Contradiction**: There is no direct logical contradiction in the text, but the phrase "HISTORICAL findings that STARTED the retrofit; every one is now FIXED" combined with "CURRENT STATE (all verified this hour)" creates a potential tension if the verification method for "fixed" is not independently auditable. However, the primary issue is not a contradiction but the lack of independent verifiability for key claims.

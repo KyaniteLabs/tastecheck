@@ -17,13 +17,15 @@
   },
   "exclusions": [
     "Do not invent claims, testimonials, or product facts.",
-    "Do not flatten regulated, safety, or error copy into personality."
+    "Do not flatten regulated, safety, or error copy into personality.",
+    "Do not substitute a workstation-local writing policy for the bundled reference."
   ],
   "inputs": {
     "required": [
       "source copy and facts",
       "audience/action",
-      "voice or brief constraints"
+      "voice or brief constraints",
+      "bundled Writing Constitution floor at references/writing-constitution.md"
     ],
     "optional": [
       "approved terminology",
@@ -45,7 +47,8 @@
       "revision",
       "voice_choice",
       "length",
-      "evidence"
+      "evidence",
+      "writing_rule_evidence"
     ]
   },
   "stop_conditions": [
@@ -75,6 +78,12 @@
     "evidence",
     "provenance"
   ],
+  "resources": {
+    "required": [
+      "references/writing-constitution.md"
+    ],
+    "optional": []
+  },
   "context_budget": {
     "skill_md_max_tokens": 5000,
     "resource_max_tokens": 6000

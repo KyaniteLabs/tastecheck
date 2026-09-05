@@ -48,7 +48,9 @@ assert.equal(combinedVerdict({ verdict: "CLEAN" }, null), "CLEAN", "n/a leaves C
 assert.equal(combinedVerdict({ verdict: "CLEAN" }, NIMA_WARN_THRESHOLD), "CLEAN", "ok leaves CLEAN");
 assert.equal(combinedVerdict({ verdict: "FAIL" }, 2.0), "FAIL", "FAIL never softened by NIMA");
 assert.equal(combinedVerdict({ verdict: "REVIEW WARNS" }, 9.0), "REVIEW WARNS", "REVIEW WARNS never upgraded to CLEAN by a good NIMA score");
-assert.equal(combinedVerdict(null, 1.0), "REVIEW WARNS", "missing gate treated as CLEAN and downgraded on low score");
+assert.equal(combinedVerdict(null, 1.0), "HOLD", "missing gate evidence is non-shippable");
+assert.equal(combinedVerdict({}, 1.0), "HOLD", "empty gate evidence is non-shippable");
+assert.equal(combinedVerdict({ verdict: "UNKNOWN" }, 1.0), "HOLD", "unknown gate verdict is non-shippable");
 
 // --- Client graceful degradation (mocked fetch, no network) --------------
 const realFetch = globalThis.fetch;
