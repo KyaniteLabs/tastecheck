@@ -10,13 +10,9 @@ description: >-
 
 # Tasteroll (roll for taste, keep what sticks)
 
-Most design generators either ask you everything (the full interview) or nothing
-(press a button, hope for the best). Tasteroll is the middle path: it audits
-what exists, asks at most three questions, fixes what is broken, then rolls
-between valid alternatives. Lock what works, re-roll what doesn't.
-
-The thesis: **constraints produce taste, even when the choices are random** —
-but only if the constraints come from the actual project, not a fixed list.
+Tasteroll audits what exists, asks at most three questions, fixes what is broken, then rolls
+valid alternatives. Lock what works; re-roll what does not. **Project constraints produce taste
+even when choices are random.**
 
 ## The pipeline
 
@@ -30,11 +26,10 @@ but only if the constraints come from the actual project, not a fixed list.
 7. GATE      → relaxed gate (readable + WCAG AA + self-contained + inert)
 ```
 
-## 1. Audit (findings are mandatory fixes)
+## 1. Audit (mandatory fixes)
 
-Scan rendered surfaces, source CSS, repo files, and content structure. Findings
-are **non-negotiable** — they get resolved before the dice touch anything,
-regardless of seed. The audit scope is **craft-only**:
+Scan rendered surfaces, source CSS, repo files, and content. Resolve every
+**non-negotiable** craft finding before rolling:
 
 - **Contrast**: body < 4.5:1 or UI < 3:1 on actual surfaces
 - **Spacing**: no scale, arbitrary margins with no token system
@@ -43,127 +38,108 @@ regardless of seed. The audit scope is **craft-only**:
 - **Accessibility**: missing alt, unlabeled controls, broken heading order
 - **Structure**: missing main landmark, no skip link, no focus-visible
 
-Findings outside craft scope (bad copy, content gaps, broken features) are
-**flagged and handed off** — not fixed by tasteroll.
+Flag findings outside craft scope (bad copy, content gaps, broken features) and hand them off;
+tasteroll does not fix them.
 
-A finding can be overridden with a single-word "preserve" if the low contrast
-or missing state is an intentional aesthetic choice. Without an override, every
-finding is resolved.
+A single-word "preserve" overrides an intentional low-contrast or missing-state choice;
+otherwise resolve every finding.
 
-For greenfield (nothing to audit), this phase scans the brief and content for
-contradictions, missing scope, and vague direction instead of rendered surfaces.
+For greenfield, scan brief/content for contradictions, missing scope, and vague direction.
 
-## 2. Intake (context for candidate generation)
+## 2. Intake
 
-Two paths, chosen by signal availability:
+Choose by available signal:
 
-**Infer** (default): read the conversation so far + scan repo files (README,
-existing CSS, package.json, content). If there is enough signal to know what
-the product is and who it is for, skip the questions.
+**Infer** (default): read the conversation and scan repo files (README, CSS, package.json,
+content). Skip questions when product and audience are clear.
 
-**Mini-interview** (fallback): three questions when inference is thin:
+**Mini-interview** (fallback): ask three questions when inference is thin:
 
 1. **What are you building?** → unlocks structure, density, IA
 2. **Who is it for?** → unlocks personality, accessibility posture, complexity
 3. **One word for how it should feel?** → unlocks aesthetic, accent direction
 
-Each question unlocks different axes. Three answers give real coverage without
-the weight of the full 11-field `design-system-interview`.
+Three answers cover the brief without the full 11-field `design-system-interview`.
 
-## 3. Fix (deterministic, seed-independent)
+## 3. Fix (deterministic)
 
-Every audit finding is resolved here. This step produces the same output
-regardless of seed — it is a floor, not a variable. The output section
-separates "resolved findings" (deterministic) from "rolled choices" (random).
+Resolve every finding here. Separate seed-independent "resolved findings" from random
+"rolled choices" in the output.
 
-## 4. Generate (fresh candidates, context-aware)
+## 4. Generate
 
-For each open design dimension (personality, aesthetic, type, color_mode,
-density, rhythm, signature, imagery, motion, accent), the AI generates **2–5
-candidate options** from the audit findings + intake context. These are not
-from a static file — they are produced at roll time from what the agent knows
-about the project.
+For each open dimension (personality, aesthetic, type, color_mode, density, rhythm,
+signature, imagery, motion, accent), generate **2–5 candidate options** from audit/intake
+context at roll time; no static list.
 
-Candidates must satisfy the **compatibility rules** (see `assets/design-rails.json`):
-compact density pairs with metronomic rhythm; airy pairs with syncopated;
-brutalist aesthetics pair with restrained motion; etc. The generation step
-must not produce candidates that contradict each other.
+Candidates must satisfy **compatibility rules** in `assets/design-rails.json`: compact
+density/metronomic rhythm, airy/syncopated, brutalist/restrained motion, etc. No conflicts.
 
-Candidates must also respect any **locked dimensions** from previous rolls.
+Respect **locked dimensions** from previous rolls.
 
 ## 5. Roll (seeded pick)
 
-The PRNG (`assets/tasteroll-engine.js`) picks one candidate per open dimension.
-Same seed + same candidates → same roll, always. The seed makes rolls
-reproducible and shareable.
+The PRNG (`assets/tasteroll-engine.js`) picks one candidate per open dimension. Same seed
++ candidates → same roll, always; seeds make rolls reproducible/shareable.
 
-If Chance (kyanitelabs/chance) is available via MCP, prefer it for multi-source
-entropy mixing and reproducible audit trails. The inline engine is the fallback.
+If Chance (kyanitelabs/chance) is available via MCP, prefer it for multi-source entropy
+mixing and reproducible audit trails; the inline engine is the fallback.
 
-## 6. Lock and re-roll (progressive commitment)
+## 6. Lock and re-roll
 
-Three interaction modes:
+Mode:
 
-- **One-shot**: single roll. Take it or re-roll from scratch.
-- **Iterative**: roll → review → lock dimensions that work → re-roll unlocked
-  dimensions only → converge. Each re-roll increments the seed and excludes
-  already-shown directions for unlocked dimensions.
-- **Shotgun**: roll N seeds at once → compare side by side → pick one to
-  develop further.
+- **One-shot**: roll once; take it or re-roll from scratch.
+- **Iterative**: roll → review → lock working dimensions → re-roll unlocked only →
+  converge. Each re-roll increments the seed and excludes shown directions.
+- **Shotgun**: roll N seeds → compare side by side → pick one to develop.
 
-Locked dimensions and resolved findings persist across all re-rolls. Only open
-dimensions vary.
+Locked dimensions and resolved findings persist; only open dimensions vary.
 
-## 7. Gate (relaxed)
+## 7. Gate
 
-Tasteroll output is a personal artifact or prototype, not a shipped surface.
-The gate is deliberately lighter than `tastecheck-pass`:
+Tasteroll output is a personal artifact/prototype, not shipped; use a lighter gate than
+`tastecheck-pass`:
 
 - **Readable**: start with body ≥ 1rem, measure 58–75ch, and line-height ≥ 1.5; a brief may
-  justify a different reading measure with rendered evidence
+  justify another measure with rendered evidence
 - **WCAG AA**: body ≥ 4.5:1, UI ≥ 3:1 (verified on the rolled surfaces)
 - **Self-contained**: no external requests in exports
 - **Inert**: no scripts in exported HTML
 - **Keyboard-reachable**: all interactive elements focusable with visible focus
 
-If the output will be a **shipped public surface**, escalate to `tastecheck-pass`.
+Escalate **shipped public surfaces** to `tastecheck-pass`.
 
-## Invariants and design defaults
+## Invariants
 
-The invariant craft floors and the brief-dependent design defaults live separately in
-`assets/design-rails.json`. Contrast floors, keyboard reachability, self-containment, and
-truthful audit findings remain invariant. Measure, line-height, weight, density, texture,
-corner radius, accent count, and section rhythm are defaults that make a roll concrete; a
-brief may override them when the evidence records the reason and the rendered result still
-meets the invariant floors.
+Invariant floors and brief defaults live in `assets/design-rails.json`. Contrast, keyboard
+reachability, self-containment, and truthful findings stay invariant. Briefs may override
+measure, line-height, weight, density, texture, radius, accent count, and section rhythm
+only with reasons and rendered proof.
 
-The rails file does NOT contain option lists. Options are generated fresh.
+Rails contain no option lists; generate options fresh.
 
-## What makes this different
+## Difference
 
-- **v0 / LLM generators**: no seed, no audit, no rules, no reproducibility
-- **Coolors**: random colors, no system, no structure, no gate
-- **Tasteroll**: audit-driven fixes + context-aware candidates + seeded pick +
-  lock/reroll + complete design system + quality gate
+- **v0 / LLM generators**: no seed, audit, rules, reproducibility
+- **Coolors**: random colors, no system, structure, gate
+- **Tasteroll**: audit fixes + context-aware candidates + seeded pick + lock/reroll +
+  complete design system + quality gate
 
-## Reference files
+## References
 
-- `assets/design-rails.json` — dimensions, invariant floors, design defaults, audit scope,
-  intake questions, compatibility rules.
-- `assets/tasteroll-engine.js` — pasteable xoshiro128++ PRNG with lock, reroll,
-  shotgun, and exclude operations.
+- `assets/design-rails.json` — dimensions, floors, defaults, scope, questions, rules.
+- `assets/tasteroll-engine.js` — pasteable xoshiro128++ PRNG with lock, reroll, shotgun,
+  and exclude operations.
 
 ## How to deliver
 
-Deliver: the seed, the resolved findings (deterministic), the rolled choices
-(seed-dependent), the derived DESIGN-SYSTEM.md, and the relaxed-gate evidence.
-Hand off to downstream skills (color-system, web-typography, spacing-system,
-theming, etc.) with the same handoff fields as `design-system-interview`.
+Deliver seed, deterministic findings, seed-dependent choices, DESIGN-SYSTEM.md, gate evidence,
+and `design-system-interview` handoff fields.
 
-If the user says "roll again," increment the seed — never silently re-roll with
-the same seed and present different answers.
+"Roll again" increments the seed; never silently reuse it with different answers.
 
-## Completion evidence
+## Evidence
 
 | Status | Reason | Remediation | Evidence | Provenance |
 | --- | --- | --- | --- | --- |

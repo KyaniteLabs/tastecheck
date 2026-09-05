@@ -8,12 +8,11 @@ description: >-
 
 # Empty States
 
-Every reachable data state needs a truthful treatment; absence and failure are different
-conditions with different safe next moves.
+Every reachable data state needs truthful treatment; absence and failure need different next moves.
 
 ## Start with a state contract, not a set of illustrations
 
-Name the region and transition before copy or illustration. Record:
+Name region and transition before copy/illustration. Record:
 
 | Question | Decision to record |
 | --- | --- |
@@ -24,73 +23,71 @@ Name the region and transition before copy or illustration. Record:
 | Recovery | The action that can change the state, its owner, and whether retry is safe to repeat |
 | Exit proof | The event that replaces the state and the announcement/visual confirmation the user receives |
 
-First-use, zero results, and permission absence need different truth. Trusted cached data
-is stale content with progress—not a blank reset.
+First-use, zero results, and permission absence need different truth. Trusted cached data is
+stale content with progress, not a blank reset.
 
 ## Model the reachable state set
 
-Design loading when work can be in flight, empty when a successful result can contain
-zero items, and error when the region can fail. A static or fully local region need not
-invent unreachable states. Add stale, partial, awaiting-input, or pending-mutation only
-when their entry condition exists; never render zero, unavailable, and loading as the same state.
+Design loading when work can be in flight, empty when success can contain zero items, and error
+when the region can fail. Static/local regions need not invent states. Add stale, partial,
+awaiting-input, or pending-mutation only when their entry condition exists; never merge zero,
+unavailable, and loading.
 
 ## Loading: communicate the wait honestly
 
-Use a layout-matching skeleton when the final geometry is known and the placeholder will
-help orientation. Use determinate progress when progress is measurable, a compact status
-for short inline waits, and a spinner only as a supporting cue. Delay transient indicators
-when measured latency makes flashing likely, but keep slow work visibly alive. Never imply
-progress or shape the system cannot know. Use optimistic UI only when rollback and
-reconciliation are safe.
+Use a layout-matching skeleton when final geometry is known and it aids orientation. Use
+determinate progress when measurable, compact status for short waits, and a spinner only as a
+supporting cue. Delay transient indicators when measured latency makes flashing likely, but
+keep slow work visible. Never imply unknowable progress/shape. Use optimistic UI only when
+rollback and reconciliation are safe.
 
 ## Empty: the three flavors, each with a next step
 
-Every empty state has heading, context, and a safe way forward. First-run teaches the
-first action; user-cleared affirms completion; no-results names the query/filter and
-offers clear/broaden/correct/create. If no action exists, say what will fill it.
+Every empty state has heading, context, and safe next action. First-run teaches; user-cleared
+affirms completion; no-results names query/filter and offers clear/broaden/correct/create. If
+no action exists, say what will fill it.
 
 ## Error: explain, reassure, offer recovery
 
-Use plain, blameless language; distinguish offline, permission, not-found, and server
-when recovery differs. Preserve work and offer retry, a working route, or support with
-a tone proportionate to the consequence.
+Use plain, blameless language; distinguish offline, permission, not-found, and server when
+recovery differs. Preserve work; offer retry, a working route, or support proportionate to
+the consequence.
 
 ## Preserve continuity through transitions
 
-Retain position, prior content, filters, and drafts unless safety/integrity forbids it.
-Make in-flight retry visible without duplicating mutation; explain rollback and return
-focus to repair. Record idempotent, confirmation-required, or support-only retry—never
-promise retry can resolve permission or duplicate-money risk. Give each request an owner:
-late responses from an abandoned query or retry must not replace the current state.
+Retain position, content, filters, and drafts unless safety/integrity forbids it. Make retry
+visible without duplicate mutation; explain rollback and return focus to repair. Record
+idempotent, confirmation-required, or support-only retry—never promise retry can resolve
+permission or duplicate-money risk. Give each request an owner; late responses must not
+replace current state.
 
-## Quick-start pattern
+## Quick start
 
-Use `references/patterns.md` for state-specific markup and copy. Render one explicit
-state per region, reserve the same container space, announce changes, and preserve
-user work across errors.
+Use `references/patterns.md` for state markup/copy. Render one explicit state per region,
+reserve space, announce changes, and preserve work across errors.
 
 ## Reference files
 
-- `references/patterns.md` — surface patterns, copy, skeletons, and announcements.
+- `references/patterns.md` — patterns, copy, skeletons, announcements.
 - `references/decision-records.md` — novel-case ADR rules.
 
 ## Decision order and evidence
 
-For each applicable state, record cause, retained context, next action, retry semantics,
-exit proof, and accessible recovery; `n/a` requires subject absence. Hand control
-behavior to `component-states`.
+For each state, record cause, retained context, next action, retry semantics, exit proof,
+and accessible recovery; `n/a` requires subject absence. Hand control behavior to
+`component-states`.
 
-## Self-check (before shipping any data region)
+## Self-check
 
-1. Every reachable loading, empty, and error state is distinct and truthful?
+1. Reachable loading, empty, and error states are distinct and truthful?
 2. Empty has heading/context/forward action; no-results has an exit?
-3. Errors explain/recover without raw internals; loading feedback matches what is actually known?
+3. Errors explain/recover without raw internals; loading matches what is known?
 4. Changes announce, preserve work, reject stale responses, and state safe retry/cached/partial behavior?
 
-## How to deliver
+## Deliver
 
-Deliver a region matrix: entry, truthful message, retained context, recovery, exit,
-announcement, and layout-shift evidence. Keep containers stable; hand adjacent scope off.
+Deliver a region matrix: entry, message, retained context, recovery, exit, announcement,
+and layout-shift evidence. Keep containers stable; hand adjacent scope off.
 
 <!-- contract:v1:start -->
 ## Contract (generated)

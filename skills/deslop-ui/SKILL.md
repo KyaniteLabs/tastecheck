@@ -8,36 +8,34 @@ description: >-
 
 # Deslop UI
 
-Slop is predictable, uncommitted design—not merely ugly design. Audit observable
-surface, structure, and voice against a brief; repair with a specific, verifiable choice.
+Slop is predictable, uncommitted design, not merely ugly design. Audit surface, structure, and
+voice against the brief; repair with a specific, verifiable choice.
 
 ## Repair order and evidence contract
 
-1. Establish brief, preserved signals, and artifact; record surface, structural, and verbal findings separately.
-2. Cite a selector, section, phrase, screenshot, or browser observation; assign P0–P3.
-3. Choose a brief-bound named direction, prescribe repairs, and reinspect the same views.
+1. Establish brief, preserved signals, and artifact; separate surface, structural, and verbal findings.
+2. Cite selector, section, phrase, screenshot, or browser observation; assign P0–P3.
+3. Choose a brief-bound direction, prescribe repairs, and reinspect the same views.
 
 `n/a` requires an absent subject. Stop before changing a coherent brief-supported brand
-choice; ask for direction when the brief or acceptance criteria are absent.
+choice; ask for direction when brief or acceptance criteria are absent.
 
 ## Diagnose cause, then tell
 
-Make two passes: **intent** (job, audience, hierarchy, retained signals, claimed
-signature) and **behavior** (rendered first view, section transitions, narrow view;
-trace code to selector/token or name screenshot geometry). Then ask whether replacing
-the suspect with a neutral version changes meaning or task performance. Preserve a
-documented functional pill, gradient, table, or system font; repair its implementation,
-not its role.
+Make two passes: **intent** (job, audience, hierarchy, retained signals, signature) and
+**behavior** (first view, transitions, narrow view; trace code to selector/token or screenshot
+geometry). Test whether a neutral replacement changes meaning or performance.
+Preserve a documented functional pill, gradient, table, or system font; repair
+implementation, not role.
 
-Rank P0 meaning/interaction/accessibility/fact, P1 direction/hierarchy, P2 repeated
-default, then P3 polish. Every P0–P2 packet names: subject; observation plus brief;
-failure mechanism; preserved signal; concrete composition/color/type/shape/voice
-replacement and owner; after-state observation (including narrow view). Make at least
-one repair at the causal structural level when the skeleton is generic.
+Rank P0 meaning/interaction/accessibility/fact, P1 direction/hierarchy, P2 repeated default,
+then P3 polish. Every P0–P2 packet names subject, observation+brief, mechanism, preserved
+signal, concrete replacement+owner, and after-state observation (including narrow view). Make
+one causal structural repair when the skeleton is generic.
 
 ## Fast audit and self-check
 
-Render before acting; grep is only a lead. Check these detector-to-decision pairs:
+Render before acting; grep is only a lead. Check these detector/decision pairs:
 
 | Plane | Detector | Required repair decision |
 |---|---|---|
@@ -46,11 +44,10 @@ Render before acting; grep is only a lead. Check these detector-to-decision pair
 | structure | centered hero → one CTA → equal cards, uniform section rhythm | replacement topology, lead/supporting evidence, narrow reading order |
 | decoration/function | default glass/blobs/emoji/gradient text, static forms, placeholder copy | brief-supported atmosphere or none; route behavior/copy to the owning skill |
 
-Every finding needs subject, P0–P3, observed evidence, preserved signal, replacement,
-and after-state proof. Verify all three planes: surface; structural section stack and
-rhythm; verbal claims (hand factual prose to `humanize-copy`). A named direction must
-state a concrete aesthetic, dominant field/accident job, type stance, and signature
-move. Re-run the original views after repair.
+Every finding needs subject, P0–P3, observed evidence, preserved signal, replacement, and
+after-state proof. Verify surface, structural stack/rhythm, and verbal claims (hand factual
+prose to `humanize-copy`). A named direction states aesthetic, dominant field/accent job, type
+stance, and signature move. Re-run original views.
 
 ## Reference files
 
@@ -61,9 +58,9 @@ move. Re-run the original views after repair.
 
 ## How to deliver
 
-Deliver a prioritized repair specification and named direction; say what changed, why,
-what survives, and how the after-state proves it. Respect existing tokens and pair with
-`web-typography`, `color-system`, and `micro-motion` as needed.
+Deliver prioritized repairs and named direction; state what changed, why, what survives,
+and after-state proof. Respect existing tokens; pair with `web-typography`, `color-system`,
+and `micro-motion` as needed.
 
 <!-- contract:v1:start -->
 ## Contract (generated)
