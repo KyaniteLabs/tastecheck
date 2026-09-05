@@ -15,6 +15,8 @@ import { fileURLToPath } from "node:url";
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 export const VERIFIER_ROOT = ROOT;
 export const CATALOG_PATH = "skills/tastecheck-pass/assets/check-catalog.json";
+export const BROWSER_SUBJECT_MANIFEST_PATH = "skills/tastecheck-pass/assets/browser-subject-manifest.json";
+export const REQUIRED_VIEWPORTS = Object.freeze([390, 768, 1280]);
 export const SCHEMA_VERSION = 1;
 export const KIND = "tastecheck-release-gate";
 export const SKILL = "tastecheck-pass";
@@ -450,8 +452,92 @@ function validateInspector(value, label, errors) {
 
 const INVENTORY_KEYS = ["frozen_at", "subjects", "coverage", "sha256"];
 const INVENTORY_MEMBER_KEYS = ["id", "route", "state", "viewport", "control"];
+const BROWSER_SUBJECTS_KEYS = ["manifest_path", "manifest_sha256", "required_viewports"];
+const BROWSER_MANIFEST_KEYS = ["schema_version", "kind", "routes", "states"];
 
-function validateSubjectInventory(inventory, checks, errors) {
+function validateViewportPolicy(value, label, errors) {
+  if (!Array.isArray(value) || value.length === 0 || value.some((viewport) => !Number.isInteger(viewport) || viewport < 1)) {
+    errors.push(`${label} must be a non-empty list of positive integer viewports`);
+    return false;
+  }
+  if (new Set(value).size !== value.length) errors.push(`${label} must not contain duplicate viewports`);
+  if (JSON.stringify([...value].sort((a, b) => a - b)) !== JSON.stringify(value)) errors.push(`${label} must be sorted in ascending order`);
+  return true;
+}
+
+function validateBrowserManifest(manifest, errors) {
+  if (!isObject(manifest)) {
+    errors.push("browser subject manifest must be an object");
+    return false;
+  }
+  if (!hasOnlyKeys(manifest, BROWSER_MANIFEST_KEYS)) errors.push("browser subject manifest contains unknown fields");
+  if (manifest.schema_version !== 1) errors.push("browser subject manifest schema_version must be 1");
+  if (manifest.kind !== "tastecheck-browser-subject-manifest") errors.push("browser subject manifest kind is invalid");
+  for (const key of ["routes", "states"]) {
+    if (!Array.isArray(manifest[key]) || manifest[key].length === 0 || manifest[key].some((value) => !nonempty(value))) errors.push(`browser subject manifest.${key} must be a non-empty list of names`);
+    else if (new Set(manifest[key]).size !== manifest[key].length) errors.push(`browser subject manifest.${key} must not contain duplicates`);
+  }
+  return errors.length === 0;
+}
+
+function browserSubjectId(route, state, viewport) {
+  return `route:${route}|state:${state}|viewport:${viewport}`;
+}
+
+export function deriveBrowserSubjectUniverse(manifest, requiredViewports) {
+  return manifest.routes.flatMap((route) => manifest.states.flatMap((state) => requiredViewports.map((viewport) => ({
+    id: browserSubjectId(route, state, viewport), route, state, viewport,
+  }))));
+}
+
+export function loadBrowserSubjectAuthority({ root = ROOT, manifestPath = BROWSER_SUBJECT_MANIFEST_PATH, requiredViewports = REQUIRED_VIEWPORTS } = {}) {
+  const errors = [];
+  const policyValid = validateViewportPolicy(requiredViewports, "required viewport policy", errors);
+  let target;
+  try { target = resolveRepoPath(resolve(root), manifestPath); }
+  catch (error) {
+    errors.push(`browser subject manifest: ${error.message}`);
+    return { valid: false, manifest_path: manifestPath || "unresolved", manifest_sha256: "0".repeat(64), required_viewports: [...(Array.isArray(requiredViewports) ? requiredViewports : [])], routes: [], states: [], members: [], errors };
+  }
+  if (lstatSync(target.absolute).isSymbolicLink()) errors.push("browser subject manifest may not be a symbolic link");
+  let raw;
+  let manifest;
+  try {
+    raw = readFileSync(target.absolute, "utf8");
+    manifest = JSON.parse(raw);
+  } catch (error) {
+    errors.push(`browser subject manifest could not be read: ${error.message}`);
+  }
+  const manifestValid = validateBrowserManifest(manifest, errors);
+  const members = policyValid && manifestValid ? deriveBrowserSubjectUniverse(manifest, requiredViewports) : [];
+  return {
+    valid: errors.length === 0,
+    manifest_path: target.relative,
+    manifest_sha256: raw === undefined ? "0".repeat(64) : sha256(raw),
+    required_viewports: Array.isArray(requiredViewports) ? [...requiredViewports] : [],
+    routes: manifestValid ? [...manifest.routes] : [],
+    states: manifestValid ? [...manifest.states] : [],
+    members,
+    errors,
+  };
+}
+
+function validateBrowserSubjects(scope, authority, errors) {
+  const before = errors.length;
+  if (!isObject(scope)) {
+    errors.push("browser_subjects is required and must be an object");
+    return false;
+  }
+  if (!hasOnlyKeys(scope, BROWSER_SUBJECTS_KEYS)) errors.push("browser_subjects contains unknown fields");
+  if (scope.manifest_path !== authority.manifest_path) errors.push("browser_subjects.manifest_path does not match the authoritative verifier manifest");
+  if (!SHA256.test(scope.manifest_sha256 ?? "")) errors.push("browser_subjects.manifest_sha256 must be a lowercase SHA-256");
+  else if (scope.manifest_sha256 !== authority.manifest_sha256) errors.push("browser_subjects.manifest_sha256 does not match the independently hashed manifest");
+  validateViewportPolicy(scope.required_viewports, "browser_subjects.required_viewports", errors);
+  if (JSON.stringify(scope.required_viewports) !== JSON.stringify(authority.required_viewports)) errors.push("browser_subjects.required_viewports does not match the authoritative viewport policy");
+  return errors.length === before;
+}
+
+function validateSubjectInventory(inventory, checks, errors, browserAuthority) {
   if (!isObject(inventory)) {
     errors.push("subject_inventory is required and must be an object");
     return { valid: false, subjects: new Set(), coverage: new Map(), sha256: null };
@@ -493,6 +579,16 @@ function validateSubjectInventory(inventory, checks, errors) {
       if (subjectPresent && members.length === 0) errors.push(`${check.id}: applicable subject ${check.applicability.subject} needs inventory members`);
       if (!subjectPresent && members.length > 0) errors.push(`${check.id}: absent subject ${check.applicability.subject} may not have inventory members`);
     } else if (members.length === 0) errors.push(`${check.id}: required subject inventory is empty`);
+
+    if (check.observation.coverage === "browser") {
+      const expected = check.applicability.kind === "optional_subject" && !subjectPresent ? [] : (browserAuthority?.members || []);
+      const expectedByKey = new Map(expected.map((member) => [JSON.stringify(canonical(member)), member]));
+      const actualByKey = new Map(members.map((member) => [JSON.stringify(canonical({ id: member.id, route: member.route, state: member.state, viewport: member.viewport })), member]));
+      const missing = expected.filter((member) => !actualByKey.has(JSON.stringify(canonical(member))));
+      const extra = members.filter((member) => !expectedByKey.has(JSON.stringify(canonical({ id: member.id, route: member.route, state: member.state, viewport: member.viewport }))));
+      if (!browserAuthority?.valid) errors.push(`${check.id}: authoritative browser subject universe could not be derived`);
+      else if (missing.length || extra.length || actualByKey.size !== expectedByKey.size) errors.push(`${check.id}: browser subject inventory must exactly match the authoritative route x state x viewport universe (missing ${missing.length}, extra ${extra.length})`);
+    }
   }
   return { valid: errors.length === 0, subjects, coverage, sha256: inventory.sha256 };
 }
@@ -693,9 +789,10 @@ function normalizeRow(row, check, artifact, inventoryState) {
 function structuralInputErrors(input) {
   const errors = [];
   if (!isObject(input)) return ["ledger input must be an object"];
-  if (!hasOnlyKeys(input, ["schema_version", "catalog", "artifact", "execution", "subject_inventory", "rows"])) errors.push("ledger input contains unknown fields");
+  if (!hasOnlyKeys(input, ["schema_version", "catalog", "artifact", "execution", "browser_subjects", "subject_inventory", "rows"])) errors.push("ledger input contains unknown fields");
   if (input.schema_version !== SCHEMA_VERSION) errors.push("ledger schema_version must be 1");
   if (!isObject(input.artifact)) errors.push("ledger artifact is required");
+  if (!isObject(input.browser_subjects)) errors.push("ledger browser_subjects is required");
   if (!isObject(input.subject_inventory)) errors.push("ledger subject_inventory is required");
   if (!Array.isArray(input.rows)) errors.push("ledger rows must be an array");
   if (input.catalog !== undefined && (!isObject(input.catalog) || !hasOnlyKeys(input.catalog, ["path", "sha256"]))) errors.push("ledger catalog must contain only path and sha256");
@@ -709,6 +806,12 @@ export function evaluateReleaseGate(input, options = {}) {
   const errors = structuralInputErrors(input);
   const execution = assessExecutionPolicy(input?.execution);
   errors.push(...execution.errors.map((error) => `execution: ${error}`));
+  const browserAuthority = loadBrowserSubjectAuthority({
+    root: verifierRoot,
+    manifestPath: options.browserManifestPath ?? BROWSER_SUBJECT_MANIFEST_PATH,
+    requiredViewports: options.requiredViewports ?? REQUIRED_VIEWPORTS,
+  });
+  errors.push(...browserAuthority.errors);
   let loaded;
   try { loaded = loadCheckCatalog({ root: verifierRoot }); }
   catch (error) {
@@ -716,11 +819,12 @@ export function evaluateReleaseGate(input, options = {}) {
       schema_version: SCHEMA_VERSION, kind: KIND,
       catalog: { path: CATALOG_PATH, sha256: "0".repeat(64), check_ids: [] },
       roots: { verifier: rootIdentity(verifierRoot), artifact: rootIdentity(artifactRoot) },
+      browser_subjects: null,
       subject_inventory: null,
       artifact: { type: "file", identity: "unresolved", sha256: "0".repeat(64), bytes: 0, hash_verified: false, dependency_manifest: null, dependency_manifest_sha256: "0".repeat(64), dependency_manifest_hash_verified: false },
       execution: execution.policy,
       rows: [], verdict: "HOLD", release_eligible: false, blockers: ["catalog", ...(execution.allowed ? [] : ["execution"])],
-      validation: { input_valid: false, execution_policy_valid: execution.allowed, catalog_complete: false, subject_inventory_valid: false, subject_coverage_complete: false, artifact_hash_verified: false, artifact_dependency_manifest_verified: false, evidence_hashes_verified: false, provenance_hashes_verified: false, errors: [`cannot load check catalog: ${error.message}`, ...execution.errors.map((item) => `execution: ${item}`)] },
+      validation: { input_valid: false, execution_policy_valid: execution.allowed, browser_subjects_valid: false, catalog_complete: false, subject_inventory_valid: false, subject_coverage_complete: false, artifact_hash_verified: false, artifact_dependency_manifest_verified: false, evidence_hashes_verified: false, provenance_hashes_verified: false, errors: [`cannot load check catalog: ${error.message}`, ...browserAuthority.errors, ...execution.errors.map((item) => `execution: ${item}`)] },
     };
   }
   errors.push(...loaded.errors.map((error) => `catalog: ${error}`));
@@ -729,7 +833,8 @@ export function evaluateReleaseGate(input, options = {}) {
     if (input.catalog.sha256 !== loaded.sha256) errors.push("input catalog SHA-256 does not match the canonical catalog");
   }
   const checks = loaded.catalog.checks;
-  const inventoryState = validateSubjectInventory(input?.subject_inventory, checks, errors);
+  const browserSubjectsValid = validateBrowserSubjects(input?.browser_subjects, browserAuthority, errors);
+  const inventoryState = validateSubjectInventory(input?.subject_inventory, checks, errors, browserAuthority);
   const inspected = inspectArtifact(input?.artifact, { artifactRoot });
   errors.push(...inspected.errors.map((error) => `artifact: ${error}`));
   const checkIds = checks.map((check) => check.id);
@@ -771,10 +876,12 @@ export function evaluateReleaseGate(input, options = {}) {
   if (!inventoryState.valid || !subjectCoverageComplete) blockers.push("subject-inventory");
   if (errors.some((error) => error.startsWith("unknown check ID") || error.startsWith("catalog:") || error.startsWith("catalog path") || error.startsWith("input catalog"))) blockers.push("catalog");
   if (!execution.allowed) blockers.push("execution");
+  if (!browserSubjectsValid || !browserAuthority.valid) blockers.push("browser-subjects");
   const uniqueBlockers = [...new Set(blockers)];
   const validation = {
     input_valid: errors.length === 0,
     execution_policy_valid: execution.allowed,
+    browser_subjects_valid: browserSubjectsValid && browserAuthority.valid,
     catalog_complete: catalogComplete,
     subject_inventory_valid: inventoryState.valid,
     subject_coverage_complete: subjectCoverageComplete,
@@ -785,12 +892,20 @@ export function evaluateReleaseGate(input, options = {}) {
     errors: [...new Set(errors)],
   };
   const artifactDependencyManifestVerified = inspected.artifact.dependency_manifest_hash_verified === true;
-  const releaseEligible = validation.input_valid && execution.allowed && catalogComplete && inventoryState.valid && subjectCoverageComplete && inspected.artifact.hash_verified && artifactDependencyManifestVerified && evidenceHashesVerified && provenanceHashesVerified && uniqueBlockers.length === 0;
+  const releaseEligible = validation.input_valid && execution.allowed && validation.browser_subjects_valid && catalogComplete && inventoryState.valid && subjectCoverageComplete && inspected.artifact.hash_verified && artifactDependencyManifestVerified && evidenceHashesVerified && provenanceHashesVerified && uniqueBlockers.length === 0;
   return {
     schema_version: SCHEMA_VERSION,
     kind: KIND,
     roots: { verifier: rootIdentity(verifierRoot), artifact: rootIdentity(artifactRoot) },
     execution: execution.policy,
+    browser_subjects: browserAuthority.valid ? {
+      manifest_path: browserAuthority.manifest_path,
+      manifest_sha256: browserAuthority.manifest_sha256,
+      required_viewports: browserAuthority.required_viewports,
+      routes: browserAuthority.routes,
+      states: browserAuthority.states,
+      members: browserAuthority.members.map((member) => redactUntrusted(member)),
+    } : null,
     catalog: { path: CATALOG_PATH, sha256: loaded.sha256, check_ids: checkIds },
     subject_inventory: inventoryOutput(input?.subject_inventory, inventoryState),
     artifact: inspected.artifact,
@@ -822,7 +937,7 @@ function cli() {
     const index = args.indexOf(flag);
     return index >= 0 ? args[index + 1] : undefined;
   };
-  const optionValueIndexes = new Set(["--input", "--out", "--verifier-root", "--artifact-root"].flatMap((flag) => {
+  const optionValueIndexes = new Set(["--input", "--out", "--verifier-root", "--artifact-root", "--browser-manifest", "--required-viewports"].flatMap((flag) => {
     const index = args.indexOf(flag);
     return index >= 0 ? [index + 1] : [];
   }));
@@ -831,15 +946,18 @@ function cli() {
   const outPath = valueFor("--out") || positional[1];
   const verifierRoot = resolve(valueFor("--verifier-root") || ROOT);
   const artifactRoot = resolve(valueFor("--artifact-root") || verifierRoot);
+  const browserManifestPath = valueFor("--browser-manifest") || BROWSER_SUBJECT_MANIFEST_PATH;
+  const viewportArgument = valueFor("--required-viewports");
+  const requiredViewports = viewportArgument === undefined ? REQUIRED_VIEWPORTS : viewportArgument.split(",").map((value) => Number(value.trim()));
   if (!inputPath || inputPath.startsWith("--")) {
-    console.error("Usage: node skills/tastecheck-pass/assets/release-gate.mjs --input <verifier-relative-ledger.json> [--out <verifier-relative-report.json>] [--verifier-root <tastecheck-root>] [--artifact-root <consumer-root>]");
+    console.error("Usage: node skills/tastecheck-pass/assets/release-gate.mjs --input <verifier-relative-ledger.json> [--out <verifier-relative-report.json>] [--verifier-root <tastecheck-root>] [--artifact-root <consumer-root>] [--browser-manifest <verifier-relative-manifest.json>] [--required-viewports <width,...>]");
     process.exitCode = 2;
     return;
   }
   let result;
-  try { result = evaluateReleaseGate(readInput(verifierRoot, inputPath), { verifierRoot, artifactRoot }); }
+  try { result = evaluateReleaseGate(readInput(verifierRoot, inputPath), { verifierRoot, artifactRoot, browserManifestPath, requiredViewports }); }
   catch (error) {
-    result = { schema_version: SCHEMA_VERSION, kind: KIND, roots: { verifier: rootIdentity(verifierRoot), artifact: rootIdentity(artifactRoot) }, subject_inventory: null, catalog: { path: CATALOG_PATH, sha256: "0".repeat(64), check_ids: [] }, artifact: { type: "file", identity: "unresolved", sha256: "0".repeat(64), bytes: 0, hash_verified: false, dependency_manifest: null, dependency_manifest_sha256: "0".repeat(64), dependency_manifest_hash_verified: false }, execution: { ...DEFAULT_EXECUTION }, rows: [], verdict: "HOLD", release_eligible: false, blockers: ["input"], validation: { input_valid: false, execution_policy_valid: true, catalog_complete: false, subject_inventory_valid: false, subject_coverage_complete: false, artifact_hash_verified: false, artifact_dependency_manifest_verified: false, evidence_hashes_verified: false, provenance_hashes_verified: false, errors: [error.message] } };
+    result = { schema_version: SCHEMA_VERSION, kind: KIND, roots: { verifier: rootIdentity(verifierRoot), artifact: rootIdentity(artifactRoot) }, browser_subjects: null, subject_inventory: null, catalog: { path: CATALOG_PATH, sha256: "0".repeat(64), check_ids: [] }, artifact: { type: "file", identity: "unresolved", sha256: "0".repeat(64), bytes: 0, hash_verified: false, dependency_manifest: null, dependency_manifest_sha256: "0".repeat(64), dependency_manifest_hash_verified: false }, execution: { ...DEFAULT_EXECUTION }, rows: [], verdict: "HOLD", release_eligible: false, blockers: ["input"], validation: { input_valid: false, execution_policy_valid: true, browser_subjects_valid: false, catalog_complete: false, subject_inventory_valid: false, subject_coverage_complete: false, artifact_hash_verified: false, artifact_dependency_manifest_verified: false, evidence_hashes_verified: false, provenance_hashes_verified: false, errors: [error.message] } };
   }
   const output = `${JSON.stringify(result, null, 2)}\n`;
   if (outPath && !outPath.startsWith("--")) {

@@ -4,7 +4,7 @@
   "title": "TasteCheck release ledger input v1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "artifact", "subject_inventory", "rows"],
+  "required": ["schema_version", "artifact", "browser_subjects", "subject_inventory", "rows"],
   "properties": {
     "schema_version": { "const": 1 },
     "catalog": {
@@ -18,6 +18,7 @@
     },
     "artifact": { "$ref": "#/$defs/artifact" },
     "execution": { "$ref": "#/$defs/execution" },
+    "browser_subjects": { "$ref": "#/$defs/browserSubjects" },
     "subject_inventory": { "$ref": "#/$defs/subject_inventory" },
     "rows": {
       "type": "array",
@@ -73,6 +74,16 @@
         "subjects": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
         "coverage": { "type": "object", "additionalProperties": { "type": "array", "items": { "$ref": "#/$defs/inventoryMember" } } },
         "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "browserSubjects": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manifest_path", "manifest_sha256", "required_viewports"],
+      "properties": {
+        "manifest_path": { "type": "string", "minLength": 1 },
+        "manifest_sha256": { "$ref": "#/$defs/sha256" },
+        "required_viewports": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "integer", "minimum": 1 } }
       }
     },
     "inventoryMember": {
