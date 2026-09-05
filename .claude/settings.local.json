@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(eza -T --git-ignore -L 3 /Users/simongonzalezdecruz/workspaces/tastecheck)"
+    ]
+  }
+}

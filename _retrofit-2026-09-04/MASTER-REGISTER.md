@@ -19,6 +19,10 @@ Synthesized from all seven available stage-2 reports. The missing `luna-correctn
 | MR-011 | `humanize-copy` is not portable and its contract omits the new mandatory dependency | P2 | `FINDINGS-luna-b.md` | `skills/humanize-copy/SKILL.md:87-90`; `skills/humanize-copy/contract.json:18-20`; `README.md:164`; `llms.txt:7-8` | Bundle the minimal writing rules in the repository or make them an optional named input with a portable fallback. If mandatory, add the resource/input and handoff evidence to the contract and regenerate projections. |
 | MR-012 | Browser, accessibility, and effectiveness claims lack current external execution proof | P2 | `FINDINGS-dsv4.md`, with runtime uncertainty corroborated by `FINDINGS-sol.md` and `FINDINGS-luna-b.md` | `FINDINGS-sol.md:89-93`; `FINDINGS-luna-b.md:61-64`; claimed status at `index.html:447-449` | Produce current browser/manual receipts for keyboard, zoom, contrast, reduced motion, iframe/shadow-root coverage, and cold load; validate effectiveness claims against actual judge/result packets rather than schemas, fixtures, screenshots, or workflow definitions alone. Keep unexecuted claims `UNVERIFIED`. |
 
+### Current closure status
+
+- **MR-012: CONTAINED — NOT CLOSED.** Public release status remains honestly `UNVERIFIED`; the current browser, e2e, mechanical, security, and clean-clone receipt cells have not been regenerated against the final source tree, and historical effectiveness remains `BLOCKED`. No current external execution proof is claimed.
+
 ## Fix waves
 
 Each wave contains at most ten findings and can be executed and committed as a focused run. A wave may start from the same audited baseline or from committed earlier waves; none relies on another worker’s uncommitted state.
