@@ -3,6 +3,49 @@
 All notable changes to the tastecheck skill pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow semver.
 
+## [Unreleased] — 2026-09-05
+
+### Added — post-ASTRA verification
+
+- Independent Grok r9b + Sol r10 reviews formed a post-ASTRA green pair: both
+  completed with no findings and fully green structural verification; see
+  [`STREAK9b-grok.md`](_retrofit-2026-09-04/STREAK9b-grok.md) and
+  [`STREAK10-sol.md`](_retrofit-2026-09-04/STREAK10-sol.md).
+
+### Changed — ASTRA hardening
+
+- The external ASTRA adversarial review identified 8 findings, including 5
+  SEV-1 findings. All eight are closed: verdicts derive from observations,
+  reviews bind to check/artifact/evidence digests, dependencies and subject
+  inventories are reconciled, captures are complete, roots are split, craft
+  floors are separated from style defaults, and authority claims are scoped.
+  See [`ASTRA-REVIEW.md`](_retrofit-2026-09-04/ASTRA-REVIEW.md) and
+  [`ASTRA-FIX-REPORT.md`](_retrofit-2026-09-04/ASTRA-FIX-REPORT.md).
+
+### Changed — canonical release finalization
+
+- Added `npm run finalize`, powered by `tools/release/finalize.mjs`, as the
+  release-finalization command for receipts, receipt pins, public status
+  projection, and verify-chain validation.
+- Receipt gates now keep source-bound status honest: stale, missing, malformed,
+  or failed evidence remains `UNVERIFIED` or `HOLD`.
+
+## [Retrofit] — 2026-09-04
+
+### Changed — receipt and projector gates
+
+- The TPS2 root cure made public projections byte-stable and kept source
+  digests out of self-referential projection inputs; receipt gates now validate
+  current source-bound evidence before public status is projected.
+
+### Added — seven-wave retrofit gauntlet
+
+- Completed the seven-wave gauntlet covering fail-closed gate authority, one
+  release inventory, executable release checks, safe execution and subjective
+  review, reproducible verification, receipt-bound public status, and portable
+  copy guidance. The wave reports remain in
+  [`_retrofit-2026-09-04/`](_retrofit-2026-09-04/).
+
 ## [1.4.0] — 2026-07-13
 
 ### Added — 20th skill: `chance-design`

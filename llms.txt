@@ -25,6 +25,23 @@ TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and fr
 
 TasteCheck is plain Markdown with no runtime or SDK. Any coding agent that can read Markdown skill files can use it; the installer also creates the canonical `~/.agents/skills/` path and mirrors skills into detected agent homes.
 
+## Evidence-bound release behavior
+
+The retrofit makes the release gate account for the evidence it records. These behaviors describe scoped release decisions; they do not turn subjective design judgment into an objective guarantee.
+
+| Capability | Public behavior |
+|---|---|
+| Evidence-derived verdicts | Gate statuses are derived from recorded observations. Missing or contradictory observations produce `HOLD`; declared status alone is not trusted. |
+| Review binding | Human and independent reviews bind to the check ID, rubric, artifact digest, and complete-evidence digest. A transplanted approval produces `HOLD`. |
+| Dependency-manifest capture | File and directory captures hash the entry plus linked local CSS, JavaScript, and font assets. A changed dependency with an unchanged entry produces `HOLD`. |
+| Subject-inventory reconciliation | Browser checks reconcile route × state × viewport members from an authoritative manifest and its gate-computed Cartesian universe; a claimant cannot shrink that scope. Control checks reconcile control × state members. |
+| Complete-capture hashing | Lossy, truncated, depth-limited, or marker-bearing evidence is non-passing. Sanitization is presentation-only; complete evidence is what gets hashed. |
+| Verifier/consumer ROOT SPLIT | The CLI and API separate the pinned verifier root from the explicit target-project root, and record both root identities. |
+| Craft floors and style policies | Invariant craft requirements are separate from brief-dependent defaults. Spacing and tasteroll rails are defaults that can be overridden with evidence. |
+| Scoped authority claims | Subjective checks remain accountable human judgment, not an objective design guarantee. GEO copy keeps claims scoped to the recorded evidence. |
+| Release finalization | `npm run finalize` performs receipt refresh, receipt pins, public status projection, and verify-chain validation together. |
+| ASTRA review closure | The external ASTRA adversarial review found 8 findings, including 5 SEV-1 findings; the closure is recorded in [`ASTRA-REVIEW.md`](_retrofit-2026-09-04/ASTRA-REVIEW.md) and [`ASTRA-FIX-REPORT.md`](_retrofit-2026-09-04/ASTRA-FIX-REPORT.md). |
+
 ## Quickstart
 
 Clone the repository and run the installer:
