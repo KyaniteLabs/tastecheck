@@ -2,11 +2,11 @@
   "schema_version": 1,
   "kind": "tastecheck-public-release-status",
   "target_release": "1.4.1",
-  "source_tree_sha256": "9b04d4d9179ec208c4341984cd86c8a458cd4cf804d8199e2b9f6811d55e4c86",
+  "source_tree_sha256": "471eb983d24f27f3d91bc639c73f24b26ecec3bfe85a31926a19eb82bc162f14",
   "manifest": {
     "id": "release-manifest",
     "path": "contracts/v1/release-receipts.json",
-    "sha256": "347d490af603f3caee39a92fc1568091e8b46af49ada080d0f40761144e1bb55"
+    "sha256": "ebdd84e29db14a7cc300764be7a98836f9d0748c479b6989178e4afeb9dec3b5"
   },
   "claims": [
     {
@@ -16,41 +16,37 @@
         {
           "id": "context-budget",
           "path": "evals/receipts/v1/context-budget.json",
-          "sha256": "5706cdc45b53484e926f3526dab78e386970e3d475ca34df71b3bc11efcb7899"
+          "sha256": "6dec488c951c250ea2609a4713a9b2a8a62b8caf12b4ff2c4001929aced3fc8e"
         },
         {
           "id": "browser",
           "path": "evals/receipts/v1/browser.json",
-          "sha256": "e0b518b4af116c4327d45ce76d82b41708ae9665122ed582ae22d928275c560d"
+          "sha256": "0efa467b058f5c9a81b4f15b983038d3b7851a81c6c55ef2345a68af57f3472a"
         },
         {
           "id": "e2e",
           "path": "evals/receipts/v1/e2e.json",
-          "sha256": "f51049a41f5e23cf2f859c398f662ec3dc0368bb9e2851e4b342d2af1174b161"
+          "sha256": "ca978eaac54586fef4b31c3a8248c813f7c05a73a97ba1218968e66826545270"
         },
         {
           "id": "mechanical",
           "path": "evals/receipts/v1/mechanical.json",
-          "sha256": "77296a9908b9fdfe0ea5e9aa7ed231c9b98ef23744729637cda7a754e089f399"
+          "sha256": "d00216649339bfda75e64334514502c4ed00b93d2c3e00db033f38acfac6c379"
         },
         {
           "id": "security",
           "path": "evals/receipts/v1/security.json",
-          "sha256": "8099cf7c2c23ad2fa3f45a23b8b3df4c8be8fe9b9716df7111b2bc310f4fdb05"
+          "sha256": "10ef29c7b996223d4800738d6433df3842c56054367c5eb1dc954bc11df29db4"
         },
         {
           "id": "clean-clone",
           "path": "evals/receipts/v1/clean-clone.json",
-          "sha256": "c4ef0b87d44a75f2ef984acd3731da8d8d507da525764ce7f77e4bfdd5cb3af8"
+          "sha256": "f7717f321c2ce3383e487ddae75a6f326b8984dab4b3896726684b0ff19cb264"
         }
       ],
       "reasons": [
-        "context-budget: receipt bytes are missing or do not match the manifest SHA-256",
-        "browser: receipt is stale for the current source revision",
-        "e2e: receipt is stale for the current source revision",
-        "mechanical: receipt is stale for the current source revision",
-        "security: receipt is stale for the current source revision",
-        "clean-clone: receipt is stale for the current source revision"
+        "context-budget: receipt shape or producer identity is invalid",
+        "browser: receipt omits 33 required coverage checks"
       ]
     },
     {
@@ -60,11 +56,11 @@
         {
           "id": "browser",
           "path": "evals/receipts/v1/browser.json",
-          "sha256": "e0b518b4af116c4327d45ce76d82b41708ae9665122ed582ae22d928275c560d"
+          "sha256": "0efa467b058f5c9a81b4f15b983038d3b7851a81c6c55ef2345a68af57f3472a"
         }
       ],
       "reasons": [
-        "receipt is stale for the current source revision"
+        "receipt omits 33 required coverage checks"
       ]
     },
     {
@@ -74,11 +70,11 @@
         {
           "id": "browser",
           "path": "evals/receipts/v1/browser.json",
-          "sha256": "e0b518b4af116c4327d45ce76d82b41708ae9665122ed582ae22d928275c560d"
+          "sha256": "0efa467b058f5c9a81b4f15b983038d3b7851a81c6c55ef2345a68af57f3472a"
         }
       ],
       "reasons": [
-        "browser coverage: receipt is stale for the current source revision"
+        "browser coverage: receipt omits 33 required coverage checks"
       ]
     },
     {

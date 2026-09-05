@@ -2,7 +2,7 @@
   "schema_version": 1,
   "kind": "security",
   "producer_id": "tastecheck.release.security.v1",
-  "source_tree_sha256": "d6561d5371b263a5e84f15fd392b25da4045133e6015edeff92698c114df825b",
+  "source_tree_sha256": "471eb983d24f27f3d91bc639c73f24b26ecec3bfe85a31926a19eb82bc162f14",
   "nonce": "security-release-v1",
   "started_at": "2026-07-14T00:21:29.377Z",
   "finished_at": "2026-07-14T00:21:29.688Z",
