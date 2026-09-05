@@ -9,12 +9,12 @@ description: >-
 
 # i18n-Ready (bilingual by design, not by patch)
 
-Design for the longest honest string, then translate meaning—not words. English/Spanish
-is the worked pair; the structural method generalizes.
+Design for the longest honest string; translate meaning, not words. English/Spanish is the
+worked pair; the method generalizes.
 
 ## Make a locale contract before translating or resizing
 
-Record a locale contract before resizing or translating:
+Record a locale contract before resizing/translating:
 
 | Boundary | Required decision/evidence |
 | --- | --- |
@@ -23,41 +23,39 @@ Record a locale contract before resizing or translating:
 | mechanics | formats and data source for date/time zone/number/currency/address/name |
 | stress/direction | longest approved fixture by surface; current `dir`, RTL/bidi/logical-property path |
 
-Never invent locale, idiom, translation, or formality; pending source/approval means
-structural readiness only.
+Never invent locale, idiom, translation, or formality; pending source/approval is structural
+readiness only.
 
 ## The decision order
 
 1. Set `<html lang>` and inline `lang` switches.
 2. Test the longest approved fixture; text containers/content-sized controls avoid fixed
-   widths. Intentional truncation exposes reachable full text.
-3. Use logical inline/block properties for RTL readiness, and `Intl` with real locales
-   for all mechanical formats.
+   widths. Intentional truncation exposes full text.
+3. Use logical inline/block properties for RTL and `Intl` with real locales for formats.
 4. Re-express native voice/idiom/formality (including tú/usted); do not calque.
-5. When the product offers an in-product language choice, self-label and persist the
-   control and update `lang`; provide `hreflang` and per-locale metadata for indexed
-   locale routes where applicable.
+5. For an in-product language choice, self-label/persist the control, update `lang`, and
+   provide `hreflang`/per-locale metadata for indexed locale routes where applicable.
 
 ## Non-negotiables
 
 - Correct language attributes, longest-string-safe layout, and logical CSS—no text images
-  or concatenated sentence fragments.
+  or concatenated fragments.
 - Explicit-locale `Intl`; native Spanish with consistent formality, accents/ñ/¿¡, and
   `cognitive-a11y` pass per locale.
 
 ## Verify meaning, layout, and mechanics separately
 
-Keep three evidence lanes distinct: **meaning** (native/approved intent, formality,
-idiom, plural/protected wording); **layout** (longest fixtures in real views/states;
-pseudo-localization finds width defects only); **mechanical** (`Intl`, time zones,
-currencies, inputs, `lang`/`dir`, logical properties, toggle persistence). A date changing
-calendar day is a data defect.
+Keep three lanes distinct: **meaning** (native/approved intent, formality, idiom,
+plural/protected wording); **layout** (longest fixtures in real views/states;
+pseudo-localization finds width defects only); **mechanical** (`Intl`, time zones, currencies,
+inputs, `lang`/`dir`, logical properties, toggle persistence). A date changing calendar day
+is a data defect.
 
 ## Repair order and evidence
 
-Require locale contract and approved fixtures first. Repair message boundaries, formats,
-keys, wrapping, logical CSS/bidi, and native voice, then record separate three-lane checks
-per locale/surface with reviewer/source authority.
+Require locale contract and approved fixtures first. Repair boundaries, formats, keys, wrapping,
+logical CSS/bidi, and native voice; record separate three-lane checks per locale/surface with
+reviewer/source authority.
 
 ## Self-check (per language, before shipping)
 
@@ -67,14 +65,13 @@ per locale/surface with reviewer/source authority.
 
 ## How to deliver
 
-Deliver locale readiness: tag/fallback, formality source, longest fixture, three-lane
-evidence, bidi/format risk, and owner. Keep locales in `DESIGN-SYSTEM.md` and hand off
-voice/type/accessibility work.
+Deliver tag/fallback, formality source, longest fixture, three-lane evidence, bidi/format
+risk, and owner. Keep locales in `DESIGN-SYSTEM.md`; hand off voice/type/accessibility.
 
 ## Reference files
 
-- `references/decision-records.md` — meta-patterns + ADR rules for novel cases.
-- `assets/locale-fixtures.json` — EN/ES message keys, format examples, and longest-string stress fixtures.
+- `references/decision-records.md` — meta-patterns + ADR rules.
+- `assets/locale-fixtures.json` — EN/ES keys, formats, and longest-string fixtures.
 
 <!-- contract:v1:start -->
 ## Contract (generated)

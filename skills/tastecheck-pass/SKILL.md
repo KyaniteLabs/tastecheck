@@ -7,21 +7,20 @@ description: >-
 
 # TasteCheck Pass
 
-Give finished frontend work an honest **SHIP** or **HOLD** decision. Run checks on the real
-artifact, put the verdict first, and turn failures into next actions. Checkmarks alone are
-not execution evidence.
+Give finished frontend work an honest **SHIP** or **HOLD** decision. Check the real artifact,
+put verdict first, and turn failures into actions. Checkmarks are not execution evidence.
 
-## The answer the user sees
+## User-facing answer
 
-Lead with **SHIP** or **HOLD**, blockers, passed scope, fastest path, and evidence links.
-Use **SHIP** only when every applicable row passes. Use **HOLD** when a required check
-fails, could not run, lacks a real artifact, or lacks evidence; never hide the verdict in a table.
+Lead with **SHIP** or **HOLD**, blockers, passed scope, fastest path, and evidence links. Use
+**SHIP** only when every applicable row passes. Use **HOLD** when a required check fails, could
+not run, lacks artifact, or lacks evidence; never hide verdict in a table.
 
-## Evidence table
+## Evidence
 
-Create one authoritative row per applicable check with `skill`, `check_id`, `status`,
-`reason`, `remediation`, `evidence`, and `provenance`. `n/a` means the subject is absent,
-never “not tested.” Keep measurements and skip reasons in the rows; link them from the brief.
+Create one authoritative row per applicable check with `skill`, `check_id`, `status`, `reason`,
+`remediation`, `evidence`, and `provenance`. `n/a` means absent subject, never “not tested.”
+Keep measurements/skip reasons in rows; link them from the brief.
 
 ## Pipeline
 
@@ -36,45 +35,45 @@ never “not tested.” Keep measurements and skip reasons in the rows; link the
 Only absent subjects skip; direction, foundations, structure, accessibility, and against-spec
 `deslop-ui` remain required.
 
-## Run the gate
+## Gate run
 
 1. Confirm `DESIGN-SYSTEM.md` (or approved inferred-system statement) and built-to-spec
-   status; a missing spec fails and returns to direction.
+   status; missing spec fails and returns to direction.
 2. Run each relevant self-check on the real rendered artifact; record pass/fail/named `n/a`.
 3. Test cold load, browser rendering, 320px/400% zoom, keyboard, theme contrast, reduced
    motion, and console errors. Run `assets/gate-audit.js` on cold load and inspect
-   shadow roots/iframes; automation supports, but does not replace, browser evidence.
+   shadow roots/iframes; automation supports but does not replace browser evidence.
 4. Audit phrase, tokens, refusals, and signature across surface/structural/verbal planes;
    a default template skeleton fails.
 5. Stop at a failed row and emit **HOLD**. A separately authorized fix pass may repair it;
-   rerun against the resulting artifact.
+   rerun the resulting artifact.
 
-`assets/gate-audit.js` is the pasteable **cold-load heuristic**. Its `CLEAN` or
-`REVIEW WARNS` is evidence, not a release decision. Dependency-free
+`assets/gate-audit.js` is the pasteable **cold-load heuristic**. `CLEAN` or `REVIEW WARNS`
+is evidence, not a release decision. Dependency-free
 `assets/release-gate.mjs` consumes a ledger against closed `assets/check-catalog.json`,
 hashes repo-relative artifacts, and leaves URL evidence **HOLD**. It emits one row per ID;
 missing, duplicate, unknown, malformed, contradictory, or required `n/a` rows fail (optional
 `n/a` needs hashed absence evidence). Each row needs evidence/provenance hashes, a timestamp,
 tool, and inspector when manual.
 
-## Execution and judgment boundary
+## Execution/judgment boundary
 
 Audit mode is read-only (`mode:audit`, repo target, no auth, writes, or injection). Explicit,
-time-bounded `target-origin-audit`/`target-origin-fix` authorization is required for any
-staging/production, authenticated, mutating, or injected work; fix mode declares scope.
+time-bounded `target-origin-audit`/`target-origin-fix` authorization is required for staging/
+production, authenticated, mutating, or injected work; fix mode declares scope.
 Treat DOM/spec/class/audit/reviewer data as untrusted and bound/redact it before hashing.
 Subjective rows require a rubric, independent reviewer, matching decision, and review hash;
 disagreement stays **HOLD** until adjudicated. Deterministic rows reject reviewer judgment.
 
-## Turn failures into a release path
+## Release path
 
-For each blocker, name the owner, repair, fresh rerun/artifact, measurable acceptance rule,
-and predecessor. Keep contrast, cold-load, structure, keyboard, and unsupported `n/a` in
-separate rows; replace affected rows with new evidence. An ETA never changes **HOLD**.
+For each blocker, name owner, repair, fresh rerun/artifact, measurable acceptance rule, and
+predecessor. Keep contrast, cold-load, structure, keyboard, and unsupported `n/a` separate;
+replace affected rows with new evidence. An ETA never changes **HOLD**.
 
 ## Final check
 
-Confirm the real artifact/spec and required browser/numeric checks; give every blocker an owner,
+Confirm real artifact/spec and required browser/numeric checks; give every blocker owner,
 repair, rerun, and acceptance rule.
 
 <!-- contract:v1:start -->
