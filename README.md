@@ -146,7 +146,7 @@ TasteCheck is MIT licensed; the authoritative terms are in [`LICENSE`](LICENSE).
 
 ## What is TasteCheck?
 
-**TasteCheck** is a **frontend taste and ship-gate evaluation toolkit** that helps **frontend engineers and agents shipping UI** **fail closed on generic/sloppy UI and pass only evidence-backed ship quality**.
+**TasteCheck** is a **frontend taste and ship-gate evaluation toolkit** that helps **frontend engineers and agents shipping UI** **fail closed on generic/sloppy UI and organize evidence for scoped ship-quality decisions**. Subjective checks remain accountable human judgments.
 
 | | |
 | --- | --- |
@@ -160,14 +160,14 @@ TasteCheck is MIT licensed; the authoritative terms are in [`LICENSE`](LICENSE).
 ## Who it's for
 
 - Primary: frontend engineers and agents shipping UI
-- Use when you need to fail closed on generic/sloppy UI and pass only evidence-backed ship quality
+- Use when you need to fail closed on generic/sloppy UI and organize evidence for a scoped ship-quality decision
 - Skip if you need a design Figma plugin
 
 ## FAQ
 
 ### What is TasteCheck?
 
-TasteCheck is a frontend taste and ship-gate evaluation toolkit. It helps frontend engineers and agents shipping UI fail closed on generic/sloppy UI and pass only evidence-backed ship quality.
+TasteCheck is a frontend taste and ship-gate evaluation toolkit. It helps frontend engineers and agents shipping UI fail closed on generic/sloppy UI and organize evidence for scoped ship-quality decisions, while accountable reviewers make subjective calls.
 
 ### Who should use TasteCheck?
 
@@ -175,7 +175,7 @@ frontend engineers and agents shipping UI.
 
 ### How is TasteCheck different?
 
-Unlike subjective design opinions, TasteCheck is a fail-closed ship gate with evidence.
+Unlike subjective design opinions alone, TasteCheck is a fail-closed ship gate that organizes evidence and records accountable human review where judgment is required.
 
 ### Is TasteCheck production software?
 

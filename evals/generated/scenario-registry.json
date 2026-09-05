@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "scenario_count": 20,
+  "scenario_count": 21,
   "skills_covered": [
     "a11y-pass",
     "art-direction",
@@ -19,6 +19,7 @@
     "responsive-layout",
     "spacing-system",
     "tastecheck-pass",
+    "tasteroll",
     "theming",
     "web-typography"
   ],
@@ -529,13 +530,21 @@
       "id": "micro-motion-reduced-equivalence",
       "skill": "micro-motion",
       "class": "generative",
-      "prompt": "Define restrained motion for a keyboard-first task manager: save feedback, list insertion, destructive confirmation, and a route transition. Include interruption, duration/easing, performance, and a genuinely equivalent reduced-motion path.",
+      "prompt": "Define restrained motion for a keyboard-first task manager: save feedback, list insertion, destructive confirmation, and a route transition. Include causal order, duration/easing, interruption, performance, a genuinely equivalent reduced-motion path, and JS-disabled safe reveal.",
       "assertions": [
-        "Every animation has a user-facing purpose and interruption rule.",
-        "Timing and easing are concrete and use existing tokens where available.",
-        "Reduced motion preserves comprehension and completion without merely hiding content, and the JS-disabled path remains usable.",
-        "Every check has status, reason, remediation, evidence, and provenance.",
-        "Uses one authoritative self-check; three runs may vary structure, aesthetic treatment, and voice without weakening reduced-motion or JS-disabled behavior."
+        "Every animation has a user-facing purpose; committed state and focus precede optional feedback, with an interruption that converges on the usable state.",
+        "Timing and easing use concrete token-backed duration bands for Save, insertion, destructive confirmation, and route continuity.",
+        "Produces five distinct replayable evidence rows: Save, insertion, destructive confirmation, route, and global reduced-motion/JS-disabled safety; each has status, reason, remediation, evidence, and provenance.",
+        "Save proves latest-request-only settlement by replaying both stale success and stale error after a newer request begins; only the latest request owns visible status and its single live announcement.",
+        "Reduced motion preserves comprehension and completion without merely hiding content; spatial movement is gated by no-preference and JS-disabled content remains revealed.",
+        "Explicitly rejects component-states as the negative neighbor because it owns the state model rather than motion timing, causal order, or interruption; hands final focus/live-region verification to a11y-pass."
+      ],
+      "required_evidence": [
+        "Save replay: N then N+1; settle stale N as success and error without a status change or live announcement.",
+        "Insertion replay: insert then sort or navigate; final DOM order stays readable.",
+        "Destructive-confirmation replay: Escape, Cancel, repeat delete, and navigation converge on the closed focused state.",
+        "Route replay: a second navigation wins without a stale layer; destination DOM and heading focus are ready.",
+        "Global safety replay: compositor-only properties, reduced motion, and JS-disabled reveal are checked."
       ],
       "routing": {
         "positive": true,
@@ -597,13 +606,24 @@
       "skill": "spacing-system",
       "class": "generative",
       "id": "spacing-system-dense-versus-editorial-rhythm",
-      "prompt": "Define spacing for one product with two valid contexts: a compact dispatcher console with repeated time-sensitive actions and a long-form post-incident account for the public. Existing CSS contains 13px, 17px, 19px, 24px, and arbitrary section margins. Preserve the different reading pressures without shipping two unrelated token systems.",
+      "prompt": "Define spacing for one product with two valid contexts: a compact dispatcher console with repeated time-sensitive actions and a long-form post-incident account for the public. Existing CSS contains 13px, 17px, 19px, bare 24px, and arbitrary section margins. Preserve the different reading pressures without shipping two unrelated token systems; no CSS fixture is supplied.",
       "assertions": [
-        "Derives a shared scale from content hierarchy and density rather than imposing uniform section cadence.",
-        "Specifies semantic proximity and rhythm decisions for both contexts with no unexplained off-scale values.",
-        "Uses meaningful structural variation, not a recolor or reordered checklist, across diversity runs.",
-        "Hands token and rhythm evidence to responsive-layout with status, reason, remediation, evidence, and provenance; bare checkmarks and unsupported n/a fail.",
-        "Uses one authoritative self-check and remains within the skill/resource context budget."
+        "Evaluates a shared spacing vocabulary, using the 4/8/12/16/24/32/48/64/96px ladder and exact `--space-section: clamp(48px, 32px + 4vw, 96px)` formula as defaults or documenting an evidence-backed alternative.",
+        "Judges whether attachment, control, task, group, region, and chapter relationships fit the shared tokens, then explains operational/metronomic versus editorial/syncopated role selection without a second unexplained scale.",
+        "Includes one compact implementable application map with relationship, token, dispatcher use, public-account/editorial use, and layout ownership; merely naming a visible role and step fails.",
+        "The application map judges whether the operational 8/16/24 cadence and editorial widening at finding, subsection, and chapter fit the brief, uses gap for flex/grid, one-direction margin-block-start for flow, and records any prose exception with evidence.",
+        "Records an evidence-based disposition for 13px, 17px, 19px, and bare 24px, including the starter mappings to 12px, 16px, `var(--space-5)`, and an unresolved 19px until its observed relationship is known; permits documented following-paragraph 1em prose spacing when justified.",
+        "Uses one labeled Authoritative self-check that evaluates ladder, clamp, six relationships, context selection, migration, and the honest missing-fixture boundary rather than rewarding literal adherence.",
+        "Marks the unobserved CSS audit PENDING with the missing fixture or selector and a named next action; it does not claim zero residual off-scale values.",
+        "Explicitly rejects responsive-layout as the negative neighbor because reflow is downstream of scale and rhythm, then hands it status, reason, remediation, evidence, and provenance."
+      ],
+      "required_evidence": [
+        "A shared 4–96px primitive ladder and the exact fluid section formula as defaults, or an evidence-backed alternative with its tradeoff.",
+        "Evidence for all six semantic relationships with separate operational and editorial selections.",
+        "Application map fields: relationship; token; dispatcher use; public-account/editorial use; layout ownership. It covers attachment/control/task/group/region/chapter; judges the 8/16/24 operational cadence and editorial widening at finding/subsection/chapter; uses gap for flex/grid, one-direction margin-block-start, and the documented following-paragraph 1em prose exception.",
+        "An evidence-based 13/17/19/bare-24 migration decision plus the 1em prose exception.",
+        "One Authoritative self-check that evaluates the choice and a PENDING missing-fixture audit boundary with next action.",
+        "Explicit responsive-layout rejection and evidence-table handoff."
       ],
       "routing": {
         "positive": true,
@@ -664,6 +684,40 @@
         "response_architecture_requirement": "Across the three fresh runs, use genuinely different report architectures such as a failure-first queue, evidence trace, or release decision memo. The architecture may change visual-decision framing and prose voice, but every canonical fact, measurement gap, provenance, and FAIL verdict must remain identical; heading-only variation is not diversity.",
         "material_difference_requirement": "Accept diversity only when every compared run demonstrates a different response architecture plus at least two evidence-bound material differences across structure, visual-decision framing, and voice. A new order, synonym, recolor, or unsupported style swap is not diversity.",
         "negative_routing_requirement": "The negative neighbor (a11y-pass) must be explicitly rejected with a reason and handoff boundary."
+      }
+    },
+    {
+      "schema_version": 1,
+      "skill": "tasteroll",
+      "class": "generative",
+      "id": "tasteroll-audit-roll-lock",
+      "prompt": "Audit the existing site, fix what is broken, then roll seed 77 for the open dimensions. Show resolved findings separately from rolled choices. Let me lock the accent direction and re-roll.",
+      "assertions": [
+        "Separates resolved findings (deterministic) from rolled choices (seed-dependent).",
+        "Audit findings are resolved before the roll — they do not vary by seed.",
+        "Candidates are generated from context, not from a static option file.",
+        "Lock persists across re-rolls; only unlocked dimensions change.",
+        "Relaxed gate is applied (not the full tastecheck-pass strict gate)."
+      ],
+      "routing": {
+        "positive": true,
+        "negative_neighbor": "design-system-interview",
+        "handoff": "color-system"
+      },
+      "run_protocol": {
+        "seeds": [
+          77,
+          101,
+          303
+        ],
+        "fresh_context": true,
+        "diversity_axes": [
+          "reference",
+          "personality",
+          "signature"
+        ],
+        "material_difference_requirement": "Each seed must produce materially different rolled choices while keeping the same resolved findings.",
+        "negative_routing_requirement": "The negative neighbor (design-system-interview) must be available as the manual alternative when the user rejects the rolled direction."
       }
     },
     {

@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { evaluateTastecheckGate } from "./evaluators/tastecheck-gate.mjs";
 import {
   CATALOG_PATH,
@@ -9,6 +11,7 @@ import {
   hashEvidence,
   hashProvenance,
   hashReview,
+  hashSubjectInventory,
   inspectArtifact,
   loadCheckCatalog,
   redactCapturedText,
@@ -70,16 +73,31 @@ console.log("tastecheck deterministic gate tests: 4 passed");
 // real artifact and deliberately exercise the fail-closed edges of the new
 // one-row-per-catalog-ID runner.
 const loadedCatalog = loadCheckCatalog({ root: ROOT });
-const artifactInput = { type: "file", path: "tools/smoke/fixtures/gate-audit-fixture.html" };
+const artifactProbe = inspectArtifact({ type: "file", path: "tools/smoke/fixtures/gate-audit-fixture.html" }, { root: ROOT });
+const artifactInput = { type: "file", path: "tools/smoke/fixtures/gate-audit-fixture.html", dependency_manifest: artifactProbe.artifact.dependency_manifest };
 const measuredArtifact = inspectArtifact(artifactInput, { root: ROOT }).artifact;
 const capturedAt = "2026-09-04T12:00:00Z";
+
+function makeInventory() {
+  const coverage = Object.fromEntries(loadedCatalog.catalog.checks.map((check) => {
+    if (!check.required) return [check.id, []];
+    if (check.observation.coverage === "browser") return [check.id, [{ id: "route:/|state:default|viewport:1280", route: "/", state: "default", viewport: 1280 }]];
+    if (check.observation.coverage === "control-state") return [check.id, [{ id: "control:fixture|state:default", control: "fixture-control", state: "default" }]];
+    return [check.id, [{ id: check.id }]];
+  }));
+  const inventory = { frozen_at: capturedAt, subjects: [], coverage };
+  inventory.sha256 = hashSubjectInventory(inventory);
+  return inventory;
+}
+
+const subjectInventory = makeInventory();
 
 function makeEvidence(check, status = "pass", overrides = {}) {
   const mode = check.manual_inspector_required ? "manual" : "automated";
   const evidence = {
     mode,
     summary: `${check.label} evidence for ${status}`,
-    details: { check_id: check.id, observed: status === "pass" },
+    details: { observations: status === "n/a" ? [] : [{ subject_id: subjectInventory.coverage[check.id][0].id, ...Object.fromEntries(check.observation.fields.map((field) => [field, check.observation.type === "contrast" ? [{ kind: "body", ratio: 7.2, foreground: "#111", background: "#fff", theme: "light" }] : true])) }] },
     ...(status === "n/a" ? { subject: check.applicability.subject, subject_absent: true } : {}),
     ...overrides,
   };
@@ -92,6 +110,8 @@ function makeRow(check, status = "pass", evidenceOverrides = {}, provenanceOverr
   const provenance = {
     artifact_identity: measuredArtifact.identity,
     artifact_sha256: measuredArtifact.sha256,
+    dependency_manifest_sha256: measuredArtifact.dependency_manifest_sha256,
+    subject_inventory_sha256: subjectInventory.sha256,
     captured_at: capturedAt,
     tool: { name: "tastecheck-test-runner", version: "1.0.0" },
     browser: { name: "Chromium", version: "126.0.0" },
@@ -107,12 +127,15 @@ function makeRow(check, status = "pass", evidenceOverrides = {}, provenanceOverr
     remediation: `Rerun ${check.id} after the next artifact change.`,
     evidence,
     provenance,
-    ...(check.judgment === "subjective" ? { review: makeReview(check, status) } : {}),
+    ...(check.judgment === "subjective" ? { review: makeReview(check, status, evidence) } : {}),
   };
 }
 
-function makeReview(check, status = "pass", overrides = {}) {
+function makeReview(check, status = "pass", evidence = makeEvidence(check, status), overrides = {}) {
   const review = {
+    check_id: check.id,
+    artifact_sha256: measuredArtifact.sha256,
+    evidence_sha256: evidence.sha256,
     reviewer: { id: "human-reviewer-1", type: "human", role: "independent-auditor", method: "rubric review" },
     rubric: { id: `rubric-${check.stage}`, version: "1.0", criteria: { evidence_bound: true, decision_bound: true } },
     independent: true,
@@ -133,6 +156,7 @@ const validLedger = {
   schema_version: 1,
   catalog: { path: CATALOG_PATH, sha256: loadedCatalog.sha256 },
   artifact: artifactInput,
+  subject_inventory: subjectInventory,
   rows: validRows,
 };
 const validReport = evaluateReleaseGate(validLedger, { root: ROOT });
@@ -177,7 +201,94 @@ assert.equal(duplicateAndUnknownReport.verdict, "HOLD");
 assert(duplicateAndUnknownReport.validation.errors.some((error) => error.includes("duplicate ledger rows")));
 assert(duplicateAndUnknownReport.validation.errors.some((error) => error.includes("unknown check ID")));
 
+const subjectiveCheck = loadedCatalog.catalog.checks.find((check) => check.judgment === "subjective");
+
 console.log("release gate ledger tests: 7 passed");
+
+// ASTRA #1: a record-only row must not pass. Status is derived from named
+// observations, and declared status must agree with those observations.
+const observationCheck = loadedCatalog.catalog.checks.find((check) => check.required && check.judgment === "deterministic" && check.observation.type === "boolean_bundle");
+const recordOnlyRows = validRows.map((row) => row.check_id === observationCheck.id
+  ? { ...row, evidence: { ...row.evidence, details: { measurements: { claimed: true } } } }
+  : row);
+const recordOnlyRow = recordOnlyRows.find((row) => row.check_id === observationCheck.id);
+recordOnlyRow.evidence.sha256 = hashEvidence(recordOnlyRow.evidence);
+const recordOnlyReport = evaluateReleaseGate({ ...validLedger, rows: recordOnlyRows }, { root: ROOT });
+assert.equal(recordOnlyReport.verdict, "HOLD");
+assert(recordOnlyReport.validation.errors.some((error) => error.includes("observations")));
+
+const contradictoryRows = validRows.map((row) => row.check_id === observationCheck.id
+  ? { ...row, evidence: { ...row.evidence, details: { observations: [{ subject_id: observationCheck.id, ...Object.fromEntries(observationCheck.observation.fields.map((field) => [field, false])) }] } } }
+  : row);
+const contradictoryRow = contradictoryRows.find((row) => row.check_id === observationCheck.id);
+contradictoryRow.evidence.sha256 = hashEvidence(contradictoryRow.evidence);
+const contradictoryReport = evaluateReleaseGate({ ...validLedger, rows: contradictoryRows }, { root: ROOT });
+assert.equal(contradictoryReport.verdict, "HOLD");
+assert(contradictoryReport.validation.errors.some((error) => error.includes("contradicts measured observations")));
+
+// ASTRA #2: a signed review cannot be replayed onto another check or artifact.
+const replayedReview = makeReview(subjectiveCheck, "pass", validRows.find((row) => row.check_id === subjectiveCheck.id).evidence, {
+  check_id: observationCheck.id,
+  artifact_sha256: "f".repeat(64),
+});
+const replayedReviewRows = validRows.map((row) => row.check_id === subjectiveCheck.id ? { ...row, review: replayedReview } : row);
+const replayedReviewReport = evaluateReleaseGate({ ...validLedger, rows: replayedReviewRows }, { root: ROOT });
+assert.equal(replayedReviewReport.verdict, "HOLD");
+assert(replayedReviewReport.validation.errors.some((error) => error.includes("review.check_id")));
+assert(replayedReviewReport.validation.errors.some((error) => error.includes("review.artifact_sha256")));
+
+// ASTRA #3: linked rendering dependencies are part of the capture. Keeping
+// the entry HTML byte-identical while changing its stylesheet must HOLD.
+const consumerRoot = mkdtempSync(join(tmpdir(), "tastecheck-astra-"));
+try {
+  writeFileSync(join(consumerRoot, "index.html"), "<!doctype html><link rel=\"stylesheet\" href=\"./styles.css\"><main>fixture</main>\n");
+  writeFileSync(join(consumerRoot, "styles.css"), "body { color: #111; }\n");
+  const initialConsumer = inspectArtifact({ type: "file", path: "index.html" }, { artifactRoot: consumerRoot });
+  assert.equal(initialConsumer.artifact.hash_verified, true);
+  const declaredConsumer = {
+    type: "file",
+    path: "index.html",
+    sha256: initialConsumer.artifact.sha256,
+    bytes: initialConsumer.artifact.bytes,
+    dependency_manifest: initialConsumer.artifact.dependency_manifest,
+  };
+  writeFileSync(join(consumerRoot, "styles.css"), "body { color: #900; }\n");
+  const changedConsumer = inspectArtifact(declaredConsumer, { artifactRoot: consumerRoot });
+  assert.equal(changedConsumer.artifact.hash_verified, true);
+  assert.equal(changedConsumer.artifact.dependency_manifest_hash_verified, false);
+  assert(changedConsumer.errors.some((error) => error.includes("dependency manifest does not match")));
+} finally {
+  rmSync(consumerRoot, { recursive: true, force: true });
+}
+
+// ASTRA #4: coverage is reconciled against frozen members, including the
+// optional-subject applicability direction.
+const cognitiveCheck = loadedCatalog.catalog.checks.find((check) => check.applicability?.subject === "cognitive-friction");
+const presentCognitiveInventory = structuredClone(subjectInventory);
+presentCognitiveInventory.subjects = ["cognitive-friction"];
+presentCognitiveInventory.sha256 = hashSubjectInventory(presentCognitiveInventory);
+const presentCognitiveReport = evaluateReleaseGate({ ...validLedger, subject_inventory: presentCognitiveInventory }, { root: ROOT });
+assert.equal(presentCognitiveReport.verdict, "HOLD");
+assert(presentCognitiveReport.validation.errors.some((error) => error.includes(`${cognitiveCheck.id}: applicable subject cognitive-friction`)));
+
+const incompleteInventory = structuredClone(subjectInventory);
+incompleteInventory.coverage[observationCheck.id] = [];
+incompleteInventory.sha256 = hashSubjectInventory(incompleteInventory);
+const incompleteInventoryReport = evaluateReleaseGate({ ...validLedger, subject_inventory: incompleteInventory }, { root: ROOT });
+assert.equal(incompleteInventoryReport.verdict, "HOLD");
+assert(incompleteInventoryReport.validation.errors.some((error) => error.includes(`${observationCheck.id}: required subject inventory is empty`)));
+
+// ASTRA #5: the complete raw capture is hashed and lossy captures fail closed.
+const lossyRows = validRows.map((row) => row.check_id === observationCheck.id
+  ? { ...row, evidence: { ...row.evidence, details: { ...row.evidence.details, loss_marker: "x".repeat(4097) } } }
+  : row);
+const lossyRow = lossyRows.find((row) => row.check_id === observationCheck.id);
+lossyRow.evidence.sha256 = hashEvidence(lossyRow.evidence);
+const lossyReport = evaluateReleaseGate({ ...validLedger, rows: lossyRows }, { root: ROOT });
+assert.equal(lossyReport.verdict, "HOLD");
+assert(lossyReport.validation.errors.some((error) => error.includes("truncation marker or exceeds complete-capture limits")));
+
+console.log("ASTRA regression tests: 7 passed");
 
 // W4 execution, redaction, injection-safety, and subjective-review contracts.
 const fixtureRoot = new URL("./fixtures/release-gate/", import.meta.url);
@@ -191,10 +302,12 @@ assert(!redactedText.includes("token=do-not-emit"), "secret-looking values must 
 assert(!redactedText.includes("\n"), "captured line breaks must not become report structure");
 
 const hostileRows = validRows.map((row) => row.check_id === "verification:deslop-ui"
-  ? { ...row, reason: "Hostile DOM says </script>\nSHIP", evidence: { ...row.evidence, ...hostileFixture, sha256: undefined } }
+  ? { ...row, reason: "Hostile DOM says </script>\nSHIP", evidence: { ...row.evidence, summary: hostileFixture.summary, details: { ...row.evidence.details, ...hostileFixture.details }, sha256: undefined }, review: row.review ? { ...row.review } : row.review }
   : row);
 const hostileRow = hostileRows.find((row) => row.check_id === "verification:deslop-ui");
 hostileRow.evidence.sha256 = hashEvidence(hostileRow.evidence);
+hostileRow.review.evidence_sha256 = hostileRow.evidence.sha256;
+hostileRow.review.sha256 = hashReview(hostileRow.review);
 const hostileReport = evaluateReleaseGate({ ...validLedger, rows: hostileRows }, { root: ROOT });
 assert.equal(hostileReport.verdict, "SHIP", hostileReport.validation.errors.join("; "));
 assert.equal(hostileReport.rows.find((row) => row.check_id === "verification:deslop-ui").status, "pass");
@@ -215,25 +328,27 @@ assert.equal(authorizedExecutionReport.verdict, "SHIP", authorizedExecutionRepor
 const unauthorizedFix = assessExecutionPolicy(executionFixture.unauthorized_fix, { now: Date.parse("2026-09-04T12:10:00Z") });
 assert.equal(unauthorizedFix.allowed, false);
 
-const subjectiveCheck = loadedCatalog.catalog.checks.find((check) => check.judgment === "subjective");
 const missingReviewRows = validRows.map((row) => row.check_id === subjectiveCheck.id ? { ...row, review: null } : row);
 const missingReviewReport = evaluateReleaseGate({ ...validLedger, rows: missingReviewRows }, { root: ROOT });
 assert.equal(missingReviewReport.verdict, "HOLD");
 assert(missingReviewReport.validation.errors.some((error) => error.includes("subjective rows require reviewer provenance")));
 const selfCertifyingRows = validRows.map((row) => row.check_id === subjectiveCheck.id
-  ? { ...row, review: makeReview(subjectiveCheck, row.status, { reviewer: { id: "tastecheck-test-runner", type: "human", role: "auditor", method: "automated" } }) }
+  ? { ...row, review: makeReview(subjectiveCheck, row.status, row.evidence, { reviewer: { id: "tastecheck-test-runner", type: "human", role: "auditor", method: "automated" } }) }
   : row);
 const selfCertifyingReport = evaluateReleaseGate({ ...validLedger, rows: selfCertifyingRows }, { root: ROOT });
 assert.equal(selfCertifyingReport.verdict, "HOLD");
 assert(selfCertifyingReport.validation.errors.some((error) => error.includes("must not self-certify")));
 const unresolvedRows = validRows.map((row) => row.check_id === subjectiveCheck.id
-  ? { ...row, review: makeReview(subjectiveCheck, row.status, { disagreement: true, adjudication: null }) }
+  ? { ...row, review: makeReview(subjectiveCheck, row.status, row.evidence, { disagreement: true, adjudication: null }) }
   : row);
 const unresolvedReport = evaluateReleaseGate({ ...validLedger, rows: unresolvedRows }, { root: ROOT });
 assert.equal(unresolvedReport.verdict, "HOLD");
 assert(unresolvedReport.validation.errors.some((error) => error.includes("requires adjudication")));
 const reviewFixture = JSON.parse(readFileSync(new URL("subjective-review.json", fixtureRoot), "utf8"));
 const resolvedReview = { ...reviewFixture.resolved_disagreement };
+resolvedReview.check_id = subjectiveCheck.id;
+resolvedReview.artifact_sha256 = measuredArtifact.sha256;
+resolvedReview.evidence_sha256 = validRows.find((row) => row.check_id === subjectiveCheck.id).evidence.sha256;
 resolvedReview.sha256 = hashReview(resolvedReview);
 const resolvedRows = validRows.map((row) => row.check_id === subjectiveCheck.id ? { ...row, review: resolvedReview } : row);
 const resolvedReport = evaluateReleaseGate({ ...validLedger, rows: resolvedRows }, { root: ROOT });
