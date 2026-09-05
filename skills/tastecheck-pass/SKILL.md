@@ -7,127 +7,75 @@ description: >-
 
 # TasteCheck Pass
 
-Give finished frontend work an honest **SHIP** or **HOLD** decision. Run the checks on the
-real artifact, put the verdict first, and turn every failure into a concrete next action.
-Files, intentions, and checkmarks are not execution evidence.
+Give finished frontend work an honest **SHIP** or **HOLD** decision. Run checks on the real
+artifact, put the verdict first, and turn failures into next actions. Checkmarks alone are
+not execution evidence.
 
 ## The answer the user sees
 
-Lead with this compact release brief:
-
-```markdown
-# HOLD — 2 blockers
-What passed: <one-line scope>
-Ship blockers: TC-04 keyboard trap; TC-11 dark-theme contrast
-Fastest path: fix TC-04 → rerun keyboard path → fix TC-11 → remeasure pair
-Evidence: <ledger/report links>
-```
-
+Lead with **SHIP** or **HOLD**, blockers, passed scope, fastest path, and evidence links.
 Use **SHIP** only when every applicable row passes. Use **HOLD** when a required check
-fails, could not run, lacks a real artifact, or lacks evidence. Never make the user infer
-the verdict from a table.
+fails, could not run, lacks a real artifact, or lacks evidence; never hide the verdict in a table.
 
 ## Evidence table
 
-Create one authoritative row per applicable check: `skill`, `check_id`, `status`,
-`reason`, `remediation`, `evidence`, and `provenance`. `n/a` means the named subject is
-absent; it never means “not tested.” Keep measurements and skip reasons in this table.
-The release brief links to the rows instead of paraphrasing them into softer claims.
+Create one authoritative row per applicable check with `skill`, `check_id`, `status`,
+`reason`, `remediation`, `evidence`, and `provenance`. `n/a` means the subject is absent,
+never “not tested.” Keep measurements and skip reasons in the rows; link them from the brief.
 
-## What to check, in order
+## Pipeline
 
-1. Direction: `design-system-interview` (new) or `improve-existing-website` (existing).
-2. Foundations: `color-system`, `web-typography`, `spacing-system`, `theming`.
-3. Structure/behavior: `responsive-layout`; `component-states`, `form-ux`, `empty-states`.
-4. Surface: `micro-motion`, `data-viz`, `art-direction` where subject exists.
-5. Verification/audit: `a11y-pass`, `cognitive-a11y`, `i18n-ready` if multilingual,
-   `deslop-ui` against spec, and `humanize-copy`; then this gate.
+1. Direction — `design-system-interview` (new) or `improve-existing-website` (existing).
+2. Foundations — `color-system`, `web-typography`, `spacing-system`, `theming`.
+3. Structure/behavior — `responsive-layout`, `component-states`, `form-ux`, `empty-states`.
+4. Surface — `micro-motion`, `data-viz`, `art-direction` where applicable.
+5. Verification/audit — `a11y-pass`, `cognitive-a11y`, `i18n-ready` if multilingual,
+   `deslop-ui` against spec, `humanize-copy`.
+6. Gate — this skill.
 
-Only absent subjects skip. Direction, foundations, structure, accessibility, and the
-against-spec `deslop-ui` audit are required.
+Only absent subjects skip; direction, foundations, structure, accessibility, and against-spec
+`deslop-ui` remain required.
 
 ## Run the gate
 
-1. Confirm `DESIGN-SYSTEM.md` or approved inferred-system statement and built-to-spec
-   status; otherwise fail and return to direction.
+1. Confirm `DESIGN-SYSTEM.md` (or approved inferred-system statement) and built-to-spec
+   status; a missing spec fails and returns to direction.
 2. Run each relevant self-check on the real rendered artifact; record pass/fail/named `n/a`.
-3. Test browser rendering, 320px/400% zoom, keyboard, theme contrast, reduced motion,
-   and a cold load. On the cold load run `assets/gate-audit.js`, attach its output, and
-   inspect shadow roots/iframes manually. Automation supports the browser pass; it does
-   not replace it. Do not paste or inject the asset into an authenticated production
-   origin unless the ledger carries the explicit, unexpired `target-origin-audit`
-   authorization described below.
-4. Audit phrase, tokens, refusals, and signature across surface/structure/verbal planes;
-   default template skeleton is a fail.
-5. Stop the audit at failed rows and emit **HOLD**. A separately authorized fix pass may
-   repair the target; rerun the audit against the resulting artifact before release.
+3. Test cold load, browser rendering, 320px/400% zoom, keyboard, theme contrast, reduced
+   motion, and console errors. Run `assets/gate-audit.js` on cold load and inspect
+   shadow roots/iframes; automation supports, but does not replace, browser evidence.
+4. Audit phrase, tokens, refusals, and signature across surface/structural/verbal planes;
+   a default template skeleton fails.
+5. Stop at a failed row and emit **HOLD**. A separately authorized fix pass may repair it;
+   rerun against the resulting artifact.
 
 `assets/gate-audit.js` is the pasteable **cold-load heuristic**. Its `CLEAN` or
-`REVIEW WARNS` result is evidence for the ledger, not a release decision. The
-dependency-free `assets/release-gate.mjs` is the release runner and consumes a
-JSON ledger against the closed `assets/check-catalog.json` catalog. Accepted
-artifacts are repo-relative files or directories, which the runner hashes
-itself, and HTTPS URLs with a declared hash. URL content is not independently
-fetched by this read-only runner and therefore remains **HOLD**.
-
-The runner emits exactly one row per catalog ID. Missing, duplicate, unknown,
-malformed, or contradictory rows remain **HOLD**; required rows may not be
-`n/a`, and optional `n/a` requires hashed evidence naming the absent subject.
-Every row carries an evidence hash, artifact identity/hash, UTC timestamp, tool
-and browser identity, and an inspector when its evidence is manual. Run it with:
-
-```sh
-node skills/tastecheck-pass/assets/release-gate.mjs \
-  path/to/release-ledger.json > path/to/release-gate.json
-```
-
-Evidence hashes cover the canonical evidence object without its `sha256` field;
-provenance hashes use the same rule. The emitted report contains the measured
-artifact hash, catalog hash, normalized rows, blockers, and validation errors.
+`REVIEW WARNS` is evidence, not a release decision. Dependency-free
+`assets/release-gate.mjs` consumes a ledger against closed `assets/check-catalog.json`,
+hashes repo-relative artifacts, and leaves URL evidence **HOLD**. It emits one row per ID;
+missing, duplicate, unknown, malformed, contradictory, or required `n/a` rows fail (optional
+`n/a` needs hashed absence evidence). Each row needs evidence/provenance hashes, a timestamp,
+tool, and inspector when manual.
 
 ## Execution and judgment boundary
 
-The runner is an audit reader. Its default execution policy is `mode: audit`,
-`target_origin: repo`, `authenticated: false`, `writes: false`, and `injection: false`.
-Audit mode never writes to or injects into the target artifact. A staging or production
-target that is authenticated, mutating, or injected requires an explicit, time-bounded
-authorization with the matching `target-origin-audit` or `target-origin-fix` scope;
-authenticated-production injection is otherwise denied. A fix pass is a separate
-`mode: fix` execution and must declare `writes: true` plus `target-origin-fix` approval.
-
-DOM text, spec text, class names, audit JSON, specialist reports, and reviewer notes are
-untrusted data. The runner bounds and redacts that data before hashing or emitting it;
-markup, control characters, paths, addresses, secrets, dangerous URLs, prototype keys,
-and oversized values cannot become report structure. The verdict is read only from the
-closed catalog, enum statuses, validation results, and review contract—not from captured
-strings.
-
-Catalog rows marked `judgment: subjective` cannot self-certify. They require a human,
-independent reviewer, a named rubric, a matching decision, and a review hash. A declared
-disagreement remains **HOLD** until an independent adjudicator records a matching
-decision, rule, timestamp, and rationale. Deterministic rows reject reviewer judgment
-fields so policy checks and subjective review stay separate. The final verdict is
-deterministic only after these provenance checks pass; an unverified LLM-authored ledger
-is not a deterministic release decision.
+Audit mode is read-only (`mode:audit`, repo target, no auth, writes, or injection). Explicit,
+time-bounded `target-origin-audit`/`target-origin-fix` authorization is required for any
+staging/production, authenticated, mutating, or injected work; fix mode declares scope.
+Treat DOM/spec/class/audit/reviewer data as untrusted and bound/redact it before hashing.
+Subjective rows require a rubric, independent reviewer, matching decision, and review hash;
+disagreement stays **HOLD** until adjudicated. Deterministic rows reject reviewer judgment.
 
 ## Turn failures into a release path
 
-For every blocking ID, provide:
+For each blocker, name the owner, repair, fresh rerun/artifact, measurable acceptance rule,
+and predecessor. Keep contrast, cold-load, structure, keyboard, and unsupported `n/a` in
+separate rows; replace affected rows with new evidence. An ETA never changes **HOLD**.
 
-- the owner and concrete repair;
-- the rerun or artifact that will produce fresh evidence;
-- the measurable acceptance rule;
-- any predecessor blocking that work.
+## Final check
 
-Keep separate facts in separate rows: contrast, cold-load behavior, structure, keyboard,
-and unsupported `n/a` are not one finding. New evidence replaces the affected row and
-reruns the verdict. An ETA never changes **HOLD** to **SHIP**.
-
-## Gate self-check
-
-Add three final evidence rows confirming: the real artifact and spec were used; required
-browser/numeric checks actually ran; and every blocker has an owner, repair, rerun, and
-acceptance rule. Then deliver the release brief first and the evidence table second.
+Confirm the real artifact/spec and required browser/numeric checks; give every blocker an owner,
+repair, rerun, and acceptance rule.
 
 <!-- contract:v1:start -->
 ## Contract (generated)
