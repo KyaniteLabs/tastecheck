@@ -10,7 +10,7 @@
     "preflight:oracle": "node tools/preflight-dependencies.mjs --lane=oracle",
     "preflight:browser": "node tools/preflight-dependencies.mjs --lane=browser",
     "preflight:all": "node tools/preflight-dependencies.mjs --lane=all",
-    "test:structural": "npm run preflight:structural && npm run test:contracts && node tools/release/test-project-facts.mjs && node tools/release/test-public-status-stability.mjs && node tools/release/test-final-source-receipt-gate.mjs && node tools/verify.mjs && node tools/lint-skills.mjs && node tools/verify-landing.mjs && node tools/verify-integration.mjs && node tools/verify-gate-audit.mjs && node --test tools/test/nima.test.mjs && node tools/lib/test-nima.mjs && node tools/test/test-verification-failures.mjs",
+    "test:structural": "npm run preflight:structural && npm run test:contracts && node tools/release/test-project-facts.mjs && node tools/release/test-public-status-stability.mjs && node tools/release/test-final-source-receipt-gate.mjs && node tools/verify.mjs && node tools/lint-skills.mjs && node tools/verify-landing.mjs && node tools/verify-integration.mjs && node tools/verify-gate-audit.mjs && node tools/evals/test-tastecheck-gate.mjs && node --test tools/test/nima.test.mjs && node tools/lib/test-nima.mjs && node tools/test/test-verification-failures.mjs",
     "verify:skills": "node tools/verify.mjs",
     "lint:skills": "node tools/lint-skills.mjs",
     "verify:landing": "node tools/verify-landing.mjs",
