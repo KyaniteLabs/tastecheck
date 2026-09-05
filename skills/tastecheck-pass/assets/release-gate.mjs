@@ -9,10 +9,11 @@
  */
 import { createHash } from "node:crypto";
 import { existsSync, lstatSync, readFileSync, readdirSync, realpathSync, statSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve, sep } from "node:path";
+import { dirname, extname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
+export const VERIFIER_ROOT = ROOT;
 export const CATALOG_PATH = "skills/tastecheck-pass/assets/check-catalog.json";
 export const SCHEMA_VERSION = 1;
 export const KIND = "tastecheck-release-gate";
@@ -23,7 +24,7 @@ const RUNTIME_KEYS = ["name", "version"];
 const INSPECTOR_KEYS = ["name", "role", "method"];
 const EXECUTION_KEYS = ["mode", "target_origin", "authenticated", "writes", "injection", "authorization"];
 const AUTHORIZATION_KEYS = ["scope", "approved_by", "approved_at", "expires_at", "reason"];
-const REVIEW_KEYS = ["reviewer", "rubric", "independent", "decision", "disagreement", "adjudication", "reviewed_at", "sha256"];
+const REVIEW_KEYS = ["check_id", "artifact_sha256", "evidence_sha256", "reviewer", "rubric", "independent", "decision", "disagreement", "adjudication", "reviewed_at", "sha256"];
 const REVIEWER_KEYS = ["id", "type", "role", "method"];
 const ADJUDICATION_KEYS = ["adjudicator", "rule", "decision", "resolved_at", "rationale"];
 const DANGEROUS_KEYS = new Set(["__proto__", "prototype", "constructor"]);
@@ -168,22 +169,26 @@ function hashJson(value) {
   return sha256(JSON.stringify(canonical(value)));
 }
 
-export function hashEvidence(evidence) {
-  if (!isObject(evidence)) return null;
-  const { sha256: ignored, ...unsigned } = redactUntrusted(evidence);
+function hashUnsigned(value) {
+  if (!isObject(value)) return null;
+  const { sha256: ignored, ...unsigned } = value;
   return hashJson(unsigned);
+}
+
+export function hashEvidence(evidence) {
+  return hashUnsigned(evidence);
 }
 
 export function hashProvenance(provenance) {
-  if (!isObject(provenance)) return null;
-  const { sha256: ignored, ...unsigned } = redactUntrusted(provenance);
-  return hashJson(unsigned);
+  return hashUnsigned(provenance);
 }
 
 export function hashReview(review) {
-  if (!isObject(review)) return null;
-  const { sha256: ignored, ...unsigned } = redactUntrusted(review);
-  return hashJson(unsigned);
+  return hashUnsigned(review);
+}
+
+export function hashSubjectInventory(inventory) {
+  return hashUnsigned(inventory);
 }
 
 function nonempty(value) {
@@ -203,11 +208,11 @@ function resolveRepoPath(root, value) {
   const normalized = normalizeRelative(value);
   if (normalized.split("/").includes("..")) throw new Error("path may not contain '..'");
   const absolute = resolve(root, normalized);
-  if (absolute !== root && !absolute.startsWith(`${root}${sep}`)) throw new Error("path escapes repository root");
+  if (absolute !== root && !absolute.startsWith(`${root}${sep}`)) throw new Error("path escapes artifact root");
   if (!existsSync(absolute)) throw new Error(`path does not exist: ${normalized}`);
   const real = realpathSync(absolute);
   const realRoot = realpathSync(root);
-  if (real !== realRoot && !real.startsWith(`${realRoot}${sep}`)) throw new Error("path resolves outside repository root");
+  if (real !== realRoot && !real.startsWith(`${realRoot}${sep}`)) throw new Error("path resolves outside artifact root");
   return { absolute, relative: normalized };
 }
 
@@ -233,24 +238,126 @@ function hashDirectory(absolute) {
   return { bytes, sha256: hashJson(entries) };
 }
 
-export function inspectArtifact(artifact, { root = ROOT } = {}) {
+function stripUrlSuffix(value) {
+  return value.split(/[?#]/, 1)[0];
+}
+
+function localDependencyReference(value) {
+  const ref = stripUrlSuffix(String(value ?? "")).trim();
+  if (!ref || ref.startsWith("#") || /^[a-z][a-z0-9+.-]*:/i.test(ref) || ref.startsWith("//")) return null;
+  return ref.replace(/^\.\//, "");
+}
+
+function linkedReferences(text, extension) {
+  const refs = [];
+  if (extension === ".html" || extension === ".htm") {
+    const tagPattern = /<(?:link|script)\b[^>]*(?:href|src)\s*=\s*["']([^"']+)["'][^>]*>/gi;
+    for (const match of text.matchAll(tagPattern)) {
+      const ref = localDependencyReference(match[1]);
+      if (ref) refs.push(ref);
+    }
+  }
+  if (extension === ".css") {
+    const cssPattern = /(?:url|@import)\s*\(?(?:\s*["']?)([^"')\s]+)["']?\s*\)?/gi;
+    for (const match of text.matchAll(cssPattern)) {
+      const ref = localDependencyReference(match[1]);
+      if (ref) refs.push(ref);
+    }
+  }
+  if (extension === ".js" || extension === ".mjs" || extension === ".ts") {
+    const importPattern = /(?:from\s*|import\s*\(|import\s*)["']([^"']+)["']/g;
+    for (const match of text.matchAll(importPattern)) {
+      const ref = localDependencyReference(match[1]);
+      if (ref) refs.push(ref);
+    }
+  }
+  return refs;
+}
+
+function dependencyManifestWithoutHash(manifest) {
+  if (!isObject(manifest)) return null;
+  const { sha256: ignored, ...unsigned } = manifest;
+  return unsigned;
+}
+
+export function hashDependencyManifest(manifest) {
+  return hashJson(dependencyManifestWithoutHash(manifest));
+}
+
+function measureDependencyManifest(root, target, artifact) {
+  const artifactRoot = realpathSync(root);
+  const targetRealPath = realpathSync(target.absolute);
+  const entry = artifact.type === "directory"
+    ? artifact.dependency_manifest?.entry
+    : relative(artifactRoot, targetRealPath).replaceAll("\\", "/");
   const errors = [];
-  if (!isObject(artifact)) return { artifact: { type: "file", identity: "unresolved", sha256: "0".repeat(64), bytes: 0, hash_verified: false }, errors: ["artifact must be an object"] };
+  if (!nonempty(entry) || entry.startsWith("../") || entry === ".." || entry.startsWith("/")) {
+    return { manifest: null, errors: ["dependency manifest requires an entry path within the artifact root"] };
+  }
+  let current;
+  try { current = resolveRepoPath(artifactRoot, entry); }
+  catch (error) { return { manifest: null, errors: [error.message] }; }
+  const discovered = new Map();
+  const visit = (relativePath) => {
+    if (discovered.has(relativePath)) return;
+    let resolvedPath;
+    try { resolvedPath = resolveRepoPath(artifactRoot, relativePath); }
+    catch (error) { errors.push(`dependency ${relativePath}: ${error.message}`); return; }
+    const info = statSync(resolvedPath.absolute);
+    if (!info.isFile()) { errors.push(`dependency ${relativePath} is not a regular file`); return; }
+    const data = readFileSync(resolvedPath.absolute);
+    const record = { path: normalizeRelative(relativePath), bytes: data.length, sha256: sha256(data) };
+    discovered.set(record.path, record);
+    const ext = extname(record.path).toLowerCase();
+    for (const ref of linkedReferences(data.toString("utf8"), ext)) {
+      const child = normalizeRelative(join(dirname(record.path), ref));
+      visit(child);
+    }
+  };
+  visit(current.relative);
+  const assets = [...discovered.values()].sort((a, b) => a.path.localeCompare(b.path));
+  const unsigned = { entry: current.relative, assets };
+  return { manifest: { ...unsigned, sha256: hashDependencyManifest(unsigned) }, errors };
+}
+
+function rootIdentity(root) {
+  try {
+    const real = realpathSync(root);
+    return { path: redactCapturedText(real), sha256: sha256(real) };
+  } catch (error) {
+    return { path: "unresolved", sha256: "0".repeat(64), error: error.message };
+  }
+}
+
+function validateDependencyManifest(manifest, measured, errors) {
+  if (!isObject(manifest)) { errors.push("artifact requires a dependency_manifest bound to the rendered entry"); return false; }
+  if (!hasOnlyKeys(manifest, ["entry", "assets", "sha256"])) errors.push("artifact dependency_manifest contains unknown fields");
+  if (!nonempty(manifest.entry)) errors.push("artifact dependency_manifest.entry must be non-empty");
+  if (!Array.isArray(manifest.assets) || manifest.assets.length === 0) errors.push("artifact dependency_manifest.assets must be non-empty");
+  if (!SHA256.test(manifest.sha256 ?? "")) errors.push("artifact dependency_manifest.sha256 must be a lowercase SHA-256");
+  else if (hashDependencyManifest(manifest) !== manifest.sha256) errors.push("artifact dependency_manifest.sha256 does not match canonical manifest content");
+  if (measured && JSON.stringify(canonical(manifest)) !== JSON.stringify(canonical(measured))) errors.push("artifact dependency manifest does not match the current entry and linked CSS/JS/font closure");
+  return errors.length === 0;
+}
+
+export function inspectArtifact(artifact, { root = ROOT, artifactRoot = root } = {}) {
+  const errors = [];
+  if (!isObject(artifact)) return { artifact: { type: "file", identity: "unresolved", sha256: "0".repeat(64), bytes: 0, hash_verified: false, dependency_manifest: null, dependency_manifest_sha256: "0".repeat(64), dependency_manifest_hash_verified: false }, errors: ["artifact must be an object"] };
   const type = ["file", "directory", "url"].includes(artifact.type) ? artifact.type : "file";
   if (type !== artifact.type) errors.push("artifact.type must be file, directory, or url");
-  const allowedArtifactKeys = type === "url" ? ["type", "url", "sha256"] : ["type", "path", "sha256", "bytes"];
+  const allowedArtifactKeys = type === "url" ? ["type", "url", "sha256"] : ["type", "path", "sha256", "bytes", "dependency_manifest"];
   if (!hasOnlyKeys(artifact, allowedArtifactKeys)) errors.push("artifact contains unknown fields");
   if (type === "url") {
     if (!/^https:\/\//.test(artifact.url ?? "")) errors.push("url artifact must use https");
     if (!SHA256.test(artifact.sha256 ?? "")) errors.push("url artifact requires a lowercase SHA-256");
     return {
-      artifact: { type: "url", identity: artifact.url || "unresolved", sha256: artifact.sha256 || "0".repeat(64), bytes: 0, hash_verified: false },
+      artifact: { type: "url", identity: artifact.url || "unresolved", sha256: artifact.sha256 || "0".repeat(64), bytes: 0, hash_verified: false, dependency_manifest: null, dependency_manifest_sha256: "0".repeat(64), dependency_manifest_hash_verified: false },
       errors: [...errors, "url artifact content was not independently fetched or hashed; release remains HOLD"],
     };
   }
   let target;
-  try { target = resolveRepoPath(root, artifact.path); }
-  catch (error) { return { artifact: { type, identity: `unresolved:${artifact.path || "artifact"}`, sha256: "0".repeat(64), bytes: 0, hash_verified: false }, errors: [...errors, error.message] }; }
+  try { target = resolveRepoPath(artifactRoot, artifact.path); }
+  catch (error) { return { artifact: { type, identity: `unresolved:${artifact.path || "artifact"}`, sha256: "0".repeat(64), bytes: 0, hash_verified: false, dependency_manifest: null, dependency_manifest_sha256: "0".repeat(64), dependency_manifest_hash_verified: false }, errors: [...errors, error.message] }; }
   let measured;
   try {
     const info = statSync(target.absolute);
@@ -264,12 +371,25 @@ export function inspectArtifact(artifact, { root = ROOT } = {}) {
       measured = hashDirectory(target.absolute);
     }
   } catch (error) {
-    return { artifact: { type, identity: `${type}:${target.relative}`, sha256: "0".repeat(64), bytes: 0, hash_verified: false }, errors: [...errors, error.message] };
+    return { artifact: { type, identity: `${type}:${target.relative}`, sha256: "0".repeat(64), bytes: 0, hash_verified: false, dependency_manifest: null, dependency_manifest_sha256: "0".repeat(64), dependency_manifest_hash_verified: false }, errors: [...errors, error.message] };
   }
   if (artifact.sha256 !== undefined && artifact.sha256 !== measured.sha256) errors.push(`declared artifact SHA-256 does not match ${target.relative}`);
   if (artifact.bytes !== undefined && artifact.bytes !== measured.bytes) errors.push(`declared artifact byte count does not match ${target.relative}`);
+  const measuredManifest = measureDependencyManifest(artifactRoot, target, artifact);
+  errors.push(...measuredManifest.errors);
+  const dependencyManifestHashVerified = validateDependencyManifest(artifact.dependency_manifest, measuredManifest.manifest, errors);
+  const manifest = measuredManifest.manifest && redactUntrusted(measuredManifest.manifest);
   return {
-    artifact: { type, identity: `${type}:${target.relative}`, ...measured, hash_verified: errors.length === 0 },
+    artifact: {
+      type,
+      identity: `${type}:${target.relative}`,
+      root_identity: rootIdentity(artifactRoot),
+      ...measured,
+      hash_verified: !errors.some((error) => error.includes("artifact SHA-256") || error.includes("byte count") || error.includes("regular file") || error.includes("directory artifact")),
+      dependency_manifest: manifest,
+      dependency_manifest_sha256: measuredManifest.manifest?.sha256 || "0".repeat(64),
+      dependency_manifest_hash_verified: dependencyManifestHashVerified,
+    },
     errors,
   };
 }
@@ -298,6 +418,13 @@ function catalogErrors(catalog) {
     if (!check.required && check.na_policy !== "subject_absence") errors.push(`${label}: optional checks require subject-absence n/a policy`);
     if (typeof check.manual_inspector_required !== "boolean") errors.push(`${label}.manual_inspector_required must be boolean`);
     if (!["deterministic", "subjective"].includes(check.judgment)) errors.push(`${label}.judgment must be deterministic or subjective`);
+    if (!isObject(check.observation)) errors.push(`${label}.observation is required`);
+    else {
+      if (!["single", "browser", "control-state"].includes(check.observation.coverage)) errors.push(`${label}.observation.coverage is invalid`);
+      if (!["boolean_bundle", "contrast"].includes(check.observation.type)) errors.push(`${label}.observation.type is invalid`);
+      if (!Array.isArray(check.observation.fields) || check.observation.fields.length === 0 || check.observation.fields.some((field) => !nonempty(field))) errors.push(`${label}.observation.fields must be a non-empty list of names`);
+      if (check.observation.type === "contrast" && JSON.stringify(check.observation.fields) !== JSON.stringify(["pairs"])) errors.push(`${label}.contrast observations must use the pairs field`);
+    }
   }
   return errors;
 }
@@ -321,6 +448,65 @@ function validateInspector(value, label, errors) {
   for (const key of INSPECTOR_KEYS) if (!nonempty(value[key])) errors.push(`${label}.${key} must be non-empty`);
 }
 
+const INVENTORY_KEYS = ["frozen_at", "subjects", "coverage", "sha256"];
+const INVENTORY_MEMBER_KEYS = ["id", "route", "state", "viewport", "control"];
+
+function validateSubjectInventory(inventory, checks, errors) {
+  if (!isObject(inventory)) {
+    errors.push("subject_inventory is required and must be an object");
+    return { valid: false, subjects: new Set(), coverage: new Map(), sha256: null };
+  }
+  if (!hasOnlyKeys(inventory, INVENTORY_KEYS)) errors.push("subject_inventory contains unknown fields");
+  if (!ISO_DATE.test(inventory.frozen_at ?? "") || Number.isNaN(Date.parse(inventory.frozen_at))) errors.push("subject_inventory.frozen_at must be an ISO-8601 UTC timestamp");
+  if (!Array.isArray(inventory.subjects) || inventory.subjects.some((subject) => !nonempty(subject))) errors.push("subject_inventory.subjects must be a list of non-empty subject names");
+  if (!isObject(inventory.coverage)) errors.push("subject_inventory.coverage must be an object keyed by check ID");
+  if (!SHA256.test(inventory.sha256 ?? "")) errors.push("subject_inventory.sha256 must be a lowercase SHA-256");
+  else if (hashSubjectInventory(inventory) !== inventory.sha256) errors.push("subject_inventory.sha256 does not match canonical inventory content");
+  const subjects = new Set(Array.isArray(inventory.subjects) ? inventory.subjects : []);
+  const coverage = new Map();
+  const known = new Map(checks.map((check) => [check.id, check]));
+  if (isObject(inventory.coverage)) {
+    for (const [id, members] of Object.entries(inventory.coverage)) {
+      const check = known.get(id);
+      if (!check) { errors.push(`subject_inventory contains unknown check ID ${redactCapturedText(id)}`); continue; }
+      if (!Array.isArray(members)) { errors.push(`${id}: subject inventory coverage must be an array`); continue; }
+      const seen = new Set();
+      const normalized = [];
+      for (const member of members) {
+        if (!isObject(member) || !nonempty(member.id)) { errors.push(`${id}: every inventory member needs a non-empty id`); continue; }
+        if (!hasOnlyKeys(member, INVENTORY_MEMBER_KEYS)) errors.push(`${id}: subject inventory member contains unknown fields`);
+        if (seen.has(member.id)) errors.push(`${id}: duplicate subject inventory member ${redactCapturedText(member.id)}`);
+        seen.add(member.id);
+        if (check.observation.coverage === "browser") {
+          if (!nonempty(member.route) || !nonempty(member.state) || !Number.isInteger(member.viewport) || member.viewport < 1) errors.push(`${id}: browser inventory members require route, state, and positive integer viewport`);
+        }
+        if (check.observation.coverage === "control-state" && (!nonempty(member.control) || !nonempty(member.state))) errors.push(`${id}: control-state inventory members require control and state`);
+        normalized.push({ ...member });
+      }
+      coverage.set(id, normalized);
+    }
+  }
+  for (const check of checks) {
+    const members = coverage.get(check.id) || [];
+    const subjectPresent = check.applicability.kind !== "optional_subject" || subjects.has(check.applicability.subject);
+    if (check.applicability.kind === "optional_subject") {
+      if (subjectPresent && members.length === 0) errors.push(`${check.id}: applicable subject ${check.applicability.subject} needs inventory members`);
+      if (!subjectPresent && members.length > 0) errors.push(`${check.id}: absent subject ${check.applicability.subject} may not have inventory members`);
+    } else if (members.length === 0) errors.push(`${check.id}: required subject inventory is empty`);
+  }
+  return { valid: errors.length === 0, subjects, coverage, sha256: inventory.sha256 };
+}
+
+function inventoryOutput(inventory, inventoryState) {
+  if (!inventoryState || !isObject(inventory)) return null;
+  return {
+    frozen_at: inventory.frozen_at,
+    subjects: [...inventoryState.subjects].sort(),
+    coverage: Object.fromEntries([...inventoryState.coverage.entries()].map(([id, members]) => [id, members.map((member) => redactUntrusted(member))])),
+    sha256: inventory.sha256 || "0".repeat(64),
+  };
+}
+
 function validateReviewer(value, label, errors) {
   if (!isObject(value)) { errors.push(`${label} is required`); return; }
   if (!hasOnlyKeys(value, REVIEWER_KEYS)) errors.push(`${label} contains unknown fields`);
@@ -341,13 +527,16 @@ function validateAdjudication(value, status, reviewer, errors) {
   if (!nonempty(value.rationale)) errors.push("adjudication.rationale must be non-empty");
 }
 
-function validateReview(review, check, status, provenance, errors) {
+function validateReview(review, check, status, provenance, artifact, evidence, errors) {
   if (check.judgment !== "subjective") {
     if (review !== undefined && review !== null) errors.push(`${check.id}: deterministic rows may not carry reviewer judgment`);
     return;
   }
   if (!isObject(review)) { errors.push(`${check.id}: subjective rows require reviewer provenance`); return; }
   if (!hasOnlyKeys(review, REVIEW_KEYS)) errors.push(`${check.id}: review contains unknown fields`);
+  if (review.check_id !== check.id) errors.push(`${check.id}: review.check_id must bind the review to this check`);
+  if (review.artifact_sha256 !== artifact.sha256) errors.push(`${check.id}: review.artifact_sha256 must bind the measured artifact`);
+  if (review.evidence_sha256 !== evidence?.sha256) errors.push(`${check.id}: review.evidence_sha256 must bind the complete evidence capture`);
   validateReviewer(review.reviewer, `${check.id}: review.reviewer`, errors);
   if (!isObject(review.rubric)) errors.push(`${check.id}: review.rubric is required`);
   else {
@@ -367,27 +556,97 @@ function validateReview(review, check, status, provenance, errors) {
   else if (hashReview(review) !== review.sha256) errors.push(`${check.id}: review.sha256 does not match canonical review content`);
 }
 
-function validateEvidence(evidence, check, status, errors) {
-  if (!isObject(evidence)) { errors.push("evidence must be an object"); return; }
+function observationItemStatus(item, check, label, errors) {
+  if (!isObject(item)) { errors.push(`${label} must be an object`); return false; }
+  const contract = check.observation;
+  for (const field of contract.fields) if (!(field in item)) errors.push(`${label}.${field} is required measured observation`);
+  if (contract.type === "contrast") {
+    const pairs = item.pairs;
+    if (!Array.isArray(pairs) || pairs.length === 0) { errors.push(`${label}.pairs must contain measured contrast pairs`); return false; }
+    let passed = true;
+    for (const [index, pair] of pairs.entries()) {
+      const pairLabel = `${label}.pairs[${index}]`;
+      if (!isObject(pair)) { errors.push(`${pairLabel} must be an object`); passed = false; continue; }
+      if (!nonempty(pair.kind) || !["body", "ui", "large"].includes(pair.kind)) errors.push(`${pairLabel}.kind must be body, ui, or large`);
+      if (!Number.isFinite(pair.ratio) || pair.ratio < 0) { errors.push(`${pairLabel}.ratio must be a non-negative measured number`); passed = false; continue; }
+      const minimum = pair.kind === "body" ? 4.5 : 3;
+      if (pair.ratio < minimum) passed = false;
+    }
+    return passed;
+  }
+  let passed = true;
+  for (const field of contract.fields) {
+    if (typeof item[field] !== "boolean") { errors.push(`${label}.${field} must be a boolean measured observation`); passed = false; }
+    else if (item[field] !== true) passed = false;
+  }
+  return passed;
+}
+
+function deriveObservationStatus(evidence, check, inventoryState, errors) {
+  if (!isObject(evidence) || !isObject(evidence.details)) { errors.push(`${check.id}: evidence.details must contain observations`); return null; }
+  const observations = evidence.details.observations;
+  if (!Array.isArray(observations)) { errors.push(`${check.id}: evidence.details.observations must be an array of check-specific measured observations`); return null; }
+  const expected = inventoryState?.coverage.get(check.id) || [];
+  if (evidence.subject_absent === true) {
+    if (expected.length > 0) errors.push(`${check.id}: subject_absent is contradictory because the frozen inventory contains applicable members`);
+    if (observations.length > 0) errors.push(`${check.id}: absent subjects may not carry passing observations`);
+    return expected.length === 0 ? "n/a" : null;
+  }
+  if (expected.length === 0) { errors.push(`${check.id}: no applicable inventory member was frozen for this non-n/a row`); return null; }
+  const expectedIds = new Set(expected.map((member) => member.id));
+  const seen = new Set();
+  let allPassed = true;
+  for (const [index, observation] of observations.entries()) {
+    const label = `${check.id}: observation ${index + 1}`;
+    if (!isObject(observation) || !nonempty(observation.subject_id)) { errors.push(`${label} requires subject_id`); allPassed = false; continue; }
+    if (!expectedIds.has(observation.subject_id)) { errors.push(`${check.id}: observation targets unknown subject ${redactCapturedText(observation.subject_id)}`); allPassed = false; continue; }
+    if (seen.has(observation.subject_id)) { errors.push(`${check.id}: duplicate observation for subject ${redactCapturedText(observation.subject_id)}`); allPassed = false; continue; }
+    seen.add(observation.subject_id);
+    if (!observationItemStatus(observation, check, label, errors)) allPassed = false;
+  }
+  for (const member of expected) if (!seen.has(member.id)) { errors.push(`${check.id}: missing observation for inventory member ${redactCapturedText(member.id)}`); allPassed = false; }
+  if (seen.size !== expected.length) allPassed = false;
+  return allPassed ? "pass" : "fail";
+}
+
+function hasLossyCapture(value, depth = 0) {
+  if (typeof value === "string") return value.length > MAX_CAPTURE_TEXT || /\[REDACTED:(?:TRUNCATED|ITEM_LIMIT|KEY_LIMIT|DEPTH_LIMIT|UNSUPPORTED_VALUE)\]/.test(value);
+  if (value === null || typeof value === "boolean" || typeof value === "number") return false;
+  if (depth >= MAX_CAPTURE_DEPTH) return true;
+  if (Array.isArray(value)) return value.length > MAX_CAPTURE_ITEMS || value.some((item) => hasLossyCapture(item, depth + 1));
+  if (isObject(value)) return Object.keys(value).length > MAX_CAPTURE_KEYS || Object.values(value).some((item) => hasLossyCapture(item, depth + 1));
+  return true;
+}
+
+function validateEvidence(evidence, check, status, inventoryState, errors) {
+  if (!isObject(evidence)) { errors.push("evidence must be an object"); return { derivedStatus: null, hashVerified: false }; }
   if (!hasOnlyKeys(evidence, ["mode", "summary", "details", "subject", "subject_absent", "sha256"])) errors.push("evidence contains unknown fields");
   if (!["automated", "manual"].includes(evidence.mode)) errors.push("evidence.mode must be automated or manual");
   if (!nonempty(evidence.summary)) errors.push("evidence.summary must be non-empty");
   if (!("details" in evidence) || evidence.details === undefined || evidence.details === null) errors.push("evidence.details is required");
+  const lossyCapture = hasLossyCapture(evidence);
+  if (lossyCapture) errors.push(`${check.id}: evidence contains a truncation marker or exceeds complete-capture limits; rerun with the complete capture`);
   if (!SHA256.test(evidence.sha256 ?? "")) errors.push("evidence.sha256 must be a lowercase SHA-256");
-  else if (hashEvidence(evidence) !== evidence.sha256) errors.push("evidence.sha256 does not match canonical evidence content");
+  const hashVerified = SHA256.test(evidence.sha256 ?? "") && hashEvidence(evidence) === evidence.sha256;
+  if (SHA256.test(evidence.sha256 ?? "") && !hashVerified) errors.push("evidence.sha256 does not match canonical complete evidence content");
   if (check.manual_inspector_required && evidence.mode !== "manual") errors.push(`${check.id}: manual evidence is required`);
   if (status === "n/a") {
     if (check.na_policy !== "subject_absence") errors.push(`${check.id}: required row may not use n/a`);
     if (evidence.subject_absent !== true) errors.push(`${check.id}: n/a requires subject_absent=true evidence`);
     if (evidence.subject !== check.applicability.subject) errors.push(`${check.id}: n/a subject must be ${check.applicability.subject}`);
   }
+  const derivedStatus = deriveObservationStatus(evidence, check, inventoryState, errors);
+  if (derivedStatus && derivedStatus !== status) errors.push(`${check.id}: declared status ${status} contradicts measured observations deriving ${derivedStatus}`);
+  return { derivedStatus, hashVerified: hashVerified && !lossyCapture };
 }
 
-function validateProvenance(provenance, artifact, evidence, check, errors) {
+function validateProvenance(provenance, artifact, evidence, inventory, check, errors) {
   if (!isObject(provenance)) { errors.push("provenance must be an object"); return; }
-  if (!hasOnlyKeys(provenance, ["artifact_identity", "artifact_sha256", "captured_at", "tool", "browser", "inspector", "sha256"])) errors.push("provenance contains unknown fields");
+  if (!hasOnlyKeys(provenance, ["artifact_identity", "artifact_sha256", "dependency_manifest_sha256", "subject_inventory_sha256", "captured_at", "tool", "browser", "inspector", "sha256"])) errors.push("provenance contains unknown fields");
   if (provenance.artifact_identity !== artifact.identity) errors.push(`${check.id}: provenance artifact identity does not match measured artifact`);
   if (provenance.artifact_sha256 !== artifact.sha256) errors.push(`${check.id}: provenance artifact SHA-256 does not match measured artifact`);
+  if (provenance.dependency_manifest_sha256 !== artifact.dependency_manifest_sha256) errors.push(`${check.id}: provenance dependency manifest SHA-256 does not match measured closure`);
+  if (provenance.subject_inventory_sha256 !== inventory?.sha256) errors.push(`${check.id}: provenance subject inventory SHA-256 does not match the frozen ledger inventory`);
   if (!ISO_DATE.test(provenance.captured_at ?? "") || Number.isNaN(Date.parse(provenance.captured_at))) errors.push(`${check.id}: captured_at must be an ISO-8601 UTC timestamp`);
   validateRuntime(provenance.tool, `${check.id}: provenance.tool`, errors);
   validateRuntime(provenance.browser, `${check.id}: provenance.browser`, errors);
@@ -411,48 +670,57 @@ function missingRow(check) {
   };
 }
 
-function normalizeRow(row, check, artifact) {
+function normalizeRow(row, check, artifact, inventoryState) {
   const errors = [];
   if (!isObject(row)) return missingRow(check);
   if (!hasOnlyKeys(row, ["skill", "check_id", "status", "reason", "remediation", "evidence", "provenance", "review"])) errors.push(`${check.id}: ledger row contains unknown fields`);
   const status = ["pass", "fail", "n/a"].includes(row.status) ? row.status : "fail";
+  const rawEvidence = row.evidence;
   const safeEvidence = row.evidence === null || row.evidence === undefined ? row.evidence : redactUntrusted(row.evidence);
   const safeProvenance = row.provenance === null || row.provenance === undefined ? row.provenance : redactUntrusted(row.provenance);
   const safeReview = row.review === null || row.review === undefined ? row.review : redactUntrusted(row.review);
   if (row.skill !== SKILL) errors.push(`${check.id}: skill must be ${SKILL}`);
   if (!["pass", "fail", "n/a"].includes(row.status)) errors.push("status must be pass, fail, or n/a");
   for (const field of ["reason", "remediation"]) if (!nonempty(row[field])) errors.push(`${field} must be non-empty`);
-  validateEvidence(safeEvidence, check, status, errors);
-  validateProvenance(safeProvenance, artifact, safeEvidence, check, errors);
-  validateReview(safeReview, check, status, safeProvenance, errors);
-  return { skill: SKILL, check_id: check.id, status, reason: redactCapturedText(row.reason || "Invalid ledger row."), remediation: redactCapturedText(row.remediation || "Repair the ledger row and rerun the release gate."), evidence: safeEvidence ?? null, provenance: safeProvenance ?? null, review: safeReview ?? null, validation_errors: errors };
+  const evidenceValidation = validateEvidence(rawEvidence, check, status, inventoryState, errors);
+  validateProvenance(safeProvenance, artifact, safeEvidence, inventoryState, check, errors);
+  validateReview(safeReview, check, status, safeProvenance, artifact, safeEvidence, errors);
+  const output = { skill: SKILL, check_id: check.id, status, reason: redactCapturedText(row.reason || "Invalid ledger row."), remediation: redactCapturedText(row.remediation || "Repair the ledger row and rerun the release gate."), evidence: safeEvidence ?? null, provenance: safeProvenance ?? null, review: safeReview ?? null, validation_errors: errors };
+  Object.defineProperty(output, "_evidence_hash_verified", { value: evidenceValidation.hashVerified, enumerable: false });
+  return output;
 }
 
 function structuralInputErrors(input) {
   const errors = [];
   if (!isObject(input)) return ["ledger input must be an object"];
-  if (!hasOnlyKeys(input, ["schema_version", "catalog", "artifact", "execution", "rows"])) errors.push("ledger input contains unknown fields");
+  if (!hasOnlyKeys(input, ["schema_version", "catalog", "artifact", "execution", "subject_inventory", "rows"])) errors.push("ledger input contains unknown fields");
   if (input.schema_version !== SCHEMA_VERSION) errors.push("ledger schema_version must be 1");
   if (!isObject(input.artifact)) errors.push("ledger artifact is required");
+  if (!isObject(input.subject_inventory)) errors.push("ledger subject_inventory is required");
   if (!Array.isArray(input.rows)) errors.push("ledger rows must be an array");
   if (input.catalog !== undefined && (!isObject(input.catalog) || !hasOnlyKeys(input.catalog, ["path", "sha256"]))) errors.push("ledger catalog must contain only path and sha256");
   return errors;
 }
 
-export function evaluateReleaseGate(input, { root = ROOT } = {}) {
+export function evaluateReleaseGate(input, options = {}) {
+  const legacyRoot = options.root;
+  const verifierRoot = resolve(options.verifierRoot ?? legacyRoot ?? ROOT);
+  const artifactRoot = resolve(options.artifactRoot ?? legacyRoot ?? verifierRoot);
   const errors = structuralInputErrors(input);
   const execution = assessExecutionPolicy(input?.execution);
   errors.push(...execution.errors.map((error) => `execution: ${error}`));
   let loaded;
-  try { loaded = loadCheckCatalog({ root }); }
+  try { loaded = loadCheckCatalog({ root: verifierRoot }); }
   catch (error) {
     return {
       schema_version: SCHEMA_VERSION, kind: KIND,
       catalog: { path: CATALOG_PATH, sha256: "0".repeat(64), check_ids: [] },
-      artifact: { type: "file", identity: "unresolved", sha256: "0".repeat(64), bytes: 0, hash_verified: false },
+      roots: { verifier: rootIdentity(verifierRoot), artifact: rootIdentity(artifactRoot) },
+      subject_inventory: null,
+      artifact: { type: "file", identity: "unresolved", sha256: "0".repeat(64), bytes: 0, hash_verified: false, dependency_manifest: null, dependency_manifest_sha256: "0".repeat(64), dependency_manifest_hash_verified: false },
       execution: execution.policy,
       rows: [], verdict: "HOLD", release_eligible: false, blockers: ["catalog", ...(execution.allowed ? [] : ["execution"])],
-      validation: { input_valid: false, execution_policy_valid: execution.allowed, catalog_complete: false, artifact_hash_verified: false, evidence_hashes_verified: false, provenance_hashes_verified: false, errors: [`cannot load check catalog: ${error.message}`, ...execution.errors.map((item) => `execution: ${item}`)] },
+      validation: { input_valid: false, execution_policy_valid: execution.allowed, catalog_complete: false, subject_inventory_valid: false, subject_coverage_complete: false, artifact_hash_verified: false, artifact_dependency_manifest_verified: false, evidence_hashes_verified: false, provenance_hashes_verified: false, errors: [`cannot load check catalog: ${error.message}`, ...execution.errors.map((item) => `execution: ${item}`)] },
     };
   }
   errors.push(...loaded.errors.map((error) => `catalog: ${error}`));
@@ -460,9 +728,10 @@ export function evaluateReleaseGate(input, { root = ROOT } = {}) {
     if (input.catalog.path !== CATALOG_PATH) errors.push(`catalog path must be ${CATALOG_PATH}`);
     if (input.catalog.sha256 !== loaded.sha256) errors.push("input catalog SHA-256 does not match the canonical catalog");
   }
-  const inspected = inspectArtifact(input?.artifact, { root });
-  errors.push(...inspected.errors.map((error) => `artifact: ${error}`));
   const checks = loaded.catalog.checks;
+  const inventoryState = validateSubjectInventory(input?.subject_inventory, checks, errors);
+  const inspected = inspectArtifact(input?.artifact, { artifactRoot });
+  errors.push(...inspected.errors.map((error) => `artifact: ${error}`));
   const checkIds = checks.map((check) => check.id);
   const known = new Map(checks.map((check) => [check.id, check]));
   const supplied = Array.isArray(input?.rows) ? input.rows : [];
@@ -480,7 +749,7 @@ export function evaluateReleaseGate(input, { root = ROOT } = {}) {
       errors.push(`${check.id}: missing ledger row`);
       return missingRow(check);
     }
-    const normalized = normalizeRow(candidates[0], check, inspected.artifact);
+    const normalized = normalizeRow(candidates[0], check, inspected.artifact, inventoryState);
     if (candidates.length > 1) {
       normalized.validation_errors.push(`duplicate ledger rows: ${candidates.length}`);
       errors.push(`${check.id}: duplicate ledger rows`);
@@ -488,15 +757,18 @@ export function evaluateReleaseGate(input, { root = ROOT } = {}) {
     if (normalized.validation_errors.length) errors.push(...normalized.validation_errors.map((error) => `${check.id}: ${error}`));
     return normalized;
   });
-  const evidenceHashesVerified = rows.every((row) => row.evidence && hashEvidence(row.evidence) === row.evidence.sha256);
-  const provenanceHashesVerified = rows.every((row) => row.provenance && hashProvenance(row.provenance) === row.provenance.sha256 && row.provenance.artifact_identity === inspected.artifact.identity && row.provenance.artifact_sha256 === inspected.artifact.sha256);
+  const evidenceHashesVerified = rows.every((row) => row._evidence_hash_verified === true);
+  const provenanceHashesVerified = rows.every((row) => row.provenance && hashProvenance(row.provenance) === row.provenance.sha256 && row.provenance.artifact_identity === inspected.artifact.identity && row.provenance.artifact_sha256 === inspected.artifact.sha256 && row.provenance.dependency_manifest_sha256 === inspected.artifact.dependency_manifest_sha256 && row.provenance.subject_inventory_sha256 === inventoryState.sha256);
   const catalogComplete = loaded.errors.length === 0 && new Set(checkIds).size === checkIds.length && rows.length === checkIds.length;
+  const subjectCoverageComplete = inventoryState.valid && rows.every((row) => !row.validation_errors.some((error) => /subject inventory|inventory member|observations|subject_id|applicable subject/i.test(error)));
   const blockers = rows.filter((row) => {
     const check = known.get(row.check_id);
     const validOptionalNa = row.status === "n/a" && check?.required === false && row.validation_errors.length === 0;
     return !validOptionalNa && (row.status !== "pass" || row.validation_errors.length > 0);
   }).map((row) => row.check_id);
   if (!inspected.artifact.hash_verified) blockers.push("artifact");
+  if (!inspected.artifact.dependency_manifest_hash_verified) blockers.push("artifact-dependencies");
+  if (!inventoryState.valid || !subjectCoverageComplete) blockers.push("subject-inventory");
   if (errors.some((error) => error.startsWith("unknown check ID") || error.startsWith("catalog:") || error.startsWith("catalog path") || error.startsWith("input catalog"))) blockers.push("catalog");
   if (!execution.allowed) blockers.push("execution");
   const uniqueBlockers = [...new Set(blockers)];
@@ -504,17 +776,23 @@ export function evaluateReleaseGate(input, { root = ROOT } = {}) {
     input_valid: errors.length === 0,
     execution_policy_valid: execution.allowed,
     catalog_complete: catalogComplete,
+    subject_inventory_valid: inventoryState.valid,
+    subject_coverage_complete: subjectCoverageComplete,
     artifact_hash_verified: inspected.artifact.hash_verified,
+    artifact_dependency_manifest_verified: inspected.artifact.dependency_manifest_hash_verified,
     evidence_hashes_verified: evidenceHashesVerified,
     provenance_hashes_verified: provenanceHashesVerified,
     errors: [...new Set(errors)],
   };
-  const releaseEligible = validation.input_valid && execution.allowed && catalogComplete && inspected.artifact.hash_verified && evidenceHashesVerified && provenanceHashesVerified && uniqueBlockers.length === 0;
+  const artifactDependencyManifestVerified = inspected.artifact.dependency_manifest_hash_verified === true;
+  const releaseEligible = validation.input_valid && execution.allowed && catalogComplete && inventoryState.valid && subjectCoverageComplete && inspected.artifact.hash_verified && artifactDependencyManifestVerified && evidenceHashesVerified && provenanceHashesVerified && uniqueBlockers.length === 0;
   return {
     schema_version: SCHEMA_VERSION,
     kind: KIND,
+    roots: { verifier: rootIdentity(verifierRoot), artifact: rootIdentity(artifactRoot) },
     execution: execution.policy,
     catalog: { path: CATALOG_PATH, sha256: loaded.sha256, check_ids: checkIds },
+    subject_inventory: inventoryOutput(input?.subject_inventory, inventoryState),
     artifact: inspected.artifact,
     rows,
     verdict: releaseEligible ? "SHIP" : "HOLD",
@@ -534,30 +812,38 @@ function resolveOutputPath(root, value) {
   const normalized = normalizeRelative(value);
   if (normalized.split("/").includes("..")) throw new Error("output path may not contain '..'");
   const absolute = resolve(root, normalized);
-  if (absolute !== root && !absolute.startsWith(`${root}${sep}`)) throw new Error("output path escapes repository root");
+  if (absolute !== root && !absolute.startsWith(`${root}${sep}`)) throw new Error("output path escapes verifier root");
   return absolute;
 }
 
 function cli() {
   const args = process.argv.slice(2);
-  const inputIndex = args.indexOf("--input");
-  const outIndex = args.indexOf("--out");
-  const positional = args.filter((arg, index) => !arg.startsWith("--") && index !== inputIndex + 1 && index !== outIndex + 1);
-  const inputPath = inputIndex >= 0 ? args[inputIndex + 1] : positional[0];
-  const outPath = outIndex >= 0 ? args[outIndex + 1] : positional[1];
+  const valueFor = (flag) => {
+    const index = args.indexOf(flag);
+    return index >= 0 ? args[index + 1] : undefined;
+  };
+  const optionValueIndexes = new Set(["--input", "--out", "--verifier-root", "--artifact-root"].flatMap((flag) => {
+    const index = args.indexOf(flag);
+    return index >= 0 ? [index + 1] : [];
+  }));
+  const positional = args.filter((arg, index) => !arg.startsWith("--") && !optionValueIndexes.has(index));
+  const inputPath = valueFor("--input") || positional[0];
+  const outPath = valueFor("--out") || positional[1];
+  const verifierRoot = resolve(valueFor("--verifier-root") || ROOT);
+  const artifactRoot = resolve(valueFor("--artifact-root") || verifierRoot);
   if (!inputPath || inputPath.startsWith("--")) {
-    console.error("Usage: node skills/tastecheck-pass/assets/release-gate.mjs --input <repo-relative-ledger.json> [--out <repo-relative-report.json>]");
+    console.error("Usage: node skills/tastecheck-pass/assets/release-gate.mjs --input <verifier-relative-ledger.json> [--out <verifier-relative-report.json>] [--verifier-root <tastecheck-root>] [--artifact-root <consumer-root>]");
     process.exitCode = 2;
     return;
   }
   let result;
-  try { result = evaluateReleaseGate(readInput(ROOT, inputPath), { root: ROOT }); }
+  try { result = evaluateReleaseGate(readInput(verifierRoot, inputPath), { verifierRoot, artifactRoot }); }
   catch (error) {
-    result = { schema_version: SCHEMA_VERSION, kind: KIND, catalog: { path: CATALOG_PATH, sha256: "0".repeat(64), check_ids: [] }, artifact: { type: "file", identity: "unresolved", sha256: "0".repeat(64), bytes: 0, hash_verified: false }, execution: { ...DEFAULT_EXECUTION }, rows: [], verdict: "HOLD", release_eligible: false, blockers: ["input"], validation: { input_valid: false, execution_policy_valid: true, catalog_complete: false, artifact_hash_verified: false, evidence_hashes_verified: false, provenance_hashes_verified: false, errors: [error.message] } };
+    result = { schema_version: SCHEMA_VERSION, kind: KIND, roots: { verifier: rootIdentity(verifierRoot), artifact: rootIdentity(artifactRoot) }, subject_inventory: null, catalog: { path: CATALOG_PATH, sha256: "0".repeat(64), check_ids: [] }, artifact: { type: "file", identity: "unresolved", sha256: "0".repeat(64), bytes: 0, hash_verified: false, dependency_manifest: null, dependency_manifest_sha256: "0".repeat(64), dependency_manifest_hash_verified: false }, execution: { ...DEFAULT_EXECUTION }, rows: [], verdict: "HOLD", release_eligible: false, blockers: ["input"], validation: { input_valid: false, execution_policy_valid: true, catalog_complete: false, subject_inventory_valid: false, subject_coverage_complete: false, artifact_hash_verified: false, artifact_dependency_manifest_verified: false, evidence_hashes_verified: false, provenance_hashes_verified: false, errors: [error.message] } };
   }
   const output = `${JSON.stringify(result, null, 2)}\n`;
   if (outPath && !outPath.startsWith("--")) {
-    writeFileSync(resolveOutputPath(ROOT, outPath), output);
+    writeFileSync(resolveOutputPath(verifierRoot, outPath), output);
   } else process.stdout.write(output);
   if (result.verdict !== "SHIP") process.exitCode = 1;
 }

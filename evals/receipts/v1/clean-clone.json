@@ -2,7 +2,7 @@
   "schema_version": 1,
   "kind": "clean-clone",
   "producer_id": "tastecheck.release.clean-clone.v1",
-  "source_tree_sha256": "327b70be16c06672c488b9c2e63b7a4d39c2c1d810ccf49130846dd2bc6ce9da",
+  "source_tree_sha256": "b4f0bc7e554422dadd882e3a7cd30efa98f627364f1f0f2a4596a483ba08f2db",
   "nonce": "clean-clone-release-v1",
   "started_at": "2026-07-14T00:21:29.780Z",
   "finished_at": "2026-07-14T00:21:42.992Z",
