@@ -35,9 +35,9 @@ claims, metrics, anecdotes, testimony, or personal voice.
    consequence, decision, or next action.
 3. **Shape:** cut the wrapper, restore causal order, and tune sentence length and register.
 
-Compare the revision to the source, not to a list of banned words. Apply the mandatory
-portable floor in `references/writing-constitution.md`, then use `references/kill-list.md`
-and `references/rhythm-and-voice.md` as detectors after meaning is settled.
+Compare the revision to the source; apply the portable floor in
+`references/writing-constitution.md`, then use the kill list and rhythm reference as
+detectors after meaning is settled.
 
 ## Detect formula before replacing words
 
@@ -71,14 +71,14 @@ changing facts or safety meaning. Record source authority for every new specific
 1. Read-aloud test, direct opening, and no formulaic cadence, hedge, or thesaurus-salad?
 2. Source-backed specifics and bounded claims—not competitor-generic copy or invented texture?
 3. Register fits this reader, task, and consequence?
-4. Writing-constitution rules applied, with the rule IDs recorded in the evidence?
+4. Writing rules applied and their IDs recorded in the evidence?
 
 ## Reference files
 
 - `references/kill-list.md` — full detector list and examples.
 - `references/rhythm-and-voice.md` — structure, stance, and cadence.
 - `references/decision-records.md` — novel-case ADR rules.
-- `references/writing-constitution.md` — mandatory portable information-architecture floor.
+- `references/writing-constitution.md` — portable information-architecture floor.
 
 ## How to deliver
 
@@ -88,13 +88,10 @@ and register; pair non-English work with `i18n-ready`.
 
 ## Information-architecture gate
 
-Humanizing edits must apply the bundled Writing Constitution floor
-(`references/writing-constitution.md`): old-before-new (topic = doorstep, comment = room),
-stress position, pattern by job (anchor / linking / umbrella / preview), echo key terms exactly —
-no elegant variation — and run the three-pass audit before delivery. Record the applied rule IDs
-in the evidence. The bundled reference is the portable source of truth; no workstation-local
-policy path is required. Note the two "repetition" rules own different objects: echo the terms
-that carry the argument; kill the formulaic cadence around them.
+Apply the bundled Writing Constitution floor (`references/writing-constitution.md`):
+old-before-new, stress position, anchor/linking/umbrella/preview, and exact key-term repetition.
+Run the three-pass audit and record rule IDs. This reference is portable; do not use a
+workstation-local copy. Echo argument terms; remove formulaic repetition.
 
 <!-- contract:v1:start -->
 ## Contract (generated)

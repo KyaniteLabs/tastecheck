@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_tree_sha256": "471eb983d24f27f3d91bc639c73f24b26ecec3bfe85a31926a19eb82bc162f14",
+  "source_tree_sha256": "0f8f3b3d3ff237c0ca8e56fd55d16ac55436a14e46b5d9468aeaf4e9c6a428ea",
   "skills": [
     {
       "skill": "a11y-pass",
@@ -144,17 +144,17 @@
     },
     {
       "skill": "humanize-copy",
-      "skill_md_bytes": 5761,
-      "skill_md_tokens": 1441,
+      "skill_md_bytes": 5397,
+      "skill_md_tokens": 1350,
       "baseline_tokens": 1199,
       "contract_block_tokens": 212,
       "checks": {
         "within_absolute_cap": true,
-        "within_growth_cap": false,
+        "within_growth_cap": true,
         "contract_block_within_cap": true
       },
-      "growth_ratio": 0.202,
-      "pass": false
+      "growth_ratio": 0.126,
+      "pass": true
     },
     {
       "skill": "i18n-ready",
@@ -228,17 +228,17 @@
     },
     {
       "skill": "tastecheck-pass",
-      "skill_md_bytes": 7596,
-      "skill_md_tokens": 1899,
+      "skill_md_bytes": 4937,
+      "skill_md_tokens": 1235,
       "baseline_tokens": 1076,
       "contract_block_tokens": 226,
       "checks": {
         "within_absolute_cap": true,
-        "within_growth_cap": false,
+        "within_growth_cap": true,
         "contract_block_within_cap": true
       },
-      "growth_ratio": 0.765,
-      "pass": false
+      "growth_ratio": 0.148,
+      "pass": true
     },
     {
       "skill": "tasteroll",
@@ -283,5 +283,5 @@
       "pass": true
     }
   ],
-  "overall_pass": false
+  "overall_pass": true
 }

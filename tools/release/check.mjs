@@ -294,13 +294,16 @@ function runNode(script, args = []) {
 function claims() {
   const errors = [];
   const pkg = load("package.json");
+  const facts = load("tools/release/release-facts.json");
   const manifest = load("skills.json");
   const dirs = readdirSync(join(root, "skills")).filter((name) => statSync(join(root, "skills", name)).isDirectory());
   const commandCount = readdirSync(join(root, "commands")).filter((name) => name.endsWith(".md")).length;
+  const expectedSkillCount = facts.skills.length;
+  const expectedCommandCount = facts.commands.length;
   if (manifest.version !== pkg.version) errors.push(`skills.json version is ${manifest.version}; expected package version ${pkg.version}`);
   const manifestNames = new Set(manifest.skills.map((skill) => skill.name));
-  if (new Set(dirs).size !== 20 || dirs.some((name) => !manifestNames.has(name)) || manifestNames.size !== new Set(dirs).size) errors.push(`skill inventory is not an exact 20-entry manifest parity`);
-  if (commandCount !== 20) errors.push(`command inventory is ${commandCount}; expected 20`);
+  if (new Set(dirs).size !== expectedSkillCount || dirs.some((name) => !manifestNames.has(name)) || manifestNames.size !== new Set(dirs).size) errors.push(`skill inventory is not an exact ${expectedSkillCount}-entry manifest parity`);
+  if (commandCount !== expectedCommandCount) errors.push(`command inventory is ${commandCount}; expected ${expectedCommandCount}`);
   const index = readFileSync(join(root, "index.html"), "utf8");
   if (/set of 15|set of 14|set of 13/.test(index)) errors.push("index.html contains a stale skill-count claim");
   if (/19 commands/i.test(readFileSync(join(root, "README.md"), "utf8"))) errors.push("README.md claims 19 commands; release truth is 20 command files");
