@@ -22,6 +22,7 @@ export const ENGINEERING_PRODUCERS = Object.freeze({
   security: Object.freeze({ path: "evals/receipts/v1/security.json", command: "npm run release:security-receipt", assertions: Object.freeze({ status: "pass", reproducible: true, producer_id: "tastecheck.release.security.v1" }) }),
   "clean-clone": Object.freeze({ path: "evals/receipts/v1/clean-clone.json", command: "npm run release:clean-clone-receipt", assertions: Object.freeze({ status: "pass", reproducible: true, producer_id: "tastecheck.release.clean-clone.v1" }) }),
 });
+export const PUBLIC_STATUS_RECEIPT = "evals/receipts/v1/public-release-status.json";
 export const EFFECTIVENESS_SOURCES = Object.freeze({
   "w1-effectiveness": Object.freeze({ path: "evals/receipts/v1/immutable/w1-effectiveness.json", source_evidence_sha256: "663b6a4729ff3b59636578ac5262ae7ae28aa673fbc214930b87803b34a8fce8" }),
   "terminal-v5-effectiveness": Object.freeze({ path: "evals/receipts/v1/immutable/terminal-v5-effectiveness.json", source_evidence_sha256: "6cb65b37b87bcf59cd4d851b7fc65038fb8de9c65cd19c30fbc612315989d218" }),
@@ -62,6 +63,57 @@ export const GENERIC_CHECKS = Object.freeze({
     ["head-source-match", "internal HEAD source digest comparison"], ["source-stability", "internal source digest comparison"],
   ]),
 });
+
+/**
+ * Verify the source digest of every mutable release receipt against one
+ * final-source snapshot. This is intentionally separate from the broader
+ * release checker so callers can run it as the last post-commit gate.
+ */
+export function verifyFinalSourceReceiptDigests(manifest, ioOverrides = {}) {
+  const io = { ...defaultIo, ...ioOverrides };
+  const errors = [];
+  const finalSource = io.sourceTreeSha256();
+  if (!SHA256.test(finalSource ?? "")) errors.push("final source digest is not a lowercase SHA-256");
+
+  const cells = manifest?.engineering_readiness?.required_cells;
+  const byId = new Map(Array.isArray(cells) ? cells.map((cell) => [cell?.id, cell]) : []);
+  for (const [id, producer] of Object.entries(ENGINEERING_PRODUCERS)) {
+    const cell = byId.get(id);
+    if (!cell) {
+      errors.push(`${id}: final-source receipt gate is missing the manifest cell`);
+      continue;
+    }
+    if (cell.path !== producer.path) {
+      errors.push(`${id}: final-source receipt gate path is not ${producer.path}`);
+      continue;
+    }
+    if (!io.hasFile(cell.path)) {
+      errors.push(`${id}: final-source receipt gate cannot read ${cell.path}`);
+      continue;
+    }
+    let receipt;
+    try { receipt = JSON.parse(io.readText(cell.path)); }
+    catch { receipt = null; }
+    if (receipt?.source_tree_sha256 !== finalSource) {
+      errors.push(`${id}: receipt source_tree_sha256 does not match final source digest`);
+    }
+  }
+
+  if (!io.hasFile(PUBLIC_STATUS_RECEIPT)) {
+    errors.push(`public status: final-source receipt gate cannot read ${PUBLIC_STATUS_RECEIPT}`);
+  } else {
+    let status;
+    try { status = JSON.parse(io.readText(PUBLIC_STATUS_RECEIPT)); }
+    catch { status = null; }
+    if (status?.source_tree_sha256 !== finalSource) {
+      errors.push("public status: source_tree_sha256 does not match final source digest");
+    }
+  }
+
+  const verificationSource = io.sourceTreeSha256();
+  if (verificationSource !== finalSource) errors.push("source tree changed while final-source receipt gate was running");
+  return { status: errors.length ? "blocked" : "ready", sourceTreeSha256: finalSource, errors };
+}
 
 function browserSurfaceIds() {
   const ids = ["landing", "gallery"];
@@ -324,11 +376,15 @@ function main() {
     const effectiveness = deriveEffectivenessClaim(load("contracts/v1/release-receipts.json"));
     errors.push(...effectiveness.errors);
     successDetail = `; effectiveness=${effectiveness.status}`;
+  } else if (mode === "verify-chain") {
+    const finalSource = verifyFinalSourceReceiptDigests(load("contracts/v1/release-receipts.json"));
+    errors.push(...finalSource.errors);
+    successDetail = `; source_tree_sha256=${finalSource.sourceTreeSha256}`;
   } else if (mode === "release") {
     const releaseManifest = load("contracts/v1/release-receipts.json");
     const effectiveness = deriveEffectivenessClaim(releaseManifest);
     const unsupportedClaims = scanUnsupportedEffectivenessClaims(root);
-    errors.push(...claims(), ...checkReleaseManifest(releaseManifest), ...unsupportedClaims.map((finding) => `${finding.path}:${finding.line}: unsupported effectiveness claim: ${finding.text}`));
+    errors.push(...verifyFinalSourceReceiptDigests(releaseManifest).errors, ...claims(), ...checkReleaseManifest(releaseManifest), ...unsupportedClaims.map((finding) => `${finding.path}:${finding.line}: unsupported effectiveness claim: ${finding.text}`));
     successDetail = `; engineering_ready=true; effectiveness=${effectiveness.status}`;
   } else errors.push(`unknown release check mode: ${mode}`);
   if (errors.length) {

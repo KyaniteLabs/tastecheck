@@ -1,6 +1,9 @@
 #!/usr/bin/env node
+import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { copyFileSync, cpSync, dirname, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import Ajv2020 from "ajv/dist/2020.js";
 import {
@@ -10,6 +13,8 @@ import {
   checkEngineeringReadiness,
   checkReleaseManifest,
   deriveEffectivenessClaim,
+  PUBLIC_STATUS_RECEIPT,
+  verifyFinalSourceReceiptDigests,
 } from "./check.mjs";
 
 const root = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
@@ -17,6 +22,83 @@ const hash = (text) => createHash("sha256").update(text).digest("hex");
 const SOURCE_SHA = "a".repeat(64);
 const ARTIFACT_PATH = "artifacts/proof.png";
 const ARTIFACT_BYTES = Buffer.from("proof");
+
+function assertSortedKeys(value, label) {
+  if (Array.isArray(value)) {
+    value.forEach((entry, index) => assertSortedKeys(entry, `${label}[${index}]`));
+    return;
+  }
+  if (!value || typeof value !== "object") return;
+  assert.deepEqual(Object.keys(value), [...Object.keys(value)].sort((left, right) => (left < right ? -1 : left > right ? 1 : 0)), `${label} keys must be stable and sorted`);
+  for (const [key, child] of Object.entries(value)) assertSortedKeys(child, `${label}.${key}`);
+}
+
+function copyFixtureFile(sourceRoot, fixtureRoot, relativePath) {
+  const destination = join(fixtureRoot, relativePath);
+  mkdirSync(dirname(destination), { recursive: true });
+  copyFileSync(join(sourceRoot, relativePath), destination);
+}
+
+function buildProjectFactsFixture(sourceRoot) {
+  const fixtureRoot = mkdtempSync(join(tmpdir(), "tastecheck-project-facts-"));
+  for (const relativePath of [
+    "tools/release/release-facts.json",
+    "package.json",
+    "skills.json",
+    "contracts/v1/commands.json",
+    "README.md",
+    "llms.txt",
+    "index.html",
+    "docs/LAUNCH.md",
+    "docs/VERIFICATION.md",
+    "samples/index.html",
+  ]) copyFixtureFile(sourceRoot, fixtureRoot, relativePath);
+
+  mkdirSync(join(fixtureRoot, "skills"), { recursive: true });
+  for (const entry of readdirSync(join(sourceRoot, "skills"), { withFileTypes: true })) {
+    if (entry.isDirectory()) mkdirSync(join(fixtureRoot, "skills", entry.name));
+  }
+  cpSync(join(sourceRoot, "commands"), join(fixtureRoot, "commands"), { recursive: true });
+  mkdirSync(join(fixtureRoot, "samples"), { recursive: true });
+  for (const entry of readdirSync(join(sourceRoot, "samples"), { withFileTypes: true })) {
+    if (!entry.isDirectory() || !existsSync(join(sourceRoot, "samples", entry.name, "index.html"))) continue;
+    mkdirSync(join(fixtureRoot, "samples", entry.name));
+    copyFileSync(join(sourceRoot, "samples", entry.name, "index.html"), join(fixtureRoot, "samples", entry.name, "index.html"));
+  }
+  return fixtureRoot;
+}
+
+function testProjectFactsByteStability() {
+  const fixtureRoot = buildProjectFactsFixture(root);
+  const generated = [
+    "skills.json",
+    "contracts/v1/commands.json",
+    "README.md",
+    "llms.txt",
+    "index.html",
+    "docs/LAUNCH.md",
+    "docs/VERIFICATION.md",
+    "samples/index.html",
+  ];
+  try {
+    const commandsPath = join(fixtureRoot, "contracts/v1/commands.json");
+    writeFileSync(commandsPath, `${JSON.stringify(JSON.parse(readFileSync(commandsPath, "utf8")))}\n`);
+    const script = join(root, "tools/release/project-facts.mjs");
+    execFileSync(process.execPath, [script, "--root", fixtureRoot, "--write"], { env: { ...process.env, TZ: "UTC", TASTECHECK_PROJECT_FACTS_TEST: "first" } });
+    const first = generated.map((path) => readFileSync(join(fixtureRoot, path)));
+    assertSortedKeys(JSON.parse(first[0].toString("utf8")), "skills.json");
+    assertSortedKeys(JSON.parse(first[1].toString("utf8")), "contracts/v1/commands.json");
+    execFileSync(process.execPath, [script, "--root", fixtureRoot, "--write"], { env: { ...process.env, TZ: "Pacific/Honolulu", TASTECHECK_PROJECT_FACTS_TEST: "second" } });
+    const second = generated.map((path) => readFileSync(join(fixtureRoot, path)));
+    assert.deepEqual(second, first, "two project-facts runs must produce identical bytes across environment changes");
+    execFileSync(process.execPath, [script, "--root", fixtureRoot, "--check"], { env: { ...process.env, TZ: "America/Los_Angeles", TASTECHECK_PROJECT_FACTS_TEST: "check" } });
+  } finally {
+    rmSync(fixtureRoot, { recursive: true, force: true });
+  }
+}
+
+testProjectFactsByteStability();
+
 const w1Payload = JSON.stringify({
   schema_version: 1,
   kind: "immutable-w1-effectiveness-projection",
@@ -98,6 +180,7 @@ function manifestFixture() {
 
 const texts = new Map([
   ...Object.entries(ENGINEERING_PRODUCERS).map(([id, { path }]) => [path, JSON.stringify(receiptFixture(id))]),
+  [PUBLIC_STATUS_RECEIPT, JSON.stringify({ source_tree_sha256: SOURCE_SHA })],
   [EFFECTIVENESS_SOURCES["w1-effectiveness"].path, w1Payload],
   [EFFECTIVENESS_SOURCES["terminal-v5-effectiveness"].path, v5Payload],
 ]);
@@ -113,6 +196,38 @@ const io = {
   requiredLiveArtifactIds: () => ["proof"],
 };
 const valid = manifestFixture();
+
+const finalSourceGate = verifyFinalSourceReceiptDigests(valid, io);
+if (finalSourceGate.status !== "ready" || finalSourceGate.errors.length !== 0) {
+  throw new Error(`valid final-source receipt gate failed: ${finalSourceGate.errors.join("; ")}`);
+}
+
+function rejectFinalSourceGate(label, mutate, expected) {
+  const candidateTexts = new Map(texts);
+  mutate(candidateTexts);
+  const candidateIo = { ...io, readText: (path) => candidateTexts.get(path), hasFile: (path) => candidateTexts.has(path) };
+  const result = verifyFinalSourceReceiptDigests(valid, candidateIo);
+  if (!result.errors.some((error) => error.includes(expected))) {
+    throw new Error(`${label} did not fail with ${expected}: ${result.errors.join("; ")}`);
+  }
+}
+
+rejectFinalSourceGate("stale engineering receipt", (candidateTexts) => {
+  candidateTexts.set(ENGINEERING_PRODUCERS.mechanical.path, JSON.stringify({ ...receiptFixture("mechanical"), source_tree_sha256: "c".repeat(64) }));
+}, "mechanical: receipt source_tree_sha256 does not match final source digest");
+rejectFinalSourceGate("stale public status receipt", (candidateTexts) => {
+  candidateTexts.set(PUBLIC_STATUS_RECEIPT, JSON.stringify({ source_tree_sha256: "c".repeat(64) }));
+}, "public status: source_tree_sha256 does not match final source digest");
+
+let sourceReads = 0;
+const changingSourceIo = {
+  ...io,
+  sourceTreeSha256: () => (++sourceReads === 1 ? SOURCE_SHA : "d".repeat(64)),
+};
+const changingSource = verifyFinalSourceReceiptDigests(valid, changingSourceIo);
+if (!changingSource.errors.includes("source tree changed while final-source receipt gate was running")) {
+  throw new Error(`source mutation during final-source receipt gate was not detected: ${changingSource.errors.join("; ")}`);
+}
 
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 const releaseSchema = JSON.parse(readFileSync(join(root, "contracts/v1/release-receipts.schema.json"), "utf8"));
