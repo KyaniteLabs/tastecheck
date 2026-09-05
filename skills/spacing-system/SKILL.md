@@ -13,12 +13,14 @@ instead of arbitrary margins.
 
 ## The decision order
 
-1. Publish one 4px-base ladder: `4/8/12/16/24/32/48/64/96px` as `--space-1` through
-   `--space-9`, plus `--space-section: clamp(48px, 32px + 4vw, 96px)`.
+1. Start with one shared vocabulary: the 4px-base ladder
+   `4/8/12/16/24/32/48/64/96px` and
+   `--space-section: clamp(48px, 32px + 4vw, 96px)` are defaults. An alternate bounded scale
+   needs brief and observed-hierarchy evidence.
 2. Map attachment, control, task, group, region, and chapter relationships to visibly different steps
-   (roughly ≥1.5× between levels).
-3. Choose metronomic or intentional syncopated section rhythm from content pressure.
-4. Use `gap` and one-direction logical margins; do not stack arbitrary margins.
+   (roughly ≥1.5× between levels), or document a content-pressure exception.
+3. Choose metronomic or intentional syncopated section rhythm from content pressure and explain it.
+4. Use `gap` and one-direction logical margins; explain any arbitrary-margin exception.
 
 ## Let content set the rhythm
 
@@ -38,19 +40,19 @@ role map before picking a value:
 The console may be metronomic; an account may widen only at finding, subsection, and
 chapter boundaries. That is one vocabulary with different relationships, not two scales.
 
-## Non-negotiables
+## Invariants and defaults
 
-- Audit `margin`/`padding`/`gap` for tokens (except legitimate `0`/`auto`/relative prose).
-- Proximity must tell the truth; `--space-section` is fluid and each context has one base.
-- Whitespace is an intentional structural move, never inconsistent leftover space.
+Invariant craft: audit `margin`/`padding`/`gap`; make proximity truthful; make whitespace intentional;
+keep one explainable vocabulary. The starter ladder, clamp, separation, and rhythm examples are
+brief-dependent defaults: rendered evidence may override them, but must record the scale, map, and
+tradeoff.
 
 ## Migration and honest audit boundary
 
-Classify every literal by its relationship before replacement: `13px` becomes `12px`
-(`--space-3`), `17px` becomes `16px` (`--space-4`), and a bare `24px` layout value becomes
-`var(--space-5)`. Treat `19px` as failed until its observed selector establishes task (16px)
-or group (24px); do not silently round it. The sole prose exception is documented following-
-paragraph `1em` spacing, because it is relative to type rather than a layout primitive.
+Classify every literal by relationship. The starter disposition is `13px`→`12px` (`--space-3`),
+`17px`→`16px` (`--space-4`), bare `24px`→`var(--space-5)`; override only with observed hierarchy
+evidence. Keep `19px` unresolved until its role is observed; do not silently round it. The sole
+prose exception is documented following-paragraph `1em` spacing.
 
 Use `assets/spacing-starter.css` as a fixture and starting point. Without a CSS fixture in
 the target project, mark the audit `PENDING`, name it and the next audit action; never claim
@@ -71,10 +73,9 @@ replaced, justified as an observed exception, or left PENDING with a source and 
 
 ## Authoritative self-check
 
-Include exactly one labeled **Authoritative self-check** in the delivery. It confirms the
-complete ladder and exact section clamp, all six relationships, operational versus editorial
-role selection, the `13/17/19/bare-24` migration decision, and the honest fixture boundary.
-This check is evidence-based, not a length target or a duplicate summary.
+Include exactly one labeled **Authoritative self-check**. It confirms the default ladder and clamp
+or an evidence-backed override, all six relationships, context selection, migration, and the honest
+fixture boundary. It judges reasoning and evidence, not literal starter-value adherence.
 
 ## How to deliver
 

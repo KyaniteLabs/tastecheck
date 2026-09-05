@@ -1,6 +1,14 @@
 {
   "schema_version": 1,
-  "description": "Design rails for tasteroll. These are HARD CONSTRAINTS that never change — the floor beneath every roll. The actual options on each dimension are generated fresh from context at roll time; this file defines what dimensions exist and what values are always valid or invalid.",
+  "description": "Design rails for tasteroll. Invariant craft floors stay stable; the dimensional values below are defaults that a brief may override when rendered evidence records the tradeoff. The actual options on each dimension are generated fresh from context at roll time.",
+  "invariants": {
+    "_description": "These are the craft floors for every roll. A brief may not override them without an explicit product-level decision outside tasteroll.",
+    "contrast_body": { "min_ratio": 4.5 },
+    "contrast_ui": { "min_ratio": 3.0 },
+    "keyboard_reachable": true,
+    "self_contained_export": true,
+    "audit_findings_resolved_or_handed_off": true
+  },
   "dimensions": {
     "_description": "Each dimension is a die. The FACES are generated fresh by the AI from audit + intake context. These entries define what dimensions exist, not what the options are.",
     "personality": { "description": "Emotional tone of the design" },
@@ -14,8 +22,8 @@
     "motion": { "description": "Motion approach" },
     "accent": { "description": "Accent hue territory (derived from aesthetic)" }
   },
-  "rails": {
-    "_description": "Hard bounds. Any roll that violates these fails the gate. These are non-negotiable regardless of seed.",
+  "defaults": {
+    "_description": "Brief-dependent starting points. Override only when the brief and rendered evidence explain the better fit; an override is not a gate failure by itself.",
     "measure_ch": { "min": 58, "max": 75 },
     "line_height": { "min": 1.5, "max": 1.8 },
     "heading_weight": { "min": 600, "max": 800 },
@@ -24,10 +32,9 @@
     "texture_opacity_pct": { "min": 0, "max": 5 },
     "corner_radius_px": { "allowed": [0, 2, 4, 6] },
     "accent_count": { "max": 1 },
-    "contrast_body": { "min_ratio": 4.5 },
-    "contrast_ui": { "min_ratio": 3.0 },
     "section_rhythm": { "allowed": ["compact", "standard", "airy"] }
   },
+  "override_policy": "Treat defaults as a starting rail, not a universal recipe. A roll may depart from a default only when the brief names the need, rendered evidence shows the result, and the delivery records the rationale and any remaining risk.",
   "audit_scope": {
     "_description": "What the audit phase scans for. Findings here are MANDATORY fixes — resolved before Chance runs, seed-independent.",
     "contrast": "Body text < 4.5:1 or UI < 3:1 on actual rendered surfaces",

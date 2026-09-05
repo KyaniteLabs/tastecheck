@@ -119,7 +119,8 @@ dimensions vary.
 Tasteroll output is a personal artifact or prototype, not a shipped surface.
 The gate is deliberately lighter than `tastecheck-pass`:
 
-- **Readable**: body ≥ 1rem, measure 58–75ch, line-height ≥ 1.5
+- **Readable**: start with body ≥ 1rem, measure 58–75ch, and line-height ≥ 1.5; a brief may
+  justify a different reading measure with rendered evidence
 - **WCAG AA**: body ≥ 4.5:1, UI ≥ 3:1 (verified on the rolled surfaces)
 - **Self-contained**: no external requests in exports
 - **Inert**: no scripts in exported HTML
@@ -127,12 +128,14 @@ The gate is deliberately lighter than `tastecheck-pass`:
 
 If the output will be a **shipped public surface**, escalate to `tastecheck-pass`.
 
-## The design rails
+## Invariants and design defaults
 
-The hard constraints live in `assets/design-rails.json`. These define what
-dimensions exist, what values are always valid (measure 58–75ch, line-height
-1.5–1.8, one accent max, corner radius from {0,2,4,6}), and the compatibility
-rules between dimensions. Any roll that violates a rail fails the gate.
+The invariant craft floors and the brief-dependent design defaults live separately in
+`assets/design-rails.json`. Contrast floors, keyboard reachability, self-containment, and
+truthful audit findings remain invariant. Measure, line-height, weight, density, texture,
+corner radius, accent count, and section rhythm are defaults that make a roll concrete; a
+brief may override them when the evidence records the reason and the rendered result still
+meets the invariant floors.
 
 The rails file does NOT contain option lists. Options are generated fresh.
 
@@ -145,7 +148,7 @@ The rails file does NOT contain option lists. Options are generated fresh.
 
 ## Reference files
 
-- `assets/design-rails.json` — dimensions, hard constraints, audit scope,
+- `assets/design-rails.json` — dimensions, invariant floors, design defaults, audit scope,
   intake questions, compatibility rules.
 - `assets/tasteroll-engine.js` — pasteable xoshiro128++ PRNG with lock, reroll,
   shotgun, and exclude operations.

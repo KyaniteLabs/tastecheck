@@ -5,21 +5,21 @@
   "id": "spacing-system-dense-versus-editorial-rhythm",
   "prompt": "Define spacing for one product with two valid contexts: a compact dispatcher console with repeated time-sensitive actions and a long-form post-incident account for the public. Existing CSS contains 13px, 17px, 19px, bare 24px, and arbitrary section margins. Preserve the different reading pressures without shipping two unrelated token systems; no CSS fixture is supplied.",
   "assertions": [
-    "Publishes one complete 4/8/12/16/24/32/48/64/96px ladder and the exact `--space-section: clamp(48px, 32px + 4vw, 96px)` formula.",
-    "Maps attachment, control, task, group, region, and chapter relationships to the shared tokens, then explains operational/metronomic versus editorial/syncopated role selection without a second scale.",
+    "Evaluates a shared spacing vocabulary, using the 4/8/12/16/24/32/48/64/96px ladder and exact `--space-section: clamp(48px, 32px + 4vw, 96px)` formula as defaults or documenting an evidence-backed alternative.",
+    "Judges whether attachment, control, task, group, region, and chapter relationships fit the shared tokens, then explains operational/metronomic versus editorial/syncopated role selection without a second unexplained scale.",
     "Includes one compact implementable application map with relationship, token, dispatcher use, public-account/editorial use, and layout ownership; merely naming a visible role and step fails.",
-    "The application map makes the operational 8/16/24 cadence and editorial widening at finding, subsection, and chapter actionable, uses gap for flex/grid, one-direction margin-block-start for flow, and documented following-paragraph 1em prose spacing only.",
-    "Migrates 13px to 12px, 17px to 16px, bare 24px to `var(--space-5)`, and holds 19px failed until observed relationship selects task 16px or group 24px; permits only documented 1em following-paragraph prose spacing.",
-    "Uses one labeled Authoritative self-check that covers ladder, clamp, six relationships, context selection, migration, and the honest missing-fixture boundary.",
+    "The application map judges whether the operational 8/16/24 cadence and editorial widening at finding, subsection, and chapter fit the brief, uses gap for flex/grid, one-direction margin-block-start for flow, and records any prose exception with evidence.",
+    "Records an evidence-based disposition for 13px, 17px, 19px, and bare 24px, including the starter mappings to 12px, 16px, `var(--space-5)`, and an unresolved 19px until its observed relationship is known; permits documented following-paragraph 1em prose spacing when justified.",
+    "Uses one labeled Authoritative self-check that evaluates ladder, clamp, six relationships, context selection, migration, and the honest missing-fixture boundary rather than rewarding literal adherence.",
     "Marks the unobserved CSS audit PENDING with the missing fixture or selector and a named next action; it does not claim zero residual off-scale values.",
     "Explicitly rejects responsive-layout as the negative neighbor because reflow is downstream of scale and rhythm, then hands it status, reason, remediation, evidence, and provenance."
   ],
   "required_evidence": [
-    "One shared 4–96px primitive ladder and the exact fluid section formula.",
-    "All six semantic relationships with separate operational and editorial selections.",
-    "Application map fields: relationship; token; dispatcher use; public-account/editorial use; layout ownership. It covers attachment/control/task/group/region/chapter; makes 8/16/24 operational cadence and editorial widening at finding/subsection/chapter concrete; uses gap for flex/grid, one-direction margin-block-start, and the documented following-paragraph 1em prose exception.",
-    "13/17/19/bare-24 migration rules plus the 1em prose exception.",
-    "One Authoritative self-check and a PENDING missing-fixture audit boundary with next action.",
+    "A shared 4–96px primitive ladder and the exact fluid section formula as defaults, or an evidence-backed alternative with its tradeoff.",
+    "Evidence for all six semantic relationships with separate operational and editorial selections.",
+    "Application map fields: relationship; token; dispatcher use; public-account/editorial use; layout ownership. It covers attachment/control/task/group/region/chapter; judges the 8/16/24 operational cadence and editorial widening at finding/subsection/chapter; uses gap for flex/grid, one-direction margin-block-start, and the documented following-paragraph 1em prose exception.",
+    "An evidence-based 13/17/19/bare-24 migration decision plus the 1em prose exception.",
+    "One Authoritative self-check that evaluates the choice and a PENDING missing-fixture audit boundary with next action.",
     "Explicit responsive-layout rejection and evidence-table handoff."
   ],
   "routing": {
