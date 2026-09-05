@@ -30,6 +30,30 @@ All notable changes to the tastecheck skill pack. Format follows
 - Receipt gates now keep source-bound status honest: stale, missing, malformed,
   or failed evidence remains `UNVERIFIED` or `HOLD`.
 
+### Changed — documentation and token-density passes (2026-09-05)
+
+- Public docs updated across remotes: README, `llms.txt`, and this changelog
+  reflect the ASTRA hardening arc (evidence-derived verdicts, review binding,
+  dependency-manifest capture, subject inventories, complete-capture hashing,
+  verifier/consumer root split, scoped GEO claims, `npm run finalize`).
+- Token-density pass (caveman + ponytail compression; protected-verbatim
+  classes — check ids, commands, verdict grammar, release-facts blocks —
+  untouched), per `_retrofit-2026-09-04/DENSITY-PASS-REPORT.md`:
+
+  | Scope | Before (tokens) | After (tokens) | Reduction |
+  |---|---|---|---|
+  | All 20 skill bodies | 24,463.8 | 20,781.5 | **15.1%** |
+  | Full files (incl. frontmatter/code) | 30,830.0 | 27,147.7 | 11.9% |
+  | Heaviest body (`web-typography`) | — | — | **31.6%** |
+
+  Losslessness proven by the full structural lane after compression
+  (contracts, lint, projections, gate audit, NIMA tests, mutation
+  score 4/4); receipts re-finalized at the landed source via
+  `npm run finalize`.
+- Final landed state: 20 skills / 20 canonical commands; ASTRA 8/8 findings
+  closed (5 SEV-1 evidence-authority holes); post-ASTRA independent green
+  pair (Grok-4.6 round 9b + Codex-SOL round 10).
+
 ## [Retrofit] — 2026-09-04
 
 ### Changed — receipt and projector gates
