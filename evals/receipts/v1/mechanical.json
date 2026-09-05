@@ -2,7 +2,7 @@
   "schema_version": 1,
   "kind": "mechanical",
   "producer_id": "tastecheck.release.mechanical.v1",
-  "source_tree_sha256": "b4f0bc7e554422dadd882e3a7cd30efa98f627364f1f0f2a4596a483ba08f2db",
+  "source_tree_sha256": "74a5cd67078c9c69bf28d8dc40d1a6b0dae88b807739651fb5f4b6146bb668b7",
   "nonce": "mechanical-release-v1",
   "started_at": "2026-07-14T00:21:21.915Z",
   "finished_at": "2026-07-14T00:21:29.284Z",

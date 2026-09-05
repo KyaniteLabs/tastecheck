@@ -4,7 +4,7 @@
   "title": "TasteCheck release gate output v1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "kind", "roots", "catalog", "subject_inventory", "artifact", "execution", "rows", "verdict", "release_eligible", "blockers", "validation"],
+  "required": ["schema_version", "kind", "roots", "catalog", "browser_subjects", "subject_inventory", "artifact", "execution", "rows", "verdict", "release_eligible", "blockers", "validation"],
   "properties": {
     "schema_version": { "const": 1 },
     "kind": { "const": "tastecheck-release-gate" },
@@ -22,6 +22,23 @@
       "additionalProperties": false,
       "required": ["path", "sha256", "check_ids"],
       "properties": { "path": { "type": "string" }, "sha256": { "$ref": "#/$defs/sha256" }, "check_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string" } } }
+    },
+    "browser_subjects": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["manifest_path", "manifest_sha256", "required_viewports", "routes", "states", "members"],
+          "properties": {
+            "manifest_path": { "type": "string" },
+            "manifest_sha256": { "$ref": "#/$defs/sha256" },
+            "required_viewports": { "type": "array", "uniqueItems": true, "items": { "type": "integer", "minimum": 1 } },
+            "routes": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+            "states": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+            "members": { "type": "array", "items": { "$ref": "#/$defs/browserMember" } }
+          }
+        }
+      ]
     },
     "subject_inventory": {
       "oneOf": [
@@ -47,8 +64,8 @@
     "validation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["input_valid", "execution_policy_valid", "catalog_complete", "subject_inventory_valid", "subject_coverage_complete", "artifact_hash_verified", "artifact_dependency_manifest_verified", "evidence_hashes_verified", "provenance_hashes_verified", "errors"],
-      "properties": { "input_valid": { "type": "boolean" }, "execution_policy_valid": { "type": "boolean" }, "catalog_complete": { "type": "boolean" }, "subject_inventory_valid": { "type": "boolean" }, "subject_coverage_complete": { "type": "boolean" }, "artifact_hash_verified": { "type": "boolean" }, "artifact_dependency_manifest_verified": { "type": "boolean" }, "evidence_hashes_verified": { "type": "boolean" }, "provenance_hashes_verified": { "type": "boolean" }, "errors": { "type": "array", "items": { "type": "string" } } }
+      "required": ["input_valid", "execution_policy_valid", "browser_subjects_valid", "catalog_complete", "subject_inventory_valid", "subject_coverage_complete", "artifact_hash_verified", "artifact_dependency_manifest_verified", "evidence_hashes_verified", "provenance_hashes_verified", "errors"],
+      "properties": { "input_valid": { "type": "boolean" }, "execution_policy_valid": { "type": "boolean" }, "browser_subjects_valid": { "type": "boolean" }, "catalog_complete": { "type": "boolean" }, "subject_inventory_valid": { "type": "boolean" }, "subject_coverage_complete": { "type": "boolean" }, "artifact_hash_verified": { "type": "boolean" }, "artifact_dependency_manifest_verified": { "type": "boolean" }, "evidence_hashes_verified": { "type": "boolean" }, "provenance_hashes_verified": { "type": "boolean" }, "errors": { "type": "array", "items": { "type": "string" } } }
     }
   },
   "$defs": {
@@ -81,6 +98,12 @@
         "injection": { "type": "boolean" },
         "authorization": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/authorization" }] }
       }
+    },
+    "browserMember": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "route", "state", "viewport"],
+      "properties": { "id": { "type": "string" }, "route": { "type": "string" }, "state": { "type": "string" }, "viewport": { "type": "integer", "minimum": 1 } }
     },
     "authorization": {
       "type": "object",
