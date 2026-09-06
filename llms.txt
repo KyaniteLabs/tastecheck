@@ -133,7 +133,7 @@ Yes; TasteCheck is open source under the MIT license in [`LICENSE`](LICENSE).
 
 Clone the repository and run `./tastecheck/install.sh`.
 
-### Is TasteCheck proven effective?
+### Effectiveness status
 
 The current public release status is source-bound: engineering release evidence is UNVERIFIED and historical effectiveness is BLOCKED.
 
