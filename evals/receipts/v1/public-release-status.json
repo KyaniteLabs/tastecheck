@@ -6,7 +6,7 @@
   "manifest": {
     "id": "release-manifest",
     "path": "contracts/v1/release-receipts.json",
-    "sha256": "558ca3edd879364ed3b197ab9ef1ce49e93fcae7ef14a7cea1401f49921bfed2"
+    "sha256": "20dbe871ad72a53ee5d59051179e1b1d8988da865a04ac68cf40cc50cce6e521"
   },
   "claims": [
     {
@@ -21,35 +21,32 @@
         {
           "id": "browser",
           "path": "evals/receipts/v1/browser.json",
-          "sha256": "b0e23f155bdb8c77efce904da9ac890c46e71893ddc42f1c260fc39530dcafd0"
+          "sha256": "32133c73db58c3b77f0266ed6758114c782dfdcf3b8ccfeb05ee98b3c196cfc2"
         },
         {
           "id": "e2e",
           "path": "evals/receipts/v1/e2e.json",
-          "sha256": "59a355c9f16de7e0908610d7780ba7b83cd9ccfd591df5a2a78f21697dfb3622"
+          "sha256": "4142ca2303aed00f28493b5d921735ef14c5716ed66dab6e03fc2d8dbb8ababe"
         },
         {
           "id": "mechanical",
           "path": "evals/receipts/v1/mechanical.json",
-          "sha256": "eac962f71f3c156a38e746ee81c72d8c424172a898453c4f6f065a8c6510a349"
+          "sha256": "e448e7a5d74ca7cfbe2335e44e6ea6d55858916403172fa8b346d7a172dd219e"
         },
         {
           "id": "security",
           "path": "evals/receipts/v1/security.json",
-          "sha256": "099ebb03a1371ff4cccb8a625e14dc48ce71b432a0527ec7625d68ad5b6af282"
+          "sha256": "9e8a21ae13f495243de9c9c506826804f6012787a280b15aaa884024f76d946c"
         },
         {
           "id": "clean-clone",
           "path": "evals/receipts/v1/clean-clone.json",
-          "sha256": "c028ab4a9f40bca63449a835bc93db0a4a21822c7f634851d681bbc0f4b55640"
+          "sha256": "4556edf3bd4838d7eaad4cf299acc8912c013cf0a3097eac1067c7d5f4544495"
         }
       ],
       "reasons": [
-        "browser: stale-until-rerun: registered producer must rerun for the current source revision",
-        "e2e: stale-until-rerun: registered producer must rerun for the current source revision",
-        "mechanical: stale-until-rerun: registered producer must rerun for the current source revision",
-        "security: stale-until-rerun: registered producer must rerun for the current source revision",
-        "clean-clone: stale-until-rerun: registered producer must rerun for the current source revision"
+        "browser: receipt artifact bytes or hashes are invalid",
+        "e2e: receipt artifact bytes or hashes are invalid"
       ]
     },
     {
@@ -59,11 +56,11 @@
         {
           "id": "browser",
           "path": "evals/receipts/v1/browser.json",
-          "sha256": "b0e23f155bdb8c77efce904da9ac890c46e71893ddc42f1c260fc39530dcafd0"
+          "sha256": "32133c73db58c3b77f0266ed6758114c782dfdcf3b8ccfeb05ee98b3c196cfc2"
         }
       ],
       "reasons": [
-        "stale-until-rerun: registered producer must rerun for the current source revision"
+        "receipt artifact bytes or hashes are invalid"
       ]
     },
     {
@@ -73,11 +70,11 @@
         {
           "id": "browser",
           "path": "evals/receipts/v1/browser.json",
-          "sha256": "b0e23f155bdb8c77efce904da9ac890c46e71893ddc42f1c260fc39530dcafd0"
+          "sha256": "32133c73db58c3b77f0266ed6758114c782dfdcf3b8ccfeb05ee98b3c196cfc2"
         }
       ],
       "reasons": [
-        "browser coverage: stale-until-rerun: registered producer must rerun for the current source revision"
+        "browser coverage: receipt artifact bytes or hashes are invalid"
       ]
     },
     {
