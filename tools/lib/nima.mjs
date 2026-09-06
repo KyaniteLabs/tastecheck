@@ -17,6 +17,7 @@ const HEALTH_CACHE_MS = 60_000;
 // Single tuning knob. WARN-only in Phase 1; promote to a hard FAIL threshold only after
 // calibration proves it separates known-good from known-slop on UI images (not AVA photos).
 export const NIMA_WARN_THRESHOLD = 5.5;
+export const NIMA_HISTOGRAM_BINS = 10;
 
 let healthUp = null;
 let healthCheckedAt = 0;
@@ -52,7 +53,11 @@ export async function scoreNima(imageBuffer) {
     clearTimeout(timer);
     if (!response.ok) return null;
     const payload = await response.json();
-    if (typeof payload?.score !== "number") return null;
+    if (typeof payload?.score !== "number" || !Number.isFinite(payload.score) || payload.score < 1 || payload.score > 10) return null;
+    if (!Array.isArray(payload.histogram)
+      || payload.histogram.length !== NIMA_HISTOGRAM_BINS
+      || payload.histogram.some((bin) => typeof bin !== "number" || !Number.isFinite(bin) || bin < 0)
+      || Math.abs(payload.histogram.reduce((sum, bin) => sum + bin, 0) - 1) > 1e-6) return null;
     return payload;
   } catch {
     return null;

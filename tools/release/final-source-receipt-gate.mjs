@@ -56,7 +56,7 @@ export function verifyFinalSourceReceiptDigests(manifest, ioOverrides = {}) {
     try { receipt = JSON.parse(io.readText(cell.path)); }
     catch { receipt = null; }
     if (receipt?.source_tree_sha256 !== finalSource) {
-      errors.push(`${id}: receipt source_tree_sha256 does not match final source digest`);
+      errors.push(`${id}: receipt source_tree_sha256 does not match final source digest (stale-until-rerun; registered producer must rerun)`);
     }
   }
 

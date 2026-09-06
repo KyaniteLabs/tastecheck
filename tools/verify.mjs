@@ -216,7 +216,7 @@ function assertLocalLinks() {
     ];
     for (const [, href] of links) {
       if (href.startsWith("/")) continue;
-      const cleanHref = href.split("?")[0];
+      const cleanHref = href.split(/[?#]/)[0];
       // Evidence and retrofit reports use repository-root-relative links for
       // source locations; ordinary document links remain directory-relative.
       const rootTarget = join(root, cleanHref);

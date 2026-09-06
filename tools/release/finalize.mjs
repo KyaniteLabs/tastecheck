@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/** Refresh source-bound mutable receipts, pins, public status, and verify-chain. */
+/** Recompute deterministic receipts, rebind release metadata, project public status, and verify-chain. */
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -36,14 +36,23 @@ function refreshContextBudget(root) {
   console.log(`finalize: context-budget refreshed (${report.skills.length} skills)`);
 }
 
-function refreshReceiptSources(root, sourceTreeSha256) {
+/**
+ * Report which producer receipts need a real producer rerun for this source.
+ *
+ * A finalizer is not a producer: it must never rewrite producer-owned source
+ * identity merely because it can update a manifest or public projection.
+ */
+export function sourceRebindReceipts(root, sourceTreeSha256) {
+  const stale = [];
   for (const [id, producer] of Object.entries(ENGINEERING_PRODUCERS)) {
     const receipt = readJson(root, producer.path);
     if (!receipt || typeof receipt !== "object" || Array.isArray(receipt)) throw new Error(`${id}: receipt must be a JSON object`);
-    receipt.source_tree_sha256 = sourceTreeSha256;
-    writeIfChanged(root, producer.path, receipt);
+    if (receipt.source_tree_sha256 !== sourceTreeSha256) {
+      stale.push({ id, source_tree_sha256: receipt.source_tree_sha256, status: "stale-until-rerun" });
+    }
   }
-  console.log(`finalize: refreshed ${Object.keys(ENGINEERING_PRODUCERS).length} mutable receipt digests (${sourceTreeSha256})`);
+  console.log(`finalize: source-rebind preserved ${Object.keys(ENGINEERING_PRODUCERS).length} producer receipt identities (${stale.length} stale-until-rerun)`);
+  return stale;
 }
 
 function refreshManifestPins(root) {
@@ -70,7 +79,7 @@ function main() {
   refreshContextBudget(root);
   const sourceTreeSha256 = computeSourceTreeSha256(root);
   if (!SHA256.test(sourceTreeSha256)) throw new Error("final source digest is not a lowercase SHA-256");
-  refreshReceiptSources(root, sourceTreeSha256);
+  sourceRebindReceipts(root, sourceTreeSha256);
   refreshManifestPins(root);
   const status = projectPublicStatus(root);
   console.log(`finalize: projected public status (${status.overall_status.toUpperCase()})`);
@@ -81,9 +90,11 @@ function main() {
   console.log(`finalize: complete (${sourceTreeSha256})`);
 }
 
-try {
-  main();
-} catch (error) {
-  console.error(`finalize blocked: ${error.message}`);
-  process.exitCode = 1;
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  try {
+    main();
+  } catch (error) {
+    console.error(`finalize blocked: ${error.message}`);
+    process.exitCode = 1;
+  }
 }

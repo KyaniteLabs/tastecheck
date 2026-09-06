@@ -50,7 +50,7 @@ function statusWord(status) {
 function statusMessage(status) {
   if (status === "pass") return "current source-bound release receipts cover the asserted browser and accessibility checks.";
   if (status === "hold") return "a required release receipt failed; the public result is held.";
-  return "a required source-bound release receipt is missing, stale, or malformed.";
+  return "a required source-bound release receipt is stale-until-rerun, missing, or malformed.";
 }
 
 function markerValue(status) {
@@ -138,7 +138,7 @@ function artifactEvidence(root, receipt) {
 export function deriveReceiptStatus({ kind, receipt, currentSource, pinnedHashMatches = true, artifactIntegrity = true, requiredCheckIds = [] }) {
   if (!pinnedHashMatches || !receipt) return { status: "unverified", reasons: ["receipt bytes are missing or do not match the manifest SHA-256"] };
   if (!receiptShape(receipt, kind)) return { status: "unverified", reasons: ["receipt shape or producer identity is invalid"] };
-  if (receipt.source_tree_sha256 !== currentSource) return { status: "unverified", reasons: ["receipt is stale for the current source revision"] };
+  if (receipt.source_tree_sha256 !== currentSource) return { status: "unverified", reasons: ["stale-until-rerun: registered producer must rerun for the current source revision"] };
   const live = kind === "browser" || kind === "e2e";
   if (live && receipt.executed !== true) return { status: "unverified", reasons: ["receipt does not record executed evidence"] };
   if (kind !== "context-budget") {

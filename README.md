@@ -8,7 +8,7 @@ Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21
 
 <!-- release-status:v1:start -->
 [![Release status: UNVERIFIED](https://img.shields.io/badge/release-unverified-c47b44.svg)](docs/VERIFICATION.md)
-> **Release status:** UNVERIFIED — a required source-bound release receipt is missing, stale, or malformed.
+> **Release status:** UNVERIFIED — a required source-bound release receipt is stale-until-rerun, missing, or malformed.
 > **Effectiveness status:** BLOCKED — historical evidence did not clear its release threshold.
 <!-- release-status:v1:end -->
 

@@ -1,20 +1,20 @@
 ▶ nimaVerdict
-  ✔ returns 'n/a' for null (service down) (1.96875ms)
-  ✔ returns 'n/a' for undefined (0.194792ms)
-  ✔ returns 'pass' for scores >= NIMA_WARN (0.100917ms)
-  ✔ returns 'warn' for scores < NIMA_WARN (0.157584ms)
-  ✔ Phase 1 never returns 'fail' even for very low scores (0.131625ms)
-  ✔ boundary: score exactly at NIMA_WARN is 'pass' (0.078291ms)
-✔ nimaVerdict (4.087ms)
+  ✔ returns 'n/a' for null (service down) (46.114167ms)
+  ✔ returns 'n/a' for undefined (0.235459ms)
+  ✔ returns 'pass' for scores >= NIMA_WARN (7.100584ms)
+  ✔ returns 'warn' for scores < NIMA_WARN (0.169208ms)
+  ✔ Phase 1 never returns 'fail' even for very low scores (0.135584ms)
+  ✔ boundary: score exactly at NIMA_WARN is 'pass' (0.097834ms)
+✔ nimaVerdict (65.522583ms)
 ▶ combinedVerdict
-  ✔ CLEAN gate + pass NIMA → CLEAN (0.253625ms)
-  ✔ CLEAN gate + warn NIMA → REVIEW WARNS (0.189666ms)
-  ✔ CLEAN gate + n/a NIMA → CLEAN (never downgrades) (0.110875ms)
-  ✔ REVIEW WARNS gate + pass NIMA → REVIEW WARNS (0.133666ms)
-  ✔ FAIL gate + pass NIMA → FAIL (gate dominates) (0.0815ms)
-  ✔ null or undefined gate → HOLD (missing evidence is non-shippable) (0.06125ms)
-  ✔ missing, malformed, and unknown verdicts → HOLD (0.20225ms)
-✔ combinedVerdict (1.430166ms)
+  ✔ CLEAN gate + pass NIMA → CLEAN (22.264416ms)
+  ✔ CLEAN gate + warn NIMA → REVIEW WARNS (0.313625ms)
+  ✔ CLEAN gate + n/a NIMA → CLEAN (never downgrades) (0.167458ms)
+  ✔ REVIEW WARNS gate + pass NIMA → REVIEW WARNS (0.171125ms)
+  ✔ FAIL gate + pass NIMA → FAIL (gate dominates) (5.15575ms)
+  ✔ null or undefined gate → HOLD (missing evidence is non-shippable) (0.176958ms)
+  ✔ missing, malformed, and unknown verdicts → HOLD (0.114709ms)
+✔ combinedVerdict (31.092042ms)
 ℹ tests 13
 ℹ suites 2
 ℹ pass 13
@@ -22,5 +22,5 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 125.479417
+ℹ duration_ms 1103.5615
 15 passed 0 failed

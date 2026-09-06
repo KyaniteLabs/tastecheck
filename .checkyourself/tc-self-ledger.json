@@ -1,13 +1,1412 @@
 {
-  "schema": "tastecheck-release-ledger/1",
-  "artifact": {"kind": "file", "path": "index.html", "sha256": "82c6e974cd0b2d1954d034a6cd2ee3d6f0201de38b85c3f188262aa9b2ccd1d1"},
-  "entries": [
-    {"check_id": "structure:contracts", "mode": "mechanical", "summary": "verify.mjs full skill/link verification", "details": {"observation": "tastecheck verification passed", "command": "node tools/verify.mjs", "exit_code": 0}, "status": "pass"},
-    {"check_id": "structure:component-states", "mode": "inspector", "summary": "NIMA unit-test lane (13 tests)", "details": {"observation": "13 passed 0 failed", "command": "node --test tools/test/nima.test.mjs", "exit_code": 0}, "status": "pass"},
-    {"check_id": "browser:rendering", "mode": "browser", "summary": "Landing page rendered at all required viewports on the nucbox floor (headless chromium-1208)", "details": {"route": "/", "state": "default", "captures": [
-      {"viewport": 390, "path": ".checkyourself/captures/capture-390.png", "sha256": "3ea399e9ab786f932cbd30bb78125bc8e9fdebd34669414fed72bae22937d3eb"},
-      {"viewport": 768, "path": ".checkyourself/captures/capture-768.png", "sha256": "f349abebead226fcb8e1b5f88c81cdc160cd81752c374a5229fb2dbfb5d6bea0"},
-      {"viewport": 1280, "path": ".checkyourself/captures/capture-1280.png", "sha256": "77f85b39aadc97a4136ffd9f9e13ef8929371eb6bb5f867b3a20e70a9e64ccab"}
-    ]}, "status": "pass"}
+  "schema_version": 1,
+  "catalog": {
+    "path": "skills/tastecheck-pass/assets/check-catalog.json",
+    "sha256": "a4b61dbd97681471bddc36f5115aceb7ea058e9971f0468242e8cf8a0de522c6"
+  },
+  "artifact": {
+    "type": "file",
+    "path": "index.html",
+    "sha256": "82c6e974cd0b2d1954d034a6cd2ee3d6f0201de38b85c3f188262aa9b2ccd1d1",
+    "bytes": 54325,
+    "dependency_manifest": {
+      "entry": "index.html",
+      "assets": [
+        {
+          "path": "favicon.ico",
+          "bytes": 70,
+          "sha256": "afd78a4f71dcecf4c0cab91367a05213e76133012388c5908ae366355df9184a"
+        },
+        {
+          "path": "index.html",
+          "bytes": 54325,
+          "sha256": "82c6e974cd0b2d1954d034a6cd2ee3d6f0201de38b85c3f188262aa9b2ccd1d1"
+        }
+      ],
+      "sha256": "b4534aa733c82de3ec4a9b2c37c3056482defb19cb4cc9b39ac0ce88a0ce33f3"
+    }
+  },
+  "execution": {
+    "mode": "audit",
+    "target_origin": "repo",
+    "authenticated": false,
+    "writes": false,
+    "injection": false,
+    "authorization": null
+  },
+  "browser_subjects": {
+    "manifest_path": "skills/tastecheck-pass/assets/browser-subject-manifest.json",
+    "manifest_sha256": "0e79c5e91e2ec9b71a819371333164a28ee5ada3b24aa564982131315f4d00f9",
+    "required_viewports": [
+      390,
+      768,
+      1280
+    ]
+  },
+  "subject_inventory": {
+    "frozen_at": "2026-09-06T00:40:39Z",
+    "subjects": [],
+    "coverage": {
+      "direction:system": [
+        {
+          "id": "artifact:index.html"
+        }
+      ],
+      "foundation:color": [
+        {
+          "id": "artifact:index.html"
+        }
+      ],
+      "foundation:typography": [
+        {
+          "id": "artifact:index.html"
+        }
+      ],
+      "foundation:spacing": [
+        {
+          "id": "artifact:index.html"
+        }
+      ],
+      "foundation:theming": [
+        {
+          "id": "artifact:index.html"
+        }
+      ],
+      "structure:responsive-layout": [
+        {
+          "id": "route:/|state:default|viewport:390",
+          "route": "/",
+          "state": "default",
+          "viewport": 390
+        },
+        {
+          "id": "route:/|state:default|viewport:768",
+          "route": "/",
+          "state": "default",
+          "viewport": 768
+        },
+        {
+          "id": "route:/|state:default|viewport:1280",
+          "route": "/",
+          "state": "default",
+          "viewport": 1280
+        }
+      ],
+      "structure:component-states": [
+        {
+          "id": "control:component-demo|state:default",
+          "control": "component-demo",
+          "state": "default"
+        },
+        {
+          "id": "control:component-demo|state:loading",
+          "control": "component-demo",
+          "state": "loading"
+        },
+        {
+          "id": "control:component-demo|state:disabled",
+          "control": "component-demo",
+          "state": "disabled"
+        }
+      ],
+      "structure:form-ux": [
+        {
+          "id": "control:email-form|state:empty",
+          "control": "email-form",
+          "state": "empty"
+        },
+        {
+          "id": "control:email-form|state:invalid",
+          "control": "email-form",
+          "state": "invalid"
+        },
+        {
+          "id": "control:email-form|state:valid",
+          "control": "email-form",
+          "state": "valid"
+        }
+      ],
+      "structure:empty-states": [
+        {
+          "id": "control:empty-state-demo|state:loading",
+          "control": "empty-state-demo",
+          "state": "loading"
+        },
+        {
+          "id": "control:empty-state-demo|state:empty",
+          "control": "empty-state-demo",
+          "state": "empty"
+        },
+        {
+          "id": "control:empty-state-demo|state:error",
+          "control": "empty-state-demo",
+          "state": "error"
+        },
+        {
+          "id": "control:empty-state-demo|state:retry",
+          "control": "empty-state-demo",
+          "state": "retry"
+        }
+      ],
+      "verification:a11y": [
+        {
+          "id": "artifact:index.html"
+        }
+      ],
+      "verification:deslop-ui": [
+        {
+          "id": "artifact:index.html"
+        }
+      ],
+      "verification:humanize-copy": [
+        {
+          "id": "artifact:index.html"
+        }
+      ],
+      "browser:rendering": [
+        {
+          "id": "route:/|state:default|viewport:390",
+          "route": "/",
+          "state": "default",
+          "viewport": 390
+        },
+        {
+          "id": "route:/|state:default|viewport:768",
+          "route": "/",
+          "state": "default",
+          "viewport": 768
+        },
+        {
+          "id": "route:/|state:default|viewport:1280",
+          "route": "/",
+          "state": "default",
+          "viewport": 1280
+        }
+      ],
+      "browser:zoom-400": [
+        {
+          "id": "route:/|state:default|viewport:390",
+          "route": "/",
+          "state": "default",
+          "viewport": 390
+        },
+        {
+          "id": "route:/|state:default|viewport:768",
+          "route": "/",
+          "state": "default",
+          "viewport": 768
+        },
+        {
+          "id": "route:/|state:default|viewport:1280",
+          "route": "/",
+          "state": "default",
+          "viewport": 1280
+        }
+      ],
+      "browser:keyboard": [
+        {
+          "id": "route:/|state:default|viewport:390",
+          "route": "/",
+          "state": "default",
+          "viewport": 390
+        },
+        {
+          "id": "route:/|state:default|viewport:768",
+          "route": "/",
+          "state": "default",
+          "viewport": 768
+        },
+        {
+          "id": "route:/|state:default|viewport:1280",
+          "route": "/",
+          "state": "default",
+          "viewport": 1280
+        }
+      ],
+      "browser:theme-contrast": [
+        {
+          "id": "route:/|state:default|viewport:390",
+          "route": "/",
+          "state": "default",
+          "viewport": 390
+        },
+        {
+          "id": "route:/|state:default|viewport:768",
+          "route": "/",
+          "state": "default",
+          "viewport": 768
+        },
+        {
+          "id": "route:/|state:default|viewport:1280",
+          "route": "/",
+          "state": "default",
+          "viewport": 1280
+        }
+      ],
+      "browser:reduced-motion": [
+        {
+          "id": "route:/|state:default|viewport:390",
+          "route": "/",
+          "state": "default",
+          "viewport": 390
+        },
+        {
+          "id": "route:/|state:default|viewport:768",
+          "route": "/",
+          "state": "default",
+          "viewport": 768
+        },
+        {
+          "id": "route:/|state:default|viewport:1280",
+          "route": "/",
+          "state": "default",
+          "viewport": 1280
+        }
+      ],
+      "browser:cold-load": [
+        {
+          "id": "route:/|state:default|viewport:390",
+          "route": "/",
+          "state": "default",
+          "viewport": 390
+        },
+        {
+          "id": "route:/|state:default|viewport:768",
+          "route": "/",
+          "state": "default",
+          "viewport": 768
+        },
+        {
+          "id": "route:/|state:default|viewport:1280",
+          "route": "/",
+          "state": "default",
+          "viewport": 1280
+        }
+      ],
+      "gate:artifact-spec": [
+        {
+          "id": "artifact:index.html"
+        }
+      ],
+      "gate:required-evidence": [
+        {
+          "id": "artifact:index.html"
+        }
+      ],
+      "gate:blocker-handoff": [
+        {
+          "id": "artifact:index.html"
+        }
+      ]
+    },
+    "sha256": "d8f553d0dbe0a6890713fa326d60c81b16c6b5b7d4edf356eb72b8492ab88e8d"
+  },
+  "rows": [
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "foundation:color",
+      "status": "fail",
+      "reason": "foundation:color — measured token contrast has passing body/accent pairs but failing UI border pairs.",
+      "remediation": "Raise --line or use a higher-contrast border role in dark and light themes, then rerun rendered contrast for every interactive state.",
+      "evidence": {
+        "mode": "automated",
+        "summary": "Measured OKLCH token pairs across dark, light, and prefers-contrast modes.",
+        "details": {
+          "measurements": {
+            "tokens": {
+              "dark": "--bg oklch(13% .018 64); --line oklch(32% .044 64); --ink oklch(94% .024 78); --muted oklch(78% .041 75); --copper oklch(76% .145 62)",
+              "light": "--bg oklch(96% .023 78); --line oklch(71% .05 71); --ink oklch(19% .028 63); --muted oklch(42% .046 66); --copper oklch(55% .143 56)",
+              "contrast": "--bg oklch(6% .012 63); --line oklch(72% .045 74); --ink oklch(99% .006 96); --muted oklch(88% .035 80); --copper oklch(84% .174 69)"
+            },
+            "pairs": [
+              {
+                "theme": "dark",
+                "foreground": "#f4eada",
+                "background": "#0c0602",
+                "kind": "body",
+                "ratio": 16.87
+              },
+              {
+                "theme": "dark",
+                "foreground": "#c7b49b",
+                "background": "#0c0602",
+                "kind": "body",
+                "ratio": 10.02
+              },
+              {
+                "theme": "dark",
+                "foreground": "#f29a43",
+                "background": "#1a0400",
+                "kind": "ui",
+                "ratio": 8.9
+              },
+              {
+                "theme": "dark",
+                "foreground": "#432e1a",
+                "background": "#0c0602",
+                "kind": "ui",
+                "ratio": 1.57
+              },
+              {
+                "theme": "light",
+                "foreground": "#1d1106",
+                "background": "#fbf0e1",
+                "kind": "body",
+                "ratio": 16.47
+              },
+              {
+                "theme": "light",
+                "foreground": "#5e4832",
+                "background": "#fbf0e1",
+                "kind": "body",
+                "ratio": 7.6
+              },
+              {
+                "theme": "light",
+                "foreground": "#ae5600",
+                "background": "#fff7eb",
+                "kind": "ui",
+                "ratio": 4.79
+              },
+              {
+                "theme": "light",
+                "foreground": "#b69d80",
+                "background": "#fbf0e1",
+                "kind": "ui",
+                "ratio": 2.3
+              },
+              {
+                "theme": "contrast",
+                "foreground": "#fdfcf7",
+                "background": "#010100",
+                "kind": "body",
+                "ratio": 20.33
+              },
+              {
+                "theme": "contrast",
+                "foreground": "#e4d5be",
+                "background": "#010100",
+                "kind": "body",
+                "ratio": 14.55
+              },
+              {
+                "theme": "contrast",
+                "foreground": "#ffb228",
+                "background": "#030100",
+                "kind": "ui",
+                "ratio": 11.61
+              },
+              {
+                "theme": "contrast",
+                "foreground": "#b6a186",
+                "background": "#010100",
+                "kind": "ui",
+                "ratio": 8.39
+              }
+            ],
+            "css_lines": "index.html:86-120,126,243-250"
+          },
+          "evidence": {
+            "markup": {
+              "path": "index.html",
+              "lines": "86-120; 126; 243-250"
+            }
+          },
+          "observations": [
+            {
+              "subject_id": "artifact:index.html",
+              "pairs": [
+                {
+                  "theme": "dark",
+                  "foreground": "#f4eada",
+                  "background": "#0c0602",
+                  "kind": "body",
+                  "ratio": 16.87
+                },
+                {
+                  "theme": "dark",
+                  "foreground": "#c7b49b",
+                  "background": "#0c0602",
+                  "kind": "body",
+                  "ratio": 10.02
+                },
+                {
+                  "theme": "dark",
+                  "foreground": "#f29a43",
+                  "background": "#1a0400",
+                  "kind": "ui",
+                  "ratio": 8.9
+                },
+                {
+                  "theme": "dark",
+                  "foreground": "#432e1a",
+                  "background": "#0c0602",
+                  "kind": "ui",
+                  "ratio": 1.57
+                },
+                {
+                  "theme": "light",
+                  "foreground": "#1d1106",
+                  "background": "#fbf0e1",
+                  "kind": "body",
+                  "ratio": 16.47
+                },
+                {
+                  "theme": "light",
+                  "foreground": "#5e4832",
+                  "background": "#fbf0e1",
+                  "kind": "body",
+                  "ratio": 7.6
+                },
+                {
+                  "theme": "light",
+                  "foreground": "#ae5600",
+                  "background": "#fff7eb",
+                  "kind": "ui",
+                  "ratio": 4.79
+                },
+                {
+                  "theme": "light",
+                  "foreground": "#b69d80",
+                  "background": "#fbf0e1",
+                  "kind": "ui",
+                  "ratio": 2.3
+                },
+                {
+                  "theme": "contrast",
+                  "foreground": "#fdfcf7",
+                  "background": "#010100",
+                  "kind": "body",
+                  "ratio": 20.33
+                },
+                {
+                  "theme": "contrast",
+                  "foreground": "#e4d5be",
+                  "background": "#010100",
+                  "kind": "body",
+                  "ratio": 14.55
+                },
+                {
+                  "theme": "contrast",
+                  "foreground": "#ffb228",
+                  "background": "#030100",
+                  "kind": "ui",
+                  "ratio": 11.61
+                },
+                {
+                  "theme": "contrast",
+                  "foreground": "#b6a186",
+                  "background": "#010100",
+                  "kind": "ui",
+                  "ratio": 8.39
+                }
+              ]
+            }
+          ]
+        },
+        "sha256": "b50d5ecc632a9e38369e5e5ab453194c55e147292c22cb0d7b568e8a44477e76"
+      },
+      "provenance": {
+        "artifact_identity": "file:index.html",
+        "artifact_sha256": "82c6e974cd0b2d1954d034a6cd2ee3d6f0201de38b85c3f188262aa9b2ccd1d1",
+        "dependency_manifest_sha256": "b4534aa733c82de3ec4a9b2c37c3056482defb19cb4cc9b39ac0ce88a0ce33f3",
+        "subject_inventory_sha256": "d8f553d0dbe0a6890713fa326d60c81b16c6b5b7d4edf356eb72b8492ab88e8d",
+        "captured_at": "2026-09-06T00:40:39Z",
+        "tool": {
+          "name": "tastecheck-self-pass",
+          "version": "2026-09-06"
+        },
+        "browser": {
+          "name": "offline-source-review",
+          "version": "no-live-browser"
+        },
+        "inspector": null,
+        "sha256": "31b1f3608cf1ebd1c26917a0b2c2133a19c64a20bf6303db0038d4429eeb69cb"
+      },
+      "review": null
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "foundation:typography",
+      "status": "fail",
+      "reason": "foundation:typography — the source defines a coherent scale and measures, but live font readiness and no-overflow reflow are not proven.",
+      "remediation": "Capture font readiness and narrow/400% reflow in a live browser; move the release-facts text inside the document and remove the overflow mask that hides the defect.",
+      "evidence": {
+        "mode": "automated",
+        "summary": "Measured local font declarations, clamp sizes, unitless leading, and committed-capture overflow evidence.",
+        "details": {
+          "measurements": {
+            "font_faces": [
+              {
+                "family": "Redaction",
+                "weight": "400",
+                "path": "site/fonts/redaction-0-400.woff2",
+                "bytes": 28392
+              },
+              {
+                "family": "Redaction",
+                "weight": "700",
+                "path": "site/fonts/redaction-0-700.woff2",
+                "bytes": 29684
+              },
+              {
+                "family": "Redaction",
+                "weight": "700",
+                "path": "site/fonts/redaction-35-700.woff2",
+                "bytes": 42464
+              },
+              {
+                "family": "Archivo",
+                "weight": "400",
+                "path": "site/fonts/archivo-400.woff2",
+                "bytes": 14672
+              },
+              {
+                "family": "Archivo",
+                "weight": "600",
+                "path": "site/fonts/archivo-600.woff2",
+                "bytes": 13844
+              }
+            ],
+            "font_loads": false,
+            "sizes_px": {
+              "body": 16,
+              "h1": {
+                "min": 48,
+                "max": 96
+              },
+              "lede": {
+                "min": 17.92,
+                "max": 23.2
+              },
+              "h2": {
+                "min": 33.6,
+                "max": 54.4
+              }
+            },
+            "line_height": "body 1.6 unitless; h1 .94 unitless",
+            "measure_ch": {
+              "lede": 42,
+              "section_copy": 54
+            },
+            "wraps_without_overflow": false,
+            "overflow_observation": "release-facts text is outside <html> at source lines 2-4 and is visibly clipped in 390px and 768px captures; body overflow-x:hidden at line 123 masks horizontal overflow."
+          },
+          "evidence": {
+            "markup": {
+              "path": "index.html",
+              "lines": "2-4; 81-85; 123; 156-158; 191-192"
+            },
+            "captures": [
+              {
+                "viewport": 390,
+                "path": ".checkyourself/captures/capture-390.png",
+                "width": 390,
+                "height": 2400,
+                "sha256": "3ea399e9ab786f932cbd30bb78125bc8e9fdebd34669414fed72bae22937d3eb"
+              },
+              {
+                "viewport": 768,
+                "path": ".checkyourself/captures/capture-768.png",
+                "width": 768,
+                "height": 2400,
+                "sha256": "f349abebead226fcb8e1b5f88c81cdc160cd81752c374a5229fb2dbfb5d6bea0"
+              }
+            ]
+          },
+          "observations": [
+            {
+              "subject_id": "artifact:index.html",
+              "font_loads": false,
+              "measure_holds": true,
+              "wraps_without_overflow": false
+            }
+          ]
+        },
+        "sha256": "849f4ec92dbe8290537184d3908e1a4f10cd8091979a7c11ab30b630801d4af1"
+      },
+      "provenance": {
+        "artifact_identity": "file:index.html",
+        "artifact_sha256": "82c6e974cd0b2d1954d034a6cd2ee3d6f0201de38b85c3f188262aa9b2ccd1d1",
+        "dependency_manifest_sha256": "b4534aa733c82de3ec4a9b2c37c3056482defb19cb4cc9b39ac0ce88a0ce33f3",
+        "subject_inventory_sha256": "d8f553d0dbe0a6890713fa326d60c81b16c6b5b7d4edf356eb72b8492ab88e8d",
+        "captured_at": "2026-09-06T00:40:39Z",
+        "tool": {
+          "name": "tastecheck-self-pass",
+          "version": "2026-09-06"
+        },
+        "browser": {
+          "name": "offline-source-review",
+          "version": "no-live-browser"
+        },
+        "inspector": null,
+        "sha256": "31b1f3608cf1ebd1c26917a0b2c2133a19c64a20bf6303db0038d4429eeb69cb"
+      },
+      "review": null
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "foundation:spacing",
+      "status": "fail",
+      "reason": "foundation:spacing — no --space-* ladder is declared, and the many literal gaps cannot be tied to one verified scale.",
+      "remediation": "Declare one semantic spacing ladder, map intentional exceptions in a decision record, and rerun proximity checks on the rendered path.",
+      "evidence": {
+        "mode": "automated",
+        "summary": "Measured spacing literals and clamp ranges from the inline stylesheet.",
+        "details": {
+          "measurements": {
+            "scale_present": false,
+            "off_scale_decisions": false,
+            "proximity_verified": false,
+            "literal_px_values": [
+              6.4,
+              7.2,
+              8,
+              8.8,
+              10.4,
+              11.2,
+              12.8,
+              14.4,
+              16,
+              19.2,
+              22.4,
+              25.6,
+              30.4,
+              40,
+              48
+            ],
+            "section_padding_px": {
+              "min": 56,
+              "max": 104
+            },
+            "common_gaps_px": [
+              8,
+              11.2,
+              12.8,
+              16
+            ],
+            "bento_cell_padding_px": 19.2,
+            "stage_padding_px": 16
+          },
+          "evidence": {
+            "markup": {
+              "path": "index.html",
+              "lines": "188-192; 195-198; 221-232; 241; 269-271"
+            }
+          },
+          "observations": [
+            {
+              "subject_id": "artifact:index.html",
+              "scale_present": false,
+              "off_scale_decisions": false,
+              "proximity_verified": false
+            }
+          ]
+        },
+        "sha256": "74c52415123c6be1542c70d1652fcba48604ba39aeacdf25090a7cc56d4a0e07"
+      },
+      "provenance": {
+        "artifact_identity": "file:index.html",
+        "artifact_sha256": "82c6e974cd0b2d1954d034a6cd2ee3d6f0201de38b85c3f188262aa9b2ccd1d1",
+        "dependency_manifest_sha256": "b4534aa733c82de3ec4a9b2c37c3056482defb19cb4cc9b39ac0ce88a0ce33f3",
+        "subject_inventory_sha256": "d8f553d0dbe0a6890713fa326d60c81b16c6b5b7d4edf356eb72b8492ab88e8d",
+        "captured_at": "2026-09-06T00:40:39Z",
+        "tool": {
+          "name": "tastecheck-self-pass",
+          "version": "2026-09-06"
+        },
+        "browser": {
+          "name": "offline-source-review",
+          "version": "no-live-browser"
+        },
+        "inspector": null,
+        "sha256": "31b1f3608cf1ebd1c26917a0b2c2133a19c64a20bf6303db0038d4429eeb69cb"
+      },
+      "review": null
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "foundation:theming",
+      "status": "fail",
+      "reason": "foundation:theming — semantic role blocks exist for dark, light, and prefers-contrast, but per-theme live state measurements are absent.",
+      "remediation": "Run the theme buttons in a live browser, record rendered pairs and native-control color-scheme behavior, and attach a cold-load/no-flash observation.",
+      "evidence": {
+        "mode": "automated",
+        "summary": "Measured authored theme mappings; runtime theme-state proof was not available after the local Chrome launch aborted.",
+        "details": {
+          "measurements": {
+            "theme_roles_mapped": true,
+            "theme_states_measured": false,
+            "authored_modes": [
+              "dark default",
+              "light data-theme",
+              "prefers-contrast more"
+            ],
+            "role_count": 10,
+            "token_roles": [
+              "bg",
+              "s1",
+              "s2",
+              "s3",
+              "line",
+              "ink",
+              "muted",
+              "copper",
+              "copper-deep",
+              "on-copper",
+              "verd"
+            ],
+            "theme_selector": "document.documentElement.dataset.theme",
+            "native_color_scheme": false,
+            "source_lines": "86-120; 313; 641-646"
+          },
+          "evidence": {
+            "markup": {
+              "path": "index.html",
+              "lines": "86-120; 313; 641-646"
+            }
+          },
+          "observations": [
+            {
+              "subject_id": "artifact:index.html",
+              "theme_roles_mapped": true,
+              "theme_states_measured": false
+            }
+          ]
+        },
+        "sha256": "a39e94eeecaf7786734a3ec2d6e689000cc8a6bc84a04b3c5fd47f26906c210b"
+      },
+      "provenance": {
+        "artifact_identity": "file:index.html",
+        "artifact_sha256": "82c6e974cd0b2d1954d034a6cd2ee3d6f0201de38b85c3f188262aa9b2ccd1d1",
+        "dependency_manifest_sha256": "b4534aa733c82de3ec4a9b2c37c3056482defb19cb4cc9b39ac0ce88a0ce33f3",
+        "subject_inventory_sha256": "d8f553d0dbe0a6890713fa326d60c81b16c6b5b7d4edf356eb72b8492ab88e8d",
+        "captured_at": "2026-09-06T00:40:39Z",
+        "tool": {
+          "name": "tastecheck-self-pass",
+          "version": "2026-09-06"
+        },
+        "browser": {
+          "name": "offline-source-review",
+          "version": "no-live-browser"
+        },
+        "inspector": null,
+        "sha256": "31b1f3608cf1ebd1c26917a0b2c2133a19c64a20bf6303db0038d4429eeb69cb"
+      },
+      "review": null
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "structure:responsive-layout",
+      "status": "fail",
+      "reason": "structure:responsive-layout — the three committed required-view captures render, but 390px/768px show clipped pre-document release text and all captures retain low-opacity scroll-reveal content.",
+      "remediation": "Move release facts inside <body>, make initial content visible on cold load or capture after the reveal contract completes, and rerun 390/768/1280 plus 320/400% checks.",
+      "evidence": {
+        "mode": "automated",
+        "summary": "Measured committed PNG dimensions, viewport-dependent grid rules, crop observations, and reveal state.",
+        "details": {
+          "observations": [
+            {
+              "subject_id": "route:/|state:default|viewport:390",
+              "rendered": true,
+              "overflow_free": false,
+              "hierarchy_preserved": false
+            },
+            {
+              "subject_id": "route:/|state:default|viewport:768",
+              "rendered": true,
+              "overflow_free": false,
+              "hierarchy_preserved": false
+            },
+            {
+              "subject_id": "route:/|state:default|viewport:1280",
+              "rendered": true,
+              "overflow_free": true,
+              "hierarchy_preserved": false
+            }
+          ],
+          "measurements": {
+            "captures": [
+              {
+                "viewport": 390,
+                "path": ".checkyourself/captures/capture-390.png",
+                "width": 390,
+                "height": 2400,
+                "sha256": "3ea399e9ab786f932cbd30bb78125bc8e9fdebd34669414fed72bae22937d3eb"
+              },
+              {
+                "viewport": 768,
+                "path": ".checkyourself/captures/capture-768.png",
+                "width": 768,
+                "height": 2400,
+                "sha256": "f349abebead226fcb8e1b5f88c81cdc160cd81752c374a5229fb2dbfb5d6bea0"
+              },
+              {
+                "viewport": 1280,
+                "path": ".checkyourself/captures/capture-1280.png",
+                "width": 1280,
+                "height": 2400,
+                "sha256": "77f85b39aadc97a4136ffd9f9e13ef8929371eb6bb5f867b3a20e70a9e64ccab"
+              }
+            ],
+            "responsive_rules": [
+              "hero grid auto 1fr with gap clamp(1rem, 1rem + 1.5vw, 2.2rem)",
+              "bento grid 6 columns; max-width 900px -> 4 columns; max-width 560px -> 2 columns",
+              "problem grid 1.3fr .7fr; max-width 760px -> 1 column"
+            ],
+            "source_lines": "151; 195-198; 221-227; 274"
+          },
+          "evidence": {
+            "markup": {
+              "path": "index.html",
+              "lines": "151; 185-186; 195-198; 221-227; 274"
+            },
+            "captures": [
+              {
+                "viewport": 390,
+                "path": ".checkyourself/captures/capture-390.png",
+                "width": 390,
+                "height": 2400,
+                "sha256": "3ea399e9ab786f932cbd30bb78125bc8e9fdebd34669414fed72bae22937d3eb"
+              },
+              {
+                "viewport": 768,
+                "path": ".checkyourself/captures/capture-768.png",
+                "width": 768,
+                "height": 2400,
+                "sha256": "f349abebead226fcb8e1b5f88c81cdc160cd81752c374a5229fb2dbfb5d6bea0"
+              },
+              {
+                "viewport": 1280,
+                "path": ".checkyourself/captures/capture-1280.png",
+                "width": 1280,
+                "height": 2400,
+                "sha256": "77f85b39aadc97a4136ffd9f9e13ef8929371eb6bb5f867b3a20e70a9e64ccab"
+              }
+            ]
+          }
+        },
+        "sha256": "3471fae8bcecc152c8ef7ef29444193bfa192ae86f50443c25928d1817950a6c"
+      },
+      "provenance": {
+        "artifact_identity": "file:index.html",
+        "artifact_sha256": "82c6e974cd0b2d1954d034a6cd2ee3d6f0201de38b85c3f188262aa9b2ccd1d1",
+        "dependency_manifest_sha256": "b4534aa733c82de3ec4a9b2c37c3056482defb19cb4cc9b39ac0ce88a0ce33f3",
+        "subject_inventory_sha256": "d8f553d0dbe0a6890713fa326d60c81b16c6b5b7d4edf356eb72b8492ab88e8d",
+        "captured_at": "2026-09-06T00:40:39Z",
+        "tool": {
+          "name": "tastecheck-self-pass",
+          "version": "2026-09-06"
+        },
+        "browser": {
+          "name": "offline-source-review",
+          "version": "no-live-browser"
+        },
+        "inspector": null,
+        "sha256": "31b1f3608cf1ebd1c26917a0b2c2133a19c64a20bf6303db0038d4429eeb69cb"
+      },
+      "review": null
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "structure:component-states",
+      "status": "pass",
+      "reason": "structure:component-states — default/loading/disabled states are represented on a native button, with focus-visible CSS and measurable timing.",
+      "remediation": "Keep the native button semantics and rerun the state cycle in a live browser after the release-facts/reveal repairs.",
+      "evidence": {
+        "mode": "automated",
+        "summary": "Measured three-state component cycle and retained NIMA receipt.",
+        "details": {
+          "observations": [
+            {
+              "subject_id": "control:component-demo|state:default",
+              "state_present": true,
+              "keyboard_reachable": true,
+              "focus_visible": true
+            },
+            {
+              "subject_id": "control:component-demo|state:loading",
+              "state_present": true,
+              "keyboard_reachable": true,
+              "focus_visible": true
+            },
+            {
+              "subject_id": "control:component-demo|state:disabled",
+              "state_present": true,
+              "keyboard_reachable": true,
+              "focus_visible": true
+            }
+          ],
+          "measurements": {
+            "state_labels": [
+              "Default",
+              "Loading",
+              "Disabled"
+            ],
+            "loading_duration_ms": 900,
+            "disabled_css": "min-height:38px; color #7d7363; background #2c251b",
+            "focus_outline": "2px solid var(--copper), offset 3px",
+            "control_count": 10,
+            "prior_receipt": {
+              "path": ".checkyourself/challenge-runs/S11.receipt.json",
+              "tests_passed": 13,
+              "tests_failed": 0,
+              "command": "node --test tools/test/nima.test.mjs"
+            }
+          },
+          "evidence": {
+            "markup": {
+              "path": "index.html",
+              "lines": "126; 235-240; 385-387; 531-538"
+            },
+            "prior_receipt": ".checkyourself/challenge-runs/S11.receipt.json"
+          }
+        },
+        "sha256": "7fa057a2825f4ffff5d5226ca2bb52650e8b641cc4703138cb2d1e51613a731e"
+      },
+      "provenance": {
+        "artifact_identity": "file:index.html",
+        "artifact_sha256": "82c6e974cd0b2d1954d034a6cd2ee3d6f0201de38b85c3f188262aa9b2ccd1d1",
+        "dependency_manifest_sha256": "b4534aa733c82de3ec4a9b2c37c3056482defb19cb4cc9b39ac0ce88a0ce33f3",
+        "subject_inventory_sha256": "d8f553d0dbe0a6890713fa326d60c81b16c6b5b7d4edf356eb72b8492ab88e8d",
+        "captured_at": "2026-09-06T00:40:39Z",
+        "tool": {
+          "name": "tastecheck-self-pass",
+          "version": "2026-09-06"
+        },
+        "browser": {
+          "name": "offline-source-review",
+          "version": "no-live-browser"
+        },
+        "inspector": null,
+        "sha256": "31b1f3608cf1ebd1c26917a0b2c2133a19c64a20bf6303db0038d4429eeb69cb"
+      },
+      "review": null
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "structure:form-ux",
+      "status": "fail",
+      "reason": "structure:form-ux — the email field is labeled and autofill-ready and blur repair is demonstrated, but no submit path exists.",
+      "remediation": "Add a real submit handler with truthful success/failure ownership, preserve the value on failure, focus the first error, and rerun the field matrix.",
+      "evidence": {
+        "mode": "automated",
+        "summary": "Measured empty/invalid/valid field states from the markup and blur/input handlers.",
+        "details": {
+          "observations": [
+            {
+              "subject_id": "control:email-form|state:empty",
+              "labels_and_autocomplete": true,
+              "validation_recoverable": true,
+              "submission_recoverable": false
+            },
+            {
+              "subject_id": "control:email-form|state:invalid",
+              "labels_and_autocomplete": true,
+              "validation_recoverable": true,
+              "submission_recoverable": false
+            },
+            {
+              "subject_id": "control:email-form|state:valid",
+              "labels_and_autocomplete": true,
+              "validation_recoverable": true,
+              "submission_recoverable": false
+            }
+          ],
+          "measurements": {
+            "field_count": 1,
+            "label_for": "email",
+            "type": "email",
+            "autocomplete": "email",
+            "describedby": "email-msg",
+            "validation_moments": [
+              "blur",
+              "input after error"
+            ],
+            "message_states": [
+              "empty",
+              "incomplete",
+              "valid",
+              "error"
+            ],
+            "submit_controls": 0
+          },
+          "evidence": {
+            "markup": {
+              "path": "index.html",
+              "lines": "389-391; 539-549"
+            }
+          }
+        },
+        "sha256": "0ea487122678a429a1aee708807fbd9e303454a6f53d2903c61a15148759d9e1"
+      },
+      "provenance": {
+        "artifact_identity": "file:index.html",
+        "artifact_sha256": "82c6e974cd0b2d1954d034a6cd2ee3d6f0201de38b85c3f188262aa9b2ccd1d1",
+        "dependency_manifest_sha256": "b4534aa733c82de3ec4a9b2c37c3056482defb19cb4cc9b39ac0ce88a0ce33f3",
+        "subject_inventory_sha256": "d8f553d0dbe0a6890713fa326d60c81b16c6b5b7d4edf356eb72b8492ab88e8d",
+        "captured_at": "2026-09-06T00:40:39Z",
+        "tool": {
+          "name": "tastecheck-self-pass",
+          "version": "2026-09-06"
+        },
+        "browser": {
+          "name": "offline-source-review",
+          "version": "no-live-browser"
+        },
+        "inspector": null,
+        "sha256": "31b1f3608cf1ebd1c26917a0b2c2133a19c64a20bf6303db0038d4429eeb69cb"
+      },
+      "review": null
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "structure:empty-states",
+      "status": "pass",
+      "reason": "structure:empty-states — loading, empty, error, and retry are explicit status states with a stable region and recovery control.",
+      "remediation": "Keep the status/live-region wiring and verify layout stability in a live browser after scroll-reveal initialization is repaired.",
+      "evidence": {
+        "mode": "automated",
+        "summary": "Measured four empty-state controls and status-region wiring.",
+        "details": {
+          "observations": [
+            {
+              "subject_id": "control:empty-state-demo|state:loading",
+              "state_present": true,
+              "recovery_available": true,
+              "layout_stable": true
+            },
+            {
+              "subject_id": "control:empty-state-demo|state:empty",
+              "state_present": true,
+              "recovery_available": true,
+              "layout_stable": true
+            },
+            {
+              "subject_id": "control:empty-state-demo|state:error",
+              "state_present": true,
+              "recovery_available": true,
+              "layout_stable": true
+            },
+            {
+              "subject_id": "control:empty-state-demo|state:retry",
+              "state_present": true,
+              "recovery_available": true,
+              "layout_stable": true
+            }
+          ],
+          "measurements": {
+            "state_count": 4,
+            "status_role": "status",
+            "live": "polite",
+            "recovery_buttons": 2,
+            "skeleton_animation_ms": 1400
+          },
+          "evidence": {
+            "markup": {
+              "path": "index.html",
+              "lines": "254; 393-395; 550-559"
+            }
+          }
+        },
+        "sha256": "19c7a536979687bc6fe6010f072da728bf2753c4029e8d25e747c5dc1b23c28d"
+      },
+      "provenance": {
+        "artifact_identity": "file:index.html",
+        "artifact_sha256": "82c6e974cd0b2d1954d034a6cd2ee3d6f0201de38b85c3f188262aa9b2ccd1d1",
+        "dependency_manifest_sha256": "b4534aa733c82de3ec4a9b2c37c3056482defb19cb4cc9b39ac0ce88a0ce33f3",
+        "subject_inventory_sha256": "d8f553d0dbe0a6890713fa326d60c81b16c6b5b7d4edf356eb72b8492ab88e8d",
+        "captured_at": "2026-09-06T00:40:39Z",
+        "tool": {
+          "name": "tastecheck-self-pass",
+          "version": "2026-09-06"
+        },
+        "browser": {
+          "name": "offline-source-review",
+          "version": "no-live-browser"
+        },
+        "inspector": null,
+        "sha256": "31b1f3608cf1ebd1c26917a0b2c2133a19c64a20bf6303db0038d4429eeb69cb"
+      },
+      "review": null
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "verification:a11y",
+      "status": "fail",
+      "reason": "verification:a11y — native controls, labels, skip link, focus-visible styling, and measured text contrast are present, but invalid pre-document text and clipped captures remain unresolved.",
+      "remediation": "Move release facts into valid document structure, remove the hidden-overflow mask, and rerun a live keyboard/assistive-technology audit.",
+      "evidence": {
+        "mode": "automated",
+        "summary": "Measured static audit surface plus markup/capture defects.",
+        "details": {
+          "observations": [
+            {
+              "subject_id": "artifact:index.html",
+              "violations_resolved": false,
+              "keyboard_reachable": true,
+              "contrast_measured": true
+            }
+          ],
+          "measurements": {
+            "main_count": 1,
+            "h1_count": 1,
+            "skip_link_count": 1,
+            "named_button_count": 10,
+            "labeled_inputs": 1,
+            "focus_visible_rule": "2px solid var(--copper) + 3px offset",
+            "reduced_motion_rule_present": true,
+            "forced_colors_rule_present": true,
+            "contrast_pairs_measured": 12,
+            "unresolved_markup": "text node before <html> at lines 2-4"
+          },
+          "evidence": {
+            "markup": {
+              "path": "index.html",
+              "lines": "2-5; 126; 306-310; 389-391; 561-580"
+            },
+            "captures": [
+              {
+                "viewport": 390,
+                "path": ".checkyourself/captures/capture-390.png",
+                "width": 390,
+                "height": 2400,
+                "sha256": "3ea399e9ab786f932cbd30bb78125bc8e9fdebd34669414fed72bae22937d3eb"
+              },
+              {
+                "viewport": 768,
+                "path": ".checkyourself/captures/capture-768.png",
+                "width": 768,
+                "height": 2400,
+                "sha256": "f349abebead226fcb8e1b5f88c81cdc160cd81752c374a5229fb2dbfb5d6bea0"
+              },
+              {
+                "viewport": 1280,
+                "path": ".checkyourself/captures/capture-1280.png",
+                "width": 1280,
+                "height": 2400,
+                "sha256": "77f85b39aadc97a4136ffd9f9e13ef8929371eb6bb5f867b3a20e70a9e64ccab"
+              }
+            ]
+          }
+        },
+        "sha256": "9568057343e26eaabe4e662e195f96a97a91514f89b4ebfe40500bb52a766686"
+      },
+      "provenance": {
+        "artifact_identity": "file:index.html",
+        "artifact_sha256": "82c6e974cd0b2d1954d034a6cd2ee3d6f0201de38b85c3f188262aa9b2ccd1d1",
+        "dependency_manifest_sha256": "b4534aa733c82de3ec4a9b2c37c3056482defb19cb4cc9b39ac0ce88a0ce33f3",
+        "subject_inventory_sha256": "d8f553d0dbe0a6890713fa326d60c81b16c6b5b7d4edf356eb72b8492ab88e8d",
+        "captured_at": "2026-09-06T00:40:39Z",
+        "tool": {
+          "name": "tastecheck-self-pass",
+          "version": "2026-09-06"
+        },
+        "browser": {
+          "name": "offline-source-review",
+          "version": "no-live-browser"
+        },
+        "inspector": null,
+        "sha256": "31b1f3608cf1ebd1c26917a0b2c2133a19c64a20bf6303db0038d4429eeb69cb"
+      },
+      "review": null
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "gate:artifact-spec",
+      "status": "fail",
+      "reason": "gate:artifact-spec — index.html and the measured two-asset dependency closure hash correctly, but the design-system spec is not bound into the artifact manifest.",
+      "remediation": "Add site/DESIGN-SYSTEM.md to a declared dependency manifest or record an approved spec identity binding, then rerun the release gate.",
+      "evidence": {
+        "mode": "automated",
+        "summary": "Measured artifact identity, bytes, dependency manifest, and design-system spec identity.",
+        "details": {
+          "observations": [
+            {
+              "subject_id": "artifact:index.html",
+              "artifact_hash_verified": true,
+              "dependency_manifest_verified": true,
+              "spec_identity_bound": false
+            }
+          ],
+          "measurements": {
+            "artifact": {
+              "path": "index.html",
+              "bytes": 54325,
+              "sha256": "82c6e974cd0b2d1954d034a6cd2ee3d6f0201de38b85c3f188262aa9b2ccd1d1"
+            },
+            "dependency_manifest": {
+              "entry": "index.html",
+              "assets": 2,
+              "sha256": "b4534aa733c82de3ec4a9b2c37c3056482defb19cb4cc9b39ac0ce88a0ce33f3"
+            },
+            "spec": {
+              "path": "site/DESIGN-SYSTEM.md",
+              "bytes": 3627,
+              "sha256": "f071b6c0d85d99c896fab00f3be9ea91c4080c247e3bdb208f28eaee0b869c4c"
+            },
+            "closure_note": "inline CSS references five local fonts and site/img/basalt-copper.png, but the measured closure is favicon.ico + index.html"
+          },
+          "evidence": {
+            "markup": {
+              "path": "index.html",
+              "lines": "2-5; 81-85; 148"
+            },
+            "dependency_manifest": "b4534aa733c82de3ec4a9b2c37c3056482defb19cb4cc9b39ac0ce88a0ce33f3",
+            "spec_identity": "f071b6c0d85d99c896fab00f3be9ea91c4080c247e3bdb208f28eaee0b869c4c"
+          }
+        },
+        "sha256": "94806b53ceb18896833927db7d991a2b2bc05f83359854490a268cb89ac64795"
+      },
+      "provenance": {
+        "artifact_identity": "file:index.html",
+        "artifact_sha256": "82c6e974cd0b2d1954d034a6cd2ee3d6f0201de38b85c3f188262aa9b2ccd1d1",
+        "dependency_manifest_sha256": "b4534aa733c82de3ec4a9b2c37c3056482defb19cb4cc9b39ac0ce88a0ce33f3",
+        "subject_inventory_sha256": "d8f553d0dbe0a6890713fa326d60c81b16c6b5b7d4edf356eb72b8492ab88e8d",
+        "captured_at": "2026-09-06T00:40:39Z",
+        "tool": {
+          "name": "tastecheck-self-pass",
+          "version": "2026-09-06"
+        },
+        "browser": {
+          "name": "offline-source-review",
+          "version": "no-live-browser"
+        },
+        "inspector": null,
+        "sha256": "31b1f3608cf1ebd1c26917a0b2c2133a19c64a20bf6303db0038d4429eeb69cb"
+      },
+      "review": null
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "gate:required-evidence",
+      "status": "fail",
+      "reason": "gate:required-evidence — numeric and browser evidence are present in the ledger, but six required browser legs and all subjective independent-review rows are intentionally absent.",
+      "remediation": "Complete the absent browser legs with fresh receipts, obtain independent human reviews for subjective checks, then rerun the gate against the same artifact and frozen inventory.",
+      "evidence": {
+        "mode": "automated",
+        "summary": "Measured ledger coverage against the closed 27-check catalog.",
+        "details": {
+          "observations": [
+            {
+              "subject_id": "artifact:index.html",
+              "numeric_evidence_present": true,
+              "browser_evidence_present": true,
+              "all_required_members_covered": false
+            }
+          ],
+          "measurements": {
+            "catalog_checks": 27,
+            "ledger_rows": 11,
+            "absent_checks": [
+              "direction:system",
+              "surface:micro-motion",
+              "surface:data-viz",
+              "surface:art-direction",
+              "verification:cognitive-a11y",
+              "verification:i18n",
+              "verification:deslop-ui",
+              "verification:humanize-copy",
+              "browser:rendering",
+              "browser:zoom-400",
+              "browser:keyboard",
+              "browser:theme-contrast",
+              "browser:reduced-motion",
+              "browser:cold-load",
+              "gate:blocker-handoff"
+            ],
+            "absent_reason": "subjective checks require independent human review; browser legs require live browser receipts not derivable from committed default captures",
+            "prior_receipts": [
+              {
+                "check_id": "structure:contracts",
+                "path": ".checkyourself/challenge-runs/S12.receipt.json",
+                "command": "node tools/verify.mjs",
+                "result": "tastecheck verification passed"
+              },
+              {
+                "check_id": "structure:component-states",
+                "path": ".checkyourself/challenge-runs/S11.receipt.json",
+                "command": "node --test tools/test/nima.test.mjs",
+                "result": "13 passed 0 failed"
+              },
+              {
+                "check_id": "browser:rendering",
+                "captures": [
+                  {
+                    "viewport": 390,
+                    "path": ".checkyourself/captures/capture-390.png",
+                    "width": 390,
+                    "height": 2400,
+                    "sha256": "3ea399e9ab786f932cbd30bb78125bc8e9fdebd34669414fed72bae22937d3eb"
+                  },
+                  {
+                    "viewport": 768,
+                    "path": ".checkyourself/captures/capture-768.png",
+                    "width": 768,
+                    "height": 2400,
+                    "sha256": "f349abebead226fcb8e1b5f88c81cdc160cd81752c374a5229fb2dbfb5d6bea0"
+                  },
+                  {
+                    "viewport": 1280,
+                    "path": ".checkyourself/captures/capture-1280.png",
+                    "width": 1280,
+                    "height": 2400,
+                    "sha256": "77f85b39aadc97a4136ffd9f9e13ef8929371eb6bb5f867b3a20e70a9e64ccab"
+                  }
+                ]
+              }
+            ]
+          },
+          "evidence": {
+            "markup": {
+              "path": "index.html",
+              "lines": "2-4; 385-391; 423-449; 455-457"
+            },
+            "captures": [
+              {
+                "viewport": 390,
+                "path": ".checkyourself/captures/capture-390.png",
+                "width": 390,
+                "height": 2400,
+                "sha256": "3ea399e9ab786f932cbd30bb78125bc8e9fdebd34669414fed72bae22937d3eb"
+              },
+              {
+                "viewport": 768,
+                "path": ".checkyourself/captures/capture-768.png",
+                "width": 768,
+                "height": 2400,
+                "sha256": "f349abebead226fcb8e1b5f88c81cdc160cd81752c374a5229fb2dbfb5d6bea0"
+              },
+              {
+                "viewport": 1280,
+                "path": ".checkyourself/captures/capture-1280.png",
+                "width": 1280,
+                "height": 2400,
+                "sha256": "77f85b39aadc97a4136ffd9f9e13ef8929371eb6bb5f867b3a20e70a9e64ccab"
+              }
+            ]
+          }
+        },
+        "sha256": "db519a6119f884699f9b788cec9e15de059e0ea886a8d297d11c32005f6b9d83"
+      },
+      "provenance": {
+        "artifact_identity": "file:index.html",
+        "artifact_sha256": "82c6e974cd0b2d1954d034a6cd2ee3d6f0201de38b85c3f188262aa9b2ccd1d1",
+        "dependency_manifest_sha256": "b4534aa733c82de3ec4a9b2c37c3056482defb19cb4cc9b39ac0ce88a0ce33f3",
+        "subject_inventory_sha256": "d8f553d0dbe0a6890713fa326d60c81b16c6b5b7d4edf356eb72b8492ab88e8d",
+        "captured_at": "2026-09-06T00:40:39Z",
+        "tool": {
+          "name": "tastecheck-self-pass",
+          "version": "2026-09-06"
+        },
+        "browser": {
+          "name": "offline-source-review",
+          "version": "no-live-browser"
+        },
+        "inspector": null,
+        "sha256": "31b1f3608cf1ebd1c26917a0b2c2133a19c64a20bf6303db0038d4429eeb69cb"
+      },
+      "review": null
+    }
   ]
 }
