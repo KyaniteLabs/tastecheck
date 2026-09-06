@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark light">
   <meta name="theme-color" content="#171815">
-  <meta name="description" content="TasteCheck: 20 design skills for AI coding agents, from a distinct design direction to an evidence-backed ship or hold decision. The September 2026 retrofit.">
-  <title>TasteCheck — Make a call. Show the work.</title>
+  <meta name="description" content="TasteCheck gives developers building with AI coding agents a real design system before code, craft skills during the build, and a clear SHIP or HOLD call before release.">
+  <title>TasteCheck — Make AI-built interfaces look designed.</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23e5ef73'/%3E%3Cpath d='M7 17l6 6L25 9' fill='none' stroke='%23171815' stroke-width='4'/%3E%3C/svg%3E">
   <script type="application/ld+json">
     {
@@ -174,8 +174,8 @@
     .section-head .eyebrow { color: var(--color-text-muted); }
     .section-head h2 { max-inline-size: 17ch; }
     .section-head p { color: var(--color-text-muted); max-inline-size: 54ch; }
-    .retrofit-summary { display: grid; gap: var(--space-6); margin-block-end: var(--space-7); }
-    .retrofit-summary p { font-size: var(--step-1); }
+    .problem-summary { display: grid; gap: var(--space-6); margin-block-end: var(--space-7); }
+    .problem-summary p { font-size: var(--step-1); }
     .review-count { border-inline-start: 3px solid var(--color-primary); padding-inline-start: var(--space-5); }
     .review-count strong { font-size: var(--step-3); line-height: 1.15; letter-spacing: -.04em; display: block; }
     .review-count span { display: block; color: var(--color-text-muted); margin-block-start: var(--space-2); }
@@ -186,20 +186,20 @@
     .changes p { color: var(--color-text-muted); grid-column: 2; max-inline-size: 56ch; }
     .afterword { border-block-start: 1px solid var(--color-border); padding-block-start: var(--space-5); display: grid; gap: var(--space-4); }
     .afterword p { color: var(--color-text-muted); }
-    .density { background: var(--color-surface-1); border-block: 1px solid var(--color-border); }
-    .density-layout { display: grid; gap: var(--space-7); }
-    .density-figure { font-size: clamp(4.5rem, 3rem + 7vw, 8rem); line-height: 1; letter-spacing: -.065em; font-weight: 700; color: var(--color-primary); font-variant-numeric: lining-nums tabular-nums; margin-block: var(--space-5); }
-    .density-figure span { font-size: .5em; }
-    .density h2 { font-size: var(--step-3); max-inline-size: 17ch; }
-    .density p { color: var(--color-text-muted); }
-    .density .eyebrow { color: var(--color-text); }
-    .density-explanation { margin-block-start: var(--space-5); }
-    .density-notes { display: grid; gap: var(--space-5); }
-    .density-notes h3 { font-size: var(--step-1); margin-block-end: var(--space-2); }
-    .density-table { border-collapse: collapse; inline-size: 100%; font-size: var(--step--1); font-variant-numeric: tabular-nums; }
-    .density-table caption { text-align: start; color: var(--color-text-muted); padding-block-end: var(--space-3); }
-    .density-table th, .density-table td { padding-block: var(--space-3); border-block-start: 1px solid var(--color-border); text-align: end; }
-    .density-table th:first-child { text-align: start; padding-inline-end: var(--space-3); }
+    .how-it-works { background: var(--color-surface-1); border-block: 1px solid var(--color-border); }
+    .how-it-works-layout { display: grid; gap: var(--space-7); }
+    .step-figure { font-size: clamp(4.5rem, 3rem + 7vw, 8rem); line-height: 1; letter-spacing: -.065em; font-weight: 700; color: var(--color-primary); font-variant-numeric: lining-nums tabular-nums; margin-block: var(--space-5); }
+    .step-figure span { font-size: .5em; }
+    .how-it-works h2 { font-size: var(--step-3); max-inline-size: 17ch; }
+    .how-it-works p { color: var(--color-text-muted); }
+    .how-it-works .eyebrow { color: var(--color-text); }
+    .how-it-works-explanation { margin-block-start: var(--space-5); }
+    .how-it-works-notes { display: grid; gap: var(--space-5); }
+    .how-it-works-notes h3 { font-size: var(--step-1); margin-block-end: var(--space-2); }
+    .how-it-works-table { border-collapse: collapse; inline-size: 100%; font-size: var(--step--1); font-variant-numeric: tabular-nums; }
+    .how-it-works-table caption { text-align: start; color: var(--color-text-muted); padding-block-end: var(--space-3); }
+    .how-it-works-table th, .how-it-works-table td { padding-block: var(--space-3); border-block-start: 1px solid var(--color-border); text-align: end; }
+    .how-it-works-table th:first-child { text-align: start; padding-inline-end: var(--space-3); }
     .landing-chart { margin-block-start: var(--space-6); padding-block-start: var(--space-5); border-block-start: 1px solid var(--color-border); }
     .landing-chart figcaption { margin-block-end: var(--space-3); color: var(--color-text-muted); font-size: var(--step--1); }
     .landing-chart svg { display: block; inline-size: 100%; block-size: auto; overflow: visible; }
@@ -209,7 +209,7 @@
     .chart-table caption { text-align: start; color: var(--color-text-muted); }
     .chart-table td { padding-block: var(--space-2); border-block-start: 1px solid var(--color-border); }
     .chart-table td:last-child { text-align: end; color: var(--color-text-muted); }
-    .density-notes .command { display: inline-block; font-size: var(--step-1); color: var(--color-text); padding: var(--space-3) var(--space-4); border: 1px solid var(--color-control-border); margin-block-end: var(--space-3); }
+    .how-it-works-notes .command { display: inline-block; font-size: var(--step-1); color: var(--color-text); padding: var(--space-3) var(--space-4); border: 1px solid var(--color-control-border); margin-block-end: var(--space-3); }
     .skill-index { display: grid; }
     .skill-group { display: grid; gap: var(--space-3) var(--space-6); padding-block: var(--space-5); border-block-start: 1px solid var(--color-border); }
     .skill-group h3 { font-size: var(--step-1); }
@@ -262,10 +262,10 @@
       .section-head { grid-template-columns: 1fr 1fr; column-gap: var(--space-7); }
       .section-head .eyebrow { grid-column: 1 / -1; }
       .section-head p { align-self: end; }
-      .retrofit-summary { grid-template-columns: 1.3fr 1fr; column-gap: var(--space-7); }
+      .problem-summary { grid-template-columns: 1.3fr 1fr; column-gap: var(--space-7); }
       .changes li { grid-template-columns: 2rem minmax(0, .8fr) minmax(0, 1.2fr); gap: var(--space-5); }
       .changes p { grid-column: auto; }
-      .density-layout { grid-template-columns: 1fr 1fr; }
+      .how-it-works-layout { grid-template-columns: 1fr 1fr; }
       .skill-group { grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); }
       .contract-rail { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .use-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
@@ -298,10 +298,10 @@
     <a class="wordmark" href="#main" aria-label="TasteCheck home"><span class="mark" aria-hidden="true">✓</span>TasteCheck</a>
     <div class="header-tools">
       <nav class="menu" aria-label="Primary">
-        <a href="#retrofit">The retrofit</a>
-        <a href="#skills">The skills</a>
-        <a href="#proof">Proof</a>
-        <a href="#use">Use TasteCheck <span aria-hidden="true">↗</span></a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#skills">What's inside</a>
+        <a href="#proof">The gate</a>
+        <a href="#use">Install <span aria-hidden="true">↗</span></a>
       </nav>
       <div class="theme-controls" data-skill="theming" aria-label="Theme">
         <span>Theme</span>
@@ -314,28 +314,29 @@
   <main id="main" tabindex="-1">
     <section class="hero wrap" aria-labelledby="hero-title">
       <div class="edition">
-        <p class="eyebrow">Design skills for AI coding agents</p>
-        <p class="folio">Evidence edition / <time datetime="2026-09-05">05 Sep 2026</time></p>
+        <p class="eyebrow">For developers building with AI agents</p>
+        <p class="folio">20 skills / plain Markdown</p>
       </div>
       <div class="hero-layout">
         <div class="hero-copy">
-          <h1 id="hero-title"><span>Make a call.</span> <span class="accent">Show the</span> <span class="accent">work.</span></h1>
-          <p class="hero-intro">TasteCheck turns a brief into a distinct design direction, then carries it through 20 craft skills to an evidence-backed ship or hold decision.</p>
+          <h1 id="hero-title"><span>Make AI-built</span> <span class="accent">interfaces</span> <span class="accent">look designed.</span></h1>
+          <p class="hero-intro">TasteCheck helps you set a real design system before your coding agent writes UI. Twenty craft skills keep type, OKLCH color, spacing, states, forms, charts, and motion from falling back to defaults.</p>
           <div class="actions">
-            <a class="button" href="#use" data-test="primary-action">Use TasteCheck <span aria-hidden="true">↗</span></a>
-            <a class="text-link" href="#retrofit">Read the retrofit <span aria-hidden="true">↓</span></a>
+            <a class="button" href="#use" data-test="primary-action">Install TasteCheck <span aria-hidden="true">↗</span></a>
+            <a class="text-link" href="#how-it-works">See how it works <span aria-hidden="true">↓</span></a>
           </div>
-          <p class="hero-status" role="status" aria-live="polite" data-test="hero-status">Landing contract ready for inspection.</p>
+          <p class="hero-status" role="status" aria-live="polite" data-test="hero-status">A point of view before the first component.</p>
         </div>
         <figure class="trail" aria-labelledby="trail-title" aria-describedby="trail-caption">
-          <div class="trail-top"><span class="folio">The gate, traced</span><span class="folio" aria-hidden="true">TC / 01</span></div>
-          <h2 id="trail-title">A verdict has a trail.</h2>
+          <div class="trail-top"><span class="folio">The path to a designed interface</span><span class="folio" aria-hidden="true">TC / 01</span></div>
+          <h2 id="trail-title">Give the build a direction.</h2>
           <ol class="trail-list">
-            <li><span class="number" aria-hidden="true">01</span><div><strong>Observe</strong><p>Capture the artifact and the required subjects.</p></div></li>
-            <li><span class="number" aria-hidden="true">02</span><div><strong>Bind the review</strong><p>Check + artifact + evidence. Keep the judgment attached to its subject.</p></div></li>
-            <li><span class="number" aria-hidden="true">03</span><div><strong>Derive the verdict</strong><p>Missing or contradictory observations produce <b>HOLD</b>.</p></div></li>
+            <li><span class="number" aria-hidden="true">01</span><div><strong>Interview</strong><p>Answer pointed questions before your agent starts coding.</p></div></li>
+            <li><span class="number" aria-hidden="true">02</span><div><strong>Set the system</strong><p>Name the type, color, spacing, and states your product can own.</p></div></li>
+            <li><span class="number" aria-hidden="true">03</span><div><strong>Build with craft</strong><p>Use the skills while your agent shapes the interface.</p></div></li>
+            <li><span class="number" aria-hidden="true">04</span><div><strong>Check before ship</strong><p>Get <b>SHIP</b> or <b>HOLD</b> from what was checked.</p></div></li>
           </ol>
-          <figcaption id="trail-caption">Gate model · a schematic, not a run receipt.</figcaption>
+          <figcaption id="trail-caption">Four steps from brief to ship.</figcaption>
         </figure>
       </div>
     </section>
@@ -349,106 +350,100 @@
 <span><span class="d pend" aria-hidden="true"></span> release evidence: UNVERIFIED</span>
 <span><span class="d pend" aria-hidden="true"></span> effectiveness: BLOCKED</span>
 <!-- release-status:v1:end -->
-<br><a href="docs/VERIFICATION.md">See the verification boundary</a></p>
+ </p>
     </div>
-    <section class="chapter wrap" id="retrofit" aria-labelledby="retrofit-title">
+    <section class="chapter wrap" id="how-it-works" aria-labelledby="problem-title">
       <div class="section-head">
-        <p class="eyebrow">01 / The 2026-09-05 retrofit</p>
-        <h2 id="retrofit-title">The gate had to earn its verdict.</h2>
-        <p>A 7-wave gauntlet tested the kit. The external adversarial review then found holes in how the gate trusted evidence. The retrofit closes those holes.</p>
+        <p class="eyebrow">01 / The problem</p>
+        <h2 id="problem-title">Your agent can build a page. Defaults choose the rest.</h2>
+        <p>A working screen can still feel like every other AI-built interface: familiar type, familiar spacing, familiar cards. TasteCheck gives the build a direction before code makes those choices for you.</p>
       </div>
-      <div class="retrofit-summary">
-        <p>External ASTRA review: <strong>8 findings closed</strong>, including <strong>5 SEV-1 evidence-authority holes</strong>. The five repairs below change what can support a verdict.</p>
-        <div class="review-count"><strong>8 findings. 8 closed.</strong><span>Recorded in the <a href="_retrofit-2026-09-04/ASTRA-FIX-REPORT.md">ASTRA fix report</a>. Closure does not upgrade public release status.</span></div>
+      <div class="problem-summary">
+        <p><strong>The problem</strong><br>Generic defaults make a real product look unfinished.</p>
+        <div class="review-count"><strong>The fix</strong><span>Interview first. Set a design system. Build with craft skills that keep the choices visible.</span></div>
       </div>
       <ol class="changes">
-        <li><h3>Verdicts now DERIVED from observations.</h3><p>The gate derives the result from recorded observations. A declared pass cannot stand in for the work.</p></li>
-        <li><h3>Reviews bound to check + artifact + evidence.</h3><p>A review carries the check ID, rubric, artifact digest, and complete-evidence digest. A transplanted approval produces HOLD.</p></li>
-        <li><h3>Dependency-manifest capture.</h3><p>The capture includes linked local CSS, JavaScript, and fonts. Changed dependencies block release even when the entry file is unchanged.</p></li>
-        <li><h3>Subject inventories.</h3><p>Browser coverage reconciles <strong>route × state × viewport</strong>. Control coverage reconciles control × state. A smaller claimed scope cannot erase required subjects.</p></li>
-        <li><h3>Complete-capture hashing.</h3><p>The complete evidence gets hashed. Lossy or truncated captures cannot pass; redaction belongs to presentation.</p></li>
+        <li><h3>Interview before code.</h3><p>Answer pointed questions about the audience, product, and tone. The result is a direction your agent can use.</p></li>
+        <li><h3>Name the design system.</h3><p>Choose typography, OKLCH color, spacing, themes, and states before the components multiply.</p></li>
+        <li><h3>Build with craft skills.</h3><p>Use the 20 skills while you shape the interface. Forms, charts, motion, responsive behavior, and copy get the attention they need.</p></li>
+        <li><h3>Check the result.</h3><p>The evidence gate returns <strong>SHIP</strong> or <strong>HOLD</strong> from what was checked. Missing or conflicting observations keep the call at <strong>HOLD</strong>.</p></li>
       </ol>
       <div class="afterword">
-        <p>The other three findings separate verifier and consumer roots, distinguish craft floors from style defaults, and keep authority claims scoped to the evidence.</p>
-        <a class="text-link" href="_retrofit-2026-09-04/ASTRA-REVIEW.md">Read the adversarial review <span aria-hidden="true">↗</span></a>
+        <p>Your agent stays fast. Your product gets a point of view it can keep.</p>
+        <a class="text-link" href="#skills">See the 20 skills <span aria-hidden="true">↓</span></a>
       </div>
     </section>
-    <section class="chapter density" aria-labelledby="density-title">
-      <div class="wrap density-layout">
+    <section class="chapter how-it-works" aria-labelledby="how-it-works-title">
+      <div class="wrap how-it-works-layout">
         <div>
-          <p class="eyebrow">02 / Less to carry</p>
-          <div class="density-figure">−15.1<span>%</span></div>
-          <h2 id="density-title">A lighter kit. The checks stay explicit.</h2>
-          <p class="density-explanation">Token-density cut across all 20 skill bodies. The heaviest skill, <code>web-typography</code>, was cut <strong>31.6%</strong>.</p>
+          <p class="eyebrow">02 / How it works</p>
+          <div class="step-figure">4<span>steps</span></div>
+          <h2 id="how-it-works-title">A real system makes the build easier to steer.</h2>
+          <p class="how-it-works-explanation">Start with the decisions that make an interface yours. Carry them into code. End with a clear call.</p>
         </div>
-        <div class="density-notes">
-          <div><h3>Protected language stayed intact.</h3><p>Commands, check IDs, thresholds, verdict grammar, and release-facts blocks were retained. These are approximate token counts, measured as bytes ÷ 3.9.</p></div>
-          <table class="density-table">
-            <caption>Approximate tokens · skill bodies</caption>
-            <thead><tr><th scope="col">Scope</th><th scope="col">Before</th><th scope="col">After</th></tr></thead>
-            <tbody><tr><th scope="row">All 20 skills</th><td>24,463.8</td><td>20,781.5</td></tr><tr><th scope="row">Typography</th><td>2,442.3</td><td>1,669.5</td></tr></tbody>
-          </table>
+        <div class="how-it-works-notes">
+          <div><h3>Interview first.</h3><p>A short interview surfaces the audience, product promise, and visual direction before code.</p></div>
           <figure class="landing-chart" data-skill="data-viz" aria-labelledby="landing-chart-title" aria-describedby="landing-chart-desc">
-            <figcaption>Seven waves · sequence shown, not a score</figcaption>
+            <figcaption>Twenty skills, grouped by craft area.</figcaption>
             <svg viewBox="0 0 300 84" role="img" aria-labelledby="landing-chart-title landing-chart-desc">
-              <title id="landing-chart-title">Seven-wave retrofit sequence</title>
-              <desc id="landing-chart-desc">Seven plotted points represent the seven retrofit waves. The line is a visual index of sequence, not a measured performance score.</desc>
+              <title id="landing-chart-title">Twenty skills across seven craft areas</title>
+              <desc id="landing-chart-desc">The seven points map the 20 skills across direction, foundations, behavior, surface, accessibility, language, and gate.</desc>
               <line class="axis" x1="6" y1="70" x2="294" y2="70"></line>
-              <polyline class="ln landing-trend" points="10,52 56,42 102,52 148,34 194,44 240,28 290,38"></polyline>
+              <polyline class="ln landing-trend" points="10,52 56,42 102,42 148,52 194,60 240,52 290,66"></polyline>
             </svg>
-            <table id="landing-chart-table" class="chart-table"><caption>Seven retrofit waves</caption><tbody><tr><td>Wave 1</td><td>Gauntlet</td></tr><tr><td>Wave 2</td><td>Gauntlet</td></tr><tr><td>Wave 3</td><td>Gauntlet</td></tr><tr><td>Wave 4</td><td>Gauntlet</td></tr><tr><td>Wave 5</td><td>Gauntlet</td></tr><tr><td>Wave 6</td><td>Gauntlet</td></tr><tr><td>Wave 7</td><td>Gauntlet</td></tr></tbody></table>
+            <table id="landing-chart-table" class="chart-table"><caption>Skills by craft area</caption><tbody><tr><td>Direction</td><td>3 skills</td></tr><tr><td>Foundations</td><td>4 skills</td></tr><tr><td>Behavior</td><td>4 skills</td></tr><tr><td>Surface</td><td>3 skills</td></tr><tr><td>Accessibility</td><td>2 skills</td></tr><tr><td>Language</td><td>3 skills</td></tr><tr><td>Gate</td><td>1 skill</td></tr></tbody></table>
           </figure>
-          <div><h3>Mutation score: 4/4.</h3><p>Four tested mutations were caught. The structural lane passed after compression. These checks do not prove semantic prose equivalence.</p></div>
-          <div><h3>One finalization path.</h3><code class="command">npm run finalize</code><p>Refresh receipts and pins, project public status, and validate the verification chain together. Stale or missing evidence stays UNVERIFIED or HOLD.</p></div>
-          <a class="text-link" href="_retrofit-2026-09-04/DENSITY-PASS-REPORT.md">Read the density measurements <span aria-hidden="true">↗</span></a>
+          <div><h3>Build with craft.</h3><p>Typography, OKLCH color, spacing, states, forms, charts, motion, and more stay in view as the interface takes shape.</p></div>
+          <div><h3>Check before ship.</h3><p>The gate returns <strong>SHIP</strong> or <strong>HOLD</strong> from recorded observations. It tells you what was checked and what still needs attention.</p></div>
+          <a class="text-link" href="#use">Install the kit <span aria-hidden="true">↓</span></a>
         </div>
       </div>
     </section>
     <section class="chapter wrap" id="skills" aria-labelledby="skills-title">
       <div class="section-head">
-        <p class="eyebrow">03 / The instruments</p>
-        <h2 id="skills-title">Commit to a direction. Carry it through.</h2>
-        <p>20 skills, each with a job. Read the relevant Markdown with your coding agent, then use <code>tastecheck-pass</code> to account for the required evidence.</p>
+        <p class="eyebrow">03 / What's inside</p>
+        <h2 id="skills-title">20 skills for the choices AI tends to flatten.</h2>
+        <p>Use the group that matches the next decision in your build. Together, these skills cover the parts that make an interface feel like a product.</p>
       </div>
       <div class="skill-index">
-        <div class="skill-group"><div><h3>Find the direction</h3><p>A brief, an existing site, or a seeded exploration.</p></div><ul>
+        <div class="skill-group"><div><h3>Choose the direction</h3><p>Interview, improve, or try a seeded direction before the first component.</p></div><ul>
           <li data-skill="design-system-interview"><a href="skills/design-system-interview/SKILL.md">design-system-interview</a></li>
           <li data-skill="improve-existing-website"><a href="skills/improve-existing-website/SKILL.md">improve-existing-website</a></li>
           <li data-skill="tasteroll"><a href="skills/tasteroll/SKILL.md">tasteroll</a></li>
         </ul></div>
-        <div class="skill-group"><div><h3>Build the foundations</h3><p>Color, type, space, and theme roles.</p></div><ul>
+        <div class="skill-group"><div><h3>Set the foundations</h3><p>Type, color, spacing, and themes give the interface a consistent visual language.</p></div><ul>
           <li data-skill="color-system"><a href="skills/color-system/SKILL.md">color-system</a></li>
           <li data-skill="web-typography"><a href="skills/web-typography/SKILL.md">web-typography</a></li>
           <li data-skill="spacing-system"><a href="skills/spacing-system/SKILL.md">spacing-system</a></li>
           <li data-skill="theming"><a href="skills/theming/SKILL.md">theming</a></li>
         </ul></div>
-        <div class="skill-group"><div><h3>Make the behavior hold</h3><p>Reflow, controls, forms, and recovery.</p></div><ul>
+        <div class="skill-group"><div><h3>Design the behavior</h3><p>Responsive layouts, component states, forms, and empty states keep the product useful.</p></div><ul>
           <li data-skill="responsive-layout"><a href="skills/responsive-layout/SKILL.md">responsive-layout</a></li>
           <li data-skill="component-states"><a href="skills/component-states/SKILL.md">component-states</a></li>
           <li data-skill="form-ux"><a href="skills/form-ux/SKILL.md">form-ux</a></li>
           <li data-skill="empty-states"><a href="skills/empty-states/SKILL.md">empty-states</a></li>
         </ul></div>
-        <div class="skill-group"><div><h3>Give the surface a job</h3><p>Movement, quantitative evidence, and imagery.</p></div><ul>
+        <div class="skill-group"><div><h3>Shape the surface</h3><p>Motion, data, and art direction make the system feel specific to the product.</p></div><ul>
           <li data-skill="micro-motion"><a href="skills/micro-motion/SKILL.md">micro-motion</a></li>
           <li data-skill="data-viz"><a href="skills/data-viz/SKILL.md">data-viz</a></li>
           <li data-skill="art-direction"><a href="skills/art-direction/SKILL.md">art-direction</a></li>
         </ul></div>
-        <div class="skill-group"><div><h3>Inspect the experience</h3><p>Access, cognitive load, language, and generic defaults.</p></div><ul>
+        <div class="skill-group"><div><h3>Check the experience</h3><p>Accessibility, cognitive load, language readiness, and plain copy keep the interface clear.</p></div><ul>
           <li data-skill="a11y-pass"><a href="skills/a11y-pass/SKILL.md">a11y-pass</a></li>
           <li data-skill="cognitive-a11y"><a href="skills/cognitive-a11y/SKILL.md">cognitive-a11y</a></li>
           <li data-skill="i18n-ready"><a href="skills/i18n-ready/SKILL.md">i18n-ready</a></li>
           <li data-skill="deslop-ui"><a href="skills/deslop-ui/SKILL.md">deslop-ui</a></li>
           <li data-skill="humanize-copy"><a href="skills/humanize-copy/SKILL.md">humanize-copy</a></li>
         </ul></div>
-        <div class="skill-group"><div><h3>Account for the decision</h3><p>Every required check needs evidence.</p></div><ul>
+        <div class="skill-group"><div><h3>Make the call</h3><p>The gate turns what was checked into a <strong>SHIP</strong> or <strong>HOLD</strong> decision.</p></div><ul>
           <li data-skill="tastecheck-pass"><a href="skills/tastecheck-pass/SKILL.md">tastecheck-pass</a></li>
         </ul></div>
       </div>
-      <div class="gallery-link"><a class="text-link" href="samples/index.html">One product story. 8 gallery systems. <span aria-hidden="true">↗</span></a></div>
+      <div class="gallery-link"><a class="text-link" href="samples/index.html">See the 8 gallery systems <span aria-hidden="true">↗</span></a></div>
       <div class="contract-rail" aria-label="Landing contract demonstrations">
         <div class="contract-demo">
-          <p class="eyebrow">State surface</p>
-          <h3>One control, three states.</h3>
+          <p class="eyebrow">States</p>
+          <h3>Every state gets a place.</h3>
           <div class="demo-controls">
             <button class="demo-button" type="button" data-test="state-cycle">Default</button>
             <button class="demo-button" type="button" data-test="a11y-focus">Keyboard focus</button>
@@ -456,36 +451,36 @@
           <p class="demo-status" role="status" aria-live="polite" data-test="state-status">Default state. Activate to inspect loading and disabled.</p>
         </div>
         <div class="contract-demo">
-          <p class="eyebrow">Form surface</p>
-          <h3>Validation waits for enough information.</h3>
+          <p class="eyebrow">Forms</p>
+          <h3>A good form tells you what to fix.</h3>
           <form class="contract-form" data-test="landing-form" novalidate>
             <label for="landing-email">Email</label>
             <input id="landing-email" type="email" placeholder="name@example.com" autocomplete="email" data-test="email-input" aria-describedby="email-status">
-            <p class="demo-status" id="email-status" role="status" aria-live="polite" data-test="email-status">Enter a complete address; it checks when you leave the field.</p>
+            <p class="demo-status" id="email-status" role="status" aria-live="polite" data-test="email-status">We’ll check the address when you leave the field.</p>
           </form>
         </div>
         <div class="contract-demo">
-          <p class="eyebrow">Recovery surface</p>
-          <h3>Empty and error states keep a next step.</h3>
+          <p class="eyebrow">Recovery</p>
+          <h3>Empty and error states keep the next move visible.</h3>
           <div class="demo-controls">
             <button class="demo-button" type="button" data-test="show-empty">Empty</button>
             <button class="demo-button" type="button" data-test="show-error">Error</button>
             <button class="demo-button" type="button" data-test="retry-list">Retry</button>
           </div>
-          <p class="demo-status" role="status" aria-live="polite" data-test="task-list">Preview is ready to inspect.</p>
+          <p class="demo-status" role="status" aria-live="polite" data-test="task-list">A preview is ready.</p>
         </div>
       </div>
     </section>
     <section id="proof">
       <div class="wrap">
         <div class="section-head">
-          <p class="eyebrow">04 / Canonical proof</p>
+          <p class="eyebrow">04 / The gate</p>
           <h2 id="proof-title">This landing page is the integration surface.</h2>
-          <p>GitHub Pages homepage represents every skill concern directly. The page carries the design direction, the retrofit evidence, and the live contract surfaces in one readable route.</p>
+          <p>GitHub Pages homepage represents every skill concern directly. The page carries the design direction, the craft skills, and the live contract surfaces in one readable route.</p>
         </div>
         <div class="proof-copy">
           <p>The landing page is the canonical proof journey: named controls expose theme, state, form, recovery, chart, and accessibility behavior without sending the reader to a side demo. The score and gate remain accountable judgment + evidence, not an objective guarantee.</p>
-          <a class="text-link" href="docs/VERIFICATION.md">Read the verification boundary <span aria-hidden="true">↗</span></a>
+          <a class="text-link" href="docs/VERIFICATION.md">See the gate's boundary <span aria-hidden="true">↗</span></a>
         </div>
       </div>
     </section>
@@ -493,29 +488,29 @@
       <div class="wrap">
         <div class="use-layout">
           <div class="use-copy">
-            <p class="eyebrow">05 / Put it to work</p>
-            <h2 id="use-title">Your agent can read Markdown. Start there.</h2>
-            <p>TasteCheck is plain Markdown with no runtime or SDK. Ask your coding agent to read the relevant <code>SKILL.md</code>, or install the kit into your agent’s skill directories.</p>
-            <div class="actions"><a class="button" href="README.md#quickstart">Read the quickstart <span aria-hidden="true">↗</span></a></div>
+            <p class="eyebrow">05 / Install</p>
+            <h2 id="use-title">Give your coding agent a design system to follow.</h2>
+            <p>TasteCheck is plain Markdown with no runtime or SDK. Point your agent at the relevant <code>SKILL.md</code>, or install the kit into its skill directories.</p>
+            <div class="actions"><a class="button" href="README.md#quickstart">Open the quickstart <span aria-hidden="true">↗</span></a></div>
           </div>
           <div class="install">
             <h3>Install the kit</h3>
             <pre aria-label="Installation commands"><code>git clone https://github.com/KyaniteLabs/tastecheck
 ./tastecheck/install.sh</code></pre>
-            <p>The installer links canonical skills and mirrors them into detected agent homes.</p>
-            <a class="text-link" href="README.md">Read the repository guide <span aria-hidden="true">↗</span></a>
+            <p>The installer places the skills where your coding agent can read them.</p>
+            <a class="text-link" href="https://github.com/KyaniteLabs/tastecheck">Open TasteCheck on GitHub <span aria-hidden="true">↗</span></a>
           </div>
         </div>
         <aside class="boundary" aria-labelledby="boundary-title">
-          <div><h3 id="boundary-title">A judgment you can account for.</h3><p class="status-label">Release: UNVERIFIED<br>Effectiveness: BLOCKED</p><!-- release-status-gate:v1:start --><span class="aa">Gate: UNVERIFIED</span><!-- release-status-gate:v1:end --></div>
-          <div><p>The score and gate are accountable judgment + evidence, not an objective guarantee. Subjective checks require independent human review. The decision covers the captured artifact and its frozen scope.</p><a class="text-link" href="docs/VERIFICATION.md">Read what is verified, and what is not <span aria-hidden="true">↗</span></a></div>
+          <div><h3 id="boundary-title">The honest boundary.</h3><p class="status-label">Release: UNVERIFIED<br>Effectiveness: BLOCKED</p><!-- release-status-gate:v1:start --><span class="aa">Gate: UNVERIFIED</span><!-- release-status-gate:v1:end --></div>
+          <div><p>Effectiveness is not proven independently yet. The gate reports what it checked and what it could not check; it does not promise a result beyond the captured work.</p><a class="text-link" href="docs/VERIFICATION.md">See what the gate checks <span aria-hidden="true">↗</span></a></div>
         </aside>
       </div>
     </section>
   </main>
   <footer class="footer wrap">
-    <p>TasteCheck <span aria-hidden="true">/</span> Kyanite Labs</p>
-    <div class="footer-links"><a href="CHANGELOG.md">Changelog</a><a href="LICENSE">MIT license</a><a href="#main">Back to top <span aria-hidden="true">↑</span></a></div>
+    <p>TasteCheck <span aria-hidden="true">/</span> Interfaces built with AI</p>
+    <div class="footer-links"><a href="https://github.com/KyaniteLabs/tastecheck">GitHub</a><a href="LICENSE">MIT license</a><a href="#main">Back to top <span aria-hidden="true">↑</span></a></div>
   </footer>
   <template id="release-inventory">
 <!-- release-facts:v1:start -->
@@ -546,13 +541,13 @@ Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21
         stateIndex = (stateIndex + 1) % states.length;
         stateButton.textContent = states[stateIndex];
         stateButton.disabled = states[stateIndex] === 'Disabled';
-        stateStatus.textContent = states[stateIndex] + ' state is visible for inspection.';
+        stateStatus.textContent = states[stateIndex] + ' state is visible.';
         if (stateButton.disabled) {
           window.setTimeout(function () {
             stateButton.disabled = false;
             stateIndex = 0;
             stateButton.textContent = states[stateIndex];
-            stateStatus.textContent = 'Disabled state inspected; default state restored.';
+            stateStatus.textContent = 'Disabled state shown; default state restored.';
           }, 700);
         }
       }
@@ -565,13 +560,13 @@ Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21
         var value = email.value.trim();
         email.classList.remove('valid', 'invalid');
         if (!value) {
-          emailStatus.textContent = 'Enter a complete address; it checks when you leave the field.';
+          emailStatus.textContent = 'Add the rest of the address before you leave the field.';
         } else if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(value)) {
           email.classList.add('invalid');
-          emailStatus.textContent = 'Enter a valid email like name@example.com.';
+          emailStatus.textContent = 'Use a complete email address, like name@example.com.';
         } else {
           email.classList.add('valid');
-          emailStatus.textContent = 'Looks good. No message was sent.';
+          emailStatus.textContent = 'Email looks ready. Nothing was sent.';
         }
         return emailStatus.textContent;
       }
@@ -596,13 +591,13 @@ Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21
 
       var taskStatus = document.querySelector('[data-test="task-list"]');
       function showEmpty() {
-        if (taskStatus) taskStatus.textContent = 'No checks yet. Run a taste check to create the first report.';
+        if (taskStatus) taskStatus.textContent = 'No items yet. Start with a design check.';
       }
       function showError() {
-        if (taskStatus) taskStatus.textContent = 'Could not load checks. Retry keeps the path recoverable.';
+        if (taskStatus) taskStatus.textContent = 'The preview could not load. Try again.';
       }
       function retryList() {
-        if (taskStatus) taskStatus.textContent = 'Preview recovered: typography, color, accessibility.';
+        if (taskStatus) taskStatus.textContent = 'Preview restored. Typography, color, and accessibility are ready.';
       }
       var emptyButton = document.querySelector('[data-test="show-empty"]');
       var errorButton = document.querySelector('[data-test="show-error"]');

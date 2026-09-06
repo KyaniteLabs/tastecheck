@@ -6,7 +6,7 @@
       {
         "id": "context-budget",
         "path": "evals/receipts/v1/context-budget.json",
-        "sha256": "457dcef345a3b86110dca96632d860217ee1b6c085e1bd905dbe12bdb53e831c",
+        "sha256": "8ce60d93e04e6f4b6b0a234c7b453cea85054127db0c7381c0c9d1ee17529211",
         "producer_id": "context-budget",
         "assertions": {
           "overall_pass": true
