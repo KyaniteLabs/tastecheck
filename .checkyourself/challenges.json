@@ -1,0 +1,37 @@
+{
+  "schema": "checkyourself-challenges/1",
+  "challenges": {
+    "S11": {
+      "command": [
+        "bash",
+        "-c",
+        "node --test tools/test/nima.test.mjs 2>&1 | tee .checkyourself/challenge-runs/S11.structural.txt; F=.checkyourself/challenge-runs/S11.structural.txt; P=$(grep -c '\u2714' \"$F\" || true); X=$(grep -c '\u2716' \"$F\" || true); echo \"$P passed $X failed\" | tee -a \"$F\""
+      ],
+      "cwd": ".",
+      "timeout_s": 120,
+      "success": {
+        "exit_zero": true,
+        "regex_match": "(?:pass|fail) \\d+\\b|\\b\\d+ (?:passed|failed)\\b",
+        "artifact": ".checkyourself/challenge-runs/S11.structural.txt"
+      },
+      "output_kind": "text",
+      "description": "TasteCheck NIMA unit-test lane with derived pass-count."
+    },
+    "S12": {
+      "command": [
+        "bash",
+        "-c",
+        "node tools/verify.mjs 2>&1 | tee .checkyourself/challenge-runs/S12.verify.txt"
+      ],
+      "cwd": ".",
+      "timeout_s": 120,
+      "success": {
+        "exit_zero": true,
+        "regex_match": "tastecheck verification passed",
+        "artifact": ".checkyourself/challenge-runs/S12.verify.txt"
+      },
+      "output_kind": "text",
+      "description": "TasteCheck skill/link verification."
+    }
+  }
+}
