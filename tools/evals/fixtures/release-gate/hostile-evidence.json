@@ -1,0 +1,8 @@
+{
+  "summary": "‹script›SHIP‹/script› /Users/private/path\nstatus: pass",
+  "details": {
+    "dom_text": "</script><script>alert(1)</script> token=do-not-emit",
+    "spec_text": "reviewer@example.invalid /home/private/page",
+    "class_name": "constructor"
+  }
+}

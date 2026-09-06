@@ -8,37 +8,35 @@ description: >-
 
 # Component States
 
-An interactive control is a lifecycle, not a resting style. Map every applicable state
-to semantics, a visible treatment, and recovery.
+An interactive control is a lifecycle, not a resting style. Map applicable states to
+semantics, visible treatment, and recovery.
 
-## Decision order and evidence contract
+## Decision order and evidence
 
 1. Name role, interaction model, owner, and applicable states.
-2. Give each state an ARIA/DOM mapping, visible non-color treatment, trigger, and recovery.
+2. Give each state ARIA/DOM mapping, visible non-color treatment, trigger, and recovery.
 3. Test keyboard, focus-visible, contrast, reduced motion, and async completion.
 
-Report one evidence row per state; `n/a` needs a subject-absence reason. Hand field
-validation to `form-ux`, region emptiness to `empty-states`, and missing state tokens
-back as gaps rather than invented fallbacks.
+Report one evidence row per state; `n/a` needs a subject-absence reason. Hand field validation
+to `form-ux`, emptiness to `empty-states`, and missing tokens back as gaps, never fallbacks.
 
-## Async and destructive controls
+## Async/destructive controls
 
 Name one semantic owner; visual states only present its lifecycle.
 
 | State / event | Guard and observable contract |
 |---|---|
-| `ready` / invoke | Click, Enter, Space, and script use one eligible route; accepted work creates a request key. |
-| `confirming` | Use only for irreversible, broad, or cascading work; name consequence, move focus in, and restore the invoker on cancel. |
-| `submitting` | Create the key before dispatch; reject duplicates; expose native disabled/busy and a working label. |
-| matching completion | Only the matching key may settle current work; stale results cannot clear busy, alter another target, or move focus. |
-| success / failure | Record data before presentation; confirm locally and choose focus, or retain context with nearby error and retry/cancel. |
+| `ready` / invoke | Click, Enter, Space, and script use one route; accepted work creates a request key. |
+| `confirming` | Use only for irreversible/broad/cascading work; name consequence, move focus in, restore invoker on cancel. |
+| `submitting` | Create key before dispatch; reject duplicates; expose disabled/busy and working label. |
+| matching completion | Only matching key settles work; stale results cannot clear busy, alter target, or move focus. |
+| success / failure | Record data first; confirm locally and choose focus, or retain context with nearby error/retry/cancel. |
 
-Test a real and a stale/failed completion. If success empties a region, hand that
-region to `empty-states`.
+Test real and stale/failed completion. If success empties a region, hand it to `empty-states`.
 
-## The universal state matrix
+## State matrix
 
-Every interactive element should account for these (not all apply to every component):
+Account for these states where applicable:
 
 | State | Trigger | Must communicate | CSS |
 |-------|---------|------------------|-----|
@@ -51,53 +49,51 @@ Every interactive element should account for these (not all apply to every compo
 | **Selected / current** | chosen / active page | "this is the active one" | `[aria-selected]`/`[aria-current]` |
 | **Error / invalid** | failed validation | "something's wrong here" | `[aria-invalid]` |
 
-The first five are the baseline for *any* control. Add selected (tabs, nav, options)
-and error (form fields) where they apply.
+The first five baseline *any* control; add selected and error where applicable.
 
 ## Non-negotiables
 
-- Never ship default-only: applicable hover, focus-visible, active, disabled, loading,
-  selected, and error states need semantics and non-color signals.
+- Never ship default-only: applicable states need semantics and non-color signals.
 - Never remove a focus outline without an equally visible replacement; hover is not focus.
 - Explain unavailability; a silent disabled submit is a `form-ux` failure.
 - Async controls prevent duplicate dispatch, expose busy state, and preserve contrast
-  (≥3:1 UI, ≥4.5:1 text). Use fast reduced-motion-safe feedback.
+  (≥3:1 UI, ≥4.5:1 text); feedback is fast and reduced-motion-safe.
 
 ## Implementation starter
 
-Read `assets/states-starter.css` for tokenized CSS and reduced-motion details. A missing
-token is a gap, never a fallback hex; add the request guard before styling async work.
+Read `assets/states-starter.css` for tokenized CSS/reduced-motion details. A missing token is
+a gap, never a fallback hex; add the request guard before styling async work.
 
-## State by component (what each one needs)
+## State by component
 
 - **Button/link:** default, hover, focus-visible, active, disabled/loading as applicable;
-  toggles use `aria-pressed`, links retain a non-color cue/visited treatment.
+  toggles use `aria-pressed`; links retain non-color/visited cues.
 - **Toggle / switch:** use `role="switch"` (not `role="checkbox"`) with `aria-checked`;
   Space toggles, Tab moves focus. Example: `<button role="switch" aria-checked="true">Notifications</button>`.
   Screen readers announce "switch, on/off" instead of "checkbox, checked."
-- **Fields:** focus, disabled, filled/readonly, error, and selected/open/checked states;
-  style a real or correctly labelled focusable input (`form-ux` owns validation).
-- **Navigation/list/menu:** current/selected state uses `aria-current`/`aria-selected`;
-  pointer and keyboard focus are equally legible.
-- **Overlays:** model open/closed and entry/exit; prefer native Popover or `<dialog>`;
-  toasts use `role="status"` and hover-only content remains reachable by focus.
+- **Fields:** focus, disabled, filled/readonly, error, selected/open/checked states; style a
+  correctly labelled focusable input (`form-ux` owns validation).
+- **Navigation/list/menu:** current/selected uses `aria-current`/`aria-selected`; pointer
+  and keyboard focus are equally legible.
+- **Overlays:** model open/closed and entry/exit; prefer native Popover/`<dialog>`; toasts
+  use `role="status"`; hover-only content remains focus-reachable.
 
 ## Reference files
 
-- `references/states.md` — state semantics, pitfalls, and ARIA pairings.
+- `references/states.md` — state semantics, pitfalls, ARIA pairings.
 - `references/decision-records.md` — novel-case ADR rules.
 
 ## Self-check (per interactive element)
 
 For each applicable state, confirm visible focus, semantics, non-color contrast, and
 reduced-motion behavior. For async/destructive work confirm owner, guard, justified
-confirmation, duplicate prevention, recovery, and final focus; exercise real and stale
-or failed completion separately. Do not collapse controls into one checkmark.
+confirmation, duplicate prevention, recovery, and final focus; exercise real and stale/
+failed completion separately. Do not collapse controls into one checkmark.
 
 ## How to deliver
 
-Deliver the full applicable matrix plus lifecycle evidence. Pair with `form-ux`,
-`empty-states`, `micro-motion`, `a11y-pass`, and `color-system` at their boundaries.
+Deliver applicable matrix and lifecycle evidence. Pair with `form-ux`, `empty-states`,
+`micro-motion`, `a11y-pass`, and `color-system` at their boundaries.
 
 <!-- contract:v1:start -->
 ## Contract (generated)

@@ -39,6 +39,20 @@ export const CSS_LIKE_EXEMPT = new Set([
   "aria-label", "aria-live", "aria-hidden", "aria-expanded",
   "role-based", "tab-index", "auto-fill", "auto-flow",
   "min-content", "max-content", "fit-content",
+  // Accessibility attributes, state/data hooks, and authored CSS vocabulary
+  // commonly quoted in the skill prose are not skill references.
+  "aria-describedby", "aria-controls", "aria-busy", "aria-pressed", "aria-checked",
+  "aria-current", "aria-selected", "aria-labelledby", "aria-invalid", "aria-required",
+  "data-loading", "approval-ready", "not-allowed", "no-preference", "off-scale",
+  "target-origin-audit", "target-origin-fix", "forced-color-adjust",
+  "scroll-margin-top", "margin-block-start", "margin-block", "margin-trim",
+  "min-width", "max-width", "auto-fit", "text-indent", "text-wrap", "word-spacing",
+  "font-stretch", "font-optical-sizing", "font-variation-settings", "font-feature-settings",
+  "font-synthesis", "unicode-range", "size-adjust", "ascent-override", "descent-override",
+  "line-gap-override", "text-box-trim", "text-box-edge", "hanging-punctuation",
+  "initial-letter", "line-clamp", "text-step-2",
+  // Example utility classes used to illustrate anti-patterns.
+  "bg-indigo-500", "rounded-full", "rounded-xl", "shadow-lg", "text-base", "min-h-screen",
 ]);
 
 export const CANONICAL_TOKEN_PATTERNS = [

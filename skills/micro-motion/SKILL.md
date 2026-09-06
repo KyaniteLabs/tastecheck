@@ -8,43 +8,40 @@ description: >-
 
 # Micro-Motion
 
-Motion confirms a change, its origin, or what to notice next. If it answers none of
-those, cut it.
+Motion confirms a change, origin, or what to notice next. If it answers none, cut it.
 
 ## Non-negotiables (the rules that keep motion feeling good)
 
-- **Prefer compositor-safe properties.** Start with `transform` and `opacity`. Color,
-  filter, SVG, or measured layout transitions are valid when the purpose requires them
-  and a performance trace shows the target device can sustain the interaction.
+- **Prefer compositor-safe properties.** Start with `transform` and `opacity`. Color, filter,
+  SVG, or measured layout transitions need purpose and target-device trace.
 - **Ease by direction.** Ease-out enters, ease-in exits, ease-in-out moves; linear is
   for a purposeful continuous loop only.
-- **Design reduced motion as an equivalent state.** Keep labels, choices, focus, and
-  final content; remove spatial movement.
-- **Let JavaScript opt individual elements into waiting states only after the observer
-  is ready.** Static CSS must not leave content hidden when JavaScript fails, initializes
-  late, or restores from the back-forward cache.
+- **Design reduced motion as an equivalent state.** Keep labels, choices, focus, and content;
+  remove spatial movement.
+- **Let JavaScript opt elements into waiting states only after the observer is ready.**
+  Static CSS must not hide content when JavaScript fails, initializes late, or restores
+  from the back-forward cache.
 - **Make looping motion controllable and never scroll-jack.**
 
 ## Easing & duration tokens
 
 Use semantic duration/easing tokens: acknowledgement `120–160ms`, insertion/menu
-`160–220ms`, confirmation/route `220–320ms`. Treat these as starting bands and test on
-the target device. Motion never delays committed state, focus, or the next keyboard action.
+`160–220ms`, confirmation/route `220–320ms`. These are starting bands; test on target
+device. Motion never delays committed state, focus, or next keyboard action.
 
 ## Settle before styling
 
-Define the usable end state and interruption policy before choosing an entrance. A
-superseded save, route, insertion, or dismissal must converge on the newest state without
-a stale overlay, announcement, focus jump, or success message. Motion reflects state
-ownership; it does not decide it. If ownership or focus recovery is unknown, hand off to
-`component-states` before choreographing.
+Define usable end state and interruption policy before an entrance. Superseded save, route,
+insertion, or dismissal must converge on newest state without stale overlay, announcement,
+focus jump, or success message. Motion reflects ownership, not decides it. Unknown
+ownership/focus recovery goes to `component-states`.
 
 ## The reduced-motion contract
 
-Define the project-level reduced-motion policy once, then let components reference it.
-For progressive reveals, content starts visible. After the observer is attached,
-JavaScript marks only offscreen pending elements; never hide an element already
-intersecting the viewport. It removes the marker on reveal and on page restoration.
+Define the project-level reduced-motion policy once; components reference it. For progressive
+reveals, content starts visible. After the observer is attached, JavaScript marks only offscreen
+pending elements; never hide an already intersecting element. Remove the marker on reveal and
+page restoration.
 Gate spatial movement behind `no-preference`:
 
 ```css
@@ -61,7 +58,7 @@ Gate spatial movement behind `no-preference`:
 
 For a legacy retrofit only, the emergency global kill switch in
 `references/principles.md` is permitted after documenting why the primary pattern cannot
-be used; it removes useful transitions, so it is not the default.
+be used; it removes useful transitions and is not the default.
 
 ## Decision order
 
@@ -71,21 +68,19 @@ be used; it removes useful transitions, so it is not the default.
 4. Define reduced-motion and no-JS/restoration equivalents.
 5. Replay rapid repeat, cancellation, navigation, and stale async completion.
 
-For async feedback, tag each request and let only the current owner update status or its
-live announcement. For routes and overlays, cancel superseded animation and make the
-destination DOM and focus authoritative. For list changes, preserve readable DOM order
-even when visual movement is interrupted.
+For async feedback, tag each request; only its current owner updates status/live announcement.
+For routes/overlays, cancel superseded animation and make destination DOM/focus authoritative.
+For list changes, preserve readable DOM order when movement is interrupted.
 
 ## How to deliver
 
-Deliver a compact choreography table: interaction, purpose, trigger, duration/easing,
-settled state, interruption rule, and reduced equivalent. Add one global safety row for
-JS-disabled and restoration behavior. Default to CSS; use a library when gestures,
-springs, or layout coordination justify its runtime and ownership complexity.
+Deliver a choreography table: interaction, purpose, trigger, duration/easing, settled state,
+interruption rule, and reduced equivalent. Add one safety row for JS-disabled/restoration.
+Default to CSS; use a library only when gestures, springs, or layout coordination justify it.
 
 ## Self-check
 
-- [ ] Properties are compositor-safe, or an intentional alternative has a target-device trace
+- [ ] Properties are compositor-safe, or intentional alternative has a target-device trace
 - [ ] Durations/easings are tokens (`--dur-*`/`--ease-*`); entrances ~200–300ms ease-out (custom curve, not linear)
 - [ ] `prefers-reduced-motion` path tested (motion off or cross-fade) — content never depends on it
 - [ ] Page reads complete with JS disabled, delayed initialization, and bfcache restore;
@@ -93,7 +88,7 @@ springs, or layout coordination justify its runtime and ownership complexity.
 - [ ] Rapid repeat, cancellation, stale completion, and navigation converge on the
       current usable state without stale focus, status, or layers
 - [ ] No scroll-jacking or uncontrolled loops; flashing stays below the safety threshold
-- [ ] Evidence names the tokens, settled state, reduced equivalent, and replay result
+- [ ] Evidence names tokens, settled state, reduced equivalent, and replay result
 
 <!-- contract:v1:start -->
 ## Contract (generated)
