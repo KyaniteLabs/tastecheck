@@ -2,11 +2,11 @@
   "schema_version": 1,
   "kind": "tastecheck-public-release-status",
   "target_release": "1.4.1",
-  "source_tree_sha256": "0f5c6ef995c751d7b6e3ef8404b508b34cc61cdde8eb442d854c6e321a55b4af",
+  "source_tree_sha256": "591e502c270b0e902429b0536667d3c6d0d63a52c552a063a2640c82bb34cb93",
   "manifest": {
     "id": "release-manifest",
     "path": "contracts/v1/release-receipts.json",
-    "sha256": "20dbe871ad72a53ee5d59051179e1b1d8988da865a04ac68cf40cc50cce6e521"
+    "sha256": "a9de416de5af60e3b04e0b16e8bc841ad39b25c9d6e9ca82229beff240a02457"
   },
   "claims": [
     {
@@ -16,32 +16,32 @@
         {
           "id": "context-budget",
           "path": "evals/receipts/v1/context-budget.json",
-          "sha256": "8ce60d93e04e6f4b6b0a234c7b453cea85054127db0c7381c0c9d1ee17529211"
+          "sha256": "c381c274c791ece8c3afe70661028ed4743a391df429d3e08da10d1921fb1846"
         },
         {
           "id": "browser",
           "path": "evals/receipts/v1/browser.json",
-          "sha256": "32133c73db58c3b77f0266ed6758114c782dfdcf3b8ccfeb05ee98b3c196cfc2"
+          "sha256": "051d4d17a9ad3ffd371f5ec49bfa4fc925451257f8126bf573a5cc97dac9f9f6"
         },
         {
           "id": "e2e",
           "path": "evals/receipts/v1/e2e.json",
-          "sha256": "4142ca2303aed00f28493b5d921735ef14c5716ed66dab6e03fc2d8dbb8ababe"
+          "sha256": "bcf7160c12f9514f5df6cc624e5720823f2dc2a5f2d32e18d8dec137832d6423"
         },
         {
           "id": "mechanical",
           "path": "evals/receipts/v1/mechanical.json",
-          "sha256": "e448e7a5d74ca7cfbe2335e44e6ea6d55858916403172fa8b346d7a172dd219e"
+          "sha256": "47e3cebac5d5d7be29276773971afd3dbe16924684333c7fdecd76138f1eb4bf"
         },
         {
           "id": "security",
           "path": "evals/receipts/v1/security.json",
-          "sha256": "9e8a21ae13f495243de9c9c506826804f6012787a280b15aaa884024f76d946c"
+          "sha256": "027582da1685d9c3fd93ef9622b1bf524475fb562ae757ac1f62f3e6bb82cdb3"
         },
         {
           "id": "clean-clone",
           "path": "evals/receipts/v1/clean-clone.json",
-          "sha256": "4556edf3bd4838d7eaad4cf299acc8912c013cf0a3097eac1067c7d5f4544495"
+          "sha256": "da8159385aba34de0ce49e3aff17a1c05908960aaa432385dbc9126a159b5d07"
         }
       ],
       "reasons": [
@@ -56,7 +56,7 @@
         {
           "id": "browser",
           "path": "evals/receipts/v1/browser.json",
-          "sha256": "32133c73db58c3b77f0266ed6758114c782dfdcf3b8ccfeb05ee98b3c196cfc2"
+          "sha256": "051d4d17a9ad3ffd371f5ec49bfa4fc925451257f8126bf573a5cc97dac9f9f6"
         }
       ],
       "reasons": [
@@ -70,7 +70,7 @@
         {
           "id": "browser",
           "path": "evals/receipts/v1/browser.json",
-          "sha256": "32133c73db58c3b77f0266ed6758114c782dfdcf3b8ccfeb05ee98b3c196cfc2"
+          "sha256": "051d4d17a9ad3ffd371f5ec49bfa4fc925451257f8126bf573a5cc97dac9f9f6"
         }
       ],
       "reasons": [

@@ -6,7 +6,7 @@
     "id": "tastecheck-live-execution",
     "version": 1
   },
-  "source_tree_sha256": "0f5c6ef995c751d7b6e3ef8404b508b34cc61cdde8eb442d854c6e321a55b4af",
+  "source_tree_sha256": "591e502c270b0e902429b0536667d3c6d0d63a52c552a063a2640c82bb34cb93",
   "nonce": "browser-release-v1",
   "runtime": {
     "node": "v22.22.2",
@@ -14,8 +14,8 @@
     "browser": "149.0.7827.55",
     "platform": "linux"
   },
-  "started_at": "2026-09-06T04:36:21.694Z",
-  "finished_at": "2026-09-06T04:36:43.830Z",
+  "started_at": "2026-09-06T05:21:43.440Z",
+  "finished_at": "2026-09-06T05:22:09.659Z",
   "executed": true,
   "reproducible": true,
   "artifacts": [
@@ -39,15 +39,15 @@
     },
     {
       "id": "demo-02-states-390",
-      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-390-16e61dd629c5a84a77395e85cc3405dead1943b3b99c7a33830a885d0de0395b.png",
-      "sha256": "16e61dd629c5a84a77395e85cc3405dead1943b3b99c7a33830a885d0de0395b",
-      "bytes": 24429
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-390-b45e077b0b8cd4d48600a688cf33ecd0d44eb2eb5ad5420efa0cae5be2585d10.png",
+      "sha256": "b45e077b0b8cd4d48600a688cf33ecd0d44eb2eb5ad5420efa0cae5be2585d10",
+      "bytes": 24431
     },
     {
       "id": "demo-02-states-768",
-      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-768-ff4702d045a9e4598132c92f3ffadd0a5b592a81fb6a995c8be4f1c24e1b0db1.png",
-      "sha256": "ff4702d045a9e4598132c92f3ffadd0a5b592a81fb6a995c8be4f1c24e1b0db1",
-      "bytes": 24911
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-768-292fcf25cbb9ecbb5289b23ddafcc7b6572e4099acfc73e424a0991fd7070013.png",
+      "sha256": "292fcf25cbb9ecbb5289b23ddafcc7b6572e4099acfc73e424a0991fd7070013",
+      "bytes": 24907
     },
     {
       "id": "demo-02-states-1280",
@@ -147,21 +147,21 @@
     },
     {
       "id": "landing-390",
-      "path": "evals/receipts/v1/artifacts/browser/landing-390-5543d197d33ca62b3385a446e96f9f69da9ed2c9fbf01ae4735d6e618e2e4d0f.png",
-      "sha256": "5543d197d33ca62b3385a446e96f9f69da9ed2c9fbf01ae4735d6e618e2e4d0f",
-      "bytes": 666920
+      "path": "evals/receipts/v1/artifacts/browser/landing-390-ce9d39195b0c8f336d83d51ea8b319bd4b2c96f4d1099438e8a596ff2e89ff31.png",
+      "sha256": "ce9d39195b0c8f336d83d51ea8b319bd4b2c96f4d1099438e8a596ff2e89ff31",
+      "bytes": 666815
     },
     {
       "id": "landing-768",
-      "path": "evals/receipts/v1/artifacts/browser/landing-768-f9aac31c64b4d8cb6901523019278821c7519c1a2c2531d05ae1dff29b79f966.png",
-      "sha256": "f9aac31c64b4d8cb6901523019278821c7519c1a2c2531d05ae1dff29b79f966",
-      "bytes": 762482
+      "path": "evals/receipts/v1/artifacts/browser/landing-768-e07489add7963def35bdd7c868abe79d4161f2124f40d9ad5cbc9a0c2a9259fa.png",
+      "sha256": "e07489add7963def35bdd7c868abe79d4161f2124f40d9ad5cbc9a0c2a9259fa",
+      "bytes": 761579
     },
     {
       "id": "landing-1280",
-      "path": "evals/receipts/v1/artifacts/browser/landing-1280-65ddef1797fc76086d5c629882b3d0385dad9e1af0d24cd3ab9a9b3ad35a8d78.png",
-      "sha256": "65ddef1797fc76086d5c629882b3d0385dad9e1af0d24cd3ab9a9b3ad35a8d78",
-      "bytes": 802111
+      "path": "evals/receipts/v1/artifacts/browser/landing-1280-70c99cb8d2d9adaa57d5abaf9fdfc2ae6063ab62e4b035e2c29425b4d724b12f.png",
+      "sha256": "70c99cb8d2d9adaa57d5abaf9fdfc2ae6063ab62e4b035e2c29425b4d724b12f",
+      "bytes": 801557
     },
     {
       "id": "sample-clay-390",
