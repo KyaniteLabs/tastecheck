@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join, relative, resolve } from "node:path";
 
-const root = new URL("..", import.meta.url).pathname.replace(/\/$/, "");
+const rootArgument = process.argv.find((argument) => argument.startsWith("--root="));
+const root = resolve(rootArgument ? rootArgument.slice("--root=".length) : new URL("..", import.meta.url).pathname);
 const page = join(root, "index.html");
 const html = readFileSync(page, "utf8");
 const failures = [];
@@ -24,7 +25,9 @@ function assertLandingSkillCoverage() {
   const landingSkills = manifest.skills.filter((s) => s.landing).map((s) => s.name).sort();
   // Every manifest skill must exist on disk regardless of landing coverage.
   for (const s of manifest.skills) {
-    if (!statSync(join(root, "skills", s.name)).isDirectory()) {
+    try {
+      if (!statSync(join(root, "skills", s.name)).isDirectory()) throw new Error("not a directory");
+    } catch {
       fail(`skills.json lists ${s.name} but skills/${s.name}/ is not a directory`);
     }
   }

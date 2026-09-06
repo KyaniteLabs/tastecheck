@@ -1,0 +1,8 @@
+# FACTS — tastecheck retrofit gauntlet (dossier, READ-ONLY stage)
+- Product: TasteCheck — a taste/design QA suite for frontend work: ~20 skills under skills/ + the flagship release gate skills/tastecheck-pass/ (SKILL.md + contract.json + assets/gate-audit.js).
+- Repo root: . (your cwd). Layout: skills/ (tastecheck-pass, tasteroll, a11y-pass, color-system, web-typography, spacing-system, theming, responsive-layout, component-states, form-ux, empty-states, micro-motion, data-viz, art-direction, design-system-interview, improve-existing-website, deslop-ui, humanize-copy, i18n-ready, cognitive-a11y), commands/, contracts/, demos/, docs/, evals/, samples/, site/, tools/, install.sh, skills.json, index.html (landing).
+- Verify chain (package.json): npm test = tools/verify.mjs + lint-skills.mjs + verify-landing.mjs + verify-integration.mjs + verify-gate-audit.mjs + nima tests. Run what runs without network; record results.
+- KNOWN DIRTY STATE: working tree has UNSTAGED DELETIONS under skills/deslop-ui/ (contract.json + references/*). Do NOT restore or commit them — record as a finding (repo left dirty; retrofit stage-3 will resolve).
+- History: tastecheck-pass last touched 2026-07-13 (v1.3.1); a11y-pass/SEO work in Aug did not touch the gate. Built by older models — assume drift everywhere.
+- Constraints: STAGE-1 = AUDIT ONLY. No modifications outside _retrofit-2026-09-04/. No network. No new dependencies.
+- Output contract: write EXACTLY ONE file: _retrofit-2026-09-04/FINDINGS-<ROLE>.md — header (verdict RETROFIT-NEEDED yes/no + one line), findings (ID, severity P0-P3, file:line verbatim evidence, why, fix sketch), coverage swept, unknowns. No padding.

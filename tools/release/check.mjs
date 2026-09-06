@@ -3,24 +3,22 @@
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+import { createRequire } from "node:module";
 import { join } from "node:path";
-import Ajv from "ajv";
 import { computeSourceTreeSha256 } from "./engineering-receipt.mjs";
 import { buildContextBudgetReport } from "../evals/context-budget.mjs";
 import { scanUnsupportedEffectivenessClaims } from "./check-effectiveness-claims.mjs";
 import { checkEffectivenessProjections } from "./project-effectiveness-evidence.mjs";
+import { checkPublicStatus } from "./project-public-status.mjs";
+import {
+  ENGINEERING_PRODUCERS,
+  PUBLIC_STATUS_RECEIPT,
+  verifyFinalSourceReceiptDigests,
+} from "./final-source-receipt-gate.mjs";
 
 export const root = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 export const TERMINAL_V5_SYNTHESIS = "evals/replays/remediation7-v5-spacing-final-2026-07-11/blind-judge/synthesis.json";
 export const HISTORICAL_FULL19_PREFIX = "evals/replays/full19-v1rc-2026-07-11/";
-export const ENGINEERING_PRODUCERS = Object.freeze({
-  "context-budget": Object.freeze({ path: "evals/receipts/v1/context-budget.json", command: "npm run eval:context-budget", assertions: Object.freeze({ overall_pass: true }) }),
-  browser: Object.freeze({ path: "evals/receipts/v1/browser.json", command: "npm run release:browser-receipt", assertions: Object.freeze({ status: "pass", reproducible: true, producer_id: "tastecheck.release.live-execution.v1" }) }),
-  e2e: Object.freeze({ path: "evals/receipts/v1/e2e.json", command: "npm run release:e2e-receipt", assertions: Object.freeze({ status: "pass", reproducible: true, producer_id: "tastecheck.release.live-execution.v1" }) }),
-  mechanical: Object.freeze({ path: "evals/receipts/v1/mechanical.json", command: "npm run release:mechanical-receipt", assertions: Object.freeze({ status: "pass", reproducible: true, producer_id: "tastecheck.release.mechanical.v1" }) }),
-  security: Object.freeze({ path: "evals/receipts/v1/security.json", command: "npm run release:security-receipt", assertions: Object.freeze({ status: "pass", reproducible: true, producer_id: "tastecheck.release.security.v1" }) }),
-  "clean-clone": Object.freeze({ path: "evals/receipts/v1/clean-clone.json", command: "npm run release:clean-clone-receipt", assertions: Object.freeze({ status: "pass", reproducible: true, producer_id: "tastecheck.release.clean-clone.v1" }) }),
-});
 export const EFFECTIVENESS_SOURCES = Object.freeze({
   "w1-effectiveness": Object.freeze({ path: "evals/receipts/v1/immutable/w1-effectiveness.json", source_evidence_sha256: "663b6a4729ff3b59636578ac5262ae7ae28aa673fbc214930b87803b34a8fce8" }),
   "terminal-v5-effectiveness": Object.freeze({ path: "evals/receipts/v1/immutable/terminal-v5-effectiveness.json", source_evidence_sha256: "6cb65b37b87bcf59cd4d851b7fc65038fb8de9c65cd19c30fbc612315989d218" }),
@@ -43,7 +41,26 @@ const defaultIo = Object.freeze({
 });
 const SHA256 = /^[a-f0-9]{64}$/;
 const LIVE_SCHEMA = JSON.parse(readFileSync(join(root, "contracts/v1/live-execution-receipt.schema.json"), "utf8"));
-const validateLiveReceiptSchema = new Ajv({ allErrors: true, strict: false }).compile(LIVE_SCHEMA);
+const require = createRequire(import.meta.url);
+let liveReceiptValidator;
+let liveReceiptValidatorError;
+function validateLiveReceiptSchema(value) {
+  if (!liveReceiptValidator && !liveReceiptValidatorError) {
+    try {
+      const Ajv = require("ajv");
+      liveReceiptValidator = new (Ajv.default ?? Ajv)({ allErrors: true, strict: false }).compile(LIVE_SCHEMA);
+    } catch (error) {
+      liveReceiptValidatorError = error;
+    }
+  }
+  if (!liveReceiptValidator) {
+    validateLiveReceiptSchema.errors = [{ instancePath: "/", message: `schema validator unavailable: ${liveReceiptValidatorError?.message ?? "unknown error"}` }];
+    return false;
+  }
+  const valid = liveReceiptValidator(value);
+  validateLiveReceiptSchema.errors = liveReceiptValidator.errors;
+  return valid;
+}
 export const GENERIC_CHECKS = Object.freeze({
   mechanical: Object.freeze([
     ["test", "npm test"], ["contracts", "npm run test:contracts"], ["eval-schema", "npm run test:eval-schema"],
@@ -61,6 +78,8 @@ export const GENERIC_CHECKS = Object.freeze({
     ["head-source-match", "internal HEAD source digest comparison"], ["source-stability", "internal source digest comparison"],
   ]),
 });
+
+export { ENGINEERING_PRODUCERS, PUBLIC_STATUS_RECEIPT, verifyFinalSourceReceiptDigests };
 
 function browserSurfaceIds() {
   const ids = ["landing", "gallery"];
@@ -275,16 +294,20 @@ function runNode(script, args = []) {
 function claims() {
   const errors = [];
   const pkg = load("package.json");
+  const facts = load("tools/release/release-facts.json");
   const manifest = load("skills.json");
   const dirs = readdirSync(join(root, "skills")).filter((name) => statSync(join(root, "skills", name)).isDirectory());
   const commandCount = readdirSync(join(root, "commands")).filter((name) => name.endsWith(".md")).length;
+  const expectedSkillCount = facts.skills.length;
+  const expectedCommandCount = facts.commands.length;
   if (manifest.version !== pkg.version) errors.push(`skills.json version is ${manifest.version}; expected package version ${pkg.version}`);
   const manifestNames = new Set(manifest.skills.map((skill) => skill.name));
-  if (new Set(dirs).size !== 20 || dirs.some((name) => !manifestNames.has(name)) || manifestNames.size !== new Set(dirs).size) errors.push(`skill inventory is not an exact 20-entry manifest parity`);
-  if (commandCount !== 20) errors.push(`command inventory is ${commandCount}; expected 20`);
+  if (new Set(dirs).size !== expectedSkillCount || dirs.some((name) => !manifestNames.has(name)) || manifestNames.size !== new Set(dirs).size) errors.push(`skill inventory is not an exact ${expectedSkillCount}-entry manifest parity`);
+  if (commandCount !== expectedCommandCount) errors.push(`command inventory is ${commandCount}; expected ${expectedCommandCount}`);
   const index = readFileSync(join(root, "index.html"), "utf8");
   if (/set of 15|set of 14|set of 13/.test(index)) errors.push("index.html contains a stale skill-count claim");
   if (/19 commands/i.test(readFileSync(join(root, "README.md"), "utf8"))) errors.push("README.md claims 19 commands; release truth is 20 command files");
+  errors.push(...checkPublicStatus(root));
   return errors;
 }
 
@@ -322,11 +345,15 @@ function main() {
     const effectiveness = deriveEffectivenessClaim(load("contracts/v1/release-receipts.json"));
     errors.push(...effectiveness.errors);
     successDetail = `; effectiveness=${effectiveness.status}`;
+  } else if (mode === "verify-chain") {
+    const finalSource = verifyFinalSourceReceiptDigests(load("contracts/v1/release-receipts.json"));
+    errors.push(...finalSource.errors);
+    successDetail = `; source_tree_sha256=${finalSource.sourceTreeSha256}`;
   } else if (mode === "release") {
     const releaseManifest = load("contracts/v1/release-receipts.json");
     const effectiveness = deriveEffectivenessClaim(releaseManifest);
     const unsupportedClaims = scanUnsupportedEffectivenessClaims(root);
-    errors.push(...claims(), ...checkReleaseManifest(releaseManifest), ...unsupportedClaims.map((finding) => `${finding.path}:${finding.line}: unsupported effectiveness claim: ${finding.text}`));
+    errors.push(...verifyFinalSourceReceiptDigests(releaseManifest).errors, ...claims(), ...checkReleaseManifest(releaseManifest), ...unsupportedClaims.map((finding) => `${finding.path}:${finding.line}: unsupported effectiveness claim: ${finding.text}`));
     successDetail = `; engineering_ready=true; effectiveness=${effectiveness.status}`;
   } else errors.push(`unknown release check mode: ${mode}`);
   if (errors.length) {
