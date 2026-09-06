@@ -36,6 +36,9 @@ if (!existsSync(scenariosDir)) {
 
 const shardFiles = readdirSync(scenariosDir)
   .filter((f) => f.endsWith(".json"))
+  // Replay manifests are control-plane inputs, not scenario shards. They are
+  // validated by the replay lane and must not be treated as scenarios here.
+  .filter((f) => f !== "remediation7-replay.json")
   .sort();
 
 for (const file of shardFiles) {

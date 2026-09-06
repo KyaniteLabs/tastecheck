@@ -7,21 +7,21 @@ description: >-
 
 # Responsive Layout
 
-Responsive layout is intrinsic reflow plus content-led breakpoints and container queries,
-not named-device CSS.
+Responsive layout is intrinsic reflow plus content-led breakpoints/container queries, not
+named-device CSS.
 
 ## The decision order
 
-1. Start mobile-first and use Grid/Flex intrinsic sizing (`minmax`, `auto-fit`, `clamp`, `%`/`fr`).
-2. Add breakpoints only where observed content breaks; reusable components use container queries.
-3. Verify the product's minimum supported viewport, 200–400% zoom, long/translated
-   content, narrow embeds, and wide views without accidental overflow or collapse.
+1. Start mobile-first with Grid/Flex intrinsic sizing (`minmax`, `auto-fit`, `clamp`, `%`/`fr`).
+2. Add breakpoints only where content breaks; reusable components use container queries.
+3. Verify minimum supported viewport, 200–400% zoom, long/translated content, narrow embeds,
+   and wide views without overflow or collapse.
 
 ## Preserve hierarchy under pressure
 
-Start with non-disappearing content, reading order, and narrowest real container; decide
-stack/reorder/progressive reveal/rail from observed pressure and test long content, locale,
-zoom, and embedded cases before calling it responsive.
+Start with non-disappearing content, reading order, and narrowest real container. Choose
+stack/reorder/progressive reveal/rail from observed pressure; test long content, locale, zoom,
+and embeds before calling it responsive.
 
 ## Non-negotiables
 
@@ -29,15 +29,15 @@ zoom, and embedded cases before calling it responsive.
 - Prevent overflow with `min-width: 0`, bounded media, and wrapping; reflow rather than shrink to unusable.
 - Prefer container queries for reusable components when their behavior depends on their
   container, not the viewport.
-- At narrow widths and zoom, ordinary reading and interaction should not require
-  two-dimensional scrolling. Isolate essential exceptions such as wide data tables,
-  maps, timelines, or canvases in a labelled, keyboard-operable scroll region.
+- At narrow widths and zoom, reading/interaction should not require two-dimensional
+  scrolling. Isolate essential exceptions (wide tables, maps, timelines, canvases) in a
+  labelled, keyboard-operable scroll region.
 
 ## Quick-start patterns
 
-Use `references/patterns.md` for the intrinsic grid, sidebar, stack, cluster, and
-container-query patterns. Start with `minmax(min(16rem, 100%), 1fr)`, `min-width: 0`,
-logical container sizing, and a breakpoint only where content actually breaks.
+Use `references/patterns.md` for grid, sidebar, stack, cluster, and container-query patterns.
+Start with `minmax(min(16rem, 100%), 1fr)`, `min-width: 0`, logical sizing, and content-led
+breakpoints.
 
 ## Reference files
 
@@ -45,9 +45,9 @@ logical container sizing, and a breakpoint only where content actually breaks.
 - `references/patterns.md` — patterns, units, images, and overflow debugging.
 - `references/decision-records.md` — novel-case ADR rules.
 
-## Completion evidence
+## Evidence
 
-Use the five-field ledger; start Reason with the check ID.
+Use five-field ledger; start Reason with check ID.
 
 | Status | Reason | Remediation | Evidence | Provenance |
 | --- | --- | --- | --- | --- |
@@ -57,11 +57,11 @@ Use the five-field ledger; start Reason with the check ID.
 |  | zoom-interaction — zoom and keyboard-reachable interaction result |  |  |  |
 |  | handoff — component and accessibility boundary |  |  |  |
 
-## Pressure-test protocol
+## Pressure test
 
-Each row names real longest-pressure fixture, available width/zoom, expected and observed
-result (or fail-closed missing evidence). Test full shell, narrow, 400%, and narrow embed;
-record what stays first/stacks/folds and why. No rendered build means a plan, not pass.
+Each row names longest-pressure fixture, width/zoom, expected and observed result (or
+fail-closed missing evidence). Test full shell, narrow, 400%, and narrow embed; record what
+stays first/stacks/folds and why. No rendered build means plan, not pass.
 
 ## How to deliver
 

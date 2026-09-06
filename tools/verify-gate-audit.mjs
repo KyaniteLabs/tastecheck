@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Gate-audit asset regression — pure Node, no browser, no dependency.
+// Cold-load heuristic asset regression — pure Node, no browser, no dependency.
 //
 // Executes skills/tastecheck-pass/assets/gate-audit.js VERBATIM against a minimal
 // hand-authored fake DOM and asserts its structured + console contract. Scope is
@@ -14,6 +14,7 @@
 // a shim that's subtly wrong would be a green test that lies.
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { evaluateReleaseGate, loadCheckCatalog } from "../skills/tastecheck-pass/assets/release-gate.mjs";
 
 const root = new URL("..", import.meta.url).pathname.replace(/\/$/, "");
 const assetPath = join(root, "skills/tastecheck-pass/assets/gate-audit.js");
@@ -162,6 +163,26 @@ if (!b.result.fails.some((f) => /aria-busy="true" on a fresh load/.test(f))) fai
 if (c.result.verdict !== "CLEAN") fail(`case C: expected verdict CLEAN, got ${c.result?.verdict}`);
 if (c.result.fails.length || c.result.warns.length) fail(`case C: expected no fails/warns, got ${c.result.fails.length}/${c.result.warns.length}`);
 
+// The pasteable asset is a heuristic, not the release authority. Confirm the
+// separate runner loads a closed catalog and fails a ledger with no rows while
+// still hashing the real fixture artifact.
+try {
+  const catalog = loadCheckCatalog({ root });
+  const probe = evaluateReleaseGate({
+    schema_version: 1,
+    catalog: { path: "skills/tastecheck-pass/assets/check-catalog.json", sha256: catalog.sha256 },
+    artifact: { type: "file", path: "tools/smoke/fixtures/gate-audit-fixture.html" },
+    rows: [],
+  }, { root });
+  const ids = probe.rows.map((row) => row.check_id);
+  if (catalog.errors.length) fail(`release catalog is invalid: ${catalog.errors.join("; ")}`);
+  if (probe.verdict !== "HOLD") fail(`empty release ledger must be HOLD, got ${probe.verdict}`);
+  if (!probe.artifact.hash_verified) fail("release runner did not hash the real fixture artifact");
+  if (new Set(ids).size !== catalog.catalog.checks.length || ids.length !== catalog.catalog.checks.length) fail("release runner did not emit exactly one row per catalog ID");
+} catch (error) {
+  fail(`release runner probe failed: ${error.message}`);
+}
+
 // Verbatim console (Principle 4) — golden-string equality on the canonical fixture.
 // Regenerate with: UPDATE_GOLDEN=1 node tools/verify-gate-audit.mjs
 if (process.env.UPDATE_GOLDEN) {
@@ -183,4 +204,4 @@ if (failures.length) {
   for (const f of failures) console.error(`- ${f}`);
   process.exit(1);
 }
-console.log("gate-audit asset verification passed (checks 1 & 3 + structured/console contract)");
+console.log("cold-load heuristic and release-runner verification passed (checks 1 & 3 + closed-catalog HOLD probe)");

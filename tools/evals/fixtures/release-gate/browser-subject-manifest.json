@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "kind": "tastecheck-browser-subject-manifest",
+  "routes": [
+    "/",
+    "/about"
+  ],
+  "states": [
+    "default",
+    "invalid"
+  ]
+}

@@ -1,6 +1,10 @@
 # Launch kit — TasteCheck
 
-Public copy for the 19-skill pack. Attach `docs/hero/seven-systems.png`. Before posting,
+<!-- release-facts:v1:start -->
+Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
+<!-- release-facts:v1:end -->
+
+Public copy for the 20-skill pack. Attach `docs/hero/before-after.png`. Before posting,
 replace placeholders, verify links, and keep claims within the evidence boundary in
 `docs/VERIFICATION.md`.
 
@@ -11,12 +15,12 @@ that was never made explicit. TasteCheck turns that intent into a build contract
 
 **Post 1 — image**
 
-> Same product story. Six different structures, type systems, color systems, and rhythms.
+> Same product story through 8 committed design systems, with different structures, type systems, color systems, and rhythms.
 >
 > I built TasteCheck because coding agents need design decisions they can carry through a
 > build—not another prompt that says “make it polished.”
 >
-> [attach `docs/hero/seven-systems.png`]
+> [attach `docs/hero/before-after.png`]
 
 **Post 2 — the interaction**
 
@@ -29,11 +33,11 @@ that was never made explicit. TasteCheck turns that intent into a build contract
 
 **Post 3 — the system**
 
-> Then 17 specialist skills carry that decision through type, color, spacing, themes,
+> The specialist skills carry that decision through type, color, spacing, themes,
 > responsive layout, states, forms, motion, imagery, data viz, copy, a11y, i18n, and the
 > final ship gate.
 >
-> Nineteen skills total. Twenty slash commands. Plain Markdown. MIT.
+> Twenty skills total. Twenty canonical slash commands plus one approved alias. Plain Markdown. MIT.
 
 **Post 4 — install**
 
@@ -66,8 +70,8 @@ that was never made explicit. TasteCheck turns that intent into a build contract
 > visualization, copy, accessibility, internationalization, existing-site repair, and a
 > fail-closed release gate. They share one token vocabulary and handoff order.
 >
-> The pack is plain Markdown, MIT licensed, and currently contains 19 skills plus 20 slash
-> commands. `npm test` verifies repository contracts, installation, links, and demo
+> The pack is plain Markdown, MIT licensed, and currently contains 20 skills plus 20 canonical
+> slash commands and one approved alias. `npm test` verifies repository contracts, installation, links, and demo
 > behavior; those checks are engineering evidence, not a universal effectiveness claim.
 >
 > Repo: https://github.com/KyaniteLabs/tastecheck
@@ -89,14 +93,14 @@ that was never made explicit. TasteCheck turns that intent into a build contract
 >
 > TasteCheck is my attempt to make that decision chain explicit. It starts with a short,
 > opinionated design-system interview, writes the result to `DESIGN-SYSTEM.md`, and hands
-> the same decisions through 19 connected frontend skills. The final skill returns
+> the same decisions through 20 connected frontend skills. The final skill returns
 > **SHIP** or **HOLD** with measured evidence and a repair path.
 >
-> [attach the six-system montage]
+> [attach `docs/hero/before-after.png`]
 >
 > It is plain Markdown, MIT licensed, and works with coding agents that can load or read
-> skill files. The repo includes 20 slash commands, an installer, local verification, and
-> six browser-rendered systems built from the same product story.
+> skill files. The repo includes 20 canonical slash commands plus one alias, an installer,
+> local verification, and eight browser-rendered systems built from the same product story.
 >
 > Repo: https://github.com/KyaniteLabs/tastecheck
 >
@@ -105,7 +109,7 @@ that was never made explicit. TasteCheck turns that intent into a build contract
 
 ## Posting checklist
 
-- Use the six-system montage; verify the gallery and repo links immediately before posting.
+- Use the before-and-after image; verify the gallery and repo links immediately before posting.
 - Stagger channels so feedback from one can improve the next post.
 - Answer questions with the brief → artifact → implementation → ship-gate chain.
 - Describe `npm test` as repository verification, not proof of universal design improvement.
