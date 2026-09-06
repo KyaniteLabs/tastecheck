@@ -1,0 +1,23 @@
+{
+  "captured_output": ".checkyourself/challenge-runs/S12.capture.json",
+  "captured_output_digest": "0b469d64d8511cf6532dfafd9b8e749be57edc3c99e2e5969eb9ad3ef73b085d",
+  "challenge_config_digest": "a0517dfbaffabbaa426e31cc0d6e973b08838945fb9669e679f4c67b29518da2",
+  "command": [
+    "bash",
+    "-c",
+    "node tools/verify.mjs 2>&1 | tee .checkyourself/challenge-runs/S12.verify.txt"
+  ],
+  "cwd": ".",
+  "execution_error": "",
+  "exit_code": 0,
+  "local_integrity_hmac": "76731cfa1c46dd615e45b2ce32d10c67194e3d2a1f1b63fbe1a49ee804775fb0",
+  "receipt_sha256": "b8450eb7017289bbf3dc8e0227585926a896d601b33c78b6bdae863abe527bcb",
+  "receipt_type": "EXECUTED",
+  "run_id": "59b7d2b4d29b8b16e167293b65e7e585",
+  "semantic_output_digest": "7dea19d213f1af3c7c98297b7df1721a706e1b142680909eebae56aa2055e4fe",
+  "source_revision": "348162366bf950fa738d193628cc700f9bc86f7078267193094d662b5079540c",
+  "status": "PASS",
+  "surface_id": "S12",
+  "timed_out": false,
+  "timestamp": "2026-09-06T00:25:35+00:00"
+}
