@@ -1,0 +1,13 @@
+{
+  "schema": "tastecheck-release-ledger/1",
+  "artifact": {"kind": "file", "path": "index.html", "sha256": "82c6e974cd0b2d1954d034a6cd2ee3d6f0201de38b85c3f188262aa9b2ccd1d1"},
+  "entries": [
+    {"check_id": "structure:contracts", "mode": "mechanical", "summary": "verify.mjs full skill/link verification", "details": {"observation": "tastecheck verification passed", "command": "node tools/verify.mjs", "exit_code": 0}, "status": "pass"},
+    {"check_id": "structure:component-states", "mode": "inspector", "summary": "NIMA unit-test lane (13 tests)", "details": {"observation": "13 passed 0 failed", "command": "node --test tools/test/nima.test.mjs", "exit_code": 0}, "status": "pass"},
+    {"check_id": "browser:rendering", "mode": "browser", "summary": "Landing page rendered at all required viewports on the nucbox floor (headless chromium-1208)", "details": {"route": "/", "state": "default", "captures": [
+      {"viewport": 390, "path": ".checkyourself/captures/capture-390.png", "sha256": "3ea399e9ab786f932cbd30bb78125bc8e9fdebd34669414fed72bae22937d3eb"},
+      {"viewport": 768, "path": ".checkyourself/captures/capture-768.png", "sha256": "f349abebead226fcb8e1b5f88c81cdc160cd81752c374a5229fb2dbfb5d6bea0"},
+      {"viewport": 1280, "path": ".checkyourself/captures/capture-1280.png", "sha256": "77f85b39aadc97a4136ffd9f9e13ef8929371eb6bb5f867b3a20e70a9e64ccab"}
+    ]}, "status": "pass"}
+  ]
+}
