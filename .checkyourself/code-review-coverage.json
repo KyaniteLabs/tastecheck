@@ -1,0 +1,46 @@
+{
+  "tool": "checkyourself-cli",
+  "schema": "checkyourself-coverage/1",
+  "generated_at": "2026-09-06T01:30:00Z",
+  "project": "tastecheck-code-review",
+  "surfaces": [
+    {"id":"S01","surface":"Product purpose, users, and harm model","category":"context","status":"Pass","evidence_reviewed":["README.md","skills/tastecheck-pass/SKILL.md"],"evidence_receipts":[],"missing_evidence":[],"not_applicable_reason":"","finding_ids":[]},
+    {"id":"S02","surface":"Stack, architecture, and dependency map","category":"context","status":"Pass","evidence_reviewed":["package.json","tools/","contracts/","skills/"],"evidence_receipts":[],"missing_evidence":[],"not_applicable_reason":"","finding_ids":[]},
+    {"id":"S03","surface":"Frontend UX, accessibility, and client safety","category":"C9","status":"Unknown","evidence_reviewed":["skills/a11y-pass/SKILL.md","skills/tastecheck-pass/assets/release-gate.mjs"],"evidence_receipts":[],"missing_evidence":["No live browser or visual review was authorized for this code-only task."],"not_applicable_reason":"","finding_ids":[]},
+    {"id":"S04","surface":"API/backend behavior, validation, uploads, and webhooks","category":"C4","status":"NotApplicable","evidence_reviewed":["package.json","tools/lib/nima.mjs"],"evidence_receipts":[],"missing_evidence":[],"not_applicable_reason":"Repository ships local tools and static skill assets, not an application API, upload, or webhook backend.","finding_ids":[]},
+    {"id":"S05","surface":"Auth, permissions, sessions, roles, and admin paths","category":"C2","status":"NotApplicable","evidence_reviewed":["package.json","tools/"],"evidence_receipts":[],"missing_evidence":[],"not_applicable_reason":"No authentication, session, role, or admin subsystem exists in the reviewed repository.","finding_ids":[]},
+    {"id":"S06","surface":"Data storage, migrations, backups, and retention","category":"C1","status":"NotApplicable","evidence_reviewed":["package.json","tools/"],"evidence_receipts":[],"missing_evidence":[],"not_applicable_reason":"No database or durable user-data store exists in the reviewed repository.","finding_ids":[]},
+    {"id":"S07","surface":"User, tenant, and role isolation","category":"C1","status":"NotApplicable","evidence_reviewed":["package.json","tools/"],"evidence_receipts":[],"missing_evidence":[],"not_applicable_reason":"No user, tenant, or role model exists in the reviewed repository.","finding_ids":[]},
+    {"id":"S08","surface":"Secrets, environment, runtime configuration","category":"C3","status":"Pass","evidence_reviewed":["tools/lib/nima.mjs","tools/release/live-execution.mjs","tools/verify.mjs"],"evidence_receipts":[],"missing_evidence":[],"not_applicable_reason":"","finding_ids":[]},
+    {"id":"S09","surface":"Security and threat model","category":"C4","status":"Finding","evidence_reviewed":["skills/tastecheck-pass/assets/release-gate.mjs","tools/release/live-execution.mjs"],"evidence_receipts":[],"missing_evidence":["No adversarial symlink-output challenge exists."],"not_applicable_reason":"","finding_ids":["CY-TC-003"]},
+    {"id":"S10","surface":"Privacy, consent, compliance, and data governance","category":"C1","status":"NotApplicable","evidence_reviewed":["contracts/","tools/"],"evidence_receipts":[],"missing_evidence":[],"not_applicable_reason":"No personal-data collection or governance subsystem exists in the reviewed repository.","finding_ids":[]},
+    {
+      "id": "S11", "surface": "Tests, quality gates, and regression coverage", "category": "C5", "status": "Finding",
+      "evidence_reviewed": ["tools/verify.mjs", "tools/lib/nima.mjs", "tools/test/nima.test.mjs", "tools/release/test-check.mjs", "tools/release/test-final-source-receipt-gate.mjs", "tools/evals/test-tastecheck-gate.mjs"],
+      "evidence_receipts": [{"reference": ".checkyourself/challenge-runs/S11.receipt.json", "sha256": "c9fc658348da9be62e2761775c8caa38523122d8026e18b6a21d9825da66e018", "subject_digest": "59359bb16b1f2367e2f6e9cb3ebf57bfac1ecd198a1b5704a255c6ce7e5012d7", "surface_id": "S11", "source_revision": "520d258c216c2fcbe2f82fa708d3b502f3731ef6e99016a8151f22dead6acd1b", "command": "node --test tools/test/nima.test.mjs", "claim": "Committed S11 challenge executed successfully", "origin": "local repository", "source_state": "working tree with pre-existing user changes", "result": "PASS", "issuer": "checkyourself-verifier/1", "issued_at": "2026-09-06T01:23:34+00:00", "receipt_sha256": "c9fc658348da9be62e2761775c8caa38523122d8026e18b6a21d9825da66e018"}],
+      "missing_evidence": ["No mutation challenge covers receipt restamping or invalid NIMA score domains."], "not_applicable_reason": "", "finding_ids": ["CY-TC-001", "CY-TC-002"]
+    },
+    {"id":"S14","surface":"Cloud infrastructure and IaC","category":"C6","status":"NotApplicable","evidence_reviewed":["package.json",".github/workflows"],"evidence_receipts":[],"missing_evidence":[],"not_applicable_reason":"No cloud infrastructure or infrastructure-as-code is present in scope.","finding_ids":[]},
+    {"id":"S15","surface":"Performance, caching, and rate limits","category":"C8","status":"Finding","evidence_reviewed":["tools/lib/nima.mjs","tools/release/live-execution.mjs"],"evidence_receipts":[],"missing_evidence":["NIMA response contract is not validated at its runtime boundary."],"not_applicable_reason":"","finding_ids":["CY-TC-002"]},
+    {"id":"S16","surface":"Scaling, load, and resilience","category":"C8","status":"NotApplicable","evidence_reviewed":["package.json","tools/"],"evidence_receipts":[],"missing_evidence":[],"not_applicable_reason":"This is a local CLI and static asset repository without a scalable hosted service in scope.","finding_ids":[]},
+    {"id":"S17","surface":"Observability, logs, errors, and incident response","category":"C7","status":"Unknown","evidence_reviewed":["tools/release/check.mjs","tools/release/finalize.mjs"],"evidence_receipts":[],"missing_evidence":["Operational incident response is outside this repository-level code review."],"not_applicable_reason":"","finding_ids":[]},
+    {"id":"S18","surface":"Availability, recovery, and continuity","category":"C1","status":"NotApplicable","evidence_reviewed":["package.json","tools/"],"evidence_receipts":[],"missing_evidence":[],"not_applicable_reason":"No hosted availability or recovery subsystem exists in scope.","finding_ids":[]},
+    {
+      "id": "S12", "surface": "CI/CD and supply chain", "category": "C6", "status": "Finding",
+      "evidence_reviewed": ["tools/verify.mjs", "contracts/", "skills/*/SKILL.md sample", "package.json"],
+      "evidence_receipts": [{"reference": ".checkyourself/challenge-runs/S12.receipt.json", "sha256": "c8853a71cc1ec5b615c5de4fad4eed1ab4685955ec24bf70084cdfd32039263b", "subject_digest": "7dea19d213f1af3c7c98297b7df1721a706e1b142680909eebae56aa2055e4fe", "surface_id": "S12", "source_revision": "520d258c216c2fcbe2f82fa708d3b502f3731ef6e99016a8151f22dead6acd1b", "command": "node tools/verify.mjs", "claim": "Committed S12 verification challenge executed successfully", "origin": "local repository", "source_state": "working tree with pre-existing user changes", "result": "PASS", "issuer": "checkyourself-verifier/1", "issued_at": "2026-09-06T01:24:28+00:00", "receipt_sha256": "c8853a71cc1ec5b615c5de4fad4eed1ab4685955ec24bf70084cdfd32039263b"}],
+      "missing_evidence": ["The S12 challenge does not execute the release finalize chain."], "not_applicable_reason": "", "finding_ids": ["CY-TC-001"]
+    },
+    {
+      "id": "S13", "surface": "Hosting, deployment, release, and rollback", "category": "C6", "status": "Finding",
+      "evidence_reviewed": ["tools/release/check.mjs", "tools/release/finalize.mjs", "tools/release/final-source-receipt-gate.mjs", "tools/release/project-public-status.mjs", "skills/tastecheck-pass/assets/release-gate.mjs"],
+      "evidence_receipts": [], "missing_evidence": ["No executed challenge proves the full finalize-to-release chain without rewriting producer evidence."], "not_applicable_reason": "", "finding_ids": ["CY-TC-001", "CY-TC-003"]
+    },
+    {
+      "id": "S19", "surface": "AI/RAG/agent governance", "category": "C10", "status": "Finding",
+      "evidence_reviewed": ["skills/tastecheck-pass/SKILL.md", "skills/tastecheck-pass/assets/release-gate.mjs", "skills/a11y-pass/SKILL.md", "skills/design-critique/SKILL.md", "skills/form-ux/SKILL.md"],
+      "evidence_receipts": [], "missing_evidence": ["Independent human taste calibration, pixel semantics, reviewer identity, and external tool correctness are outside self-gate authority."], "not_applicable_reason": "", "finding_ids": ["CY-TC-002"]
+    },
+    {"id":"S20","surface":"Learning needs and remediation history","category":"learning","status":"Pass","evidence_reviewed":["_retrofit-2026-09-04/MASTER-REGISTER.md","_retrofit-2026-09-04/ASTRA-REVIEW.md","_retrofit-2026-09-04/STREAK6-sol.md"],"evidence_receipts":[],"missing_evidence":[],"not_applicable_reason":"","finding_ids":[]}
+  ]
+}

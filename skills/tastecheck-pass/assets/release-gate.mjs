@@ -7,9 +7,9 @@
  * to the current artifact and closed catalog, and can emit SHIP only when all
  * required evidence and provenance checks pass.
  */
-import { createHash } from "node:crypto";
-import { existsSync, lstatSync, readFileSync, readdirSync, realpathSync, statSync, writeFileSync } from "node:fs";
-import { dirname, extname, join, relative, resolve, sep } from "node:path";
+import { createHash, randomBytes } from "node:crypto";
+import { closeSync, constants as fsConstants, existsSync, fsyncSync, lstatSync, openSync, readFileSync, readdirSync, realpathSync, renameSync, statSync, unlinkSync, writeSync } from "node:fs";
+import { basename, dirname, extname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
@@ -928,7 +928,59 @@ function resolveOutputPath(root, value) {
   if (normalized.split("/").includes("..")) throw new Error("output path may not contain '..'");
   const absolute = resolve(root, normalized);
   if (absolute !== root && !absolute.startsWith(`${root}${sep}`)) throw new Error("output path escapes verifier root");
-  return absolute;
+  if (absolute === root) throw new Error("output path must name a file");
+
+  const realRoot = realpathSync(root);
+  const parent = dirname(absolute);
+  const parentRelative = relative(root, parent);
+  let cursor = root;
+  for (const component of parentRelative.split(sep).filter(Boolean)) {
+    cursor = join(cursor, component);
+    let info;
+    try { info = lstatSync(cursor); }
+    catch (error) { throw new Error(`output parent is not an existing directory: ${parent} (${error.message})`); }
+    if (info.isSymbolicLink()) throw new Error(`output path contains a symbolic-link component: ${component}`);
+    if (!info.isDirectory()) throw new Error(`output path parent is not a directory: ${cursor}`);
+  }
+  const realParent = realpathSync(parent);
+  if (realParent !== realRoot && !realParent.startsWith(`${realRoot}${sep}`)) throw new Error("output path parent resolves outside verifier root");
+  try {
+    const destinationInfo = lstatSync(absolute);
+    if (destinationInfo.isSymbolicLink()) throw new Error("output path may not target a symbolic link");
+    if (!destinationInfo.isFile()) throw new Error("output path may only replace a regular file");
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+  return join(realParent, basename(absolute));
+}
+
+function writeAtomicNoFollow(destination, output) {
+  const parent = dirname(destination);
+  const tempPath = join(parent, `.${basename(destination)}.${process.pid}.${randomBytes(8).toString("hex")}.tmp`);
+  const noFollow = fsConstants.O_NOFOLLOW ?? 0;
+  let descriptor;
+  try {
+    descriptor = openSync(tempPath, fsConstants.O_WRONLY | fsConstants.O_CREAT | fsConstants.O_EXCL | noFollow, 0o644);
+    const bytes = Buffer.from(output, "utf8");
+    writeBuffer(descriptor, bytes);
+    fsyncSync(descriptor);
+    closeSync(descriptor);
+    descriptor = undefined;
+    renameSync(tempPath, destination);
+  } catch (error) {
+    if (descriptor !== undefined) closeSync(descriptor);
+    try { unlinkSync(tempPath); } catch {}
+    throw error;
+  }
+}
+
+function writeBuffer(descriptor, bytes) {
+  let offset = 0;
+  while (offset < bytes.length) {
+    const written = writeSync(descriptor, bytes, offset, bytes.length - offset);
+    if (written <= 0) throw new Error("atomic output write made no progress");
+    offset += written;
+  }
 }
 
 function cli() {
@@ -961,7 +1013,7 @@ function cli() {
   }
   const output = `${JSON.stringify(result, null, 2)}\n`;
   if (outPath && !outPath.startsWith("--")) {
-    writeFileSync(resolveOutputPath(verifierRoot, outPath), output);
+    writeAtomicNoFollow(resolveOutputPath(verifierRoot, outPath), output);
   } else process.stdout.write(output);
   if (result.verdict !== "SHIP") process.exitCode = 1;
 }

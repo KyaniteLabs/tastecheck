@@ -2,54 +2,33 @@
   "schema_version": 1,
   "kind": "clean-clone",
   "producer_id": "tastecheck.release.clean-clone.v1",
-  "source_tree_sha256": "682a181fae1c3485465c11b47c3eeb426ccf7a3b6839d614b286ac353387f948",
+  "source_tree_sha256": "4a3cf9de20822eb20248474091c36fc5960bf05ccb12d7a6dbead89c0443ab0e",
   "nonce": "clean-clone-release-v1",
-  "started_at": "2026-07-14T00:21:29.780Z",
-  "finished_at": "2026-07-14T00:21:42.992Z",
+  "started_at": "2026-09-06T02:23:48.478Z",
+  "finished_at": "2026-09-06T02:23:58.530Z",
   "checks": [
     {
       "id": "npm-ci",
       "command": "npm ci --ignore-scripts",
-      "passed": true,
-      "exit_code": 0,
-      "output_sha256": "e3949c5a716fec4a3e542400150d9cd3c6c2e1205d221da0749864d89c972abf"
-    },
-    {
-      "id": "test",
-      "command": "npm test",
-      "passed": true,
-      "exit_code": 0,
-      "output_sha256": "556ba653640abfc2aec630974086a01fb7f8c505d054cbfce567c2d315bebb93"
-    },
-    {
-      "id": "contracts",
-      "command": "npm run test:contracts",
-      "passed": true,
-      "exit_code": 0,
-      "output_sha256": "8ce66dd897b0de87351b689e9d032a2f822a42aad2d24ec8e9f1bd860c3368ff"
-    },
-    {
-      "id": "effectiveness-claims",
-      "command": "node tools/release/check-effectiveness-claims.mjs",
-      "passed": true,
-      "exit_code": 0,
-      "output_sha256": "7111a3cf1ef6f6844c6cd6b5fd49a9e8b015e38e4a3f183312c8d74e4d147be8"
+      "passed": false,
+      "exit_code": 1,
+      "output_sha256": "12ee86e7a1f7c0fbafca24ab1cc5a2e77dff2399b6de876116f250f04fd8f880"
     },
     {
       "id": "head-source-match",
       "command": "internal HEAD source digest comparison",
-      "passed": true,
-      "exit_code": 0,
-      "output_sha256": "03ceec88564c07c6cf86769036bd5fe666ef03b84d0c1f6152aa2a0ef3316dbb"
+      "passed": false,
+      "exit_code": 1,
+      "output_sha256": "7ed6b781bb0c736191d567c715af7f9f7d9720af4caae8c6e34a4c988a191cb9"
     },
     {
       "id": "source-stability",
       "command": "internal source digest comparison",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "03ceec88564c07c6cf86769036bd5fe666ef03b84d0c1f6152aa2a0ef3316dbb"
+      "output_sha256": "a617f7953a9a7cbc148396aa7aa8adb170a7325090747f727435fcf5a488d017"
     }
   ],
-  "status": "pass",
-  "reproducible": true
+  "status": "fail",
+  "reproducible": false
 }

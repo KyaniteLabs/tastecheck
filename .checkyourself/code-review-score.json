@@ -1,0 +1,35 @@
+{
+  "tool": "checkyourself-cli",
+  "schema": "checkyourself-score/1",
+  "generated_at": "2026-09-06T01:26:40+00:00",
+  "score": 29,
+  "raw_score": 29,
+  "score_mode": "coverage-backed",
+  "confidence": "low",
+  "counts": {"P0": 0, "P1": 1, "P2": 2, "P3": 0},
+  "caps_applied": [
+    {"cap": 74, "reason": "unresolved P1 finding"},
+    {"cap": 84, "reason": "missing evidence in a critical category"},
+    {"cap": 90, "reason": "score above 90 requires evidence for tests, secrets, deploy/rollback, observability, auth, and data boundaries"}
+  ],
+  "per_category": [
+    {"id":"C1","category":"Data, privacy, tenant/user isolation","weight":18,"coverage_status":"Unknown","evidence_reviewed":["contracts/","package.json","tools/"],"missing_evidence":["Verifier-captured applicability receipts absent"],"penalties":[{"reason":"critical coverage unknown","points":18}],"awarded":0},
+    {"id":"C2","category":"Auth, permissions, session safety","weight":14,"coverage_status":"Unknown","evidence_reviewed":["package.json","tools/"],"missing_evidence":["Verifier-captured applicability receipt absent"],"penalties":[{"reason":"critical coverage unknown","points":14}],"awarded":0},
+    {"id":"C3","category":"Secrets, environment, runtime config","weight":10,"coverage_status":"Unknown","evidence_reviewed":["tools/lib/nima.mjs","tools/release/live-execution.mjs","tools/verify.mjs"],"missing_evidence":["Verifier-captured evidence absent"],"penalties":[{"reason":"critical coverage unknown","points":10}],"awarded":0},
+    {"id":"C4","category":"API, validation, uploads, business logic","weight":10,"coverage_status":"Finding","evidence_reviewed":["skills/tastecheck-pass/assets/release-gate.mjs","tools/lib/nima.mjs"],"missing_evidence":["No adversarial symlink-output challenge"],"penalties":[{"finding_id":"CY-TC-003","severity":"P2","points":2.5}],"awarded":2.5},
+    {"id":"C5","category":"Testing and quality gates","weight":10,"coverage_status":"Finding","evidence_reviewed":["tools/verify.mjs","tools/test/nima.test.mjs","tools/release/test-check.mjs"],"missing_evidence":["No mutation challenge covers identified bypasses"],"penalties":[],"awarded":10},
+    {"id":"C6","category":"Deployment, release, rollback, CI/CD","weight":8,"coverage_status":"Finding","evidence_reviewed":["tools/release/check.mjs","tools/release/finalize.mjs","tools/release/final-source-receipt-gate.mjs"],"missing_evidence":["No executed full finalize-to-release challenge"],"penalties":[{"reason":"coverage unknown","points":4}],"awarded":4},
+    {"id":"C7","category":"Observability, logs, errors, incident response","weight":8,"coverage_status":"Unknown","evidence_reviewed":["tools/release/check.mjs","tools/release/finalize.mjs"],"missing_evidence":["Operational incident response outside scope"],"penalties":[{"reason":"coverage unknown","points":4}],"awarded":4},
+    {"id":"C8","category":"Performance, scaling, caching, rate limits","weight":8,"coverage_status":"Finding","evidence_reviewed":["tools/lib/nima.mjs","tools/release/live-execution.mjs"],"missing_evidence":["NIMA response contract not validated"],"penalties":[{"finding_id":"CY-TC-002","severity":"P2","points":2}],"awarded":2},
+    {"id":"C9","category":"Frontend UX, accessibility, client safety","weight":8,"coverage_status":"Unknown","evidence_reviewed":["skills/a11y-pass/SKILL.md","skills/tastecheck-pass/assets/release-gate.mjs"],"missing_evidence":["No live browser or visual review in code-only task"],"penalties":[{"reason":"coverage unknown","points":4}],"awarded":4},
+    {"id":"C10","category":"AI/RAG/agent governance","weight":6,"coverage_status":"Finding","evidence_reviewed":["skills/tastecheck-pass/SKILL.md","skills/tastecheck-pass/assets/release-gate.mjs"],"missing_evidence":["Independent human taste calibration and reviewer identity remain external"],"penalties":[{"finding_id":"CY-TC-001","severity":"P1","points":3.6}],"awarded":2.4}
+  ],
+  "findings_scored": ["CY-TC-001", "CY-TC-002", "CY-TC-003"],
+  "coverage_complete": false,
+  "manual_evidence_needed": [
+    {"category":"C1-C3","needed":["Verifier-captured scope and applicability receipts"]},
+    {"category":"C4-C6","needed":["Symlink mutation challenge and full producer-to-finalize challenge"]},
+    {"category":"C7-C10","needed":["Operational, browser, visual, and independent-review evidence"]}
+  ],
+  "workflow_dispositions": []
+}

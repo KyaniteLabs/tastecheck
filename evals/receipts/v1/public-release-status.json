@@ -2,11 +2,11 @@
   "schema_version": 1,
   "kind": "tastecheck-public-release-status",
   "target_release": "1.4.1",
-  "source_tree_sha256": "682a181fae1c3485465c11b47c3eeb426ccf7a3b6839d614b286ac353387f948",
+  "source_tree_sha256": "4a3cf9de20822eb20248474091c36fc5960bf05ccb12d7a6dbead89c0443ab0e",
   "manifest": {
     "id": "release-manifest",
     "path": "contracts/v1/release-receipts.json",
-    "sha256": "9c300fda9f728114b8c40b6cd72e9aa3e30bbd13f7842c4079d413cc73ea0053"
+    "sha256": "e9d5ac2e5f5d3c0730f88e82e260f7e481ef9c46b8502ec181a754f3d933c348"
   },
   "claims": [
     {
@@ -16,7 +16,7 @@
         {
           "id": "context-budget",
           "path": "evals/receipts/v1/context-budget.json",
-          "sha256": "fb04d8dd4542079723d838e10c5d1c2ee7aad7fd0a1a2ae81123de541230af89"
+          "sha256": "f96cadfa2d6e83ce887713eb7949ed9d2ce89956fbce98d3670ea06c599bb497"
         },
         {
           "id": "browser",
@@ -45,7 +45,11 @@
         }
       ],
       "reasons": [
-        "browser: receipt omits 33 required coverage checks"
+        "browser: stale-until-rerun: registered producer must rerun for the current source revision",
+        "e2e: stale-until-rerun: registered producer must rerun for the current source revision",
+        "mechanical: stale-until-rerun: registered producer must rerun for the current source revision",
+        "security: stale-until-rerun: registered producer must rerun for the current source revision",
+        "clean-clone: stale-until-rerun: registered producer must rerun for the current source revision"
       ]
     },
     {
@@ -59,7 +63,7 @@
         }
       ],
       "reasons": [
-        "receipt omits 33 required coverage checks"
+        "stale-until-rerun: registered producer must rerun for the current source revision"
       ]
     },
     {
@@ -73,7 +77,7 @@
         }
       ],
       "reasons": [
-        "browser coverage: receipt omits 33 required coverage checks"
+        "browser coverage: stale-until-rerun: registered producer must rerun for the current source revision"
       ]
     },
     {
