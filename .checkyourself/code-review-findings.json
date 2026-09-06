@@ -1,0 +1,55 @@
+{
+  "tool": "manual-code-review-through-checkyourself",
+  "schema": "checkyourself-scan/1",
+  "generated_at": "2026-09-06T01:30:00Z",
+  "project": "tastecheck",
+  "deep": true,
+  "files_scanned": 61,
+  "scan_limits": {"max_files": 5000, "truncated": false, "files_beyond_limit": 0, "symlinks_skipped": 0, "files_unreadable": 0},
+  "stack_signals": ["node", "esm", "ajv", "playwright", "markdown-skills"],
+  "dependencies": {"reviewed": ["package.json", "package-lock.json"]},
+  "scripts": {"reviewed": ["tools/verify.mjs", "tools/release/check.mjs", "tools/release/finalize.mjs", "tools/release/final-source-receipt-gate.mjs", "skills/tastecheck-pass/assets/release-gate.mjs"]},
+  "env_files": [],
+  "tests": ["tools/test/nima.test.mjs", "tools/release/test-check.mjs", "tools/release/test-final-source-receipt-gate.mjs", "tools/evals/test-tastecheck-gate.mjs"],
+  "ci": [".github/workflows"],
+  "risk_surfaces": {"release_chain": true, "local_quality_service": true, "verifier_output": true},
+  "findings": [
+    {
+      "id": "CY-TC-001",
+      "severity": "P1",
+      "category": "release-integrity",
+      "title": "Finalize restamps stale execution receipts",
+      "finding": "The finalizer replaces source_tree_sha256 on every mutable receipt with the current source digest without invoking the registered producer command.",
+      "plain_english_risk": "A browser, e2e, security, mechanical, or clean-clone run captured against older code can be made to look current and then pass the freshness and manifest-pin checks.",
+      "evidence": ["tools/release/finalize.mjs:39-45", "tools/release/finalize.mjs:70-80", "tools/release/check.mjs:148-185", "tools/release/final-source-receipt-gate.mjs:33-76"],
+      "recommended_fix": "Never mutate producer-owned source identity. Rerun every registered producer after the final source snapshot, or retain the original source digest and block until a newly produced receipt matches it.",
+      "status": "open"
+    },
+    {
+      "id": "CY-TC-002",
+      "severity": "P2",
+      "category": "validation",
+      "title": "NIMA accepts invalid score payloads",
+      "finding": "scoreNima accepts any JavaScript number and returns the whole unvalidated payload even though the documented contract is a 1-10 score with a histogram.",
+      "plain_english_risk": "A broken local scorer can return an out-of-range value such as 11, which is then treated as an acceptable aesthetic result instead of an unavailable measurement.",
+      "evidence": ["tools/lib/nima.mjs:42-59", "tools/lib/nima.mjs:66-68", "tools/lib/nima.mjs:83-85"],
+      "recommended_fix": "Require a finite score in the documented inclusive range and validate or remove the histogram contract; add malformed, Infinity, negative, zero, and above-range tests.",
+      "status": "open"
+    },
+    {
+      "id": "CY-TC-003",
+      "severity": "P2",
+      "category": "path-safety",
+      "title": "Release-gate output can follow a symlink outside the verifier root",
+      "finding": "The input path resolver checks real paths, but the output resolver performs only a lexical prefix check before writeFileSync follows the destination or a parent symlink.",
+      "plain_english_risk": "A repository-controlled symlink can redirect --out writes outside the verifier root when the gate CLI runs in a more privileged environment.",
+      "evidence": ["skills/tastecheck-pass/assets/release-gate.mjs:209-217", "skills/tastecheck-pass/assets/release-gate.mjs:926-930", "skills/tastecheck-pass/assets/release-gate.mjs:963-964"],
+      "recommended_fix": "Reject symlink components and verify the real parent remains below the real verifier root, then create the output atomically with no-follow semantics.",
+      "status": "open"
+    }
+  ],
+  "counts": {"P0": 0, "P1": 1, "P2": 2, "P3": 0},
+  "suppression_count": 0,
+  "tree": ["tools/", "contracts/", "skills/", ".checkyourself/"],
+  "public_repo_scope_guardrails": ["No network, installs, commits, pushes, or external mutations were performed."]
+}

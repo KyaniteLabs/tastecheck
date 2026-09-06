@@ -2,17 +2,17 @@
   "schema_version": 1,
   "kind": "security",
   "producer_id": "tastecheck.release.security.v1",
-  "source_tree_sha256": "682a181fae1c3485465c11b47c3eeb426ccf7a3b6839d614b286ac353387f948",
+  "source_tree_sha256": "4a3cf9de20822eb20248474091c36fc5960bf05ccb12d7a6dbead89c0443ab0e",
   "nonce": "security-release-v1",
-  "started_at": "2026-07-14T00:21:29.377Z",
-  "finished_at": "2026-07-14T00:21:29.688Z",
+  "started_at": "2026-09-06T02:23:47.526Z",
+  "finished_at": "2026-09-06T02:23:48.051Z",
   "checks": [
     {
       "id": "effectiveness-claims",
       "command": "node tools/release/check-effectiveness-claims.mjs",
-      "passed": true,
-      "exit_code": 0,
-      "output_sha256": "7111a3cf1ef6f6844c6cd6b5fd49a9e8b015e38e4a3f183312c8d74e4d147be8"
+      "passed": false,
+      "exit_code": 1,
+      "output_sha256": "95f0b47b98fbc8220ea81c8f60b09f426dd365da7b5a9f64e9bb6cd89e93f6ad"
     },
     {
       "id": "public-replay-surface",
@@ -33,9 +33,9 @@
       "command": "internal source digest comparison",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "03ceec88564c07c6cf86769036bd5fe666ef03b84d0c1f6152aa2a0ef3316dbb"
+      "output_sha256": "a617f7953a9a7cbc148396aa7aa8adb170a7325090747f727435fcf5a488d017"
     }
   ],
-  "status": "pass",
-  "reproducible": true
+  "status": "fail",
+  "reproducible": false
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { evaluateTastecheckGate } from "./evaluators/tastecheck-gate.mjs";
@@ -359,6 +359,35 @@ try {
   assert.notEqual(escapedOutput.status, 0);
   assert.match(`${escapedOutput.stdout}\n${escapedOutput.stderr}`, /output path|path may not contain '\.\.'/i);
   assert.equal(existsSync(escapedOutputPath), false, "escaped CLI output must not be written");
+
+  // CY-TC-003: lexical containment is insufficient when an output parent or
+  // destination is a symlink. Both must fail before any bytes are written.
+  const outsideRoot = mkdtempSync(join(tmpdir(), "tastecheck-gate-outside-"));
+  const symlinkParent = join(cliVerifierRoot, "linked-reports");
+  const symlinkParentOutput = join(outsideRoot, "symlink-parent-report.json");
+  symlinkSync(outsideRoot, symlinkParent, "dir");
+  const escapedParent = spawnSync(process.execPath, [
+    gateCli, "--input", "ledger.json", "--out", "linked-reports/report.json",
+    "--verifier-root", cliVerifierRoot, "--artifact-root", cliArtifactRoot,
+    "--browser-manifest", browserManifestPath,
+  ], { encoding: "utf8" });
+  assert.notEqual(escapedParent.status, 0);
+  assert.match(`${escapedParent.stdout}\n${escapedParent.stderr}`, /symbolic-link|outside verifier root/i);
+  assert.equal(existsSync(symlinkParentOutput), false, "symlink-parent output must not be written outside verifier root");
+  rmSync(outsideRoot, { recursive: true, force: true });
+
+  const symlinkDestination = join(cliVerifierRoot, "reports", "symlink-report.json");
+  const symlinkDestinationTarget = join(cliArtifactRoot, "symlink-target.json");
+  writeFileSync(symlinkDestinationTarget, "untouched\n");
+  symlinkSync(symlinkDestinationTarget, symlinkDestination);
+  const escapedDestination = spawnSync(process.execPath, [
+    gateCli, "--input", "ledger.json", "--out", "reports/symlink-report.json",
+    "--verifier-root", cliVerifierRoot, "--artifact-root", cliArtifactRoot,
+    "--browser-manifest", browserManifestPath,
+  ], { encoding: "utf8" });
+  assert.notEqual(escapedDestination.status, 0);
+  assert.match(`${escapedDestination.stdout}\n${escapedDestination.stderr}`, /symbolic link/i);
+  assert.equal(readFileSync(symlinkDestinationTarget, "utf8"), "untouched\n", "symlink destination target must remain untouched");
 } finally {
   rmSync(cliVerifierRoot, { recursive: true, force: true });
   rmSync(cliArtifactRoot, { recursive: true, force: true });

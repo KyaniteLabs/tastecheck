@@ -146,7 +146,7 @@ function validateEngineeringReceipt(id, value, io, errors) {
     return;
   }
   const currentSource = io.sourceTreeSha256();
-  if (value?.source_tree_sha256 !== currentSource) errors.push(`${id}: source_tree_sha256 is stale for the current tracked source`);
+  if (value?.source_tree_sha256 !== currentSource) errors.push(`${id}: source_tree_sha256 is stale for the current tracked source (stale-until-rerun; registered producer must rerun)`);
   if (id === "browser" || id === "e2e") {
     if (!validateLiveReceiptSchema(value)) {
       errors.push(`${id}: live receipt schema validation failed: ${validateLiveReceiptSchema.errors?.map((entry) => `${entry.instancePath || "/"} ${entry.message}`).join(", ")}`);

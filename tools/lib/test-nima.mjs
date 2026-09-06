@@ -54,6 +54,7 @@ assert.equal(combinedVerdict({ verdict: "UNKNOWN" }, 1.0), "HOLD", "unknown gate
 
 // --- Client graceful degradation (mocked fetch, no network) --------------
 const realFetch = globalThis.fetch;
+const validHistogram = Array.from({ length: 10 }, () => 0.1);
 
 // health down → unavailable → score null (no /score call).
 _resetNimaHealthCache();
@@ -68,14 +69,47 @@ assert.equal(await scoreNima(Buffer.from([0xff, 0xd8, 0xff])), null, "unavailabl
 _resetNimaHealthCache();
 globalThis.fetch = async (url) => {
   if (String(url).endsWith("/health")) return { ok: true };
-  if (String(url).endsWith("/score")) return { ok: true, json: async () => ({ score: 6.42, histogram: [0.1, 0.2] }) };
+  if (String(url).endsWith("/score")) return { ok: true, json: async () => ({ score: 6.42, histogram: validHistogram }) };
   throw new Error(`unexpected fetch ${url}`);
 };
 assert.equal(await isNimaAvailable(), true, "health up → available");
 const scored = await scoreNima(Buffer.from([0xff, 0xd8, 0xff]));
 assert.equal(typeof scored?.score, "number");
 assert.equal(scored.score, 6.42);
-assert.ok(Array.isArray(scored.histogram), "histogram is an array");
+assert.deepEqual(scored.histogram, validHistogram, "histogram has the canonical ten-bin shape");
+
+// Score boundaries are inclusive; non-finite, non-numeric, and out-of-range
+// values are malformed service responses, not aesthetic verdicts.
+for (const score of [1, 10]) {
+  _resetNimaHealthCache();
+  globalThis.fetch = async (url) => {
+    if (String(url).endsWith("/health")) return { ok: true };
+    return { ok: true, json: async () => ({ score, histogram: validHistogram }) };
+  };
+  assert.equal((await scoreNima(Buffer.from([0xff])))?.score, score, `inclusive score boundary ${score} is accepted`);
+}
+for (const score of [NaN, Infinity, -Infinity, 0, 10.01]) {
+  _resetNimaHealthCache();
+  globalThis.fetch = async (url) => {
+    if (String(url).endsWith("/health")) return { ok: true };
+    return { ok: true, json: async () => ({ score, histogram: validHistogram }) };
+  };
+  assert.equal(await scoreNima(Buffer.from([0xff])), null, `invalid score ${String(score)} → null`);
+}
+
+for (const histogram of [
+  [1, 0],
+  [...validHistogram.slice(0, 9), -0.1],
+  [...validHistogram.slice(0, 9), NaN],
+  [...validHistogram.slice(0, 9), 0.2],
+]) {
+  _resetNimaHealthCache();
+  globalThis.fetch = async (url) => {
+    if (String(url).endsWith("/health")) return { ok: true };
+    return { ok: true, json: async () => ({ score: 6, histogram }) };
+  };
+  assert.equal(await scoreNima(Buffer.from([0xff])), null, "malformed histogram → null");
+}
 
 // health up but malformed payload (no numeric score) → null.
 _resetNimaHealthCache();

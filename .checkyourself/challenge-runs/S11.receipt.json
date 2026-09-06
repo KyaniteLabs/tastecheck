@@ -1,6 +1,6 @@
 {
   "captured_output": ".checkyourself/challenge-runs/S11.capture.json",
-  "captured_output_digest": "0c68310488908424753965ac6a0e417b8f754a8c55920f8e28e652e8d9bebac0",
+  "captured_output_digest": "ce0460e0b8f3cfe9afd7d2b11d8ec85a0b85731ce3e81964a58936b9edc47e73",
   "challenge_config_digest": "fe6a85be156150b97168537a35946611da0eb213e0a300121651ce75d99680fe",
   "command": [
     "bash",
@@ -10,14 +10,14 @@
   "cwd": ".",
   "execution_error": "",
   "exit_code": 0,
-  "local_integrity_hmac": "be287537a63462e2b8e8c2a1f78c508dcba17d8489edbeff4f961c85c41bb7f4",
-  "receipt_sha256": "567a4a3e0705aaf8a5bd79649a80a130bb567deb7df0a6611ce43fd9b18940e8",
+  "local_integrity_hmac": "3714eb50834ab2a9329204cd9a990a1927d51afd2195bf5d68cfa7c948384479",
+  "receipt_sha256": "c9fc658348da9be62e2761775c8caa38523122d8026e18b6a21d9825da66e018",
   "receipt_type": "EXECUTED",
-  "run_id": "bb9f749a56d59d2d7042e5233f948b28",
-  "semantic_output_digest": "5eb80dd9be506f0fde9c2d63ca02f1d32e6c636370f9a94bcacc40ef6f271ed9",
-  "source_revision": "835bfbd962d4f8db2133a93f1297082acf219df2f01f5cf21607b7093aa28a29",
+  "run_id": "8817d951c5a598a28a098fcaf68cccda",
+  "semantic_output_digest": "59359bb16b1f2367e2f6e9cb3ebf57bfac1ecd198a1b5704a255c6ce7e5012d7",
+  "source_revision": "520d258c216c2fcbe2f82fa708d3b502f3731ef6e99016a8151f22dead6acd1b",
   "status": "PASS",
   "surface_id": "S11",
   "timed_out": false,
-  "timestamp": "2026-09-06T00:26:31+00:00"
+  "timestamp": "2026-09-06T01:23:34+00:00"
 }

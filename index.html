@@ -1,648 +1,645 @@
 <!doctype html>
-<!-- release-facts:v1:start -->
-Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
-<!-- release-facts:v1:end -->
-<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>tastecheck — stop AI shipping the same generic website | anti-slop skills for AI coding agents</title>
-<meta name="description" content="tastecheck is an open-source set of 20 craft skills for AI coding agents (Claude Code, Codex, Gemini, Cursor) that stops them building the same generic 'AI slop' website. It interviews or audits you into a real design system first, then applies checkable typography, OKLCH color, accessibility and anti-slop rules. MIT.">
-<meta name="keywords" content="AI slop, AI website design, AI coding agent skills, Claude Code skills, design system, design-system-interview, deslop, web typography, OKLCH color, WCAG accessibility, anti-slop, AI landing page, Codex, Gemini CLI, Cursor, frontend design">
-<meta name="author" content="Kyanite Labs">
-<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-<meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#0f0d0b">
-<link rel="canonical" href="https://kyanitelabs.github.io/tastecheck/">
-<link rel="icon" href="favicon.ico">
-<link rel="sitemap" type="application/xml" href="https://kyanitelabs.github.io/tastecheck/sitemap.xml">
-<!-- Open Graph -->
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="tastecheck">
-<meta property="og:title" content="tastecheck — stop AI shipping the same generic website">
-<meta property="og:description" content="20 connected frontend craft skills for AI coding agents, from design direction through an evidence-backed ship gate. Plain Markdown, portable across agents. MIT.">
-<meta property="og:url" content="https://kyanitelabs.github.io/tastecheck/">
-<meta property="og:image" content="https://kyanitelabs.github.io/tastecheck/docs/hero/seven-systems.png">
-<meta property="og:image:width" content="2450">
-<meta property="og:image:height" content="840">
-<meta property="og:image:alt" content="A montage of committed TasteCheck design systems for the same product story.">
-<meta property="og:locale" content="en_US">
-<!-- Twitter / X -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="tastecheck — stop AI shipping the same generic website">
-<meta name="twitter:description" content="20 connected frontend craft skills for AI coding agents, from design direction through an evidence-backed ship gate.">
-<meta name="twitter:image" content="https://kyanitelabs.github.io/tastecheck/docs/hero/seven-systems.png">
-<meta name="twitter:image:alt" content="A montage of committed TasteCheck design systems for the same product story.">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#171815">
+  <meta name="description" content="TasteCheck: 20 design skills for AI coding agents, from a distinct design direction to an evidence-backed ship or hold decision. The September 2026 retrofit.">
+  <title>TasteCheck — Make a call. Show the work.</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23e5ef73'/%3E%3Cpath d='M7 17l6 6L25 9' fill='none' stroke='%23171815' stroke-width='4'/%3E%3C/svg%3E">
+  <script type="application/ld+json">
     {
-      "@type": "WebSite",
-      "@id": "https://kyanitelabs.github.io/tastecheck/#website",
-      "url": "https://kyanitelabs.github.io/tastecheck/",
-      "name": "tastecheck",
-      "description": "Anti-slop craft skills for AI coding agents.",
-      "inLanguage": "en"
-    },
-    {
+      "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "@id": "https://kyanitelabs.github.io/tastecheck/#app",
       "name": "tastecheck",
-      "applicationCategory": "DeveloperApplication",
-      "applicationSubCategory": "AI coding-agent skills",
-      "operatingSystem": "Claude Code, Codex, Gemini CLI, Cursor, Kilocode, Kimi",
-      "description": "An open-source set of 20 frontend craft skills for AI coding agents that stops them building the same generic 'AI slop' website. The headline skills interview you or audit an existing site into a committed design system before changes; the rest apply checkable typography, OKLCH color, theming, responsive layout, component states, forms, motion, accessibility and de-slopping.",
-      "url": "https://kyanitelabs.github.io/tastecheck/",
-      "codeRepository": "https://github.com/KyaniteLabs/tastecheck",
-      "license": "https://opensource.org/licenses/MIT",
       "softwareVersion": "1.4.1",
-      "keywords": "AI slop, design system, AI coding agent, Claude Code, deslop, web typography, OKLCH, WCAG accessibility",
-      "author": { "@type": "Organization", "name": "Kyanite Labs", "url": "https://github.com/KyaniteLabs" },
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
-    },
-    {
-      "@type": "FAQPage",
-      "@id": "https://kyanitelabs.github.io/tastecheck/#faq",
-      "mainEntity": [
-        { "@type": "Question", "name": "What is TasteCheck?",
-          "acceptedAnswer": { "@type": "Answer", "text": "tastecheck is a free, open-source (MIT) set of 20 craft skills for AI coding agents. Its headline skills interview you into a committed design system or infer one from an existing site before changes, then the other skills apply checkable rules for typography, color, accessibility and removing AI 'slop' tells, so the output has a point of view instead of the generic average." } },
-        { "@type": "Question", "name": "Why do AI-generated websites all look the same?",
-          "acceptedAnswer": { "@type": "Answer", "text": "With no design direction, a language model fills every blank with the most probable token: a purple/indigo gradient, the Inter font, a centered hero, three identical feature cards, pill buttons and glassmorphism. It is returning the statistical average of the web rather than designing. tastecheck fixes this by removing the blanks — making the real design decisions before the model gets to guess." } },
-        { "@type": "Question", "name": "Which AI coding agents does tastecheck work with?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The skills are plain Markdown with no SDK or runtime. The installer links a canonical ~/.agents/skills directory and mirrors into detected Claude Code, Codex, Gemini CLI, Cursor, Kilocode and Kimi skill directories. Auto-loading depends on the agent; otherwise point the agent at a SKILL.md directly." } },
-        { "@type": "Question", "name": "How is tastecheck different from other AI design tools?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Most tools clean up after the model generates a page. tastecheck works before the build: it turns a new brief into a committed design system or audits the existing site first. Its rules are checkable, and the repo ships an npm test verification gate. The landing page represents all 20 craft concerns, while the gallery renders the same product story through eight visibly different systems." } },
-        { "@type": "Question", "name": "Is tastecheck free?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes. tastecheck is free and open-source under the MIT license. Clone the repository and run install.sh." } }
-      ]
+      "applicationCategory": "DeveloperApplication"
     }
-  ]
-}
-</script>
-<style>
-@font-face{font-family:"Red0";src:url("site/fonts/redaction-0-700.woff2") format("woff2");font-weight:700;font-display:block}
-@font-face{font-family:"Red0";src:url("site/fonts/redaction-0-400.woff2") format("woff2");font-weight:400;font-display:block}
-@font-face{font-family:"Red35";src:url("site/fonts/redaction-35-700.woff2") format("woff2");font-weight:700;font-display:block}
-@font-face{font-family:"Archivo";src:url("site/fonts/archivo-400.woff2") format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:"Archivo";src:url("site/fonts/archivo-600.woff2") format("woff2");font-weight:600;font-display:swap}
-:root{
-  color-scheme:dark;
-  --bg:oklch(13% .018 64); --s1:oklch(18% .024 64); --s2:oklch(22% .031 64); --s3:oklch(27% .038 64); --line:oklch(32% .044 64);
-  --ink:oklch(94% .024 78); --muted:oklch(78% .041 75);
-  --copper:oklch(76% .145 62); --copper-deep:oklch(42% .103 55); --on-copper:oklch(15% .049 55);
-  --verd:oklch(78% .154 170);
-  --nav-bg:oklch(13% .018 64 / .78);
-  --hero-fade-a:oklch(13% .018 64 / 1);
-  --hero-fade-b:oklch(13% .018 64 / .76);
-  --hero-fade-c:oklch(13% .018 64 / .32);
-  --disp:"Red0",Georgia,serif; --body:"Archivo",system-ui,-apple-system,sans-serif; --mono:ui-monospace,Menlo,monospace;
-  --rc:5px; --rcell:14px;
-}
-[data-theme="light"]{
-  color-scheme:light;
-  --bg:oklch(96% .023 78); --s1:oklch(92% .032 76); --s2:oklch(88% .039 74); --s3:oklch(82% .047 73); --line:oklch(71% .05 71);
-  --ink:oklch(19% .028 63); --muted:oklch(42% .046 66);
-  --copper:oklch(55% .143 56); --copper-deep:oklch(40% .112 55); --on-copper:oklch(98% .018 75);
-  --verd:oklch(47% .129 169);
-  --nav-bg:oklch(96% .023 78 / .9);
-  --hero-fade-a:oklch(96% .023 78 / .98);
-  --hero-fade-b:oklch(96% .023 78 / .9);
-  --hero-fade-c:oklch(96% .023 78 / .52);
-}
-[data-theme="contrast"]{
-  color-scheme:dark;
-  --bg:oklch(6% .012 63); --s1:oklch(11% .016 63); --s2:oklch(15% .021 63); --s3:oklch(20% .028 63); --line:oklch(72% .045 74);
-  --ink:oklch(99% .006 96); --muted:oklch(88% .035 80);
-  --copper:oklch(84% .174 69); --copper-deep:oklch(61% .151 60); --on-copper:oklch(7% .019 63);
-  --verd:oklch(87% .158 170);
-  --nav-bg:oklch(6% .012 63 / .96);
-  --hero-fade-a:oklch(6% .012 63 / 1);
-  --hero-fade-b:oklch(6% .012 63 / .9);
-  --hero-fade-c:oklch(6% .012 63 / .5);
-}
-*{box-sizing:border-box;margin:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased;font-synthesis:none;overflow-x:hidden}
-a{color:inherit}
-a,button,input,select,summary{outline:2px solid transparent;outline-offset:3px}
-:focus-visible{outline:2px solid var(--copper);outline-offset:3px;border-radius:3px}
-.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-.status-line{font:600 .82rem var(--mono);color:var(--verd);min-height:1.4em;margin-top:.65rem}
-.wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(1.25rem,1rem + 3vw,3rem)}
-.skip{position:absolute;left:-999px}.skip:focus{left:16px;top:16px;z-index:99;background:var(--copper);color:var(--on-copper);padding:.6em 1em;border-radius:5px}
-
-/* NAV — real mobile (disclosure), tap targets >=44px */
-header.nav{position:sticky;top:0;z-index:40;background:var(--nav-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.nav .wrap{display:flex;justify-content:space-between;align-items:center;min-height:60px}
-.brand{font-family:var(--disp);font-weight:700;font-size:1.5rem;letter-spacing:-.01em}
-.brand b{color:var(--copper)}
-.nav .menu{display:flex;gap:.4rem}
-.nav .menu a{display:flex;align-items:center;min-height:44px;padding:0 .9rem;text-decoration:none;color:var(--muted);font:600 .82rem var(--body);border-radius:6px}
-.nav .menu a:hover{color:var(--ink);background:rgba(245,239,230,.05)}
-@media(max-width:680px){
-  .nav .wrap{align-items:flex-start;gap:.2rem;padding-block:.45rem;flex-direction:column}
-  .nav .menu{flex-wrap:wrap}
-  .nav .menu a{min-height:38px;padding:0 .75rem}
-}
-
-/* HERO — asymmetric, living texture, column-rule motif, index marker (no mono eyebrow tell) */
-.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
-.hero .bg{position:absolute;inset:-4% ;z-index:0;background:url("site/img/basalt-copper.png") center/cover no-repeat;will-change:transform}
-.hero .scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(105deg, var(--hero-fade-a) 12%, var(--hero-fade-b) 50%, var(--hero-fade-c) 100%)}
-[data-theme="light"] .hero .bg{opacity:.48;filter:saturate(.82) contrast(.94)}
-.hero .wrap{position:relative;z-index:2;padding-block:clamp(4rem,2rem + 9vw,8rem);display:grid;grid-template-columns:auto 1fr;gap:clamp(1rem,.5rem + 2vw,2.2rem)}
-.rule{width:2px;background:linear-gradient(var(--copper),transparent);border-radius:2px}
-.hcol{max-width:min(100%,42rem)}
-.idx{font-family:var(--mono);font-size:.8rem;color:var(--copper);margin-bottom:1.1rem;display:flex;gap:.6rem;align-items:center}
-.idx s{width:1.6rem;height:1px;background:var(--copper);display:inline-block;text-decoration:none}
-h1{font-family:var(--disp);font-weight:700;font-size:clamp(3rem,1.6rem + 6vw,6rem);line-height:.94;letter-spacing:-.03em;margin-bottom:1.3rem;max-width:16ch}
-h1 .j{color:var(--copper)} h1 em{font-style:italic;font-weight:400}
-.lede{font-size:clamp(1.12rem,1rem + .55vw,1.45rem);color:var(--ink);opacity:.92;max-width:42ch;margin-bottom:1.9rem;text-wrap:pretty}
-.actions{display:flex;gap:.9rem;flex-wrap:wrap;align-items:center}
-.btn{font:600 1.02rem var(--body);cursor:pointer;border-radius:var(--rc);padding:.8em 1.5em;border:1px solid transparent;min-height:48px;transition:transform .12s ease,background-color .16s ease,border-color .16s ease}
-.btn-primary{background:var(--copper);color:var(--on-copper)}
-.btn-primary:hover{background:#f6b06e}
-.btn-primary:active{transform:translateY(1px)}
-.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
-.btn-ghost:hover{border-color:var(--ink)}
-a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
-h1 .not{text-decoration:underline;text-decoration-color:var(--verd);text-decoration-thickness:3px;text-underline-offset:6px}
-.hzb{font:600 .82rem var(--body);color:var(--muted)}
-.hzg{font:600 .92rem var(--body);color:var(--ink)}
-.tldr{align-self:flex-start;background:var(--copper);color:var(--on-copper);font:700 .78rem var(--mono);letter-spacing:.06em;padding:.35em .7em;border-radius:5px}
-.chart{width:100%;height:auto}
-.chart .axis{stroke:var(--line);stroke-width:1}
-.chart .ln{fill:none;stroke:var(--copper);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
-.chart .end{fill:var(--verd)}
-.chart text{fill:var(--ink);font:700 13px var(--disp)}
-.trust{margin-top:1.6rem;color:var(--muted);font-size:.92rem}.trust b{color:var(--ink);font-weight:600}
-.audit-strip{margin-top:1.4rem;display:flex;flex-wrap:wrap;gap:.4rem .85rem;align-items:center;padding:.65rem 1rem;border:1px solid var(--copper-deep);border-left:3px solid var(--copper);border-radius:var(--rc);background:var(--s1);font:600 .76rem var(--mono);color:var(--muted)}
-.audit-strip b{color:var(--ink);font-weight:700}
-.audit-strip .d{width:7px;height:7px;border-radius:50%;display:inline-block;flex:none}
-.audit-strip .ok{background:var(--verd)}
-.audit-strip .pend{background:var(--copper)}
-@media(max-width:560px){.hero .wrap{grid-template-columns:1fr}.rule{display:none}}
-
-/* reveal-on-scroll (alive) */
-.js .rv{opacity:0;transform:translateY(18px)}
-.rv.in{opacity:1;transform:none;transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
-
-section{padding-block:clamp(3.5rem,2rem + 6vw,6.5rem)}
-.mark{font-family:var(--mono);font-size:.8rem;color:var(--copper);display:flex;gap:.6rem;align-items:center;margin-bottom:1rem}
-.mark s{width:1.6rem;height:1px;background:var(--copper);display:inline-block}
-h2{font-family:var(--disp);font-weight:700;font-size:clamp(2.1rem,1.4rem + 3vw,3.4rem);line-height:1.03;letter-spacing:-.02em;max-width:18ch}
-.slede{color:var(--muted);max-width:54ch;margin-top:1rem;font-size:1.12rem;text-wrap:pretty}
-
-/* PROBLEM — syncopated, not two equal cards: a statement + offset swatches */
-.problem{display:grid;grid-template-columns:1.3fr .7fr;gap:clamp(1.5rem,1rem + 3vw,3.5rem);align-items:end}
-@media(max-width:760px){.problem{grid-template-columns:1fr}}
-.twoslop{display:flex;flex-direction:column;gap:1rem}
-.ts{display:flex;gap:1rem;align-items:center;border:1px solid var(--line);border-radius:var(--rcell);padding:1rem;background:var(--s1)}
-.ts .sw{width:78px;height:56px;border-radius:8px;flex:none}
-.ts .sw.p{background:linear-gradient(135deg,#6366f1,#a855f7)}
-.ts .sw.c{background:linear-gradient(135deg,#efe7d8,#8c2f24)}
-.ts h3{font:600 1rem var(--body);margin-bottom:.2rem}.ts p{color:var(--muted);font-size:.86rem}
-.ts:nth-child(2){margin-left:2rem}
-#why .twosw{width:78px;flex:none;display:flex;flex-direction:column;gap:4px}
-#why .twosw .sw{width:100%;height:26px;border-radius:6px}
-#why .wfm{width:78px;flex:none;display:grid;gap:4px;padding:6px;border:1px solid var(--line);border-radius:8px}
-#why .wfm .h{height:8px;width:55%;margin:0 auto;background:var(--muted);border-radius:2px;opacity:.6}
-#why .wfm .r{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
-#why .wfm .r span{height:18px;background:var(--line);border-radius:3px}
-#why .cpico{width:78px;height:56px;flex:none;display:grid;place-items:center;border:1px solid var(--line);border-radius:8px;font-family:var(--disp);font-size:1.7rem;color:var(--copper)}
-#why .ts p s{color:var(--muted)}
-
-/* INTERVIEW transcript (replaces generic 3-step; shows the actual product) */
-.chat{margin-top:2.5rem;display:flex;flex-direction:column;gap:1rem;max-width:60ch}
-.bubble{padding:.85rem 1.1rem;border-radius:14px;max-width:80%;font-size:1.02rem;line-height:1.5}
-.bubble.ai{background:var(--s2);border:1px solid var(--line);border-bottom-left-radius:3px;align-self:flex-start;font-family:var(--disp);font-style:italic}
-.bubble.you{background:var(--copper-deep);color:#ffe6cf;border-bottom-right-radius:3px;align-self:flex-end}
-.chat .out{font-family:var(--mono);font-size:.85rem;color:var(--verd);align-self:flex-start;margin-top:.2rem}
-
-/* SKILLS — irregular tessellated bento (varied spans = syncopation), real live demos */
-.bento{margin-top:3rem;display:grid;grid-template-columns:repeat(6,1fr);gap:1rem;grid-auto-flow:dense}
-@media(max-width:900px){.bento{grid-template-columns:repeat(4,1fr)}}
-@media(max-width:560px){.bento{grid-template-columns:repeat(2,1fr)}}
-.cell{background:var(--s1);border:1px solid var(--line);border-radius:var(--rcell);padding:1.2rem;display:flex;flex-direction:column;gap:.8rem;grid-column:span 2;min-height:11rem;transition:border-color .18s ease,transform .18s ease}
-.cell:hover{border-color:var(--copper-deep);transform:translateY(-2px)}
-.cell.w3{grid-column:span 3}.cell.w4{grid-column:span 4}.cell.tall{grid-row:span 2}
-@media(max-width:560px){.cell,.cell.w3,.cell.w4{grid-column:span 2}.cell.tall{grid-row:auto}}
-.cell .lab{display:flex;align-items:baseline;gap:.55rem}
-.cell .lab .n{font:600 .8rem var(--mono);color:var(--copper)}
-.cell .lab h3{font-family:var(--disp);font-weight:700;font-size:1.12rem;letter-spacing:-.01em}
-.cell .cap{color:var(--muted);font-size:.88rem;margin-top:auto}
-.stage{background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:1rem;display:flex;flex-direction:column;gap:.7rem;justify-content:center;flex:1;min-height:5.5rem}
-
-/* live demo bits */
-.dbtn{font:600 .85rem var(--body);border:1px solid transparent;border-radius:5px;padding:.55em .95em;cursor:pointer;min-height:38px;background:var(--copper);color:var(--on-copper);transition:background-color .15s,transform .1s,outline .1s;align-self:flex-start}
-.dbtn:hover{background:#f6b06e}.dbtn:active{transform:translateY(1px)}
-.dbtn[disabled]{background:#2c251b;color:#7d7363;cursor:not-allowed;border-color:var(--line)}
-.dbtn.loading{color:transparent;position:relative;pointer-events:none}
-.dbtn.loading::after{content:"";position:absolute;inset:0;margin:auto;width:1em;height:1em;border:2px solid var(--on-copper);border-right-color:transparent;border-radius:50%;animation:spin .6s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
-.note{font:600 .78rem var(--mono);color:var(--muted)}
-.ramp{display:flex;height:36px;border-radius:7px;overflow:hidden;border:1px solid var(--line)}.ramp i{flex:1}
-.aa{display:inline-flex;gap:.4rem;align-items:center;font:600 .78rem var(--mono);color:var(--verd);border:1px solid var(--copper-deep);border-radius:5px;padding:.25em .55em}
-.fld label{font:600 .8rem var(--body);display:block;margin-bottom:.3rem}
-.fld input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:.55em .7em;color:var(--ink);font:.9rem var(--body);min-height:40px}
-.fld input:focus-visible{border-color:var(--copper)}
-.fld.err input{border-color:#ff7a7d}.fld.ok input{border-color:var(--verd)}
-.fld .msg{font:.78rem var(--body);margin-top:.3rem;min-height:1.1em}
-.fld.err .msg{color:#ff9a9c}.fld.ok .msg{color:var(--verd)}
-.spec b{font-family:var(--disp);font-weight:700;display:block;line-height:.95}
-.sk{height:.7rem;border-radius:4px;background:linear-gradient(90deg,#241e16 25%,#2e261b 37%,#241e16 63%);background-size:400% 100%;animation:sh 1.4s linear infinite}
-@keyframes sh{from{background-position:100% 0}to{background-position:0 0}}
-.mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(2.6rem,1fr));gap:.4rem}.mini i{height:2rem;background:var(--bg);border:1px solid var(--line);border-radius:6px}
-.mochip{align-self:flex-start;background:var(--copper-deep);color:#ffe6cf;font:600 .85rem var(--body);padding:.5em 1em;border-radius:999px;transition:transform .18s cubic-bezier(.16,1,.3,1)}
-.mochip:hover{transform:translateY(-4px) scale(1.05)}
-.dm{display:flex;gap:.5rem}.dm i{flex:1;border-radius:8px;height:3rem;display:flex;align-items:center;justify-content:center;font:600 .78rem var(--body);border:1px solid var(--line)}
-.dm .l{background:#f5efe6;color:#1a1611}.dm .d{background:#1a1611;color:#f5efe6}
-.ba{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}.ba .x{padding:.55rem;font:600 .76rem var(--body);text-align:center}
-.ba .bad{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;border-radius:999px}
-.ba .good{background:var(--copper);color:var(--on-copper);border-radius:5px}
-.dchip{font:600 .72rem var(--mono);color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:.3em .55em;background:var(--bg);min-height:0}
-.dchip b{color:var(--copper);font-weight:700;margin-right:.35em}
-.seed-chip{font:700 .74rem var(--mono);color:var(--copper);border:1px solid var(--copper-deep);border-radius:5px;padding:.4em .7em;background:var(--s1);white-space:nowrap}
-.seed-counter{font:700 .76rem var(--mono);color:var(--copper);white-space:nowrap;letter-spacing:.02em}
-.ba small{display:block;font:600 .78rem var(--mono);color:var(--muted);margin-top:.3rem;text-align:center}
-
-/* INSTALL */
-.install{background:var(--s1);border-block:1px solid var(--line)}
-.install .box{font-family:var(--mono);font-size:clamp(.82rem,.7rem + .5vw,1rem);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:1.2rem 1.4rem;margin-top:1.4rem;overflow-wrap:anywhere;white-space:pre-wrap}.install .box .c{color:var(--copper)}
-footer{border-top:1px solid var(--line);padding-block:2.4rem;color:var(--muted);font-size:.92rem}
-footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}footer b{color:var(--ink);font-family:var(--disp)}
-
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}.hero .bg{animation:none!important}}
-@media(prefers-reduced-motion:no-preference){
- .hero .bg{animation:drift 26s ease-in-out infinite alternate}
- @keyframes drift{from{transform:scale(1.04) translate(0,0)}to{transform:scale(1.10) translate(-1.5%, -1.5%)}}
-}
-</style><style id="tc-nav">
-:root{--tc-bg:var(--bg);--tc-ink:var(--ink);--tc-line:var(--line);--tc-muted:var(--muted);--tc-accent:var(--copper)}
-.tc-bar{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem 1.2rem;justify-content:space-between;background:var(--tc-bg);color:var(--tc-ink);border-bottom:1px solid var(--tc-line);padding:.55rem clamp(1rem,3vw,2rem);font:600 .8rem system-ui,-apple-system,sans-serif}
-.tc-bar a{color:var(--tc-muted);text-decoration:none;display:inline-flex;align-items:center;min-height:24px;padding-block:.15rem}
-.tc-bar a:hover{color:var(--tc-ink)}
-.tc-home{color:var(--tc-ink)!important;font-weight:700}
-.tc-grp{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .8rem}
-.tc-grp .tc-lbl{color:var(--tc-muted);font-weight:600;opacity:.8}
-.tc-samples a[aria-current=page]{color:var(--tc-ink);font-weight:700;text-decoration:underline;text-decoration-color:var(--tc-accent);text-underline-offset:3px;text-decoration-thickness:2px}
-.tc-pal{display:flex;align-items:center;gap:.4rem}
-.tc-pal .tc-lbl{color:var(--tc-muted)}
-.tc-pal button{width:26px;height:26px;border-radius:50%;border:1px solid var(--tc-line);cursor:pointer;padding:0}
-.tc-pal button[aria-pressed=true]{outline:2px solid var(--tc-ink);outline-offset:2px}
-.tc-theme{display:flex;align-items:center;gap:.35rem;color:var(--tc-muted)}
-.tc-theme span{font-weight:600;opacity:.8}
-.tc-theme button{min-height:32px;border:1px solid var(--tc-line);border-radius:5px;background:transparent;color:var(--tc-muted);font:600 .76rem system-ui,-apple-system,sans-serif;padding:.3rem .55rem;cursor:pointer}
-.tc-theme button[aria-pressed=true]{background:var(--tc-accent);color:var(--on-copper);border-color:transparent}
-@media(max-width:560px){
-  .tc-bar{font-size:.78rem;justify-content:flex-start;align-items:flex-start;gap:.35rem .7rem}
-  .tc-home{flex-basis:100%}
-  .tc-grp{gap:.25rem .5rem}
-  .tc-grp .tc-lbl{display:none}
-  .tc-theme{flex-basis:100%;flex-wrap:wrap}
-}
-</style>
+  </script>
+  <style>
+    /* Evidence edition. DESIGN-NOTES.md owns the inferred system and measurements.
+       Bounded sRGB primitives; measured OKLCH equivalents are in the notes.
+       There is no out-of-gamut expansion or external font dependency. */
+    :root {
+      color-scheme: dark;
+      --neutral-950: oklch(20.675% .00601 121.96); --neutral-900: oklch(25.605% .01135 122.21);
+      --neutral-700: oklch(44.817% .02161 124.42); --neutral-500: oklch(66.414% .03401 121.09);
+      --neutral-300: oklch(78.963% .02415 120.30); --neutral-100: oklch(95.240% .01325 106.65);
+      --citron-300: oklch(91.992% .14819 113.11); --citron-200: oklch(95.771% .11726 113.08); --citron-400: oklch(84.117% .14831 113.40);
+      --color-bg: var(--neutral-950);
+      --color-surface-1: var(--neutral-900);
+      --color-text: var(--neutral-100);
+      --color-text-muted: var(--neutral-300);
+      --color-border: var(--neutral-700);
+      --color-control-border: var(--neutral-500);
+      --color-primary: var(--citron-300);
+      --color-primary-hover: var(--citron-200);
+      --color-primary-active: var(--citron-400);
+      --color-primary-ink: var(--neutral-950);
+      --color-focus: var(--citron-300);
+      --button-bg: var(--color-primary); --button-ink: var(--color-primary-ink);
+      --button-hover-bg: oklch(95.771% .11726 113.08);
+      --button-active-bg: oklch(84.117% .14831 113.40);
+      --focus-ring: oklch(91.992% .14819 113.11);
+      --selection-bg: oklch(91.992% .14819 113.11);
+      --selection-ink: oklch(20.675% .00601 121.96);
+      --mark-bg: oklch(91.992% .14819 113.11);
+      --mark-ink: oklch(20.675% .00601 121.96);
+      --trail-bg: oklch(91.992% .14819 113.11);
+      --trail-ink: oklch(20.675% .00601 121.96);
+      --status-ink: oklch(91.992% .14819 113.11);
+      --code-border: oklch(66.414% .03401 121.09);
+      --chart-line: oklch(91.992% .14819 113.11);
+      --chart-axis: oklch(44.817% .02161 124.42);
+      --input-bg: oklch(25.605% .01135 122.21);
+      --input-ink: oklch(95.240% .01325 106.65);
+      --input-border: oklch(66.414% .03401 121.09);
+      --error-ink: oklch(95.240% .01325 106.65);
+      --success-ink: oklch(91.992% .14819 113.11);
+      --font-body: Arial, "Helvetica Neue", Helvetica, sans-serif;
+      --font-display: Arial, "Helvetica Neue", Helvetica, sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      --step--1: .875rem; --step-0: 1rem;
+      --step-1: clamp(1.125rem, 1.05rem + .3vw, 1.3125rem);
+      --step-2: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+      --step-3: clamp(2rem, 1.5rem + 2vw, 3rem);
+      --step-4: clamp(2.5rem, 1.6rem + 3.5vw, 4.5rem);
+      --step-5: clamp(3.125rem, 1.5rem + 5.6vw, 6rem);
+      --measure: 60ch;
+      --space-1: .25rem; --space-2: .5rem; --space-3: .75rem;
+      --space-4: 1rem; --space-5: 1.5rem; --space-6: 2rem;
+      --space-7: 3rem; --space-8: 4rem; --space-9: 6rem;
+      --space-section: clamp(3rem, 2rem + 4vw, 6rem);
+      --space-gutter: clamp(1.5rem, 4vw, 4rem);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+    }
+    html[data-theme="light"] {
+      color-scheme: light;
+      --color-bg: oklch(95.240% .01325 106.65);
+      --color-surface-1: oklch(91.992% .14819 113.11);
+      --color-text: oklch(20.675% .00601 121.96);
+      --color-text-muted: oklch(44.817% .02161 124.42);
+      --color-border: oklch(66.414% .03401 121.09);
+      --color-control-border: oklch(44.817% .02161 124.42);
+      --color-primary: oklch(20.675% .00601 121.96);
+      --color-primary-hover: oklch(44.817% .02161 124.42);
+      --color-primary-active: oklch(25.605% .01135 122.21);
+      --color-primary-ink: oklch(95.240% .01325 106.65);
+      --button-bg: oklch(20.675% .00601 121.96);
+      --button-ink: oklch(95.240% .01325 106.65);
+      --button-hover-bg: oklch(44.817% .02161 124.42);
+      --button-active-bg: oklch(25.605% .01135 122.21);
+      --focus-ring: oklch(20.675% .00601 121.96);
+      --status-ink: oklch(20.675% .00601 121.96);
+      --trail-bg: oklch(91.992% .14819 113.11);
+      --trail-ink: oklch(20.675% .00601 121.96);
+      --input-bg: oklch(100% 0 0);
+      --input-ink: oklch(20.675% .00601 121.96);
+      --input-border: oklch(44.817% .02161 124.42);
+      --chart-line: oklch(20.675% .00601 121.96);
+      --chart-axis: oklch(66.414% .03401 121.09);
+    }
+    html[data-theme="contrast"] {
+      color-scheme: dark;
+      --color-text-muted: oklch(95.240% .01325 106.65);
+      --color-border: oklch(66.414% .03401 121.09);
+      --color-control-border: oklch(95.240% .01325 106.65);
+      --input-border: oklch(95.240% .01325 106.65);
+      --chart-axis: oklch(66.414% .03401 121.09);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: auto; }
+    body { margin: 0; background: var(--color-bg); color: var(--color-text); font: var(--step-0)/1.6 var(--font-body); }
+    h1, h2, h3, p, figure, ol, ul, dl, dd, pre { margin: 0; }
+    h1, h2, h3 { font-family: var(--font-display); font-weight: 700; text-wrap: balance; }
+    h1 { font-size: var(--step-5); line-height: 1.02; letter-spacing: -.055em; }
+    h2 { font-size: var(--step-4); line-height: 1.08; letter-spacing: -.045em; }
+    h3 { font-size: var(--step-2); line-height: 1.2; letter-spacing: -.025em; }
+    p { max-inline-size: var(--measure); text-wrap: pretty; }
+    a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .22em; }
+    a:visited { color: var(--color-text-muted); }
+    :focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 4px; }
+    [tabindex="-1"]:focus { outline: 3px solid var(--color-focus); outline-offset: 4px; }
+    code, pre, .eyebrow, .folio, .number, .status-label { font-family: var(--font-mono); }
+    code { font-size: .9375em; overflow-wrap: anywhere; }
+    ::selection { background: var(--selection-bg); color: var(--selection-ink); }
+    .wrap { inline-size: min(100% - var(--space-gutter) * 2, 74rem); margin-inline: auto; }
+    .muted { color: var(--color-text-muted); }
+    .eyebrow, .folio { font-size: var(--step--1); line-height: 1.5; }
+    .eyebrow { display: flex; align-items: baseline; gap: var(--space-3); flex-wrap: wrap; }
+    .eyebrow::before { content: ""; display: block; inline-size: .5rem; block-size: .5rem; background: currentColor; }
+    .skip { position: absolute; inset-block-start: var(--space-4); inset-inline-start: var(--space-4); z-index: 10; padding: var(--space-3) var(--space-4); transform: translateY(-200%); color: var(--color-primary-ink); background: var(--color-primary); }
+    .skip:focus { transform: none; outline-color: var(--color-text); }
+    .masthead { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); flex-wrap: wrap; padding-block: var(--space-5); border-block-end: 1px solid var(--color-border); }
+    .wordmark { display: inline-flex; align-items: center; gap: var(--space-3); font-size: 1.375rem; font-weight: 700; letter-spacing: -.04em; text-decoration: none; min-block-size: 2.75rem; }
+    .mark { display: grid; place-items: center; inline-size: 1.75rem; block-size: 1.75rem; color: var(--color-primary-ink); background: var(--color-primary); font-size: 1.25rem; line-height: 1; }
+    .menu { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-5); font-size: var(--step--1); }
+    .header-tools { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: var(--space-5); }
+    .theme-controls { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); color: var(--color-text-muted); font: var(--step--1)/1.5 var(--font-mono); }
+    .theme-controls span { margin-inline-end: var(--space-1); }
+    .theme-controls button { min-block-size: 2.25rem; padding: var(--space-2) var(--space-3); border: 1px solid var(--color-control-border); background: transparent; color: var(--color-text); font: inherit; cursor: pointer; }
+    .theme-controls button[aria-pressed="true"] { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-primary-ink); }
+    .menu a, .footer a { display: inline-flex; align-items: center; min-block-size: 2.75rem; }
+    .menu a { text-decoration: none; }
+    .menu a:last-child { color: var(--color-primary); gap: var(--space-2); }
+    .hero { padding-block: var(--space-7) var(--space-8); }
+    .edition { display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; color: var(--color-text-muted); margin-block-end: var(--space-7); }
+    .hero-layout { display: grid; gap: var(--space-7); align-items: end; }
+    .hero-copy { min-inline-size: 0; }
+    .hero h1 span { display: block; }
+    .hero h1 .accent { color: var(--color-primary); }
+    .hero-intro { margin-block-start: var(--space-6); max-inline-size: 46ch; font-size: var(--step-1); color: var(--color-text-muted); }
+    .actions { display: flex; align-items: center; gap: var(--space-5); flex-wrap: wrap; margin-block-start: var(--space-6); }
+    .hero-status { margin-block-start: var(--space-4); color: var(--status-ink); font: var(--step--1)/1.5 var(--font-mono); }
+    .button { display: inline-flex; align-items: center; justify-content: space-between; gap: var(--space-5); min-block-size: 3rem; padding: var(--space-3) var(--space-5); border: 1px solid var(--button-bg); color: var(--button-ink); background: var(--button-bg); font-weight: 700; text-decoration: none; }
+    .button:visited { color: var(--button-ink); }
+    .text-link { display: inline-flex; align-items: center; gap: var(--space-3); min-block-size: 2.75rem; }
+    .trail { min-inline-size: 0; background: var(--color-primary); color: var(--color-primary-ink); padding: var(--space-5); }
+    .trail-top { display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); padding-block-end: var(--space-4); border-block-end: 1px solid currentColor; }
+    .trail h2 { margin-block: var(--space-5); font-size: var(--step-2); letter-spacing: -.03em; max-inline-size: 12ch; }
+    .trail-list { list-style: none; padding: 0; }
+    .trail-list li { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr); gap: var(--space-3); padding-block: var(--space-4); border-block-start: 1px solid currentColor; }
+    .trail-list .number { padding-block-start: var(--space-1); font-size: var(--step--1); }
+    .trail-list strong { display: block; font-size: 1.125rem; line-height: 1.35; }
+    .trail-list p { font-size: var(--step--1); margin-block-start: var(--space-2); }
+    .trail figcaption { border-block-start: 1px solid currentColor; padding-block-start: var(--space-4); font-size: var(--step--1); }
+    .status-strip { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4) var(--space-6); flex-wrap: wrap; padding-block: var(--space-5); border-block: 1px solid var(--color-border); }
+    .status-strip p { font-size: var(--step--1); }
+    .status-label { color: var(--color-primary); }
+    .chapter { padding-block: var(--space-section); }
+    .section-head { display: grid; gap: var(--space-5); margin-block-end: var(--space-7); }
+    .section-head .eyebrow { color: var(--color-text-muted); }
+    .section-head h2 { max-inline-size: 17ch; }
+    .section-head p { color: var(--color-text-muted); max-inline-size: 54ch; }
+    .retrofit-summary { display: grid; gap: var(--space-6); margin-block-end: var(--space-7); }
+    .retrofit-summary p { font-size: var(--step-1); }
+    .review-count { border-inline-start: 3px solid var(--color-primary); padding-inline-start: var(--space-5); }
+    .review-count strong { font-size: var(--step-3); line-height: 1.15; letter-spacing: -.04em; display: block; }
+    .review-count span { display: block; color: var(--color-text-muted); margin-block-start: var(--space-2); }
+    .changes { list-style: none; padding: 0; counter-reset: changes; }
+    .changes li { counter-increment: changes; display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: var(--space-3) var(--space-4); padding-block: var(--space-5); border-block-start: 1px solid var(--color-border); }
+    .changes li::before { content: counter(changes, decimal-leading-zero); font: var(--step--1)/1.6 var(--font-mono); color: var(--color-primary); padding-block-start: var(--space-1); }
+    .changes h3 { font-size: var(--step-1); line-height: 1.35; }
+    .changes p { color: var(--color-text-muted); grid-column: 2; max-inline-size: 56ch; }
+    .afterword { border-block-start: 1px solid var(--color-border); padding-block-start: var(--space-5); display: grid; gap: var(--space-4); }
+    .afterword p { color: var(--color-text-muted); }
+    .density { background: var(--color-surface-1); border-block: 1px solid var(--color-border); }
+    .density-layout { display: grid; gap: var(--space-7); }
+    .density-figure { font-size: clamp(4.5rem, 3rem + 7vw, 8rem); line-height: 1; letter-spacing: -.065em; font-weight: 700; color: var(--color-primary); font-variant-numeric: lining-nums tabular-nums; margin-block: var(--space-5); }
+    .density-figure span { font-size: .5em; }
+    .density h2 { font-size: var(--step-3); max-inline-size: 17ch; }
+    .density p { color: var(--color-text-muted); }
+    .density .eyebrow { color: var(--color-text); }
+    .density-explanation { margin-block-start: var(--space-5); }
+    .density-notes { display: grid; gap: var(--space-5); }
+    .density-notes h3 { font-size: var(--step-1); margin-block-end: var(--space-2); }
+    .density-table { border-collapse: collapse; inline-size: 100%; font-size: var(--step--1); font-variant-numeric: tabular-nums; }
+    .density-table caption { text-align: start; color: var(--color-text-muted); padding-block-end: var(--space-3); }
+    .density-table th, .density-table td { padding-block: var(--space-3); border-block-start: 1px solid var(--color-border); text-align: end; }
+    .density-table th:first-child { text-align: start; padding-inline-end: var(--space-3); }
+    .landing-chart { margin-block-start: var(--space-6); padding-block-start: var(--space-5); border-block-start: 1px solid var(--color-border); }
+    .landing-chart figcaption { margin-block-end: var(--space-3); color: var(--color-text-muted); font-size: var(--step--1); }
+    .landing-chart svg { display: block; inline-size: 100%; block-size: auto; overflow: visible; }
+    .landing-chart .axis { stroke: var(--chart-axis); stroke-width: 1; }
+    .landing-chart .landing-trend { fill: none; stroke: var(--chart-line); stroke-width: 3; stroke-linecap: square; stroke-linejoin: bevel; }
+    .chart-table { border-collapse: collapse; inline-size: 100%; margin-block-start: var(--space-4); font-size: var(--step--1); font-variant-numeric: tabular-nums; }
+    .chart-table caption { text-align: start; color: var(--color-text-muted); }
+    .chart-table td { padding-block: var(--space-2); border-block-start: 1px solid var(--color-border); }
+    .chart-table td:last-child { text-align: end; color: var(--color-text-muted); }
+    .density-notes .command { display: inline-block; font-size: var(--step-1); color: var(--color-text); padding: var(--space-3) var(--space-4); border: 1px solid var(--color-control-border); margin-block-end: var(--space-3); }
+    .skill-index { display: grid; }
+    .skill-group { display: grid; gap: var(--space-3) var(--space-6); padding-block: var(--space-5); border-block-start: 1px solid var(--color-border); }
+    .skill-group h3 { font-size: var(--step-1); }
+    .skill-group p { margin-block-start: var(--space-2); color: var(--color-text-muted); font-size: var(--step--1); }
+    .skill-group ul { display: flex; align-items: start; flex-wrap: wrap; gap: 0 var(--space-5); list-style: none; padding: 0; }
+    .skill-group a { display: inline-flex; align-items: center; min-block-size: 2.75rem; font: var(--step--1)/1.5 var(--font-mono); overflow-wrap: anywhere; }
+    .skill-group li { min-inline-size: 0; max-inline-size: 100%; }
+    .gallery-link { border-block-start: 1px solid var(--color-border); padding-block-start: var(--space-5); }
+    .contract-rail { display: grid; gap: var(--space-5); margin-block-start: var(--space-7); padding-block-start: var(--space-5); border-block-start: 1px solid var(--color-border); }
+    .contract-demo { min-inline-size: 0; padding: var(--space-5); border: 1px solid var(--color-control-border); }
+    .contract-demo h3 { font-size: var(--step-1); }
+    .contract-demo > p:first-child { color: var(--color-text-muted); }
+    .demo-controls { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); margin-block-start: var(--space-4); }
+    .demo-button { min-block-size: 2.75rem; padding: var(--space-2) var(--space-4); border: 1px solid var(--color-control-border); background: transparent; color: var(--color-text); font: var(--step--1)/1.5 var(--font-mono); cursor: pointer; }
+    .demo-button:hover, .demo-button:focus-visible { border-color: var(--color-primary); }
+    .demo-button:disabled { cursor: not-allowed; opacity: .55; }
+    .demo-status { margin-block-start: var(--space-3); color: var(--color-text-muted); font-size: var(--step--1); }
+    .contract-form { display: grid; gap: var(--space-2); margin-block-start: var(--space-4); }
+    .contract-form label { font: var(--step--1)/1.5 var(--font-mono); }
+    .contract-form input { min-block-size: 2.75rem; min-inline-size: 0; padding: var(--space-2) var(--space-3); border: 1px solid var(--input-border); background: var(--input-bg); color: var(--input-ink); font: inherit; }
+    .contract-form input:focus { border-color: var(--color-primary); }
+    .contract-form .valid { border-color: var(--color-primary); }
+    .contract-form .invalid { border-color: var(--error-ink); }
+    .use { border-block-start: 1px solid var(--color-border); }
+    .use-layout { display: grid; gap: var(--space-7); }
+    .use h2 { margin-block: var(--space-5); max-inline-size: 15ch; }
+    .use-copy p { color: var(--color-text-muted); }
+    .install { border: 1px solid var(--color-control-border); padding: var(--space-5); align-self: start; min-inline-size: 0; }
+    .install h3 { font-size: var(--step-1); }
+    .install pre { padding-block: var(--space-5); white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--step--1); line-height: 1.8; }
+    .install p { font-size: var(--step--1); color: var(--color-text-muted); }
+    .boundary { margin-block-start: var(--space-7); padding-block-start: var(--space-5); border-block-start: 1px solid var(--color-border); display: grid; gap: var(--space-4); }
+    .boundary h3 { font-size: var(--step-1); }
+    .boundary p { color: var(--color-text-muted); }
+    #proof { padding-block: var(--space-section); border-block-start: 1px solid var(--color-border); }
+    #proof h2 { max-inline-size: 17ch; }
+    #proof .proof-copy { display: grid; gap: var(--space-5); }
+    .footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4) var(--space-5); padding-block: var(--space-5); border-block-start: 1px solid var(--color-border); font-size: var(--step--1); color: var(--color-text-muted); }
+    .footer-links { display: flex; flex-wrap: wrap; gap: var(--space-5); }
+    @media (hover:hover) {
+      a:hover { color: var(--color-primary-hover); text-decoration: underline; text-decoration-thickness: 2px; }
+      .button:hover { background: var(--color-primary-hover); color: var(--button-ink); border-color: var(--color-primary-hover); }
+    }
+    a:active { color: var(--color-primary-active); text-decoration-thickness: 3px; }
+    .button:active { background: var(--color-primary-active); color: var(--button-ink); border-color: var(--color-primary-active); text-decoration: underline; }
+    /* Two readable evidence columns and a compact 16rem trail at 44rem;
+       a wider 19rem trail above 64rem. Narrow reading order follows the DOM. */
+    @media (min-width:44rem) {
+      .hero-layout { grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 1fr); gap: var(--space-6); }
+      .section-head { grid-template-columns: 1fr 1fr; column-gap: var(--space-7); }
+      .section-head .eyebrow { grid-column: 1 / -1; }
+      .section-head p { align-self: end; }
+      .retrofit-summary { grid-template-columns: 1.3fr 1fr; column-gap: var(--space-7); }
+      .changes li { grid-template-columns: 2rem minmax(0, .8fr) minmax(0, 1.2fr); gap: var(--space-5); }
+      .changes p { grid-column: auto; }
+      .density-layout { grid-template-columns: 1fr 1fr; }
+      .skill-group { grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); }
+      .contract-rail { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .use-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+      .boundary { grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); column-gap: var(--space-6); }
+    }
+    @media (min-width:64rem) {
+      .edition { margin-block-end: var(--space-8); }
+      .hero-layout { grid-template-columns: minmax(0, 1.8fr) minmax(19rem, 1fr); gap: var(--space-8); }
+      .trail { padding: var(--space-6); }
+    }
+    @media (prefers-contrast:more) {
+      :root { --color-text-muted: var(--neutral-100); --color-border: var(--neutral-500); }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+    @media (forced-colors:active) {
+      :root { --color-bg: Canvas; --color-surface-1: Canvas; --color-text: CanvasText; --color-text-muted: CanvasText; --color-border: CanvasText; --color-control-border: ButtonText; --color-primary: LinkText; --color-primary-hover: LinkText; --color-primary-active: LinkText; --color-primary-ink: Canvas; --focus-ring: Highlight; --button-bg: ButtonFace; --button-ink: ButtonText; --button-hover-bg: ButtonFace; --button-active-bg: ButtonFace; --input-bg: Canvas; --input-ink: CanvasText; --input-border: ButtonText; --status-ink: CanvasText; --chart-line: LinkText; --chart-axis: CanvasText; }
+      .trail, .mark, .skip, .theme-controls button[aria-pressed="true"] { background: Canvas; color: CanvasText; border: 1px solid CanvasText; }
+      .button, .theme-controls button, .demo-button, .contract-demo, .install { border-color: ButtonText; }
+      .contract-form input { background: Canvas; color: CanvasText; }
+      a { color: LinkText; }
+    }
+  </style>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
-<div class="tc-bar"><a class="tc-home" href="./">&#8617; tastecheck</a><nav class="tc-grp tc-samples" aria-label="Design-system samples"><span class="tc-lbl">Samples</span><a href="samples/copper/" aria-current="page">Copper</a><a href="samples/swiss/">Swiss</a><a href="samples/maximal/">Maximal</a><a href="samples/concrete/">Concrete</a><a href="samples/clay/">Clay</a><a href="samples/dispatch/">Dispatch</a><a href="samples/verge/">Verge</a><a href="samples/tasteroll/">Seed</a><a href="samples/">Gallery</a></nav><div class="tc-theme" data-skill="theming" aria-label="Theme"><span>Theme</span><button type="button" data-test="theme-dark" aria-pressed="true">Dark</button><button type="button" data-test="theme-light" aria-pressed="false">Light</button><button type="button" data-test="theme-contrast" aria-pressed="false">Contrast</button></div></div>
-<header class="nav"><div class="wrap">
-  <span class="brand">taste<b>check</b></span>
-  <nav class="menu" aria-label="Primary"><a href="#skills">Skills</a><a href="#why">What it refuses</a><a href="#proof">Proof</a><a href="#install">Install</a></nav>
-</div></header>
-<main id="main">
-
-<section class="hero" data-skill="design-system-interview"><div class="bg" aria-hidden="true"></div><div class="scrim" aria-hidden="true"></div><div class="wrap">
-  <div class="rule" aria-hidden="true"></div>
-  <div class="hcol">
-    <div class="idx"><s></s>design intelligence · 20 skills · roll for taste</div>
-    <h1>Make it <span class="j">yours</span>, <span class="not">not</span> the average.</h1>
-    <p class="lede">Every AI builds the same site. tastecheck interviews you or audits what you already have into a real design system first — then twenty skills make sure your agent ships taste, not slop.</p>
-    <div class="actions">
-      <a class="btn btn-primary" href="#install" data-test="primary-action">Run a taste check →</a>
-      <a class="btn btn-ghost" href="#skills">See every skill</a>
-      <span class="seed-chip" aria-label="tasteroll seed preview">🎲 seed: 77</span>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="masthead wrap">
+    <a class="wordmark" href="#main" aria-label="TasteCheck home"><span class="mark" aria-hidden="true">✓</span>TasteCheck</a>
+    <div class="header-tools">
+      <nav class="menu" aria-label="Primary">
+        <a href="#retrofit">The retrofit</a>
+        <a href="#skills">The skills</a>
+        <a href="#proof">Proof</a>
+        <a href="#use">Use TasteCheck <span aria-hidden="true">↗</span></a>
+      </nav>
+      <div class="theme-controls" data-skill="theming" aria-label="Theme">
+        <span>Theme</span>
+        <button type="button" data-test="theme-dark" aria-pressed="true">Dark</button>
+        <button type="button" data-test="theme-light" aria-pressed="false">Light</button>
+        <button type="button" data-test="theme-contrast" aria-pressed="false">Contrast</button>
+      </div>
     </div>
-    <p class="status-line" role="status" aria-live="polite" data-test="hero-status">Landing page audit ready.</p>
-    <p class="trust">Works with <b>Claude Code</b> · <b>Codex</b> · <b>Gemini</b> · <b>Cursor</b> · MIT</p>
-    <div class="audit-strip" role="status" aria-label="v1.4.1 results">
-      <b>v1.4.1</b>
-      <span><span class="d ok" aria-hidden="true"></span> 20 skills</span>
-      <span><span class="d ok" aria-hidden="true"></span> 20 canonical commands + 1 alias</span>
-      <span><span class="d ok" aria-hidden="true"></span> 3 P0 fixed</span>
-      <span><span class="d ok" aria-hidden="true"></span> 8 P1 fixed</span>
-      <span><span class="d pend" aria-hidden="true"></span> 7 P1 deferred</span>
-      <span><span class="d ok" aria-hidden="true"></span> 0 P2 regressions</span>
-      <!-- release-status:v1:start -->
+  </header>
+  <main id="main" tabindex="-1">
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="edition">
+        <p class="eyebrow">Design skills for AI coding agents</p>
+        <p class="folio">Evidence edition / <time datetime="2026-09-05">05 Sep 2026</time></p>
+      </div>
+      <div class="hero-layout">
+        <div class="hero-copy">
+          <h1 id="hero-title"><span>Make a call.</span> <span class="accent">Show the</span> <span class="accent">work.</span></h1>
+          <p class="hero-intro">TasteCheck turns a brief into a distinct design direction, then carries it through 20 craft skills to an evidence-backed ship or hold decision.</p>
+          <div class="actions">
+            <a class="button" href="#use" data-test="primary-action">Use TasteCheck <span aria-hidden="true">↗</span></a>
+            <a class="text-link" href="#retrofit">Read the retrofit <span aria-hidden="true">↓</span></a>
+          </div>
+          <p class="hero-status" role="status" aria-live="polite" data-test="hero-status">Landing contract ready for inspection.</p>
+        </div>
+        <figure class="trail" aria-labelledby="trail-title" aria-describedby="trail-caption">
+          <div class="trail-top"><span class="folio">The gate, traced</span><span class="folio" aria-hidden="true">TC / 01</span></div>
+          <h2 id="trail-title">A verdict has a trail.</h2>
+          <ol class="trail-list">
+            <li><span class="number" aria-hidden="true">01</span><div><strong>Observe</strong><p>Capture the artifact and the required subjects.</p></div></li>
+            <li><span class="number" aria-hidden="true">02</span><div><strong>Bind the review</strong><p>Check + artifact + evidence. Keep the judgment attached to its subject.</p></div></li>
+            <li><span class="number" aria-hidden="true">03</span><div><strong>Derive the verdict</strong><p>Missing or contradictory observations produce <b>HOLD</b>.</p></div></li>
+          </ol>
+          <figcaption id="trail-caption">Gate model · a schematic, not a run receipt.</figcaption>
+        </figure>
+      </div>
+    </section>
+    <div class="status-strip wrap" aria-label="Release facts and public status">
+      <div class="release-facts">
+        <p><strong>v1.4.1 · 20 skills · 20 canonical commands · 8 gallery systems</strong></p>
+        <p class="muted">1 alias · 21 command files · Plain Markdown · MIT</p>
+      </div>
+      <p class="status-label">
+<!-- release-status:v1:start -->
 <span><span class="d pend" aria-hidden="true"></span> release evidence: UNVERIFIED</span>
 <span><span class="d pend" aria-hidden="true"></span> effectiveness: BLOCKED</span>
 <!-- release-status:v1:end -->
+<br><a href="docs/VERIFICATION.md">See the verification boundary</a></p>
     </div>
-    <p class="trust">Same content, eight committed design systems → <a href="samples/" style="color:var(--copper);font-weight:600;text-decoration:underline;text-underline-offset:3px;display:inline-block;padding-block:.35rem">see the gallery</a></p>
-  </div>
-</div></section>
-
-<section id="skills"><div class="wrap rv">
-  <div class="mark"><s></s>20 concerns, represented</div>
-  <h2>Not a claim of execution. Each cell shows what the skill owns.</h2>
-  <p class="slede">This whole page was built by them. Hover, type, toggle — they’re real.</p>
-  <div class="bento">
-
-    <div class="cell w3 tall" data-skill="design-system-interview"><div class="lab"><span class="n">00</span><h3>design-system-interview</h3></div>
-      <div class="stage" style="gap:.5rem">
-        <div class="bubble ai" style="max-width:100%;font-size:.95rem">“‘Modern’ is a non-answer — name one you’d resemble.”</div>
-        <div class="bubble you" style="max-width:100%;font-size:.9rem">basalt + glaze</div>
-        <div class="out">→ tokens committed</div>
-      </div><p class="cap">Grills you into a system + tokens before any code.</p></div>
-
-    <div class="cell w3" data-skill="tasteroll"><div class="lab"><span class="n">🎲</span><h3>tasteroll</h3></div>
-      <div class="stage" style="gap:.55rem">
-        <div class="row" style="align-items:center"><span class="seed-counter" id="roll-seed">seed 42</span><button class="dbtn" type="button" id="roll-btn" data-test="roll-dice" style="background:var(--copper-deep);color:#ffe6cf">Roll</button><button class="dbtn" type="button" id="lock-btn" data-test="roll-lock" style="background:transparent;color:var(--ink);border-color:var(--line);font-size:.78rem;padding:.4em .7em">Lock</button></div>
-        <div class="row" id="roll-chips" aria-label="Rolled design dimensions" role="status" aria-live="polite">
-          <span class="dchip" data-dim="ref"><b>ref</b>—</span>
-          <span class="dchip" data-dim="vibe"><b>vibe</b>—</span>
-          <span class="dchip" data-dim="mode"><b>mode</b>—</span>
-          <span class="dchip" data-dim="sig"><b>sig</b>—</span>
-        </div>
-        <span class="note" id="roll-output" role="status" aria-live="polite" style="line-height:1.5;font-size:.72rem">seed 42 · click roll</span>
+    <section class="chapter wrap" id="retrofit" aria-labelledby="retrofit-title">
+      <div class="section-head">
+        <p class="eyebrow">01 / The 2026-09-05 retrofit</p>
+        <h2 id="retrofit-title">The gate had to earn its verdict.</h2>
+        <p>A 7-wave gauntlet tested the kit. The external adversarial review then found holes in how the gate trusted evidence. The retrofit closes those holes.</p>
       </div>
-      <p class="cap">Audit fixes what is broken. Roll picks the rest. Lock what works, re-roll.</p></div>
-
-    <div class="cell w3" data-skill="improve-existing-website"><div class="lab"><span class="n">01</span><h3>improve-existing-website</h3></div>
-      <div class="stage" style="gap:.45rem">
-        <div class="hzb">this page: nav, CTAs, type, color, states, proof</div>
-        <div class="hzg">→ existing system tightened on the live landing page</div>
-      </div><p class="cap">Reads the real site, separates signal from drift, then makes the partial system true.</p></div>
-
-    <div class="cell w3" data-skill="color-system"><div class="lab"><span class="n">02</span><h3>color-system</h3></div>
-      <div class="stage"><div class="ramp"><i style="background:oklch(22% .068 55)"></i><i style="background:oklch(42% .103 55)"></i><i style="background:oklch(56% .123 58)"></i><i style="background:oklch(76% .145 62)"></i><i style="background:oklch(84% .112 64)"></i><i style="background:oklch(78% .154 170)"></i></div>
-        <div class="row"><span class="note">OKLCH · copper × verdigris</span><span class="aa">AA 5.4:1 ✓</span></div></div>
-      <p class="cap">Perceptual ramps that pass contrast — math, not vibes.</p></div>
-
-    <div class="cell" data-skill="web-typography"><div class="lab"><span class="n">03</span><h3>web-typography</h3></div>
-      <div class="stage spec"><b style="font-size:2.4rem">Aa</b><span class="note">Redaction · perfect fourth · 66ch</span></div>
-      <p class="cap">Scale, measure, rhythm — fluid &amp; legible.</p></div>
-
-    <div class="cell" data-skill="component-states"><div class="lab"><span class="n">04</span><h3>component-states</h3></div>
-      <div class="stage"><button class="dbtn" type="button" data-cyc data-test="state-cycle">Default</button><span class="note" role="status" aria-live="polite" data-test="state-status">click → cycles real states</span></div>
-      <p class="cap">Hover, focus, active, disabled, loading — real.</p></div>
-
-    <div class="cell w3" data-skill="form-ux"><div class="lab"><span class="n">05</span><h3>form-ux</h3></div>
-      <div class="stage"><div class="fld" data-fld data-test="landing-form"><label for="de">Email</label><input id="de" type="email" placeholder="name@example.com" autocomplete="email" data-test="email-input" aria-describedby="email-msg"><div class="msg" id="email-msg" data-msg data-test="email-status" role="status" aria-live="polite">Enter a complete address; it checks when you leave the field.</div></div></div>
-      <p class="cap">Labels, truthful validation timing, specific inline errors, recovery.</p></div>
-
-    <div class="cell" data-skill="empty-states"><div class="lab"><span class="n">06</span><h3>empty-states</h3></div>
-      <div class="stage" data-empty><div class="sk" style="width:70%"></div><div class="sk" style="width:90%"></div><div class="row"><button class="dbtn" type="button" data-test="show-empty">Empty</button><button class="dbtn" type="button" data-test="show-error">Error</button><button class="dbtn" type="button" data-test="retry-list">Retry</button></div><div class="note" data-test="task-list" role="status" aria-live="polite">Loading preview.</div></div>
-      <p class="cap">Loading · empty · error — handled.</p></div>
-
-    <div class="cell" data-skill="theming"><div class="lab"><span class="n">07</span><h3>theming</h3></div>
-      <div class="stage"><div class="dm"><i class="l">Light</i><i class="d">Dark</i></div><span class="note">light + dark + high-contrast · one token source</span></div>
-      <p class="cap">Supported mappings from one token set; explicit preference and forced-colors behavior.</p></div>
-
-    <div class="cell" data-skill="micro-motion"><div class="lab"><span class="n">08</span><h3>micro-motion</h3></div>
-      <div class="stage"><span class="mochip">Hover me ↗</span><span class="note">transform · 180ms · reduced-motion safe</span></div>
-      <p class="cap">Purposeful feedback with interruption and reduced-motion paths.</p></div>
-
-    <div class="cell" data-skill="responsive-layout"><div class="lab"><span class="n">09</span><h3>responsive-layout</h3></div>
-      <div class="stage"><div class="mini"><i></i><i></i><i></i><i></i><i></i></div><span class="note">intrinsic · container queries</span></div>
-      <p class="cap">Survives any width — it just flows.</p></div>
-
-    <div class="cell" data-skill="a11y-pass"><div class="lab"><span class="n">10</span><h3>a11y-pass</h3></div>
-      <div class="stage"><button class="dbtn" type="button" data-test="a11y-focus" style="background:transparent;color:var(--ink);border-color:var(--line)">Tab to me</button><span class="aa">WCAG 2.2 AA ✓</span></div>
-      <p class="cap">Keyboard, focus, contrast — fixed, not bolted on.</p></div>
-
-    <div class="cell w4" data-skill="deslop-ui"><div class="lab"><span class="n">11</span><h3>deslop-ui</h3></div>
-      <div class="stage"><div class="ba"><div><div class="x bad">Get started</div><small>✕ pill · purple</small></div><div><div class="x good">Get started</div><small>✓ 5px · copper</small></div></div></div>
-      <p class="cap">Strips the named AI tells; commits to a direction.</p></div>
-
-    <div class="cell w3" data-skill="humanize-copy"><div class="lab"><span class="n">12</span><h3>humanize-copy</h3></div>
-      <div class="stage" style="gap:.45rem">
-        <div class="hzb"><s>“In today’s fast-paced landscape we leverage synergies to delve…”</s></div>
-        <div class="hzg">“Deploy logs in plain English — what shipped, what broke, what fixed it.”</div>
-      </div><p class="cap">Strips the ChatGPT accent — a checkable kill-list.</p></div>
-
-    <div class="cell w3" data-skill="data-viz"><div class="lab"><span class="n">13</span><h3>data-viz</h3></div>
-      <div class="stage">
-        <figure style="margin:0;width:100%">
-          <svg class="chart" viewBox="0 0 300 84" role="img" aria-labelledby="landing-chart-title landing-chart-desc">
-            <title id="landing-chart-title">Quarterly revenue reaches $4.2M</title>
-            <desc id="landing-chart-desc">Seven quarterly points rise from 3.1 million dollars to 4.2 million dollars, a 31 percent increase.</desc>
-            <line class="axis" x1="6" y1="74" x2="294" y2="74"/>
-            <polyline class="ln landing-trend" points="10,62 58,55 106,47 154,41 202,24 250,31 290,12"/>
-            <circle class="end" cx="290" cy="12" r="4"/>
-            <text x="284" y="26" text-anchor="end">$4.2M</text>
-          </svg>
-          <table id="landing-chart-table" class="sr-only"><caption>Quarterly revenue values</caption><tbody><tr><td>Q4 2024</td><td>$3.1M</td></tr><tr><td>Q1 2025</td><td>$3.2M</td></tr><tr><td>Q2 2025</td><td>$3.35M</td></tr><tr><td>Q3 2025</td><td>$3.5M</td></tr><tr><td>Q4 2025</td><td>$3.9M</td></tr><tr><td>Q1 2026</td><td>$3.75M</td></tr><tr><td>Q2 2026</td><td>$4.2M</td></tr></tbody></table>
-          <figcaption class="note" style="margin-top:.4rem">Revenue +31% · honest axis · direct label, no legend</figcaption>
-        </figure>
-      </div><p class="cap">Tufte-informed charts: data-ink, no chartjunk, real table fallback.</p></div>
-
-    <div class="cell" data-skill="cognitive-a11y"><div class="lab"><span class="n">14</span><h3>cognitive-a11y</h3></div>
-      <div class="stage"><span class="tldr">TL;DR</span><span class="note">plain language · one idea per line · predictable layout</span></div>
-      <p class="cap">Readable for ADHD, autism &amp; dyslexia — beyond WCAG.</p></div>
-
-    <div class="cell" data-skill="spacing-system"><div class="lab"><span class="n">15</span><h3>spacing-system</h3></div>
-      <div class="stage"><div style="display:flex;flex-direction:column;gap:6px;width:100%" aria-hidden="true"><i style="height:8px;width:22%;background:var(--copper);border-radius:3px"></i><i style="height:8px;width:42%;background:var(--copper);border-radius:3px;opacity:.78"></i><i style="height:8px;width:66%;background:var(--copper);border-radius:3px;opacity:.56"></i><i style="height:8px;width:100%;background:var(--copper);border-radius:3px;opacity:.36"></i></div><span class="note">one --space-* scale · section rhythm</span></div>
-      <p class="cap">Consistent spacing &amp; vertical cadence from one ramp.</p></div>
-
-    <div class="cell w3" data-skill="i18n-ready"><div class="lab"><span class="n">16</span><h3>i18n-ready</h3></div>
-      <div class="stage" style="gap:.45rem"><div class="hzb" lang="en">Get started</div><div class="hzg" lang="es">Comienza ahora mismo</div><span class="note">EN/ES first-class · longest approved locale fixture · logical properties</span></div>
-      <p class="cap">Multilingual-resilient: text expansion, <code>Intl</code>, native voice per language.</p></div>
-
-    <div class="cell" data-skill="art-direction"><div class="lab"><span class="n">17</span><h3>art-direction</h3></div>
-      <div class="stage"><div style="display:flex;gap:.45rem;align-items:center" aria-hidden="true"><span style="width:26px;height:26px;border:2px solid var(--copper);border-radius:7px"></span><span style="width:26px;height:26px;border:2px solid var(--copper);border-radius:7px"></span><span style="width:26px;height:26px;border:2px solid var(--copper);border-radius:7px"></span></div><span class="note">one committed icon set · real OG/favicon</span></div>
-      <p class="cap">Imagery &amp; icons as decisions — no gradient-blob AI graphics.</p></div>
-
-    <div class="cell w3 tall" data-skill="tastecheck-pass"><div class="lab"><span class="n">18</span><h3>tastecheck-pass</h3></div>
-      <div class="stage" style="gap:.55rem"><div class="note" style="line-height:1.95">✓ tokens · ✓ contrast ≥ 4.5:1 · ✓ keyboard<br>✓ cold-load render · ✓ no slop tells · ✓ structural<br>✓ 20 skills audited · ✓ 11 findings fixed<br>✓ blind eval rehearsal · 160 sim / 0 real</div><!-- release-status-gate:v1:start --><span class="aa">Gate: UNVERIFIED</span><!-- release-status-gate:v1:end --></div>
-      <p class="cap">The ship gate: runs every self-check, reports a pass/fail table — with a pasteable auditor.</p></div>
-
-    <div class="cell w2"><div class="lab"><span class="n">+</span><h3>plain markdown</h3></div>
-      <div class="stage" style="font:600 .9rem var(--body);color:var(--muted)">Claude · Codex · Gemini · Cursor · Kimi<br><span class="note" style="margin-top:.5rem;display:block">plain markdown · no runtime</span></div>
-      <p class="cap">Canonical .agents links plus detected skill dirs.</p></div>
-    <div class="cell w3"><div class="lab"><span class="n">v2</span><h3>blind evaluation</h3></div>
-      <div class="stage" style="gap:.5rem">
-        <div style="display:flex;flex-wrap:wrap;gap:2px" aria-hidden="true" id="ordinal-grid"></div>
-        <div style="display:flex;gap:.8rem;flex-wrap:wrap;font:600 .72rem var(--mono)">
-          <span style="color:var(--copper)">■ 48 generation</span>
-          <span style="color:var(--verd)">■ 96 judgment</span>
-          <span style="color:var(--muted)">■ 16 anchor</span>
-        </div>
-        <span class="note">160 simulated · 0 real · zero spend · sealed authority</span>
+      <div class="retrofit-summary">
+        <p>External ASTRA review: <strong>8 findings closed</strong>, including <strong>5 SEV-1 evidence-authority holes</strong>. The five repairs below change what can support a verdict.</p>
+        <div class="review-count"><strong>8 findings. 8 closed.</strong><span>Recorded in the <a href="_retrofit-2026-09-04/ASTRA-FIX-REPORT.md">ASTRA fix report</a>. Closure does not upgrade public release status.</span></div>
       </div>
-      <p class="cap">Machine-only blind comparison: rehearsed, adversarially tested, production not started.</p></div>
+      <ol class="changes">
+        <li><h3>Verdicts now DERIVED from observations.</h3><p>The gate derives the result from recorded observations. A declared pass cannot stand in for the work.</p></li>
+        <li><h3>Reviews bound to check + artifact + evidence.</h3><p>A review carries the check ID, rubric, artifact digest, and complete-evidence digest. A transplanted approval produces HOLD.</p></li>
+        <li><h3>Dependency-manifest capture.</h3><p>The capture includes linked local CSS, JavaScript, and fonts. Changed dependencies block release even when the entry file is unchanged.</p></li>
+        <li><h3>Subject inventories.</h3><p>Browser coverage reconciles <strong>route × state × viewport</strong>. Control coverage reconciles control × state. A smaller claimed scope cannot erase required subjects.</p></li>
+        <li><h3>Complete-capture hashing.</h3><p>The complete evidence gets hashed. Lossy or truncated captures cannot pass; redaction belongs to presentation.</p></li>
+      </ol>
+      <div class="afterword">
+        <p>The other three findings separate verifier and consumer roots, distinguish craft floors from style defaults, and keep authority claims scoped to the evidence.</p>
+        <a class="text-link" href="_retrofit-2026-09-04/ASTRA-REVIEW.md">Read the adversarial review <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+    <section class="chapter density" aria-labelledby="density-title">
+      <div class="wrap density-layout">
+        <div>
+          <p class="eyebrow">02 / Less to carry</p>
+          <div class="density-figure">−15.1<span>%</span></div>
+          <h2 id="density-title">A lighter kit. The checks stay explicit.</h2>
+          <p class="density-explanation">Token-density cut across all 20 skill bodies. The heaviest skill, <code>web-typography</code>, was cut <strong>31.6%</strong>.</p>
+        </div>
+        <div class="density-notes">
+          <div><h3>Protected language stayed intact.</h3><p>Commands, check IDs, thresholds, verdict grammar, and release-facts blocks were retained. These are approximate token counts, measured as bytes ÷ 3.9.</p></div>
+          <table class="density-table">
+            <caption>Approximate tokens · skill bodies</caption>
+            <thead><tr><th scope="col">Scope</th><th scope="col">Before</th><th scope="col">After</th></tr></thead>
+            <tbody><tr><th scope="row">All 20 skills</th><td>24,463.8</td><td>20,781.5</td></tr><tr><th scope="row">Typography</th><td>2,442.3</td><td>1,669.5</td></tr></tbody>
+          </table>
+          <figure class="landing-chart" data-skill="data-viz" aria-labelledby="landing-chart-title" aria-describedby="landing-chart-desc">
+            <figcaption>Seven waves · sequence shown, not a score</figcaption>
+            <svg viewBox="0 0 300 84" role="img" aria-labelledby="landing-chart-title landing-chart-desc">
+              <title id="landing-chart-title">Seven-wave retrofit sequence</title>
+              <desc id="landing-chart-desc">Seven plotted points represent the seven retrofit waves. The line is a visual index of sequence, not a measured performance score.</desc>
+              <line class="axis" x1="6" y1="70" x2="294" y2="70"></line>
+              <polyline class="ln landing-trend" points="10,52 56,42 102,52 148,34 194,44 240,28 290,38"></polyline>
+            </svg>
+            <table id="landing-chart-table" class="chart-table"><caption>Seven retrofit waves</caption><tbody><tr><td>Wave 1</td><td>Gauntlet</td></tr><tr><td>Wave 2</td><td>Gauntlet</td></tr><tr><td>Wave 3</td><td>Gauntlet</td></tr><tr><td>Wave 4</td><td>Gauntlet</td></tr><tr><td>Wave 5</td><td>Gauntlet</td></tr><tr><td>Wave 6</td><td>Gauntlet</td></tr><tr><td>Wave 7</td><td>Gauntlet</td></tr></tbody></table>
+          </figure>
+          <div><h3>Mutation score: 4/4.</h3><p>Four tested mutations were caught. The structural lane passed after compression. These checks do not prove semantic prose equivalence.</p></div>
+          <div><h3>One finalization path.</h3><code class="command">npm run finalize</code><p>Refresh receipts and pins, project public status, and validate the verification chain together. Stale or missing evidence stays UNVERIFIED or HOLD.</p></div>
+          <a class="text-link" href="_retrofit-2026-09-04/DENSITY-PASS-REPORT.md">Read the density measurements <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+    <section class="chapter wrap" id="skills" aria-labelledby="skills-title">
+      <div class="section-head">
+        <p class="eyebrow">03 / The instruments</p>
+        <h2 id="skills-title">Commit to a direction. Carry it through.</h2>
+        <p>20 skills, each with a job. Read the relevant Markdown with your coding agent, then use <code>tastecheck-pass</code> to account for the required evidence.</p>
+      </div>
+      <div class="skill-index">
+        <div class="skill-group"><div><h3>Find the direction</h3><p>A brief, an existing site, or a seeded exploration.</p></div><ul>
+          <li data-skill="design-system-interview"><a href="skills/design-system-interview/SKILL.md">design-system-interview</a></li>
+          <li data-skill="improve-existing-website"><a href="skills/improve-existing-website/SKILL.md">improve-existing-website</a></li>
+          <li data-skill="tasteroll"><a href="skills/tasteroll/SKILL.md">tasteroll</a></li>
+        </ul></div>
+        <div class="skill-group"><div><h3>Build the foundations</h3><p>Color, type, space, and theme roles.</p></div><ul>
+          <li data-skill="color-system"><a href="skills/color-system/SKILL.md">color-system</a></li>
+          <li data-skill="web-typography"><a href="skills/web-typography/SKILL.md">web-typography</a></li>
+          <li data-skill="spacing-system"><a href="skills/spacing-system/SKILL.md">spacing-system</a></li>
+          <li data-skill="theming"><a href="skills/theming/SKILL.md">theming</a></li>
+        </ul></div>
+        <div class="skill-group"><div><h3>Make the behavior hold</h3><p>Reflow, controls, forms, and recovery.</p></div><ul>
+          <li data-skill="responsive-layout"><a href="skills/responsive-layout/SKILL.md">responsive-layout</a></li>
+          <li data-skill="component-states"><a href="skills/component-states/SKILL.md">component-states</a></li>
+          <li data-skill="form-ux"><a href="skills/form-ux/SKILL.md">form-ux</a></li>
+          <li data-skill="empty-states"><a href="skills/empty-states/SKILL.md">empty-states</a></li>
+        </ul></div>
+        <div class="skill-group"><div><h3>Give the surface a job</h3><p>Movement, quantitative evidence, and imagery.</p></div><ul>
+          <li data-skill="micro-motion"><a href="skills/micro-motion/SKILL.md">micro-motion</a></li>
+          <li data-skill="data-viz"><a href="skills/data-viz/SKILL.md">data-viz</a></li>
+          <li data-skill="art-direction"><a href="skills/art-direction/SKILL.md">art-direction</a></li>
+        </ul></div>
+        <div class="skill-group"><div><h3>Inspect the experience</h3><p>Access, cognitive load, language, and generic defaults.</p></div><ul>
+          <li data-skill="a11y-pass"><a href="skills/a11y-pass/SKILL.md">a11y-pass</a></li>
+          <li data-skill="cognitive-a11y"><a href="skills/cognitive-a11y/SKILL.md">cognitive-a11y</a></li>
+          <li data-skill="i18n-ready"><a href="skills/i18n-ready/SKILL.md">i18n-ready</a></li>
+          <li data-skill="deslop-ui"><a href="skills/deslop-ui/SKILL.md">deslop-ui</a></li>
+          <li data-skill="humanize-copy"><a href="skills/humanize-copy/SKILL.md">humanize-copy</a></li>
+        </ul></div>
+        <div class="skill-group"><div><h3>Account for the decision</h3><p>Every required check needs evidence.</p></div><ul>
+          <li data-skill="tastecheck-pass"><a href="skills/tastecheck-pass/SKILL.md">tastecheck-pass</a></li>
+        </ul></div>
+      </div>
+      <div class="gallery-link"><a class="text-link" href="samples/index.html">One product story. 8 gallery systems. <span aria-hidden="true">↗</span></a></div>
+      <div class="contract-rail" aria-label="Landing contract demonstrations">
+        <div class="contract-demo">
+          <p class="eyebrow">State surface</p>
+          <h3>One control, three states.</h3>
+          <div class="demo-controls">
+            <button class="demo-button" type="button" data-test="state-cycle">Default</button>
+            <button class="demo-button" type="button" data-test="a11y-focus">Keyboard focus</button>
+          </div>
+          <p class="demo-status" role="status" aria-live="polite" data-test="state-status">Default state. Activate to inspect loading and disabled.</p>
+        </div>
+        <div class="contract-demo">
+          <p class="eyebrow">Form surface</p>
+          <h3>Validation waits for enough information.</h3>
+          <form class="contract-form" data-test="landing-form" novalidate>
+            <label for="landing-email">Email</label>
+            <input id="landing-email" type="email" placeholder="name@example.com" autocomplete="email" data-test="email-input" aria-describedby="email-status">
+            <p class="demo-status" id="email-status" role="status" aria-live="polite" data-test="email-status">Enter a complete address; it checks when you leave the field.</p>
+          </form>
+        </div>
+        <div class="contract-demo">
+          <p class="eyebrow">Recovery surface</p>
+          <h3>Empty and error states keep a next step.</h3>
+          <div class="demo-controls">
+            <button class="demo-button" type="button" data-test="show-empty">Empty</button>
+            <button class="demo-button" type="button" data-test="show-error">Error</button>
+            <button class="demo-button" type="button" data-test="retry-list">Retry</button>
+          </div>
+          <p class="demo-status" role="status" aria-live="polite" data-test="task-list">Preview is ready to inspect.</p>
+        </div>
+      </div>
+    </section>
+    <section id="proof">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">04 / Canonical proof</p>
+          <h2 id="proof-title">This landing page is the integration surface.</h2>
+          <p>GitHub Pages homepage represents every skill concern directly. The page carries the design direction, the retrofit evidence, and the live contract surfaces in one readable route.</p>
+        </div>
+        <div class="proof-copy">
+          <p>The landing page is the canonical proof journey: named controls expose theme, state, form, recovery, chart, and accessibility behavior without sending the reader to a side demo. The score and gate remain accountable judgment + evidence, not an objective guarantee.</p>
+          <a class="text-link" href="docs/VERIFICATION.md">Read the verification boundary <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+    <section class="chapter use" id="use" aria-labelledby="use-title">
+      <div class="wrap">
+        <div class="use-layout">
+          <div class="use-copy">
+            <p class="eyebrow">05 / Put it to work</p>
+            <h2 id="use-title">Your agent can read Markdown. Start there.</h2>
+            <p>TasteCheck is plain Markdown with no runtime or SDK. Ask your coding agent to read the relevant <code>SKILL.md</code>, or install the kit into your agent’s skill directories.</p>
+            <div class="actions"><a class="button" href="README.md#quickstart">Read the quickstart <span aria-hidden="true">↗</span></a></div>
+          </div>
+          <div class="install">
+            <h3>Install the kit</h3>
+            <pre aria-label="Installation commands"><code>git clone https://github.com/KyaniteLabs/tastecheck
+./tastecheck/install.sh</code></pre>
+            <p>The installer links canonical skills and mirrors them into detected agent homes.</p>
+            <a class="text-link" href="README.md">Read the repository guide <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <aside class="boundary" aria-labelledby="boundary-title">
+          <div><h3 id="boundary-title">A judgment you can account for.</h3><p class="status-label">Release: UNVERIFIED<br>Effectiveness: BLOCKED</p><!-- release-status-gate:v1:start --><span class="aa">Gate: UNVERIFIED</span><!-- release-status-gate:v1:end --></div>
+          <div><p>The score and gate are accountable judgment + evidence, not an objective guarantee. Subjective checks require independent human review. The decision covers the captured artifact and its frozen scope.</p><a class="text-link" href="docs/VERIFICATION.md">Read what is verified, and what is not <span aria-hidden="true">↗</span></a></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <footer class="footer wrap">
+    <p>TasteCheck <span aria-hidden="true">/</span> Kyanite Labs</p>
+    <div class="footer-links"><a href="CHANGELOG.md">Changelog</a><a href="LICENSE">MIT license</a><a href="#main">Back to top <span aria-hidden="true">↑</span></a></div>
+  </footer>
+  <template id="release-inventory">
+<!-- release-facts:v1:start -->
+Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
+<!-- release-facts:v1:end -->
+  </template>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var themeButtons = [].slice.call(document.querySelectorAll('[data-test^="theme-"]'));
+      function setTheme(theme) {
+        if (['dark', 'light', 'contrast'].indexOf(theme) === -1) return;
+        root.dataset.theme = theme;
+        themeButtons.forEach(function (button) {
+          button.setAttribute('aria-pressed', button.dataset.test === 'theme-' + theme ? 'true' : 'false');
+        });
+      }
+      themeButtons.forEach(function (button) {
+        button.addEventListener('click', function () { setTheme(button.dataset.test.replace('theme-', '')); });
+      });
 
-  </div>
-</div></section>
+      var stateButton = document.querySelector('[data-test="state-cycle"]');
+      var stateStatus = document.querySelector('[data-test="state-status"]');
+      var states = ['Default', 'Loading', 'Disabled'];
+      var stateIndex = 0;
+      function cycleState() {
+        if (!stateButton || !stateStatus) return;
+        stateIndex = (stateIndex + 1) % states.length;
+        stateButton.textContent = states[stateIndex];
+        stateButton.disabled = states[stateIndex] === 'Disabled';
+        stateStatus.textContent = states[stateIndex] + ' state is visible for inspection.';
+        if (stateButton.disabled) {
+          window.setTimeout(function () {
+            stateButton.disabled = false;
+            stateIndex = 0;
+            stateButton.textContent = states[stateIndex];
+            stateStatus.textContent = 'Disabled state inspected; default state restored.';
+          }, 700);
+        }
+      }
+      if (stateButton) stateButton.addEventListener('click', cycleState);
 
-<section id="why"><div class="wrap rv">
-  <div class="problem">
-    <div>
-      <div class="mark"><s></s>what taste refuses</div>
-      <h2>There isn’t one AI slop. There are three.</h2>
-      <p class="slede">You just watched the skills work. Here’s the principle behind them: slop isn’t only the look — the skeleton repeats, and so does the copy. We refuse all three planes.</p>
-    </div>
-    <div class="twoslop">
-      <div class="ts"><div class="twosw" aria-hidden="true"><div class="sw p"></div><div class="sw c"></div></div><div><h3>The look</h3><p>Purple gradient or editorial serif — same average, one season apart.</p></div></div>
-      <div class="ts"><div class="wf wfm" aria-hidden="true"><div class="h"></div><div class="r"><span></span><span></span><span></span></div></div><div><h3>The structure</h3><p>Centered hero, 3 cards, equal grid — same bones under any skin.</p></div></div>
-      <div class="ts"><div class="cpico" aria-hidden="true">“…”</div><div><h3>The copy</h3><p><s>delve</s> · <s>in today’s fast-paced world</s> · <s>it’s not just X, it’s Y</s></p></div></div>
-    </div>
-  </div>
-</div></section>
+      var email = document.querySelector('[data-test="email-input"]');
+      var emailStatus = document.querySelector('[data-test="email-status"]');
+      function validateEmail() {
+        if (!email || !emailStatus) return '';
+        var value = email.value.trim();
+        email.classList.remove('valid', 'invalid');
+        if (!value) {
+          emailStatus.textContent = 'Enter a complete address; it checks when you leave the field.';
+        } else if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(value)) {
+          email.classList.add('invalid');
+          emailStatus.textContent = 'Enter a valid email like name@example.com.';
+        } else {
+          email.classList.add('valid');
+          emailStatus.textContent = 'Looks good. No message was sent.';
+        }
+        return emailStatus.textContent;
+      }
+      function submitInvalid() {
+        if (!email) return '';
+        email.value = 'broken@example.';
+        return validateEmail();
+      }
+      function submitValid() {
+        if (!email) return '';
+        email.value = 'reader@example.com';
+        return validateEmail();
+      }
+      if (email) {
+        email.addEventListener('blur', validateEmail);
+        email.addEventListener('input', function () {
+          if (email.classList.contains('invalid')) validateEmail();
+        });
+      }
+      var form = document.querySelector('[data-test="landing-form"]');
+      if (form) form.addEventListener('submit', function (event) { event.preventDefault(); validateEmail(); });
 
-<section id="proof"><div class="wrap rv">
-  <div class="mark"><s></s>proof</div>
-  <h2>This landing page is the integration surface.</h2>
-  <p class="slede">The GitHub Pages homepage represents every skill concern directly, with named interactions for existing-site audit, inferred design system, OKLCH themes, type, states, form validation, empty/error/retry paths, chart/table parity, accessibility, human copy, motion, and responsive layout. The twentieth skill, <b>tasteroll</b>, is a procedural design generator — it audits what is broken, rolls committed design candidates from a seeded source of randomness, and locks the direction that works. A machine-only blind evaluation protocol (effectiveness v2) is built, rehearsed at 160 simulated calls with zero real calls, and adversarially tested — but production evaluation has not started.</p>
-  <div class="actions">
-    <a class="btn btn-primary" href="#skills">Review the live skill cells →</a>
-    <a class="btn btn-ghost" href="https://github.com/KyaniteLabs/tastecheck/blob/main/docs/VERIFICATION.md">Read verification notes</a>
-  </div>
-</div></section>
+      var taskStatus = document.querySelector('[data-test="task-list"]');
+      function showEmpty() {
+        if (taskStatus) taskStatus.textContent = 'No checks yet. Run a taste check to create the first report.';
+      }
+      function showError() {
+        if (taskStatus) taskStatus.textContent = 'Could not load checks. Retry keeps the path recoverable.';
+      }
+      function retryList() {
+        if (taskStatus) taskStatus.textContent = 'Preview recovered: typography, color, accessibility.';
+      }
+      var emptyButton = document.querySelector('[data-test="show-empty"]');
+      var errorButton = document.querySelector('[data-test="show-error"]');
+      var retryButton = document.querySelector('[data-test="retry-list"]');
+      if (emptyButton) emptyButton.addEventListener('click', showEmpty);
+      if (errorButton) errorButton.addEventListener('click', showError);
+      if (retryButton) retryButton.addEventListener('click', retryList);
 
-<section class="install" id="install"><div class="wrap rv">
-  <div class="mark"><s></s>install</div>
-  <h2>One command. Then just build.</h2>
-  <p class="slede">Links canonical skills and mirrors them into detected agent homes.</p>
-  <div class="box"><span class="c">$</span> git clone https://github.com/KyaniteLabs/tastecheck<br><span class="c">$</span> ./tastecheck/install.sh</div>
-</div></section>
-</main>
-<footer><div class="wrap"><span><b>tastecheck</b> — taste is the only moat. MIT © Kyanite Labs.</span><span>github.com/KyaniteLabs/tastecheck</span></div></footer>
-
-<script>
-/* reveal on scroll (alive, reduced-motion aware) */
-document.documentElement.classList.add('js');
-(function(){
- var rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
- var els=[].slice.call(document.querySelectorAll('.rv'));
- if(rm||!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});}
- else{var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}})},{threshold:0,rootMargin:'0px 0px -8% 0px'});els.forEach(function(e){io.observe(e)});
-   setTimeout(function(){els.forEach(function(e){e.classList.add('in')});},1500);}
-})();
-/* theming: page-level light, dark, high-contrast paths */
-(function(){
- var buttons=[].slice.call(document.querySelectorAll('[data-test^="theme-"]'));
- function setTheme(theme){
-   document.documentElement.dataset.theme=theme;
-   buttons.forEach(function(button){button.setAttribute('aria-pressed',button.dataset.test==='theme-'+theme?'true':'false');});
- }
- buttons.forEach(function(button){button.addEventListener('click',function(){setTheme(button.dataset.test.replace('theme-',''));});});
- window.setTastecheckTheme=setTheme;
-})();
-/* component-states: cycle real states */
-document.querySelectorAll('[data-cyc]').forEach(function(b){
- var st=['Default','Loading','Disabled'],i=0,status=document.querySelector('[data-test="state-status"]');
- b.addEventListener('click',function(){i=(i+1)%st.length;b.disabled=false;b.classList.remove('loading');
-   if(st[i]==='Disabled'){b.disabled=true;b.textContent='Disabled';if(status)status.textContent='Disabled state is visible, then re-enables for the demo.';setTimeout(function(){b.disabled=false;if(status)status.textContent='Disabled state shown; button re-enabled.';},900);}
-   else if(st[i]==='Loading'){b.classList.add('loading');b.textContent='Loading';if(status)status.textContent='Loading state is visible and temporary.';setTimeout(function(){b.classList.remove('loading');b.textContent='Loaded';if(status)status.textContent='Loading state completed.';},900);}
-   else{b.textContent='Default';if(status)status.textContent='Default state restored.';}});
-});
-/* form-ux: blur feedback only after the value is complete enough to judge */
-document.querySelectorAll('[data-fld]').forEach(function(f){
- var inp=f.querySelector('input'),msg=f.querySelector('[data-msg]');
- inp.addEventListener('blur',function(){
-   if(!inp.value){f.className='fld';msg.textContent='Enter a complete address; it checks when you leave the field.';return;}
-   if(!inp.value.includes('@')){f.className='fld';msg.textContent='Finish the address before we check it.';return;}
-   if(inp.checkValidity()){f.className='fld ok';msg.textContent='Looks good.';}
-   else{f.className='fld err';msg.textContent='Enter a valid email like name@example.com';}
- });
- inp.addEventListener('input',function(){if(f.classList.contains('err')&&inp.checkValidity()){f.className='fld ok';msg.textContent='Looks good.';}});
-});
-/* empty-states: empty, error, retry recovery */
-(function(){
- var target=document.querySelector('[data-test="task-list"]');
- function setEmpty(){target.textContent='No checks yet. Run a taste check to create the first report.';}
- function setError(){target.textContent='Could not load checks. Retry keeps the path recoverable.';}
- function retry(){target.textContent='3 checks loaded: typography, color, accessibility.';}
- document.querySelector('[data-test="show-empty"]').addEventListener('click',setEmpty);
- document.querySelector('[data-test="show-error"]').addEventListener('click',setError);
- document.querySelector('[data-test="retry-list"]').addEventListener('click',retry);
- window.tastecheckEmptyStates={setEmpty:setEmpty,setError:setError,retry:retry};
-})();
-function runLandingA11yAudit(){
-  var failures=[], warnings=[];
-  function has(pattern){return pattern.test(document.documentElement.innerHTML);}
-  if(document.querySelectorAll('main').length!==1) failures.push('Expected exactly one main landmark.');
-  if(document.querySelectorAll('h1').length!==1) failures.push('Expected exactly one h1.');
-  if(!document.querySelector('.skip[href="#main"]')) failures.push('Missing skip link to #main.');
-  if(!has(/:focus-visible/)) failures.push('Missing focus-visible CSS.');
-  if(!has(/prefers-reduced-motion:reduce/)) failures.push('Missing reduced-motion CSS guard.');
-  if(!has(/forced-colors:active/)) failures.push('Missing forced-colors CSS guard.');
-  function controlName(el){
-    var labelledby=el.getAttribute('aria-labelledby'),label='';
-    if(labelledby){label=labelledby.split(/\s+/).map(function(id){var node=document.getElementById(id);return node?node.textContent:'';}).join(' ');}
-    if(!label&&el.id){var byFor=document.querySelector('label[for="'+el.id+'"]');if(byFor)label=byFor.textContent;}
-    return (el.getAttribute('aria-label')||label||el.textContent||el.value||'').trim();
-  }
-  [].slice.call(document.querySelectorAll('button,input,select,summary')).forEach(function(el){
-    var name=controlName(el);
-    if(!name) failures.push('Unnamed control: '+el.tagName.toLowerCase()+(el.getAttribute('data-test')?'['+el.getAttribute('data-test')+']':''));
-  });
-  return {failures:failures,warnings:warnings};
-}
-window.a11yAudit=runLandingA11yAudit;
-/* effectiveness v2: render the 160-ordinal protocol grid */
-(function(){
-  var grid=document.getElementById('ordinal-grid');if(!grid)return;
-  var cs=getComputedStyle(document.documentElement);
-  var gen=cs.getPropertyValue('--copper').trim();
-  var jud=cs.getPropertyValue('--verd').trim();
-  var anc=cs.getPropertyValue('--muted').trim();
-  for(var i=0;i<160;i++){
-    var b=document.createElement('i');
-    b.style.cssText='width:7px;height:7px;border-radius:1px;flex:none';
-    b.style.background=i<48?gen:i<144?jud:anc;
-    grid.appendChild(b);
-  }
-})();
-/* tasteroll: seeded roll with lock/reroll on the landing page */
-(function(){
-  var btn=document.getElementById('roll-btn'),lockBtn=document.getElementById('lock-btn'),out=document.getElementById('roll-output');
-  if(!btn||!out)return;
-  var seed=42,locked={};
-  var dims={
-    ref:['mineral','Swiss','brutalist','folio','shipping','clinical','humanist','maximalist'],
-    pers:['warm','serious','playful','refined','stark','editorial','operational','decorative'],
-    mode:['light','dark','dual'],
-    sig:['needle','rule','display-word','color-block','bento','timeline','annotation','sixling']
-  };
-  var labels={ref:'ref',pers:'vibe',mode:'mode',sig:'sig'};
-  function xoshiro(s){s=s>>>0||1;var st=[0,0,0,0];for(var i=0;i<4;i++){s=(s+0x9E3779B9)>>>0;var z=s;z=(z^(z>>>16))*0x85EBCA6B>>>0;z=(z^(z>>>13))*0xC2B2AE35>>>0;st[i]=z^(z>>>16);}return function(){var r=((st[0]+st[3])<<7|0)+st[0];var t=(st[1]<<9)>>>0;st[2]^=st[0];st[3]^=st[1];st[1]^=st[2];st[0]^=st[3];st[2]^=t;st[3]=((st[3]<<21)|(st[3]>>>11));return r/0x100000000;};}
-  function pick(rng,arr){return arr[Math.floor(rng()*arr.length)];}
-  function roll(){
-    seed++;var rng=xoshiro(seed);var parts=[];var rolled={};
-    for(var d in dims){if(locked[d]){parts.push(labels[d]+'='+locked[d]+' 🔒');rolled[labels[d]]=locked[d];}else{var v=pick(rng,dims[d]);parts.push(labels[d]+'='+v);rolled[labels[d]]=v;}}
-    out.textContent='seed '+seed+' · '+parts.join(' · ');
-    var sc=document.getElementById('roll-seed');if(sc)sc.textContent='seed '+seed;
-    [].slice.call(document.querySelectorAll('#roll-chips .dchip')).forEach(function(c){var dim=c.getAttribute('data-dim');if(rolled[dim]!==undefined)c.innerHTML='<b>'+dim+'</b> '+rolled[dim];});
-  }
-  btn.addEventListener('click',roll);
-  if(lockBtn)lockBtn.addEventListener('click',function(){
-    var text=out.textContent;if(!text||text.indexOf('seed')===-1)return;
-    var dims_list=['ref','pers','mode','sig'];var d=dims_list[Object.keys(locked).length%dims_list.length];
-    var m=text.match(new RegExp(labels[d]+'=([^·🔒]+)'));if(m)locked[d]=m[1].trim();
-    out.textContent=out.textContent+' → locked '+labels[d];
-  });
-})();
-window.tastecheckLanding={
-  skillCount:20,
-  skillNames:[].slice.call(document.querySelectorAll('[data-skill]')).map(function(node){return node.dataset.skill;}).filter(function(name,index,list){return list.indexOf(name)===index;}).sort(),
-  setTheme:window.setTastecheckTheme,
-  cycleState:function(){document.querySelector('[data-test="state-cycle"]').click();},
-  submitInvalid:function(){var input=document.querySelector('[data-test="email-input"]');input.value='broken@example.';input.dispatchEvent(new Event('blur'));return document.querySelector('[data-test="email-status"]').textContent;},
-  submitValid:function(){var input=document.querySelector('[data-test="email-input"]');input.value='reader@example.com';input.dispatchEvent(new Event('blur'));return document.querySelector('[data-test="email-status"]').textContent;},
-  showEmpty:window.tastecheckEmptyStates.setEmpty,
-  showError:window.tastecheckEmptyStates.setError,
-  retryList:window.tastecheckEmptyStates.retry,
-  a11yAudit:window.a11yAudit
-};
-</script>
-
-<style>
-@media(forced-colors:active){
-  :root{--bg:Canvas;--s1:Canvas;--s2:Canvas;--s3:Canvas;--line:CanvasText;--ink:CanvasText;--muted:CanvasText;--copper:Highlight;--copper-deep:ButtonText;--on-copper:HighlightText;--verd:Highlight}
-  .hero .bg,.hero .scrim{display:none}
-  .btn,.dbtn,.tc-theme button,.cell,.stage,.ts{border-color:CanvasText}
-  .btn-primary,.tc-theme button[aria-pressed=true]{background:Highlight;color:HighlightText}
-}
-</style>
-</body></html>
+      function runLandingA11yAudit() {
+        var failures = [];
+        if (document.querySelectorAll('main').length !== 1) failures.push('Expected exactly one main landmark.');
+        if (document.querySelectorAll('h1').length !== 1) failures.push('Expected exactly one h1.');
+        if (!document.querySelector('.skip[href="#main"]')) failures.push('Missing skip link to #main.');
+        [].slice.call(document.querySelectorAll('button, input, select, summary')).forEach(function (control) {
+          var name = control.getAttribute('aria-label') || control.textContent || '';
+          if (control.id) {
+            var label = document.querySelector('label[for="' + control.id + '"]');
+            if (label) name = label.textContent;
+          }
+          if (!name.trim()) failures.push('Unnamed control: ' + control.tagName.toLowerCase());
+        });
+        return { failures: failures, warnings: [] };
+      }
+      window.a11yAudit=runLandingA11yAudit;
+      window.tastecheckLanding={
+        skillCount:20,
+        skillNames:[].slice.call(document.querySelectorAll('[data-skill]')).map(function (node) { return node.dataset.skill; }).filter(function (name, index, list) { return list.indexOf(name) === index; }).sort(),
+        setTheme:setTheme,
+        cycleState:cycleState,
+        submitInvalid:submitInvalid,
+        submitValid:submitValid,
+        showEmpty:showEmpty,
+        showError:showError,
+        retryList:retryList,
+        a11yAudit:window.a11yAudit
+      };
+    }());
+  </script>
+</body>
+</html>
