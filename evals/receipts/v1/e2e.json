@@ -6,30 +6,30 @@
     "id": "tastecheck-live-execution",
     "version": 1
   },
-  "source_tree_sha256": "682a181fae1c3485465c11b47c3eeb426ccf7a3b6839d614b286ac353387f948",
+  "source_tree_sha256": "c46024aa397f2b7098cecd9269959a45e376377c648b9e48753dcb6ea3385252",
   "nonce": "e2e-release-v1-0001",
   "runtime": {
-    "node": "v26.0.0",
+    "node": "v22.22.2",
     "playwright": "1.61.1",
     "browser": "149.0.7827.55",
-    "platform": "darwin"
+    "platform": "linux"
   },
-  "started_at": "2026-07-14T00:22:07.930Z",
-  "finished_at": "2026-07-14T00:22:09.900Z",
+  "started_at": "2026-09-06T02:43:17.308Z",
+  "finished_at": "2026-09-06T02:43:19.851Z",
   "executed": true,
   "reproducible": true,
   "artifacts": [
     {
       "id": "operator-desktop",
-      "path": "evals/receipts/v1/artifacts/e2e/operator-desktop-fd65835f9b4caa8861bd395655b8bc650f1ed1ec83656aa6f98f1fd12864befe.png",
-      "sha256": "fd65835f9b4caa8861bd395655b8bc650f1ed1ec83656aa6f98f1fd12864befe",
-      "bytes": 611414
+      "path": "evals/receipts/v1/artifacts/e2e/operator-desktop-8f3a590840de7f1246152d11ee847442093c606f2031e6471112debc11ecfc05.png",
+      "sha256": "8f3a590840de7f1246152d11ee847442093c606f2031e6471112debc11ecfc05",
+      "bytes": 574278
     },
     {
       "id": "operator-mobile",
-      "path": "evals/receipts/v1/artifacts/e2e/operator-mobile-ce8980d0ed2caed13fbd76bff66055dc84185073c2bbbf750317e4772548fbdd.png",
-      "sha256": "ce8980d0ed2caed13fbd76bff66055dc84185073c2bbbf750317e4772548fbdd",
-      "bytes": 495809
+      "path": "evals/receipts/v1/artifacts/e2e/operator-mobile-ba8fa1dc0767e831efe07d767b83b088cb61715e90b604b4d56b9e08ffd2f1c0.png",
+      "sha256": "ba8fa1dc0767e831efe07d767b83b088cb61715e90b604b4d56b9e08ffd2f1c0",
+      "bytes": 462281
     }
   ],
   "checks": [
@@ -46,7 +46,7 @@
     {
       "id": "install-operator-commands",
       "passed": true,
-      "detail": "20 operator command links verified"
+      "detail": "21 operator command links verified"
     },
     {
       "id": "operator-desktop-http",
