@@ -6,7 +6,7 @@
     "id": "tastecheck-live-execution",
     "version": 1
   },
-  "source_tree_sha256": "c46024aa397f2b7098cecd9269959a45e376377c648b9e48753dcb6ea3385252",
+  "source_tree_sha256": "0f5c6ef995c751d7b6e3ef8404b508b34cc61cdde8eb442d854c6e321a55b4af",
   "nonce": "browser-release-v1",
   "runtime": {
     "node": "v22.22.2",
@@ -14,8 +14,8 @@
     "browser": "149.0.7827.55",
     "platform": "linux"
   },
-  "started_at": "2026-09-06T02:42:55.136Z",
-  "finished_at": "2026-09-06T02:43:16.796Z",
+  "started_at": "2026-09-06T04:36:21.694Z",
+  "finished_at": "2026-09-06T04:36:43.830Z",
   "executed": true,
   "reproducible": true,
   "artifacts": [
@@ -39,9 +39,9 @@
     },
     {
       "id": "demo-02-states-390",
-      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-390-b45e077b0b8cd4d48600a688cf33ecd0d44eb2eb5ad5420efa0cae5be2585d10.png",
-      "sha256": "b45e077b0b8cd4d48600a688cf33ecd0d44eb2eb5ad5420efa0cae5be2585d10",
-      "bytes": 24431
+      "path": "evals/receipts/v1/artifacts/browser/demo-02-states-390-16e61dd629c5a84a77395e85cc3405dead1943b3b99c7a33830a885d0de0395b.png",
+      "sha256": "16e61dd629c5a84a77395e85cc3405dead1943b3b99c7a33830a885d0de0395b",
+      "bytes": 24429
     },
     {
       "id": "demo-02-states-768",
@@ -147,21 +147,21 @@
     },
     {
       "id": "landing-390",
-      "path": "evals/receipts/v1/artifacts/browser/landing-390-688005688944ed21b304b7987e2257b6ecb2a90b1d59bda215d1343fbe82aed7.png",
-      "sha256": "688005688944ed21b304b7987e2257b6ecb2a90b1d59bda215d1343fbe82aed7",
-      "bytes": 713972
+      "path": "evals/receipts/v1/artifacts/browser/landing-390-5543d197d33ca62b3385a446e96f9f69da9ed2c9fbf01ae4735d6e618e2e4d0f.png",
+      "sha256": "5543d197d33ca62b3385a446e96f9f69da9ed2c9fbf01ae4735d6e618e2e4d0f",
+      "bytes": 666920
     },
     {
       "id": "landing-768",
-      "path": "evals/receipts/v1/artifacts/browser/landing-768-0d796155b3b0dccaa9e1787605d43a6ef664bd4c4847b5355fc9e446ac6f34dc.png",
-      "sha256": "0d796155b3b0dccaa9e1787605d43a6ef664bd4c4847b5355fc9e446ac6f34dc",
-      "bytes": 812928
+      "path": "evals/receipts/v1/artifacts/browser/landing-768-f9aac31c64b4d8cb6901523019278821c7519c1a2c2531d05ae1dff29b79f966.png",
+      "sha256": "f9aac31c64b4d8cb6901523019278821c7519c1a2c2531d05ae1dff29b79f966",
+      "bytes": 762482
     },
     {
       "id": "landing-1280",
-      "path": "evals/receipts/v1/artifacts/browser/landing-1280-64a017f61364c9b5bc00821cb19791bc504a221cd6650959eac74b950d4828b5.png",
-      "sha256": "64a017f61364c9b5bc00821cb19791bc504a221cd6650959eac74b950d4828b5",
-      "bytes": 838214
+      "path": "evals/receipts/v1/artifacts/browser/landing-1280-65ddef1797fc76086d5c629882b3d0385dad9e1af0d24cd3ab9a9b3ad35a8d78.png",
+      "sha256": "65ddef1797fc76086d5c629882b3d0385dad9e1af0d24cd3ab9a9b3ad35a8d78",
+      "bytes": 802111
     },
     {
       "id": "sample-clay-390",
