@@ -2,17 +2,17 @@
   "schema_version": 1,
   "kind": "mechanical",
   "producer_id": "tastecheck.release.mechanical.v1",
-  "source_tree_sha256": "4a3cf9de20822eb20248474091c36fc5960bf05ccb12d7a6dbead89c0443ab0e",
-  "nonce": "358fc471983a1b9d6a9eef55a7360b27",
-  "started_at": "2026-09-06T02:24:19.751Z",
-  "finished_at": "2026-09-06T02:24:27.922Z",
+  "source_tree_sha256": "c46024aa397f2b7098cecd9269959a45e376377c648b9e48753dcb6ea3385252",
+  "nonce": "mechanical-release-v1",
+  "started_at": "2026-09-06T02:42:32.411Z",
+  "finished_at": "2026-09-06T02:42:42.609Z",
   "checks": [
     {
       "id": "test",
       "command": "npm test",
-      "passed": false,
-      "exit_code": 1,
-      "output_sha256": "8e67f5fc98b4b5449eade79e7828c323a08c3eec72009e36bec7295caa489bed"
+      "passed": true,
+      "exit_code": 0,
+      "output_sha256": "abcef5686924fa7c4b641fe2a636a7ae52134e3b4029098c3a8f691aaf7af308"
     },
     {
       "id": "contracts",
@@ -40,9 +40,9 @@
       "command": "internal source digest comparison",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "a617f7953a9a7cbc148396aa7aa8adb170a7325090747f727435fcf5a488d017"
+      "output_sha256": "d0aac53b25121547a8b926779acc89df9a93339d6a1ba6faca7feac7fbe4e79d"
     }
   ],
-  "status": "fail",
-  "reproducible": false
+  "status": "pass",
+  "reproducible": true
 }
