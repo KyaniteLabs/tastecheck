@@ -1,84 +1,74 @@
 {
   "schema_version": 1,
   "kind": "tastecheck-public-release-status",
-  "target_release": "1.4.1",
-  "source_tree_sha256": "76dd842dbbb9faff07691039ecc649915705a7703a1d787efb9482f6260f0189",
+  "target_release": "1.5.0",
+  "source_tree_sha256": "0dde29bb8c930be9728a56ba6b3bdca58e353b48360e1181a35b50f4bcef74d7",
   "manifest": {
     "id": "release-manifest",
     "path": "contracts/v1/release-receipts.json",
-    "sha256": "3e04cb4eae9f21ee95e3a7ef937b66061b52e6084126da923ddf7b22b9dac06e"
+    "sha256": "079c9a5034690af753728c3d3a70757f03187a78a64694d6e65c3f1b0ae7abdf"
   },
   "claims": [
     {
       "id": "engineering",
-      "status": "unverified",
+      "status": "pass",
       "evidence": [
         {
           "id": "context-budget",
           "path": "evals/receipts/v1/context-budget.json",
-          "sha256": "d5c954ff9ff05cff414fa1a8a5d783a97329f8683d057cee408ad3dff353960b"
+          "sha256": "f2103ce4b444721bd0238c77a31d82049a46c98b9f9deb029a768339f2431e88"
         },
         {
           "id": "browser",
           "path": "evals/receipts/v1/browser.json",
-          "sha256": "838329bbbcccb3e8a875ca7298a45c85758867f32f6a7743c31afd0bb58f42b8"
+          "sha256": "bd6ebfc1d9e917555ceaae29c42f0d0c819d3b185de393ea15a7f216102c9aa3"
         },
         {
           "id": "e2e",
           "path": "evals/receipts/v1/e2e.json",
-          "sha256": "b8b811e31a94d1d7d4d6a6ea89638b9cb265d30df0532da255a39d060a8d88a3"
+          "sha256": "6281255c7fe7045bd1cf9d0f9680cea82cb643aec3c1cf3f4023b8c2824ae935"
         },
         {
           "id": "mechanical",
           "path": "evals/receipts/v1/mechanical.json",
-          "sha256": "fdd5e89c742cf13f06e338d5cc6e4f3da34edc819764872f4d4889033fd07cad"
+          "sha256": "d458006aa7ee138e88e5454040497ce617c8a247c2cb28999f7fe9c3a7f411fe"
         },
         {
           "id": "security",
           "path": "evals/receipts/v1/security.json",
-          "sha256": "938ca4f8b2a83201cc9fd9da60a47ec6669f6a2fc1f1423bd3fd1a53ecfa77cf"
+          "sha256": "b4d358bccceb0dd7ff57905acc14cd8794d085adc7aaa00a8cf4d9bd3ab435e0"
         },
         {
           "id": "clean-clone",
           "path": "evals/receipts/v1/clean-clone.json",
-          "sha256": "50d07e8f80906b0255a194c3c5f39591000612dc32855a742d011d499b5ebb4f"
+          "sha256": "4c1f16644f5cf7968a9f3c3b2d1ee03c51c3a3270ce459cfedf78deef8d90c1f"
         }
       ],
-      "reasons": [
-        "browser: stale-until-rerun: registered producer must rerun for the current source revision",
-        "e2e: stale-until-rerun: registered producer must rerun for the current source revision",
-        "mechanical: stale-until-rerun: registered producer must rerun for the current source revision",
-        "security: stale-until-rerun: registered producer must rerun for the current source revision",
-        "clean-clone: stale-until-rerun: registered producer must rerun for the current source revision"
-      ]
+      "reasons": []
     },
     {
       "id": "browser",
-      "status": "unverified",
+      "status": "pass",
       "evidence": [
         {
           "id": "browser",
           "path": "evals/receipts/v1/browser.json",
-          "sha256": "838329bbbcccb3e8a875ca7298a45c85758867f32f6a7743c31afd0bb58f42b8"
+          "sha256": "bd6ebfc1d9e917555ceaae29c42f0d0c819d3b185de393ea15a7f216102c9aa3"
         }
       ],
-      "reasons": [
-        "stale-until-rerun: registered producer must rerun for the current source revision"
-      ]
+      "reasons": []
     },
     {
       "id": "accessibility",
-      "status": "unverified",
+      "status": "pass",
       "evidence": [
         {
           "id": "browser",
           "path": "evals/receipts/v1/browser.json",
-          "sha256": "838329bbbcccb3e8a875ca7298a45c85758867f32f6a7743c31afd0bb58f42b8"
+          "sha256": "bd6ebfc1d9e917555ceaae29c42f0d0c819d3b185de393ea15a7f216102c9aa3"
         }
       ],
-      "reasons": [
-        "browser coverage: stale-until-rerun: registered producer must rerun for the current source revision"
-      ]
+      "reasons": []
     },
     {
       "id": "effectiveness",
@@ -100,5 +90,5 @@
       ]
     }
   ],
-  "overall_status": "unverified"
+  "overall_status": "pass"
 }
