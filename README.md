@@ -7,8 +7,8 @@ Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21
 <!-- release-facts:v1:end -->
 
 <!-- release-status:v1:start -->
-[![Release status: HOLD](https://img.shields.io/badge/release-hold-c47b44.svg)](docs/VERIFICATION.md)
-> **Release status:** HOLD — a required release receipt failed; the public result is held.
+[![Release status: PASS](https://img.shields.io/badge/release-pass-c47b44.svg)](docs/VERIFICATION.md)
+> **Release status:** PASS — current source-bound release receipts cover the asserted browser and accessibility checks.
 > **Effectiveness status:** BLOCKED — historical evidence did not clear its release threshold.
 <!-- release-status:v1:end -->
 
