@@ -6,7 +6,7 @@
    Evidence: cold-load gate audit, keyboard tab trace, reflow checks, contrast samples,
    AX-tree summary, radio/export path, screenshots (light/dark/narrow). */
 import { spawn } from "node:child_process";
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync } from "node:fs";
 
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const TARGET = process.argv[2];
@@ -175,7 +175,15 @@ async function shot(name, features) {
 await shot("light", [{ name: "prefers-color-scheme", value: "light" }]);
 await shot("dark", [{ name: "prefers-color-scheme", value: "dark" }]);
 
-writeFileSync(OUT + "/evidence.json", JSON.stringify(E, null, 2));
+/* 2026-09-14 atomic-write hardening (smell batch cluster-3 prevention): a crash
+   mid-write must never leave a half-written evidence bag; tmp+rename, mirroring
+   release-gate.mjs writeAtomicNoFollow behavior. */
+{
+  const ev = `${JSON.stringify(E, null, 2)}\n`;
+  const tmp = OUT + "/.evidence.json.tmp";
+  writeFileSync(tmp, ev);
+  renameSync(tmp, OUT + "/evidence.json");
+}
 console.log("EVIDENCE WRITTEN:", OUT + "/evidence.json");
 try { chrome.kill(); } catch {}
 process.exit(0);
