@@ -4,15 +4,15 @@
   "producer_id": "tastecheck.release.mechanical.v1",
   "source_tree_sha256": "f7b67f1c47fb93468b9fce83bf2bd6c59db262fd96740446f383948dca1fd31e",
   "nonce": "mechanical-release-v1",
-  "started_at": "2026-09-14T17:11:34.175Z",
-  "finished_at": "2026-09-14T17:11:42.768Z",
+  "started_at": "2026-09-14T17:13:59.140Z",
+  "finished_at": "2026-09-14T17:14:07.936Z",
   "checks": [
     {
       "id": "test",
       "command": "npm test",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "27c20aad268a8aa12db5e17cd54ba4c8016463d3baf88ac65de07f4c1b342b81"
+      "output_sha256": "0f3c1e08a69476e6888f3786aad801ba4af244989d1c9e19fff6d2ed7627cbd0"
     },
     {
       "id": "contracts",
