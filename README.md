@@ -3,12 +3,12 @@
 TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who want evidence-backed UI quality.
 
 <!-- release-facts:v1:start -->
-Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
+Release inventory: v1.5.0 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
 <!-- release-facts:v1:end -->
 
 <!-- release-status:v1:start -->
-[![Release status: PASS](https://img.shields.io/badge/release-pass-c47b44.svg)](docs/VERIFICATION.md)
-> **Release status:** PASS — current source-bound release receipts cover the asserted browser and accessibility checks.
+[![Release status: UNVERIFIED](https://img.shields.io/badge/release-unverified-c47b44.svg)](docs/VERIFICATION.md)
+> **Release status:** UNVERIFIED — a required source-bound release receipt is stale-until-rerun, missing, or malformed.
 > **Effectiveness status:** BLOCKED — historical evidence did not clear its release threshold.
 <!-- release-status:v1:end -->
 

@@ -2,47 +2,47 @@
   "schema_version": 1,
   "kind": "mechanical",
   "producer_id": "tastecheck.release.mechanical.v1",
-  "source_tree_sha256": "f7b67f1c47fb93468b9fce83bf2bd6c59db262fd96740446f383948dca1fd31e",
+  "source_tree_sha256": "76dd842dbbb9faff07691039ecc649915705a7703a1d787efb9482f6260f0189",
   "nonce": "mechanical-release-v1",
-  "started_at": "2026-09-14T17:13:59.140Z",
-  "finished_at": "2026-09-14T17:14:07.936Z",
+  "started_at": "2026-09-14T23:40:58.660Z",
+  "finished_at": "2026-09-14T23:41:08.867Z",
   "checks": [
     {
       "id": "test",
       "command": "npm test",
-      "passed": true,
-      "exit_code": 0,
-      "output_sha256": "0f3c1e08a69476e6888f3786aad801ba4af244989d1c9e19fff6d2ed7627cbd0"
+      "passed": false,
+      "exit_code": 1,
+      "output_sha256": "47fdeb6099598966dd14a3645fd4df8cd0f3de075817c02a497cb07dedc5cb5b"
     },
     {
       "id": "contracts",
       "command": "npm run test:contracts",
-      "passed": true,
-      "exit_code": 0,
-      "output_sha256": "64ef9df808e1f7b3819a4e458269cd3b393336e34267902aa6067fb1c589eeaf"
+      "passed": false,
+      "exit_code": 1,
+      "output_sha256": "241ebf692f88601d302d939a0bd0921e8d36f2de632bbc0153419b9c730d8a07"
     },
     {
       "id": "eval-schema",
       "command": "npm run test:eval-schema",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "5f49e0dc51883ed310af1fdc8f80384d17f40f376f39553fdc62a2995831778c"
+      "output_sha256": "8e6ce238e29b251bdea465188bedfef36cb3a2e1b35912a10797313ea0e2ecda"
     },
     {
       "id": "release-eval-contracts",
       "command": "npm run test:release-eval-contracts",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "5761e9fdb5710e0d9cccebdccda13a7bad66f871739568ef48085ac031aa9d14"
+      "output_sha256": "23c50b083219abd74db5b374711ff2c4bc9c79103fe1bfbad057e6fe8137e0c7"
     },
     {
       "id": "source-stability",
       "command": "internal source digest comparison",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "87403e9b8232617c4ab0982ef880338cce4496b86a19164f8d03fde60a4e4341"
+      "output_sha256": "9b8ab9147a5bb22630ae8381e0bf90e397a5c7c67c81f2f02730ad508a9f7ba2"
     }
   ],
-  "status": "pass",
-  "reproducible": true
+  "status": "fail",
+  "reproducible": false
 }

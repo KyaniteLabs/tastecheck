@@ -1,7 +1,7 @@
 # Verification
 
 <!-- release-facts:v1:start -->
-Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
+Release inventory: v1.5.0 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
 <!-- release-facts:v1:end -->
 
 ## BLUF
@@ -12,7 +12,7 @@ on the pages and viewports actually tested. Effectiveness is unproven; the termi
 evaluation has not cleared its release threshold.
 
 <!-- release-status:v1:start -->
-Release evidence: PASS — receipts current. Effectiveness: BLOCKED.
+Release evidence: UNVERIFIED — stale-until-rerun. Effectiveness: BLOCKED.
 <!-- release-status:v1:end -->
 
 Public copy can be checked independently with:
