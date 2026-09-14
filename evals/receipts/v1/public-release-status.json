@@ -6,12 +6,12 @@
   "manifest": {
     "id": "release-manifest",
     "path": "contracts/v1/release-receipts.json",
-    "sha256": "9d9403f41c252912d4c998c5d9d18e71f060d1878c1c640fd455428cb7605e85"
+    "sha256": "0f2e12ce773a18b8d6019ffd17087c606026afc969c9ebcb8482979942516ebf"
   },
   "claims": [
     {
       "id": "engineering",
-      "status": "hold",
+      "status": "pass",
       "evidence": [
         {
           "id": "context-budget",
@@ -31,7 +31,7 @@
         {
           "id": "mechanical",
           "path": "evals/receipts/v1/mechanical.json",
-          "sha256": "ceb4b9f02cf7e477d06070a5d5d6019dbd45e5f615c6fcc3481b28f607cc15f1"
+          "sha256": "fdd5e89c742cf13f06e338d5cc6e4f3da34edc819764872f4d4889033fd07cad"
         },
         {
           "id": "security",
@@ -41,12 +41,10 @@
         {
           "id": "clean-clone",
           "path": "evals/receipts/v1/clean-clone.json",
-          "sha256": "554a9a773445f863d8d4a4a6b9656b458719b447797eb765d94d4b9230a348cd"
+          "sha256": "50d07e8f80906b0255a194c3c5f39591000612dc32855a742d011d499b5ebb4f"
         }
       ],
-      "reasons": [
-        "clean-clone: a required receipt check failed"
-      ]
+      "reasons": []
     },
     {
       "id": "browser",
@@ -92,5 +90,5 @@
       ]
     }
   ],
-  "overall_status": "hold"
+  "overall_status": "pass"
 }
