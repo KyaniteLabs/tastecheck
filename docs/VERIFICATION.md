@@ -12,7 +12,7 @@ on the pages and viewports actually tested. Effectiveness is unproven; the termi
 evaluation has not cleared its release threshold.
 
 <!-- release-status:v1:start -->
-Release evidence: UNVERIFIED — stale-until-rerun. Effectiveness: BLOCKED.
+Release evidence: HOLD — a required release receipt failed. Effectiveness: BLOCKED.
 <!-- release-status:v1:end -->
 
 Public copy can be checked independently with:

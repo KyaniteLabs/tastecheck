@@ -136,7 +136,7 @@ Clone the repository and run `./tastecheck/install.sh`.
 ### Effectiveness status
 
 <!-- release-status:v1:start -->
-The current public release status is source-bound: engineering release evidence is UNVERIFIED and historical effectiveness is BLOCKED.
+The current public release status is source-bound: engineering release evidence is HOLD and historical effectiveness is BLOCKED.
 <!-- release-status:v1:end -->
 
 ## License
