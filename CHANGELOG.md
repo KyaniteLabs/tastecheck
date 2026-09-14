@@ -3,6 +3,12 @@
 All notable changes to the tastecheck skill pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow semver.
 
+## [1.4.2] — 2026-07-14
+
+_Late changeloged (was tagged but never recorded; reconstructed from PR #32)._
+
+- Landing-page rework, `samples/tasteroll/` (seeded specimen sample), docs refresh.
+
 ## [1.5.0] — 2026-09-14
 
 ### Added — video medium support (the battery now gates videos)
@@ -17,6 +23,12 @@ All notable changes to the tastecheck skill pack. Format follows
 - **Schema completion**: `optional_subject` support in `check-catalog.schema.json`;
   catalog schema validation now actually enforced (a silent never-ran defect,
   found and fixed in the same pass).
+
+- **Catalog-integrity guard in `test:structural`**: the catalog is now schema-validated
+  (ajv) on every structural run, the video manifest is cross-checked against the video
+  rows, and package.json ↔ CHANGELOG version drift fails the suite. Includes a
+  canonical negative-control subject (`video:negative-control-silent`) that
+  `video:audio-presence` MUST fail.
 
 ### Changed / infrastructure since 1.4.2
 
