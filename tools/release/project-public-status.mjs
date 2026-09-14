@@ -53,6 +53,12 @@ function statusMessage(status) {
   return "a required source-bound release receipt is stale-until-rerun, missing, or malformed.";
 }
 
+function compactStatusMessage(status) {
+  if (status === "pass") return "receipts current";
+  if (status === "hold") return "a required release receipt failed";
+  return "stale-until-rerun";
+}
+
 function markerValue(status) {
   const word = statusWord(status.overall_status);
   const className = status.overall_status === "pass" ? "ok" : "pend";
@@ -68,6 +74,16 @@ function markerValue(status) {
       STATUS_START,
       `<span><span class="d ${className}" aria-hidden="true"></span> release evidence: ${word}</span>`,
       `<span><span class="d pend" aria-hidden="true"></span> effectiveness: BLOCKED</span>`,
+      STATUS_END,
+    ].join("\n"),
+    llms: [
+      STATUS_START,
+      `The current public release status is source-bound: engineering release evidence is ${word} and historical effectiveness is BLOCKED.`,
+      STATUS_END,
+    ].join("\n"),
+    verification: [
+      STATUS_START,
+      `Release evidence: ${word} — ${compactStatusMessage(status.overall_status)}. Effectiveness: BLOCKED.`,
       STATUS_END,
     ].join("\n"),
     gate: [
@@ -288,6 +304,8 @@ export function checkPublicStatus(root = DEFAULT_ROOT, options = {}) {
     ["README.md", STATUS_START, STATUS_END, surfaces.readme, "README.md release status"],
     ["index.html", STATUS_START, STATUS_END, surfaces.landing, "index.html release status"],
     ["index.html", GATE_START, GATE_END, surfaces.gate, "index.html gate status"],
+    ["llms.txt", STATUS_START, STATUS_END, surfaces.llms, "llms.txt release status"],
+    ["docs/VERIFICATION.md", STATUS_START, STATUS_END, surfaces.verification, "docs/VERIFICATION.md release status"],
   ]) {
     if (!existsSync(join(root, path))) { errors.push(`${label}: file is missing`); continue; }
     try {
@@ -305,8 +323,12 @@ export function projectPublicStatus(root = DEFAULT_ROOT) {
     const readme = replaceMarker(readText(root, "README.md"), STATUS_START, STATUS_END, surfaces.readme, "README.md release status");
     const landing = replaceMarker(readText(root, "index.html"), STATUS_START, STATUS_END, surfaces.landing, "index.html release status");
     const gate = replaceMarker(landing, GATE_START, GATE_END, surfaces.gate, "index.html gate status");
+    const llms = replaceMarker(readText(root, "llms.txt"), STATUS_START, STATUS_END, surfaces.llms, "llms.txt release status");
+    const verification = replaceMarker(readText(root, "docs/VERIFICATION.md"), STATUS_START, STATUS_END, surfaces.verification, "docs/VERIFICATION.md release status");
     writeFileSync(join(root, "README.md"), readme);
     writeFileSync(join(root, "index.html"), gate);
+    writeFileSync(join(root, "llms.txt"), llms);
+    writeFileSync(join(root, "docs/VERIFICATION.md"), verification);
     const next = derivePublicStatus(root);
     if (next.source_tree_sha256 === status.source_tree_sha256 && next.overall_status === status.overall_status) {
       status = next;

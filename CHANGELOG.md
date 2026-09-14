@@ -3,12 +3,33 @@
 All notable changes to the tastecheck skill pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow semver.
 
-## [Unreleased] — 2026-09-05
+## [1.4.1] — 2026-09-05
 
-### Added — post-ASTRA verification
+### Added — tasteroll architecture rebuild
 
-- Independent Grok r9b + Sol r10 reviews formed a post-ASTRA green pair: both
-  completed with no findings and fully green structural verification; see
+- **`chance-design` renamed to `tasteroll`** with a full architecture rebuild:
+  audit → intake → fix → generate → seeded roll → lock/reroll → relaxed gate,
+  powered by the pasteable zero-dependency xoshiro128++ engine (same seed →
+  same roll, always). Version bumped 1.4.0 → 1.4.1.
+- **Release tooling skill-count fixes (19 → 20)** across landing page, llms.txt,
+  integration demo, receipts, and manifest; v1.4.1 release inventory and
+  receipts projected.
+- **Landing rework + `samples/tasteroll/` (Seed)** — the 8th gallery system, a
+  seeded specimen card with rolled dimensions; xoshiro copy fix.
+- **README wave 2 + restores** and the **S+ SEO/GEO public face** (GEO block,
+  keywords, canonical URLs).
+- **WCAG 2.2 AA provenance block** in `a11y-pass`.
+- **FL4WRITE adoption** on the Forgejo remote.
+- **Canonical release finalization** — `npm run finalize`, powered by
+  `tools/release/finalize.mjs`, performs receipt refresh, receipt pins, public
+  status projection, and verify-chain validation together.
+- **Seven-wave retrofit gauntlet** covering fail-closed gate authority, one
+  release inventory, executable release checks, safe execution and subjective
+  review, reproducible verification, receipt-bound public status, and portable
+  copy guidance. The wave reports remain in
+  [`_retrofit-2026-09-04/`](_retrofit-2026-09-04/).
+- Independent **Grok r9b + Sol r10** reviews formed a post-ASTRA green pair:
+  both completed with no findings and fully green structural verification; see
   [`STREAK9b-grok.md`](_retrofit-2026-09-04/STREAK9b-grok.md) and
   [`STREAK10-sol.md`](_retrofit-2026-09-04/STREAK10-sol.md).
 
@@ -22,11 +43,11 @@ All notable changes to the tastecheck skill pack. Format follows
   See [`ASTRA-REVIEW.md`](_retrofit-2026-09-04/ASTRA-REVIEW.md) and
   [`ASTRA-FIX-REPORT.md`](_retrofit-2026-09-04/ASTRA-FIX-REPORT.md).
 
-### Changed — canonical release finalization
+### Changed — receipt and projector gates
 
-- Added `npm run finalize`, powered by `tools/release/finalize.mjs`, as the
-  release-finalization command for receipts, receipt pins, public status
-  projection, and verify-chain validation.
+- The TPS2 root cure made public projections byte-stable and kept source
+  digests out of self-referential projection inputs; receipt gates now validate
+  current source-bound evidence before public status is projected.
 - Receipt gates now keep source-bound status honest: stale, missing, malformed,
   or failed evidence remains `UNVERIFIED` or `HOLD`.
 
@@ -54,21 +75,38 @@ All notable changes to the tastecheck skill pack. Format follows
   closed (5 SEV-1 evidence-authority holes); post-ASTRA independent green
   pair (Grok-4.6 round 9b + Codex-SOL round 10).
 
-## [Retrofit] — 2026-09-04
+## [Unreleased]
 
-### Changed — receipt and projector gates
+### Added — first fully-live receipt set
 
-- The TPS2 root cure made public projections byte-stable and kept source
-  digests out of self-referential projection inputs; receipt gates now validate
-  current source-bound evidence before public status is projected.
+- First fully-live receipt set from the nucbox floor: all 6 producers pass at
+  the final source; verify-chain green via `npm run finalize`.
+- Honest HOLD self-audit via the own release gate: 3/27 evidenced (nucbox
+  captures pinned); full self-pass dispatched per META-ROUND-REPORT.
 
-### Added — seven-wave retrofit gauntlet
+### Changed — landing copy and a11y floors
 
-- Completed the seven-wave gauntlet covering fail-closed gate authority, one
-  release inventory, executable release checks, safe execution and subjective
-  review, reproducible verification, receipt-bound public status, and portable
-  copy guidance. The wave reports remain in
-  [`_retrofit-2026-09-04/`](_retrofit-2026-09-04/).
+- Landing copy rewritten product-first (audience/problem/how-it-works/skills/
+  gate); all process-leak cut per CEO. Hero reworded to "AI-built interfaces,
+  designed with intention."
+- Gallery contrast/a11y fixes ×3: open-sample accents cleared 4.5:1 (measured
+  4.06 on the nucbox audit; final pass lightened accents for the dark card
+  ground).
+- Landing a11y fix: global inline-anchor tap-target floor (24px+) per the
+  measured a11y-pass audit on nucbox.
+
+### Changed — meta-round follow-ups
+
+- Meta-round CY code-review fixes: finalize producer-identity, NIMA domain
+  validation, symlink out-path; ASTRA landing integrated to the canonical
+  contract (verify-landing green); CR/self-pass evidence recorded.
+- Effectiveness heading de-claimed (honest BLOCKED status body unchanged) —
+  releases the claims gate.
+
+### Changed — tooling behavior
+
+- cdp-qa: `evidence.json` written via atomic tmp+rename (cluster-3 prevention;
+  smell 2026-09-13T22:27Z root-cause corrected to session-side).
 
 ## [1.4.0] — 2026-07-13
 

@@ -10,7 +10,8 @@
    Usage:
      var t = tasteroll(42);                    // seed
      t.roll(dimensions);                        // roll all dimensions
-     t.lock('personality');                     // lock a dimension
+     t.lock('personality');                     // lock a dimension at its current rolled value
+     t.lock('personality', 'warm');             // ...or to an explicit value
      t.reroll(dimensions);                      // re-roll unlocked only
      t.shotgun(dimensions, 5);                  // 5 rolls at once
      t.seed;                                    // current seed
@@ -75,7 +76,14 @@ function tasteroll(seed) {
   }
 
   function lock(dimension, value) {
-    if (value) state.locked[dimension] = value;
+    if (value === undefined) {
+      var last = state.rollHistory[state.rollHistory.length - 1];
+      if (!last || !(dimension in last.result)) {
+        throw new Error('tasteroll: cannot lock "' + dimension + '" — no current roll for that dimension; roll first or pass an explicit value');
+      }
+      value = last.result[dimension];
+    }
+    state.locked[dimension] = value;
     return state.locked;
   }
 
