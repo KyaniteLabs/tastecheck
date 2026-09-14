@@ -23,7 +23,7 @@ Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21
 
 TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who need evidence-backed UI quality before shipping. It turns a brief or an existing site into an explicit design direction, carries that direction through checkable craft skills, and reports the evidence needed for a ship or hold decision.
 
-TasteCheck is plain Markdown with no runtime or SDK. Any coding agent that can read Markdown skill files can use it; the installer also creates the canonical `~/.agents/skills/` path and mirrors skills into detected agent homes.
+TasteCheck skills are plain Markdown, readable by any coding agent — no SDK or install required. The ship-gate adds optional dependency-free Node and browser scripts; the installer also creates the canonical `~/.agents/skills/` path and mirrors skills into detected agent homes.
 
 ## Evidence-bound release behavior
 
@@ -84,7 +84,7 @@ TasteCheck carries design intent through a shared pipeline: establish or infer t
 
 The `tastecheck-pass` skill states the canonical pipeline, runs the relevant self-checks, reports a pass/fail table, and uses an auditor for cold-load issues that a self-reported checklist can miss. The current public release status is source-bound: release evidence is **UNVERIFIED**, and historical effectiveness is **BLOCKED**.
 
-The repository’s repeatable engineering checks cover repository contracts, installation, links, authored demo surfaces, and verification plumbing; they are not a universal effectiveness claim.
+Run the repository’s repeatable engineering checks with `npm test`. Those checks cover repository contracts, installation, links, authored demo surfaces, and verification plumbing; they are not a universal effectiveness claim.
 
 ## Gallery
 
@@ -105,13 +105,13 @@ The gallery contains 8 committed browser-rendered design systems for the same pr
 
 The one-line install path is `git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh`.
 
-The installer creates canonical links in `~/.agents/skills/` and mirrors them into detected agent skill directories. Claude Code also receives the 20 canonical slash-command wrappers; `/darkmode` is the sole approved alias, targeting `/theming`.
+The installer creates canonical links in `~/.agents/skills/` and mirrors them into detected agent skill directories. Claude Code can also link all 21 command wrappers (20 canonical + the `/darkmode` alias) into `~/.claude/commands/`.
 
 ## FAQ
 
 ### What is TasteCheck?
 
-TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who want evidence-backed UI quality before shipping.
+TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who want evidence-backed UI quality before shipping. It fails closed on generic/sloppy UI and organizes evidence for scoped ship-quality decisions; it does not turn those subjective calls into objective guarantees.
 
 ### Who should use TasteCheck?
 
@@ -135,7 +135,9 @@ Clone the repository and run `./tastecheck/install.sh`.
 
 ### Effectiveness status
 
+<!-- release-status:v1:start -->
 The current public release status is source-bound: engineering release evidence is UNVERIFIED and historical effectiveness is BLOCKED.
+<!-- release-status:v1:end -->
 
 ## License
 

@@ -1,6 +1,25 @@
 {
   "name": "tastecheck",
   "version": "1.4.1",
+  "description": "Frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who want evidence-backed UI quality.",
+  "keywords": [
+    "tastecheck",
+    "design systems",
+    "AI coding agents",
+    "anti-slop",
+    "design samples",
+    "web design gallery",
+    "Claude Code",
+    "Codex",
+    "Cursor"
+  ],
+  "homepage": "https://kyanitelabs.github.io/tastecheck/",
+  "repository": {
+    "type": "git",
+    "url": "https://git.kyanitelabs.tech/KyaniteLabs/tastecheck",
+    "mirror": "https://github.com/KyaniteLabs/tastecheck"
+  },
+  "license": "MIT",
   "private": true,
   "type": "module",
   "scripts": {

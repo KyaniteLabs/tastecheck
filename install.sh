@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# frontend-skills installer — symlinks the skills into detected agent skill dirs.
+# tastecheck installer — symlinks the skills into detected agent skill dirs.
 # Re-runnable (idempotent). No sudo, no network. Links point back into this repo, so
 # `git pull` updates every agent at once.
 set -euo pipefail
@@ -144,7 +144,7 @@ fi
 
 preflight_sources
 
-echo "frontend-skills installer"
+echo "tastecheck installer"
 echo "repo: $REPO"
 echo
 
