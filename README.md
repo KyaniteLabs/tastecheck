@@ -33,7 +33,7 @@ Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21
 
 TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who need evidence-backed UI quality before shipping. It turns a brief or an existing site into an explicit design direction, carries that direction through checkable craft skills, and reports the evidence needed for a ship or hold decision.
 
-TasteCheck is plain Markdown with no runtime or SDK. Any coding agent that can read Markdown skill files can use it; the installer also creates the canonical `~/.agents/skills/` path and mirrors skills into detected agent homes.
+TasteCheck skills are plain Markdown, readable by any coding agent — no SDK or install required. The ship-gate adds optional dependency-free Node and browser scripts; the installer also creates the canonical `~/.agents/skills/` path and mirrors skills into detected agent homes.
 
 TasteCheck addresses a common failure mode in agent-built interfaces: when hierarchy, density, type, color, and structure remain implicit, familiar defaults accumulate. The interview or existing-site audit makes those decisions explicit before implementation.
 
@@ -123,13 +123,13 @@ The one-line install path is:
 git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh
 ```
 
-The installer creates canonical links in `~/.agents/skills/` and mirrors them into detected agent skill directories. Claude Code also receives the 20 canonical slash-command wrappers; `/darkmode` is the sole approved alias, targeting `/theming`.
+The installer creates canonical links in `~/.agents/skills/` and mirrors them into detected agent skill directories. Claude Code can also link all 21 command wrappers (20 canonical + the `/darkmode` alias) into `~/.claude/commands/`.
 
 ## FAQ
 
 ### What is TasteCheck?
 
-TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who want evidence-backed UI quality before shipping.
+TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who want evidence-backed UI quality before shipping. It fails closed on generic/sloppy UI and organizes evidence for scoped ship-quality decisions; it does not turn those subjective calls into objective guarantees.
 
 ### Who should use TasteCheck?
 
@@ -163,15 +163,15 @@ TasteCheck is MIT licensed; the authoritative terms are in [`LICENSE`](LICENSE).
 
 ## What is TasteCheck?
 
-**TasteCheck** is a **frontend taste and ship-gate evaluation toolkit** that helps **frontend engineers and agents shipping UI** **fail closed on generic/sloppy UI and organize evidence for scoped ship-quality decisions**. Subjective checks remain accountable human judgments rather than objective guarantees.
+**TasteCheck** is a **frontend taste and ship-gate toolkit** for **AI coding agents and frontend engineers** who want **evidence-backed UI quality before shipping**. It helps them fail closed on generic/sloppy UI and organize evidence for scoped ship-quality decisions; subjective checks remain accountable human judgments rather than objective guarantees.
 
 | | |
 | --- | --- |
 | **Product** | TasteCheck |
-| **Category** | frontend taste and ship-gate evaluation toolkit |
-| **Best for** | frontend engineers and agents shipping UI |
+| **Category** | frontend taste and ship-gate toolkit |
+| **Best for** | AI coding agents and frontend engineers |
 | **Not** | a design Figma plugin |
-| **Source** | [GitHub](https://github.com/KyaniteLabs/tastecheck) · [Forgejo](https://git.kyanitelabs.tech/KyaniteLabs/tastecheck) |
+| **Source** | [Forgejo](https://git.kyanitelabs.tech/KyaniteLabs/tastecheck) · [GitHub](https://github.com/KyaniteLabs/tastecheck) |
 | **Keywords** | UI taste check, anti-slop frontend gate, design QA |
 
 ## Who it's for
@@ -184,11 +184,11 @@ TasteCheck is MIT licensed; the authoritative terms are in [`LICENSE`](LICENSE).
 
 ### What is TasteCheck?
 
-TasteCheck is a frontend taste and ship-gate evaluation toolkit. It helps frontend engineers and agents shipping UI fail closed on generic/sloppy UI and organize evidence for scoped ship-quality decisions, while accountable reviewers make subjective calls. It does not turn those calls into objective guarantees.
+TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who want evidence-backed UI quality before shipping. It fails closed on generic/sloppy UI and organizes evidence for scoped ship-quality decisions; it does not turn those subjective calls into objective guarantees.
 
 ### Who should use TasteCheck?
 
-frontend engineers and agents shipping UI.
+Frontend engineers and AI coding agents that need to turn design intent into checkable frontend work.
 
 ### How is TasteCheck different?
 
@@ -221,8 +221,19 @@ See [LICENSE](LICENSE) in this repository (or package metadata if license is pac
 
 ## Table of contents
 
-- [What is it?](#what-is-tastecheck)
+- [TasteCheck at a glance](#tastecheck-at-a-glance)
+- [What is TasteCheck?](#what-is-tastecheck)
+- [Evidence-bound release behavior](#evidence-bound-release-behavior)
+- [Quickstart](#quickstart)
+- [The 20 skills: what each checks](#the-20-skills-what-each-checks)
+- [How the gate works](#how-the-gate-works)
+- [Gallery](#gallery)
+- [Install](#install)
 - [FAQ](#faq)
+- [License](#license)
+- [Who it's for](#whos-it-for)
 - [Status](#status)
+- [Agent surface](#agent-surface)
+- [Contributing](#contributing)
 
 <!-- s-plus-geo:end -->
