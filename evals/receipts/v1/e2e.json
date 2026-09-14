@@ -6,30 +6,30 @@
     "id": "tastecheck-live-execution",
     "version": 1
   },
-  "source_tree_sha256": "591e502c270b0e902429b0536667d3c6d0d63a52c552a063a2640c82bb34cb93",
+  "source_tree_sha256": "f7b67f1c47fb93468b9fce83bf2bd6c59db262fd96740446f383948dca1fd31e",
   "nonce": "e2e-release-v1-0001",
   "runtime": {
-    "node": "v22.22.2",
+    "node": "v26.7.0",
     "playwright": "1.61.1",
     "browser": "149.0.7827.55",
-    "platform": "linux"
+    "platform": "darwin"
   },
-  "started_at": "2026-09-06T05:22:10.392Z",
-  "finished_at": "2026-09-06T05:22:13.207Z",
+  "started_at": "2026-09-14T17:10:32.828Z",
+  "finished_at": "2026-09-14T17:10:35.223Z",
   "executed": true,
   "reproducible": true,
   "artifacts": [
     {
       "id": "operator-desktop",
-      "path": "evals/receipts/v1/artifacts/e2e/operator-desktop-8f3a590840de7f1246152d11ee847442093c606f2031e6471112debc11ecfc05.png",
-      "sha256": "8f3a590840de7f1246152d11ee847442093c606f2031e6471112debc11ecfc05",
-      "bytes": 574278
+      "path": "evals/receipts/v1/artifacts/e2e/operator-desktop-e9e3a99c45c46aaa23852dc1efae4db48af66b6ba4047947e6366936dd0abed5.png",
+      "sha256": "e9e3a99c45c46aaa23852dc1efae4db48af66b6ba4047947e6366936dd0abed5",
+      "bytes": 610891
     },
     {
       "id": "operator-mobile",
-      "path": "evals/receipts/v1/artifacts/e2e/operator-mobile-ba8fa1dc0767e831efe07d767b83b088cb61715e90b604b4d56b9e08ffd2f1c0.png",
-      "sha256": "ba8fa1dc0767e831efe07d767b83b088cb61715e90b604b4d56b9e08ffd2f1c0",
-      "bytes": 462281
+      "path": "evals/receipts/v1/artifacts/e2e/operator-mobile-1dbc961d3bd8282357c455545879bc58b43c2f1fe79cc05560ba00a09e9124b9.png",
+      "sha256": "1dbc961d3bd8282357c455545879bc58b43c2f1fe79cc05560ba00a09e9124b9",
+      "bytes": 494856
     }
   ],
   "checks": [

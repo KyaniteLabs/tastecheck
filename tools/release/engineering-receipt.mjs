@@ -18,7 +18,7 @@ const excludedReceipts = new Set([
   "evals/receipts/v1/clean-clone.json",
   "contracts/v1/release-receipts.json",
 ]);
-const publicStatusSurfaces = new Set(["README.md", "index.html"]);
+const publicStatusSurfaces = new Set(["README.md", "index.html", "llms.txt", "docs/VERIFICATION.md"]);
 const publicStatusMarkers = [
   ["<!-- release-status:v1:start -->", "<!-- release-status:v1:end -->"],
   ["<!-- release-status-gate:v1:start -->", "<!-- release-status-gate:v1:end -->"],
