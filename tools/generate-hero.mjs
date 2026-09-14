@@ -1,62 +1,26 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import path from "node:path";
-import http from "node:http";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "playwright";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const samples = ["copper", "swiss", "maximal", "concrete", "clay", "dispatch", "verge"];
-
-function mime(file) {
-  if (file.endsWith(".html")) return "text/html; charset=utf-8";
-  if (file.endsWith(".css")) return "text/css; charset=utf-8";
-  if (file.endsWith(".js")) return "text/javascript; charset=utf-8";
-  if (file.endsWith(".png")) return "image/png";
-  if (file.endsWith(".woff2")) return "font/woff2";
-  if (file.endsWith(".ico")) return "image/x-icon";
-  return "application/octet-stream";
-}
-
-async function withServer(run) {
-  const server = http.createServer((req, res) => {
-    try {
-      const p = decodeURIComponent(new URL(req.url, "http://localhost").pathname);
-      const rel = p === "/" ? "index.html" : p.replace(/^\/+/, "");
-      const abs = path.resolve(root, rel);
-      const stat = fs.statSync(abs);
-      const file = stat.isDirectory() ? path.join(abs, "index.html") : abs;
-      res.writeHead(200, { "content-type": mime(file), "cache-control": "no-store" });
-      fs.createReadStream(file).pipe(res);
-    } catch {
-      res.writeHead(404);
-      res.end("not found");
-    }
-  });
-  await new Promise((resolve, reject) => { server.once("error", reject); server.listen(0, "127.0.0.1", resolve); });
-  try {
-    return await run(`http://127.0.0.1:${server.address().port}`);
-  } finally {
-    await new Promise((r) => server.close(r));
-  }
-}
+const samples = ["copper", "swiss", "maximal", "concrete", "clay", "dispatch", "verge", "tasteroll"];
 
 async function main() {
   const browser = await chromium.launch();
   const shots = [];
 
-  await withServer(async (base) => {
-    for (const sample of samples) {
-      const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 });
-      await page.goto(`${base}/samples/${sample}/index.html`, { waitUntil: "load" });
-      await page.evaluate(() => document.fonts.ready);
-      await page.waitForTimeout(300);
-      const buf = await page.screenshot({ type: "png" });
-      shots.push({ sample, buf });
-      await page.close();
-      console.log(`  captured ${sample} (${buf.length} bytes)`);
-    }
-  });
+  for (const sample of samples) {
+    const page = await browser.newPage({ viewport: { width: 640, height: 400 }, deviceScaleFactor: 1 });
+    await page.goto(pathToFileURL(path.join(root, "samples", sample, "index.html")).href, { waitUntil: "load" });
+    await page.evaluate(() => document.fonts.ready);
+    await page.waitForTimeout(300);
+    const buf = await page.screenshot({ type: "png" });
+    shots.push({ sample, buf });
+    await page.close();
+    console.log(`  captured ${sample} (${buf.length} bytes)`);
+  }
 
   // Composite using a canvas page
   const cols = 4, rows = 2;
@@ -77,8 +41,8 @@ async function main() {
     ctx.fillStyle = "#0c0c0d";
     ctx.fillRect(0, 0, dims.totalW, dims.totalH);
 
-    const labels = ["Copper / Editorial", "Swiss / Atelier", "Maximal / Riot", "Concrete / Brutalist", "Clay / Soft humanist", "Dispatch / Shipping log", "Verge / Clinical evidence"];
-    const colors = ["#e08a3a", "#e8482b", "#ff3d8b", "#ff4d00", "#d2774a", "#2dd4a8", "#22a3bd"];
+    const labels = ["Copper / Editorial", "Swiss / Atelier", "Maximal / Riot", "Concrete / Brutalist", "Clay / Soft humanist", "Dispatch / Shipping log", "Verge / Clinical evidence", "Seed / Procedural specimen"];
+    const colors = ["#e08a3a", "#e8482b", "#ff3d8b", "#ff4d00", "#d2774a", "#2dd4a8", "#22a3bd", "#e06a4f"];
 
     for (let i = 0; i < urls.length; i++) {
       const col = i % dims.cols;
@@ -106,7 +70,7 @@ async function main() {
     return canvas.toDataURL("image/png");
   }, {urls: dataUrls, dims: { cols, rows, cellW, cellH, pad, labelH, totalW, totalH }});
 
-  const outPath = path.join(root, "docs/hero/seven-systems.png");
+  const outPath = path.join(root, "docs/hero/eight-systems.png");
   const buf = Buffer.from(result.split(",")[1], "base64");
   fs.writeFileSync(outPath, buf);
   console.log(`wrote ${outPath} (${buf.length} bytes, ${totalW}x${totalH})`);

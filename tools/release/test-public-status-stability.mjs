@@ -13,6 +13,8 @@ const projectedOutputs = [
   "evals/receipts/v1/public-release-status.json",
   "README.md",
   "index.html",
+  "llms.txt",
+  "docs/VERIFICATION.md",
 ];
 const receiptFixtures = [
   "evals/receipts/v1/context-budget.json",
@@ -52,6 +54,20 @@ function buildFixture() {
       "stale landing status",
       "<!-- release-status:v1:end -->",
       "<!-- release-status-gate:v1:start -->stale gate<!-- release-status-gate:v1:end -->",
+      "",
+    ].join("\n"));
+    writeFileSync(join(fixtureRoot, "llms.txt"), [
+      "<!-- release-status:v1:start -->",
+      "stale llms status",
+      "<!-- release-status:v1:end -->",
+      "",
+    ].join("\n"));
+    mkdirSync(join(fixtureRoot, "docs"), { recursive: true });
+    writeFileSync(join(fixtureRoot, "docs/VERIFICATION.md"), [
+      "# Verification",
+      "<!-- release-status:v1:start -->",
+      "stale verification status",
+      "<!-- release-status:v1:end -->",
       "",
     ].join("\n"));
 

@@ -7,4 +7,8 @@
   <url><loc>https://kyanitelabs.github.io/tastecheck/samples/maximal/</loc><priority>0.7</priority></url>
   <url><loc>https://kyanitelabs.github.io/tastecheck/samples/concrete/</loc><priority>0.7</priority></url>
   <url><loc>https://kyanitelabs.github.io/tastecheck/samples/clay/</loc><priority>0.7</priority></url>
+  <url><loc>https://kyanitelabs.github.io/tastecheck/samples/dispatch/</loc><priority>0.7</priority></url>
+  <url><loc>https://kyanitelabs.github.io/tastecheck/samples/verge/</loc><priority>0.7</priority></url>
+  <url><loc>https://kyanitelabs.github.io/tastecheck/samples/tasteroll/</loc><priority>0.7</priority></url>
+  <url><loc>https://kyanitelabs.github.io/tastecheck/demos/skill-integration.html</loc><priority>0.6</priority></url>
 </urlset>
