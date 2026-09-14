@@ -3,12 +3,6 @@
 All notable changes to the tastecheck skill pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow semver.
 
-## [1.4.2] — 2026-07-14
-
-_Late changeloged (was tagged but never recorded; reconstructed from PR #32)._
-
-- Landing-page rework, `samples/tasteroll/` (seeded specimen sample), docs refresh.
-
 ## [1.5.0] — 2026-09-14
 
 ### Added — video medium support (the battery now gates videos)
@@ -38,6 +32,12 @@ _Late changeloged (was tagged but never recorded; reconstructed from PR #32)._
 - Landing/gallery accessibility fixes (tap-target floor, 4.5:1 accents) and
   product-first copy rewrite.
 - `package.json` version marker resynced (was 1.4.1).
+
+## [1.4.2] — 2026-07-14
+
+_Late changeloged (was tagged but never recorded; reconstructed from PR #32)._
+
+- Landing-page rework, `samples/tasteroll/` (seeded specimen sample), docs refresh.
 
 ## [1.4.1] — 2026-09-05
 
