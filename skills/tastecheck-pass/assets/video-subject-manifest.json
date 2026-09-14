@@ -6,10 +6,29 @@
       "id": "video:default",
       "medium": "video",
       "artifact_type": "muxed-cut",
-      "resolution": { "width": 960, "height": 540 },
+      "resolution": {
+        "width": 960,
+        "height": 540
+      },
       "requires_audio": true,
       "requires_voiced_narration": true,
       "reading_holds_required": true
+    },
+    {
+      "id": "video:negative-control-silent",
+      "medium": "video",
+      "artifact_type": "muxed-cut",
+      "resolution": {
+        "width": 960,
+        "height": 540
+      },
+      "requires_audio": true,
+      "requires_voiced_narration": true,
+      "reading_holds_required": true,
+      "expected_fail": [
+        "video:audio-presence"
+      ],
+      "note": "Canonical bad sample: a silent muxed cut. video:audio-presence MUST fail this subject; any battery run that passes it is defective (negative control)."
     }
   ]
 }
