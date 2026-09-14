@@ -3,6 +3,30 @@
 All notable changes to the tastecheck skill pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow semver.
 
+## [1.5.0] — 2026-09-14
+
+### Added — video medium support (the battery now gates videos)
+
+- **Four `medium:video` checks** in the tastecheck-pass catalog: `video:reading-hold`,
+  `video:motion-law` (authored local motion only — no fake camera moves),
+  `video:readability-960x540`, and `video:audio-presence` (a silent artifact can
+  never count as a voiced cut). Source: org video-pipeline gap audit 2026-09-13
+  (the battery was web-only; videos passed "full battery" nominally).
+- **Video subject manifest** (`video-subject-manifest.json`) so video rows run
+  against real subjects.
+- **Schema completion**: `optional_subject` support in `check-catalog.schema.json`;
+  catalog schema validation now actually enforced (a silent never-ran defect,
+  found and fixed in the same pass).
+
+### Changed / infrastructure since 1.4.2
+
+- Release-evidence machinery: producers normalized into the source digest;
+  full receipt set refreshed and verify-chain green (public status PASS).
+- cdp-qa `evidence.json` atomic tmp+rename (cluster-3 prevention).
+- Landing/gallery accessibility fixes (tap-target floor, 4.5:1 accents) and
+  product-first copy rewrite.
+- `package.json` version marker resynced (was 1.4.1).
+
 ## [1.4.1] — 2026-09-05
 
 ### Added — tasteroll architecture rebuild
