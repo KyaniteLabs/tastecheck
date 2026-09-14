@@ -3,7 +3,7 @@
 TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who want evidence-backed UI quality.
 
 <!-- release-facts:v1:start -->
-Release inventory: v1.4.1 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
+Release inventory: v1.5.0 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
 <!-- release-facts:v1:end -->
 
 ## TasteCheck at a glance
@@ -136,7 +136,7 @@ Clone the repository and run `./tastecheck/install.sh`.
 ### Effectiveness status
 
 <!-- release-status:v1:start -->
-The current public release status is source-bound: engineering release evidence is PASS and historical effectiveness is BLOCKED.
+The current public release status is source-bound: engineering release evidence is UNVERIFIED and historical effectiveness is BLOCKED.
 <!-- release-status:v1:end -->
 
 ## License
