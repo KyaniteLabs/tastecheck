@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "kind": "tastecheck-video-subject-manifest",
+  "subjects": [
+    {
+      "id": "video:default",
+      "medium": "video",
+      "artifact_type": "muxed-cut",
+      "resolution": { "width": 960, "height": 540 },
+      "requires_audio": true,
+      "requires_voiced_narration": true,
+      "reading_holds_required": true
+    }
+  ]
+}
