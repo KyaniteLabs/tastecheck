@@ -11,6 +11,10 @@ Taste Oracle's internal capture/analysis contracts. Browser QA verifies rendered
 on the pages and viewports actually tested. Effectiveness is unproven; the terminal blind
 evaluation has not cleared its release threshold.
 
+<!-- release-status:v1:start -->
+Release evidence: UNVERIFIED — stale-until-rerun. Effectiveness: BLOCKED.
+<!-- release-status:v1:end -->
+
 Public copy can be checked independently with:
 
 ```bash
@@ -154,7 +158,7 @@ structural self-check now passes. The takeaway recorded here: a clean mechanical
 run is necessary, not sufficient — the structural plane is judgment work, and it bit the
 pack's own page.
 
-## Current Branch Evidence
+## Historical receipt — 2026-06-06
 
 Date: 2026-06-06
 
@@ -162,8 +166,7 @@ Date: 2026-06-06
 - Browser: CloakBrowser Chromium against local `python3 -m http.server` on
   `http://127.0.0.1:4176/`.
 - Pages checked in real same-origin iframes at 390px and 1280px:
-  homepage, samples gallery, the five sample systems committed at that receipt's date,
-  six demos, example-build after page,
+  homepage, samples gallery, the eight sample systems, six demos, example-build after page,
   and `skills/data-viz/assets/chart-starter.html`.
 - Browser smoke result: 28 page/viewport checks, 0 blank pages, 0 H1-count failures,
   0 horizontal-overflow failures, 0 broken images, 0 `a11yAudit()` failures.
@@ -171,10 +174,10 @@ Date: 2026-06-06
 - Homepage `skills/a11y-pass/assets/audit.js` result after the landing-page pass:
   0 measured failures and 0 warnings at desktop 1440px and mobile 390px.
 
-Historical landing-page 19-skill evidence (receipt dated 2026-06-06):
+Historical landing-page 20-skill evidence (receipt dated 2026-06-06):
 
 - Page: `index.html`, served as the GitHub Pages homepage.
-- Static gate: all 19 installed skills are represented by `data-skill` on the homepage.
+- Static gate: all 20 installed skills are represented by `data-skill` on the homepage.
 - Real operator paths covered by the page contract: light/dark/high-contrast themes, primary CTA,
   component loading/disabled/default states, invalid and valid email validation, empty/error/retry
   recovery, chart/table parity, keyboard-focus target, and live-region status updates.
@@ -186,8 +189,18 @@ Historical landing-page 19-skill evidence (receipt dated 2026-06-06):
 Secondary integration harness evidence:
 
 - Page: `demos/skill-integration.html`.
-- Desktop 1440px and mobile 390px: title/URL correct, 19 unique skills exposed, 0 horizontal overflow.
+- Desktop 1440px and mobile 390px: title/URL correct, 20 unique skills exposed, 0 horizontal overflow.
 - Real operator paths executed in browser: light/dark/high-contrast themes, component loading/success/disabled,
   invalid and valid form submission, empty/error/retry task-list states, and chart/table parity.
 - `skills/a11y-pass/assets/audit.js`: 0 measured failures, 0 warnings on desktop and mobile.
 - Manual keyboard check: skip link, nav link, and theme button receive visible 3px focus outlines.
+
+## Current evidence — 2026-09-14
+
+- Repo at the 4f3c48c-era surface-truth pass (this PR): the mechanical battery
+  is green (33 eval tests + gate-audit + browser lane; receipts: hq
+  `docs/cto/2026-09-14-tastecheck/SKILL-BATTERY-VERIFY.md`).
+- Release receipts remain stale-until-rerun pending `npm run finalize` (which
+  this PR runs); the projected release status above stays UNVERIFIED and
+  Effectiveness stays BLOCKED until the registered producers rerun at the final
+  source.
