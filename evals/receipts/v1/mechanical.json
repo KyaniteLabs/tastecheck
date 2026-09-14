@@ -2,24 +2,24 @@
   "schema_version": 1,
   "kind": "mechanical",
   "producer_id": "tastecheck.release.mechanical.v1",
-  "source_tree_sha256": "76dd842dbbb9faff07691039ecc649915705a7703a1d787efb9482f6260f0189",
+  "source_tree_sha256": "0dde29bb8c930be9728a56ba6b3bdca58e353b48360e1181a35b50f4bcef74d7",
   "nonce": "mechanical-release-v1",
-  "started_at": "2026-09-14T23:40:58.660Z",
-  "finished_at": "2026-09-14T23:41:08.867Z",
+  "started_at": "2026-09-14T23:46:12.999Z",
+  "finished_at": "2026-09-14T23:46:31.309Z",
   "checks": [
     {
       "id": "test",
       "command": "npm test",
-      "passed": false,
-      "exit_code": 1,
-      "output_sha256": "47fdeb6099598966dd14a3645fd4df8cd0f3de075817c02a497cb07dedc5cb5b"
+      "passed": true,
+      "exit_code": 0,
+      "output_sha256": "edc375625dfd998914b7ec1889af4684457a06e4a28f5b05c7cc73f417f67c37"
     },
     {
       "id": "contracts",
       "command": "npm run test:contracts",
-      "passed": false,
-      "exit_code": 1,
-      "output_sha256": "241ebf692f88601d302d939a0bd0921e8d36f2de632bbc0153419b9c730d8a07"
+      "passed": true,
+      "exit_code": 0,
+      "output_sha256": "f7f584d6ee85f272b8d87547a76b4c81b71507d7cc5cdba9df116b903422529f"
     },
     {
       "id": "eval-schema",
@@ -40,9 +40,9 @@
       "command": "internal source digest comparison",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "9b8ab9147a5bb22630ae8381e0bf90e397a5c7c67c81f2f02730ad508a9f7ba2"
+      "output_sha256": "ce25540cf895fad183a4991353050ee63cfe00e90d5145d92a230d6365b76223"
     }
   ],
-  "status": "fail",
-  "reproducible": false
+  "status": "pass",
+  "reproducible": true
 }

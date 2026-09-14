@@ -565,7 +565,7 @@
       "verdict": "REVIEW WARNS",
       "fails": [],
       "warns": [
-        "NIMA aesthetic score 5.11/10 below 5.5 threshold"
+        "NIMA aesthetic score 5.16/10 below 5.5 threshold"
       ],
       "notes": [
         "display face resolves to \"Archivo\""
@@ -576,7 +576,7 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 5.1146,
+      "nimaScore": 5.1645,
       "status": "warn"
     }
   },
@@ -631,7 +631,7 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 6.1173,
+      "nimaScore": 6.173,
       "status": "ok"
     }
   },
