@@ -3,7 +3,7 @@ import { createHash, randomBytes } from "node:crypto";
 import { execFileSync, spawnSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, relative, resolve } from "node:path";
+import { delimiter, dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -83,8 +83,30 @@ export function deriveReceipt({ kind, sourceTreeSha256, nonce, startedAt, finish
   };
 }
 
-function runCheck(cwd, id, command, args) {
-  const result = spawnSync(command, args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+// An outer `npm run` exports its full lifecycle config (npm_config_*, npm_lifecycle_*,
+// INIT_CWD, npm_package_*) and prepends the checkout's node_modules/.bin to PATH. Those
+// leak into every spawned check and can redirect or break the nested npm that the
+// clean-clone producer runs in a scratch checkout. Checks must run on the ambient
+// machine environment, never on the invoking lifecycle's environment.
+export function sanitizedSpawnEnv(root = defaultRoot, sourceEnv = process.env) {
+  const env = {};
+  for (const [key, value] of Object.entries(sourceEnv)) {
+    if (/^npm_/i.test(key) || key === "INIT_CWD" || key === "NODE_OPTIONS" || key === "NODE_PATH") continue;
+    env[key] = value;
+  }
+  const bannedPrefix = join(resolve(root), "node_modules");
+  env.PATH = (env.PATH ?? "")
+    .split(delimiter)
+    .filter((entry) => {
+      const resolved = resolve(entry);
+      return resolved !== bannedPrefix && !resolved.startsWith(`${bannedPrefix}${sep}`);
+    })
+    .join(delimiter);
+  return env;
+}
+
+function runCheck(root, cwd, id, command, args) {
+  const result = spawnSync(command, args, { cwd, env: sanitizedSpawnEnv(root), encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
   const combined = `${result.stdout ?? ""}${result.stderr ?? ""}`;
   const publicCommand = command === process.execPath ? "node" : command;
   return {
@@ -113,18 +135,18 @@ export function computeHeadSourceTreeSha256(root = defaultRoot) {
 
 function mechanicalChecks(root) {
   return [
-    runCheck(root, "test", "npm", ["test"]),
-    runCheck(root, "contracts", "npm", ["run", "test:contracts"]),
-    runCheck(root, "eval-schema", "npm", ["run", "test:eval-schema"]),
-    runCheck(root, "release-eval-contracts", "npm", ["run", "test:release-eval-contracts"]),
+    runCheck(root, root, "test", "npm", ["test"]),
+    runCheck(root, root, "contracts", "npm", ["run", "test:contracts"]),
+    runCheck(root, root, "eval-schema", "npm", ["run", "test:eval-schema"]),
+    runCheck(root, root, "release-eval-contracts", "npm", ["run", "test:release-eval-contracts"]),
   ];
 }
 
 function securityChecks(root) {
   return [
-    runCheck(root, "effectiveness-claims", process.execPath, ["tools/release/check-effectiveness-claims.mjs"]),
-    runCheck(root, "public-replay-surface", process.execPath, ["tools/evals/test-public-replay-surface.mjs"]),
-    runCheck(root, "receipt-sanitizer", process.execPath, ["tools/evals/test-sanitizer-fixtures.mjs"]),
+    runCheck(root, root, "effectiveness-claims", process.execPath, ["tools/release/check-effectiveness-claims.mjs"]),
+    runCheck(root, root, "public-replay-surface", process.execPath, ["tools/evals/test-public-replay-surface.mjs"]),
+    runCheck(root, root, "receipt-sanitizer", process.execPath, ["tools/evals/test-sanitizer-fixtures.mjs"]),
   ];
 }
 
@@ -136,11 +158,11 @@ function cleanCloneChecks(root) {
   try {
     execFileSync("git", ["archive", "--format=tar", "HEAD", "-o", archive], { cwd: root });
     execFileSync("tar", ["-xf", archive, "-C", clone]);
-    const checks = [runCheck(clone, "npm-ci", "npm", ["ci", "--ignore-scripts"] )];
+    const checks = [runCheck(root, clone, "npm-ci", "npm", ["ci", "--ignore-scripts"] )];
     if (checks[0].passed) {
-      checks.push(runCheck(clone, "test", "npm", ["test"]));
-      checks.push(runCheck(clone, "contracts", "npm", ["run", "test:contracts"]));
-      checks.push(runCheck(clone, "effectiveness-claims", process.execPath, ["tools/release/check-effectiveness-claims.mjs"]));
+      checks.push(runCheck(root, clone, "test", "npm", ["test"]));
+      checks.push(runCheck(root, clone, "contracts", "npm", ["run", "test:contracts"]));
+      checks.push(runCheck(root, clone, "effectiveness-claims", process.execPath, ["tools/release/check-effectiveness-claims.mjs"]));
     }
     return checks;
   } finally {
