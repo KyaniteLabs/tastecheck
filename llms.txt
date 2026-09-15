@@ -10,18 +10,19 @@ Release inventory: v1.5.0 · 20 skills · 20 canonical commands · 1 alias · 21
 
 | Fact | Current release truth |
 |---|---|
-| Version | v1.4.1 |
+| Version | v1.5.0 |
 | Skills | 20 frontend craft skills |
 | Commands | 20 canonical Claude Code slash commands |
 | Alias | 1 approved alias: `/darkmode` for `/theming` |
 | Command files | 21 total command files |
 | Gallery | 8 committed browser-rendered design systems |
+| Video | v1.5.0: the battery also gates video artifacts — reading-hold, motion-law, readability-960x540, audio-presence (silent cuts never pass) |
 | License | MIT; see [`LICENSE`](LICENSE) |
 | Install | `git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh` |
 
 ## What is TasteCheck?
 
-TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who need evidence-backed UI quality before shipping. It turns a brief or an existing site into an explicit design direction, carries that direction through checkable craft skills, and reports the evidence needed for a ship or hold decision.
+TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who need evidence-backed UI quality before shipping — for web interfaces and, since v1.5.0, for video artifacts (title/readability, authored-motion law, audio presence). It turns a brief or an existing site into an explicit design direction, carries that direction through checkable craft skills, and reports the evidence needed for a ship or hold decision.
 
 TasteCheck skills are plain Markdown, readable by any coding agent — no SDK or install required. The ship-gate adds optional dependency-free Node and browser scripts; the installer also creates the canonical `~/.agents/skills/` path and mirrors skills into detected agent homes.
 
