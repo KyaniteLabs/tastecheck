@@ -2,8 +2,8 @@
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { execFileSync } from "node:child_process";
+import { delimiter, join } from "node:path";
+import { execFileSync, spawnSync } from "node:child_process";
 
 import {
   computeSourceTreeSha256,
@@ -11,6 +11,7 @@ import {
   deriveReceipt,
   isExcludedReceiptPath,
   isExcludedSourcePath,
+  sanitizedSpawnEnv,
 } from "./engineering-receipt.mjs";
 
 function git(cwd, ...args) {
@@ -82,6 +83,43 @@ try {
     finishedAt: "2026-07-11T00:00:01.000Z",
     checks: [],
   }), /nonce|checks/);
+
+  const poisoned = {
+    PATH: [
+      join(temp, "node_modules", ".bin"),
+      join(temp, "node_modules", "@scope", "tool", "bin"),
+      "/usr/bin",
+      "/bin",
+    ].join(delimiter),
+    HOME: "/nonexistent-home",
+    npm_lifecycle_event: "release:clean-clone-receipt",
+    npm_command: "run-script",
+    npm_config_local_prefix: temp,
+    npm_config_userconfig: join(temp, "foreign-npmrc"),
+    npm_config_registry: "https://registry.invalid",
+    npm_package_name: "some-outer-package",
+    INIT_CWD: temp,
+    NODE_OPTIONS: `--require ${join(temp, "missing-require-fixture.js")}`,
+    NODE_PATH: join(temp, "node_modules"),
+  };
+  assert.notEqual(
+    spawnSync(process.execPath, ["-e", "process.exit(0)"], { env: poisoned }).status,
+    0,
+    "fixture sanity: poisoned NODE_OPTIONS must break a spawned node",
+  );
+  const clean = sanitizedSpawnEnv(temp, poisoned);
+  for (const key of ["npm_lifecycle_event", "npm_command", "npm_config_local_prefix", "npm_config_userconfig", "npm_config_registry", "npm_package_name", "INIT_CWD", "NODE_OPTIONS", "NODE_PATH"]) {
+    assert.equal(key in clean, false, `${key} must be stripped from the spawned check environment`);
+  }
+  assert.equal(clean.HOME, "/nonexistent-home", "non-lifecycle environment must pass through unchanged");
+  assert.equal(clean.PATH, ["/usr/bin", "/bin"].join(delimiter), "PATH entries inside the receipt root's node_modules must be pruned");
+  const unpoisoned = sanitizedSpawnEnv(temp, { PATH: "/usr/bin:/bin", HOME: "/home/fixture" });
+  assert.equal(unpoisoned.PATH, "/usr/bin:/bin", "PATH without receipt-root node_modules entries must pass through unchanged");
+  assert.equal(
+    spawnSync(process.execPath, ["-e", "process.stdout.write(process.env.npm_lifecycle_event ?? \"clean\")"], { env: clean, encoding: "utf8" }).stdout,
+    "clean",
+    "a spawned check must not see the outer npm lifecycle environment",
+  );
 
   console.log("engineering receipt tests passed");
 } finally {
