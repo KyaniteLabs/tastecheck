@@ -20,12 +20,13 @@ Release inventory: v1.5.0 · 20 skills · 20 canonical commands · 1 alias · 21
 
 | Fact | Current release truth |
 |---|---|
-| Version | v1.4.1 |
+| Version | v1.5.0 |
 | Skills | 20 frontend craft skills |
 | Commands | 20 canonical Claude Code slash commands |
 | Alias | 1 approved alias: `/darkmode` for `/theming` |
 | Command files | 21 total command files |
 | Gallery | 8 committed browser-rendered design systems |
+| Video | v1.5.0: the battery also gates video artifacts — reading-hold, motion-law, readability-960x540, audio-presence (silent cuts never pass) |
 | License | MIT; see [`LICENSE`](LICENSE) |
 | Install | `git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh` |
 
