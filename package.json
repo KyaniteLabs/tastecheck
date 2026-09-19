@@ -16,12 +16,27 @@
   "homepage": "https://kyanitelabs.github.io/tastecheck/",
   "repository": {
     "type": "git",
-    "url": "https://git.kyanitelabs.tech/KyaniteLabs/tastecheck",
-    "mirror": "https://github.com/KyaniteLabs/tastecheck"
+    "url": "git+https://github.com/KyaniteLabs/tastecheck.git",
+    "mirror": "https://git.kyanitelabs.tech/KyaniteLabs/tastecheck"
   },
   "license": "MIT",
-  "private": true,
   "type": "module",
+  "bin": {
+    "tastecheck": "bin/tastecheck.mjs"
+  },
+  "files": [
+    "bin/",
+    "skills/",
+    "commands/",
+    "tools/contracts/validate.mjs",
+    "skills.json",
+    "llms.txt",
+    "install.sh",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "test": "npm run preflight:all && npm run test:structural && npm run test:oracle",
     "verify": "npm test",
