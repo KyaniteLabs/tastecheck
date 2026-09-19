@@ -123,31 +123,36 @@ E.contrast = await evaluate(`(() => {
   return out;
 })()`);
 
-// ---------- 6. curate path: open, radio, note, storage, export ----------
-await evaluate(`document.querySelector('.viewbtn[data-view="curate"]').click()`);
-await sleep(400);
-E.curate = await evaluate(`(() => {
-  const cards = document.querySelectorAll(".dcard").length;
-  const radios = document.querySelectorAll('input[type="radio"]').length;
-  const first = document.querySelector(".dcard");
-  const legendOk = !!first && !!first.querySelector("legend");
-  return { cards, radios, legendOk, h1: document.querySelector(".curhead h1") ? document.querySelector(".curhead h1").textContent : null };
-})()`);
-// radio via keyboard: focus first radio then arrow? use real click-equivalent: dispatch space after focus
-await evaluate(`(() => { const r = document.querySelector('.dcard input[value="approve"]'); r.focus(); return document.activeElement === r; })()`);
-await send("Input.dispatchKeyEvent", { type: "keyDown", key: " ", code: "Space", windowsVirtualKeyCode: 32 });
-await send("Input.dispatchKeyEvent", { type: "keyUp", key: " ", code: "Space", windowsVirtualKeyCode: 32 });
-await sleep(200);
-E.radio = await evaluate(`(() => { const d = document.querySelector(".dcard"); return { dataSt: d.getAttribute("data-st"),
-  ls: JSON.parse(localStorage.getItem("p1-curation-v1") || "{}").decisions || {} }; })()`);
-await send("Browser.setDownloadBehavior", { behavior: "allow", downloadPath: OUT, eventsEnabled: true });
-E.export = await evaluate(`(() => { const before = document.querySelectorAll("a[download]").length;
-  document.getElementById("exp").click(); return { before, toast: (document.getElementById("status").textContent || "") }; })()`);
-await sleep(1500);
-const fs = await import("node:fs");
-E.downloadFiles = fs.readdirSync(OUT).filter((f) => f.endsWith(".json"));
-// reset local state
-await evaluate(`localStorage.removeItem("p1-curation-v1")`);
+// ---------- 6. curate path: open, radio, note, storage, export (page-specific; skipped when absent) ----------
+const hasCurate = await evaluate(`!!document.querySelector('.viewbtn[data-view="curate"]')`);
+if (hasCurate) {
+  await evaluate(`document.querySelector('.viewbtn[data-view="curate"]').click()`);
+  await sleep(400);
+  E.curate = await evaluate(`(() => {
+    const cards = document.querySelectorAll(".dcard").length;
+    const radios = document.querySelectorAll('input[type="radio"]').length;
+    const first = document.querySelector(".dcard");
+    const legendOk = !!first && !!first.querySelector("legend");
+    return { cards, radios, legendOk, h1: document.querySelector(".curhead h1") ? document.querySelector(".curhead h1").textContent : null };
+  })()`);
+  // radio via keyboard: focus first radio then arrow? use real click-equivalent: dispatch space after focus
+  await evaluate(`(() => { const r = document.querySelector('.dcard input[value="approve"]'); if (!r) return false; r.focus(); return document.activeElement === r; })()`);
+  await send("Input.dispatchKeyEvent", { type: "keyDown", key: " ", code: "Space", windowsVirtualKeyCode: 32 });
+  await send("Input.dispatchKeyEvent", { type: "keyUp", key: " ", code: "Space", windowsVirtualKeyCode: 32 });
+  await sleep(200);
+  E.radio = await evaluate(`(() => { const d = document.querySelector(".dcard"); if (!d) return null; return { dataSt: d.getAttribute("data-st"),
+    ls: JSON.parse(localStorage.getItem("p1-curation-v1") || "{}").decisions || {} }; })()`);
+  await send("Browser.setDownloadBehavior", { behavior: "allow", downloadPath: OUT, eventsEnabled: true });
+  E.export = await evaluate(`(() => { const btn = document.getElementById("exp"); if (!btn) return null; const before = document.querySelectorAll("a[download]").length;
+    btn.click(); return { before, toast: (document.getElementById("status").textContent || "") }; })()`);
+  await sleep(1500);
+  const fs = await import("node:fs");
+  E.downloadFiles = fs.readdirSync(OUT).filter((f) => f.endsWith(".json"));
+  // reset local state
+  await evaluate(`localStorage.removeItem("p1-curation-v1")`);
+} else {
+  E.curate = { skipped: "no curate view on this artifact (generic page)" };
+}
 
 // ---------- 7. AX tree summary ----------
 await send("Accessibility.enable");
@@ -163,11 +168,11 @@ async function shot(name, features) {
   await send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 1800, deviceScaleFactor: 1, mobile: false });
   await send("Emulation.setEmulatedMedia", { features });
   await sleep(500);
-  await evaluate(`document.querySelector('.dlink[data-id="DIGEST-CEO-2026-09-03.md"]').click()`);
+  await evaluate(`(() => { const l = document.querySelector('.dlink[data-id="DIGEST-CEO-2026-09-03.md"]'); if (l) l.click(); })()`);
   await sleep(500);
   const s = await send("Page.captureScreenshot", { format: "png" });
   writeFileSync(OUT + "/shot-" + name + ".png", Buffer.from(s.result.data, "base64"));
-  await evaluate(`document.querySelector('.viewbtn[data-view="curate"]').click()`);
+  await evaluate(`(() => { const b = document.querySelector('.viewbtn[data-view="curate"]'); if (b) b.click(); })()`);
   await sleep(300);
   const s2 = await send("Page.captureScreenshot", { format: "png" });
   writeFileSync(OUT + "/shot-" + name + "-curate.png", Buffer.from(s2.result.data, "base64"));
