@@ -1,5 +1,5 @@
 {
-  "name": "tastecheck",
+  "name": "@puenteworks/tastecheck",
   "version": "1.5.0",
   "description": "Frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who want evidence-backed UI quality.",
   "keywords": [
