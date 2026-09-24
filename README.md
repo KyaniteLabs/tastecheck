@@ -28,7 +28,7 @@ Release inventory: v1.5.0 · 20 skills · 20 canonical commands · 1 alias · 21
 | Gallery | 8 committed browser-rendered design systems |
 | Video | v1.5.0: the battery also gates video artifacts — reading-hold, motion-law, readability-960x540, audio-presence (silent cuts never pass) |
 | License | MIT; see [`LICENSE`](LICENSE) |
-| Install | `git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh` |
+| Install | `npx -y @puenteworks/tastecheck --yes` (npm) or `git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh` |
 
 ## What is TasteCheck?
 
@@ -57,7 +57,13 @@ The retrofit makes the release gate account for the evidence it records. These b
 
 ## Quickstart
 
-Clone the repository and run the installer:
+Install from npm (no clone needed — the bare `tastecheck` name was rejected by the registry, so the package is scoped):
+
+```bash
+npx -y @puenteworks/tastecheck --yes
+```
+
+Or clone the repository and run the installer:
 
 ```bash
 git clone https://github.com/KyaniteLabs/tastecheck
