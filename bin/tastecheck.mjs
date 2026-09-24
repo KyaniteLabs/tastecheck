@@ -4,9 +4,10 @@
  *
  * The npm package ships the skill pack (skills/, commands/, skills.json) plus the
  * installer's preflight validator. This command runs that installer from wherever
- * the package is installed, so `npx tastecheck` links the 20 skills into agent
- * skill homes exactly like a git checkout does. All arguments are forwarded
- * verbatim (--force, --yes, --no-commands, --uninstall, -h/--help).
+ * the package is installed, so `npx @puenteworks/tastecheck` links the 20 skills
+ * into agent skill homes exactly like a git checkout does. (The bare `tastecheck`
+ * name was rejected by the npm registry, so the package is scoped.) All arguments
+ * are forwarded verbatim (--force, --yes, --no-commands, --uninstall, -h/--help).
  */
 import { spawn } from "node:child_process";
 import { readFileSync } from "node:fs";
