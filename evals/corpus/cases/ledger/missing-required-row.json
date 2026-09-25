@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "kind": "calibration-case",
+  "id": "ledger/missing-required-row",
+  "probe": "ledger",
+  "label": "bad",
+  "class": "silently-skipped-check",
+  "known_open": false,
+  "source": {
+    "desk": "product/smell-registry.md entry 10 (BUG 2026-09-19T05:4xZ)",
+    "quote": "a CEO order that arrived mid-turn ... acknowledged nowhere, executed nowhere - CEO had to say it twice"
+  },
+  "case": { "mutation": "missing-required-row", "target": "first-required" },
+  "expectation": { "verdict": "HOLD" }
+}

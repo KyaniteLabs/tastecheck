@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "kind": "calibration-case",
+  "id": "surface/clean-landing",
+  "probe": "surface",
+  "label": "clean",
+  "class": "verified-green-surface",
+  "known_open": false,
+  "source": {
+    "desk": "tastecheck v1.6.0 release receipt (TASTECHECK-LEADS-NOTE-2026-09-15.md, RELEASE v1.6.0 section); evals/receipts/v1/browser.json",
+    "quote": "browser + e2e (playwright ... matching chromium build installed) ... public status reprojected PASS via finalize at source digest 0cac767b"
+  },
+  "case": { "path": "index.html" },
+  "expectation": { "verdict": "CLEAN", "findings_include": [] }
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "kind": "calibration-case",
+  "id": "surface/title-vocabulary-leak",
+  "probe": "surface",
+  "label": "bad",
+  "class": "title-vocabulary-leak",
+  "known_open": false,
+  "source": {
+    "desk": "product/smell-registry.md entry 30 (BUG 2026-09-19T12:4xZ)",
+    "quote": "/w/light.html + /w/depth.html titled \"GLSL Shader\", /w/soundbed.html \"Tone.js Audio Synthesizer\" ... the scrub pass redacted BODY strings but never titles"
+  },
+  "case": {
+    "html": "<!doctype html><html><head><title>Tone.js Audio Synthesizer</title><meta name=\"description\" content=\"untitled work\"></head><body><main><h1>untitled work</h1><p>quiet surface copy</p></main></body></html>",
+    "vocabulary": ["GLSL", "Tone.js", "Strudel", "Hydra", "ASCII Art"]
+  },
+  "expectation": { "verdict": "FAIL", "findings_include": ["leak:title-vocabulary"] }
+}

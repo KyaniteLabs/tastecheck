@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "kind": "calibration-case",
+  "id": "ledger/falsified-structured-observation",
+  "probe": "ledger",
+  "label": "bad",
+  "class": "hollow-signal-verification",
+  "known_open": true,
+  "source": {
+    "desk": "product/smell-registry.md entry 35 (BUG 2026-09-19T14:1xZ)",
+    "quote": "bedStarted() read Tone.Transport.state alone - a STARTED TRANSPORT on a SUSPENDED context reported \"playing\" while silent (the clock runs logically without audio)"
+  },
+  "case": { "mutation": "none" },
+  "expectation": { "verdict": "SHIP", "note": "known-open floor: an internally consistent ledger whose structured observations misrepresent the consumed medium cannot be caught offline; the consume-don't-inspect (browser/audio) lane owns this class. Recorded as a standing FN until a cure lands." }
+}

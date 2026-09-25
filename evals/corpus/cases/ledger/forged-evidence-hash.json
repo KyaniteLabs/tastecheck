@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "kind": "calibration-case",
+  "id": "ledger/forged-evidence-hash",
+  "probe": "ledger",
+  "label": "bad",
+  "class": "checkmark-without-verification",
+  "known_open": false,
+  "source": {
+    "desk": "product/smell-registry.md entry 1 (CRITICAL 2026-09-19T02:43:49Z)",
+    "quote": "HoP session 5 built autonomous producers (commit loop, alert sends) without wired verifiers; CEO had to demand the double-check"
+  },
+  "case": { "mutation": "forged-evidence-hash", "target": "first-required" },
+  "expectation": { "verdict": "HOLD" }
+}

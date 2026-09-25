@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "kind": "calibration-case",
+  "id": "surface/clean-fixture",
+  "probe": "surface",
+  "label": "clean",
+  "class": "verified-green-surface",
+  "known_open": false,
+  "source": {
+    "desk": "tastecheck tools/smoke/fixtures/gate-audit-fixture.html + gate-audit-golden.txt (suite golden)",
+    "quote": "committed HTML fixture used as the real artifact by the release-gate contract tests"
+  },
+  "case": { "path": "tools/smoke/fixtures/gate-audit-fixture.html" },
+  "expectation": { "verdict": "CLEAN", "findings_include": [] }
+}

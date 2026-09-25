@@ -1,0 +1,293 @@
+{
+  "schema_version": 1,
+  "kind": "tastecheck-calibration-report",
+  "ran_at": "2026-09-25T19:44:03.961Z",
+  "corpus": {
+    "case_count": 16,
+    "bad": 12,
+    "clean": 4,
+    "known_open": 1
+  },
+  "counts": {
+    "TP": 11,
+    "FN": 1,
+    "TN": 4,
+    "FP": 0
+  },
+  "rates": {
+    "false_positive_rate": 0,
+    "false_negative_rate": 0.0833,
+    "recall": 0.9167,
+    "precision": 1
+  },
+  "known_open": [
+    {
+      "id": "ledger/falsified-structured-observation",
+      "class": "hollow-signal-verification",
+      "note": "known-open floor: an internally consistent ledger whose structured observations misrepresent the consumed medium cannot be caught offline; the consume-don't-inspect (browser/audio) lane owns this class. Recorded as a standing FN until a cure lands."
+    }
+  ],
+  "cases": [
+    {
+      "id": "ledger/falsified-structured-observation",
+      "probe": "ledger",
+      "label": "bad",
+      "class": "hollow-signal-verification",
+      "known_open": true,
+      "result": "FN",
+      "got": "SHIP",
+      "documented": "SHIP",
+      "blockers": []
+    },
+    {
+      "id": "ledger/forged-evidence-hash",
+      "probe": "ledger",
+      "label": "bad",
+      "class": "checkmark-without-verification",
+      "known_open": false,
+      "result": "TP",
+      "got": "HOLD",
+      "documented": "HOLD",
+      "blockers": [
+        "direction:system"
+      ]
+    },
+    {
+      "id": "ledger/green-surface-full-ledger",
+      "probe": "ledger",
+      "label": "clean",
+      "class": "verified-green-ledger",
+      "known_open": false,
+      "result": "TN",
+      "got": "SHIP",
+      "documented": "SHIP",
+      "blockers": []
+    },
+    {
+      "id": "ledger/hostile-evidence-redacted",
+      "probe": "ledger",
+      "label": "clean",
+      "class": "receipt-privacy-redaction",
+      "known_open": false,
+      "result": "TN",
+      "got": "SHIP",
+      "documented": "SHIP",
+      "blockers": []
+    },
+    {
+      "id": "ledger/missing-required-row",
+      "probe": "ledger",
+      "label": "bad",
+      "class": "silently-skipped-check",
+      "known_open": false,
+      "result": "TP",
+      "got": "HOLD",
+      "documented": "HOLD",
+      "blockers": [
+        "direction:system"
+      ]
+    },
+    {
+      "id": "ledger/narrowed-input-set",
+      "probe": "ledger",
+      "label": "bad",
+      "class": "input-parity-regression",
+      "known_open": false,
+      "result": "TP",
+      "got": "HOLD",
+      "documented": "HOLD",
+      "blockers": [
+        "direction:system",
+        "foundation:color",
+        "foundation:typography",
+        "foundation:spacing",
+        "foundation:theming",
+        "structure:responsive-layout",
+        "structure:component-states",
+        "structure:form-ux",
+        "structure:empty-states",
+        "surface:micro-motion",
+        "surface:data-viz",
+        "surface:art-direction",
+        "verification:a11y",
+        "verification:cognitive-a11y",
+        "verification:i18n",
+        "verification:deslop-ui",
+        "verification:humanize-copy",
+        "browser:rendering",
+        "browser:zoom-400",
+        "browser:keyboard",
+        "browser:theme-contrast",
+        "browser:reduced-motion",
+        "browser:cold-load",
+        "browser:shadow-iframe",
+        "gate:artifact-spec",
+        "gate:required-evidence",
+        "gate:blocker-handoff",
+        "video:reading-hold",
+        "video:motion-law",
+        "video:readability-960x540",
+        "video:audio-presence",
+        "subject-inventory"
+      ]
+    },
+    {
+      "id": "ledger/record-only-evidence",
+      "probe": "ledger",
+      "label": "bad",
+      "class": "hollow-signal-verification",
+      "known_open": false,
+      "result": "TP",
+      "got": "HOLD",
+      "documented": "HOLD",
+      "blockers": [
+        "foundation:typography",
+        "subject-inventory"
+      ]
+    },
+    {
+      "id": "ledger/stale-linked-artifact",
+      "probe": "ledger",
+      "label": "bad",
+      "class": "stale-linked-artifact",
+      "known_open": false,
+      "result": "TP",
+      "got": "HOLD",
+      "documented": "HOLD",
+      "blockers": [
+        "direction:system",
+        "foundation:color",
+        "foundation:typography",
+        "foundation:spacing",
+        "foundation:theming",
+        "structure:responsive-layout",
+        "structure:component-states",
+        "structure:form-ux",
+        "structure:empty-states",
+        "surface:micro-motion",
+        "surface:data-viz",
+        "surface:art-direction",
+        "verification:a11y",
+        "verification:cognitive-a11y",
+        "verification:i18n",
+        "verification:deslop-ui",
+        "verification:humanize-copy",
+        "browser:rendering",
+        "browser:zoom-400",
+        "browser:keyboard",
+        "browser:theme-contrast",
+        "browser:reduced-motion",
+        "browser:cold-load",
+        "browser:shadow-iframe",
+        "gate:artifact-spec",
+        "gate:required-evidence",
+        "gate:blocker-handoff",
+        "video:reading-hold",
+        "video:motion-law",
+        "video:readability-960x540",
+        "video:audio-presence",
+        "artifact-dependencies"
+      ]
+    },
+    {
+      "id": "ledger/unadjudicated-disagreement",
+      "probe": "ledger",
+      "label": "bad",
+      "class": "unresolved-review-disagreement",
+      "known_open": false,
+      "result": "TP",
+      "got": "HOLD",
+      "documented": "HOLD",
+      "blockers": [
+        "direction:system"
+      ]
+    },
+    {
+      "id": "surface/clean-fixture",
+      "probe": "surface",
+      "label": "clean",
+      "class": "verified-green-surface",
+      "known_open": false,
+      "result": "TN",
+      "got": "CLEAN",
+      "documented": "CLEAN",
+      "findings": []
+    },
+    {
+      "id": "surface/clean-landing",
+      "probe": "surface",
+      "label": "clean",
+      "class": "verified-green-surface",
+      "known_open": false,
+      "result": "TN",
+      "got": "CLEAN",
+      "documented": "CLEAN",
+      "findings": []
+    },
+    {
+      "id": "surface/credential-in-source",
+      "probe": "surface",
+      "label": "bad",
+      "class": "credential-in-browser-source",
+      "known_open": false,
+      "result": "TP",
+      "got": "FAIL",
+      "documented": "FAIL",
+      "findings": [
+        "leak:credential-pattern"
+      ]
+    },
+    {
+      "id": "surface/default-display-face",
+      "probe": "surface",
+      "label": "bad",
+      "class": "template-slop-tell",
+      "known_open": false,
+      "result": "TP",
+      "got": "REVIEW",
+      "documented": "REVIEW",
+      "findings": [
+        "slop:default-display-face"
+      ]
+    },
+    {
+      "id": "surface/indigo-gradient",
+      "probe": "surface",
+      "label": "bad",
+      "class": "template-slop-tell",
+      "known_open": false,
+      "result": "TP",
+      "got": "REVIEW",
+      "documented": "REVIEW",
+      "findings": [
+        "slop:indigo-gradient"
+      ]
+    },
+    {
+      "id": "surface/machine-path-leak",
+      "probe": "surface",
+      "label": "bad",
+      "class": "machine-path-leak",
+      "known_open": false,
+      "result": "TP",
+      "got": "FAIL",
+      "documented": "FAIL",
+      "findings": [
+        "leak:machine-paths"
+      ]
+    },
+    {
+      "id": "surface/title-vocabulary-leak",
+      "probe": "surface",
+      "label": "bad",
+      "class": "title-vocabulary-leak",
+      "known_open": false,
+      "result": "TP",
+      "got": "FAIL",
+      "documented": "FAIL",
+      "findings": [
+        "leak:title-vocabulary"
+      ]
+    }
+  ]
+}
