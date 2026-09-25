@@ -16,6 +16,7 @@ jobs:
       - run: npm ci
       - run: npm run preflight:structural
       - run: npm run test:structural
+      - run: npm run calibrate:check
   oracle:
     runs-on: ubuntu-latest
     steps:
