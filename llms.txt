@@ -3,14 +3,14 @@
 TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who want evidence-backed UI quality.
 
 <!-- release-facts:v1:start -->
-Release inventory: v1.6.0 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
+Release inventory: v1.7.0 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
 <!-- release-facts:v1:end -->
 
 ## TasteCheck at a glance
 
 | Fact | Current release truth |
 |---|---|
-| Version | v1.6.0 |
+| Version | v1.7.0 |
 | Skills | 20 frontend craft skills |
 | Commands | 20 canonical Claude Code slash commands |
 | Alias | 1 approved alias: `/darkmode` for `/theming` |
@@ -86,7 +86,9 @@ TasteCheck carries design intent through a shared pipeline: establish or infer t
 
 Since v1.6.0, `tastecheck-pass` runs in two lanes and leads with its verdict. The **fast lane** (one agent, minutes) loads the real rendered artifact cold, runs named probes (cold-load state, console errors, keyboard-only, 320px/400% zoom, tap targets, measured contrast, reduced motion, link/asset resolution, leaks, template-slop tells, shadow roots and iframes included), and reports SHIP or HOLD with one evidence line per probe. The **deep lane** runs a one-row-per-check hashed ledger through the deterministic runner, with independent review on subjective rows. Three laws govern both lanes: checkmarks are not execution evidence; the verdict leads and fails closed; `n/a` means the subject is absent, never "not tested".
 
-The v1.6.0 rewrite tightened what counts as evidence so a pass cannot be minted from claims: a check counts only when the checker ran it and can cite what was seen (selector, URL, number, console line); a required check that fails, could not run, or lacks evidence is HOLD; URL evidence stays HOLD until bound to a hashable artifact; optional `n/a` needs hashed proof the subject is absent; reviewer disagreement stays HOLD until adjudicated; deterministic rows never accept reviewer judgment. What is not claimed: no false-positive or false-negative rate is published (no labeled regression corpus exists yet); no cross-model or inter-reviewer agreement score exists; subjective rows remain accountable judgment, not an objective design guarantee; effectiveness status stays BLOCKED (historical evidence did not clear its release threshold).
+The v1.6.0 rewrite tightened what counts as evidence so a pass cannot be minted from claims: a check counts only when the checker ran it and can cite what was seen (selector, URL, number, console line); a required check that fails, could not run, or lacks evidence is HOLD; URL evidence stays HOLD until bound to a hashable artifact; optional `n/a` needs hashed proof the subject is absent; reviewer disagreement stays HOLD until adjudicated; deterministic rows never accept reviewer judgment. What is not claimed: no cross-model or inter-reviewer agreement score exists; subjective rows remain accountable judgment, not an objective design guarantee; effectiveness status stays BLOCKED (historical evidence did not clear its release threshold).
+
+Since v1.7.0, error rates are measured, not projected: a labeled regression corpus (`evals/corpus/`, every case citing the desk of record it was harvested from — real org defect findings, verified-green surfaces on the clean side) runs through `npm run calibrate` against the deterministic verdict engine and the offline surface probes. Measured at the v1.7.0 source (real run, `evals/calibration/calibration-2026-09-25.md`): 17 cases — 12 true positives, 1 false negative, 4 true negatives, 0 false positives; false-positive rate 0 (0/4 clean), false-negative rate 0.0769 (1/13 bad, the documented known-open floor: a falsified-but-internally-consistent structured observation is not catchable offline — the consume-don't-inspect browser/audio lane owns that class). Scope: the offline subset; tells needing a rendered surface stay in the browser lane. CI gates every change against the recorded baseline (`calibrate:check`): a release cannot ship with a worse measured rate. v1.7.0 also reshapes verdict output as decision cards (one-word verdict, evidence-cited lines, flip conditions), and adds the gestalt-first check: a whole-product verdict recorded BEFORE element checks, with gestalt-vs-elements divergence surfaced as its own finding class.
 
 Run the repository’s repeatable engineering checks with `npm test`. Those checks cover repository contracts, installation, links, authored demo surfaces, and verification plumbing; they are not a universal effectiveness claim.
 

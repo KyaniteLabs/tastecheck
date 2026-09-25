@@ -3,6 +3,25 @@
 All notable changes to the tastecheck skill pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow semver.
 
+## [1.7.0] — 2026-09-25
+
+### Added — measured error rates: the labeled regression corpus + `tastecheck calibrate`
+
+- **A 17-case labeled corpus** (`evals/corpus/`) harvested from real org defect findings — every BAD case cites the desk of record it reproduces (HealthAdvocate destructive-regex-edit, s1ntr hollow-signal verification in both forms, s1ntr input-parity narrowing, receipt-privacy title-vocabulary and hostile-evidence redaction, browser-reachable credential, unresolved reviewer disagreement, checkmark-without-verification, silently-skipped check, gestalt-elements divergence); every CLEAN case is a verified-green surface (suite-proven SHIP ledger, redaction contract, browser-receipt-green landing, committed fixture). Corpus law, scoring semantics, and the offline scope boundary are recorded in `evals/corpus/CORPUS.md`.
+- **`npm run calibrate`** runs the deterministic verdict engine and the offline surface probes over the corpus and emits dated JSON/Markdown reports to `evals/calibration/`; `tastecheck calibrate` (bin subcommand) forwards to the repo runner.
+- **Measured at this release (real run, not projected): 17 cases — 12 TP / 1 FN / 4 TN / 0 FP. False-positive rate 0 (0/4 clean); false-negative rate 0.0769 (1/13 bad); precision 1.** The single miss is the documented known-open floor: a falsified-but-internally-consistent structured observation (the hollow-signal class in its residual form) is not catchable offline — the consume-don't-inspect browser/audio lane owns it. This replaces v1.6.0's honest "no rate claimed" with numbers, counts, scope, and a named floor.
+- **Dogfood law: the tool gates its own repo.** `npm run calibrate:check` is an explicit CI step (Forgejo + GitHub workflows) and the corpus regression test runs inside `npm test` — a change that worsens measured FP/FN counts against `evals/calibration/baseline.json` fails the build.
+
+### Added — decision cards and gestalt-first
+
+- **SHIP/HOLD decision cards.** Gate reports carry a `decision_card` (schema version 1): one-word verdict first, evidence-cited lines (check IDs, row evidence, structural boundary errors), and flip conditions naming the repair-and-rerun that would reverse the verdict. `--out` prints the compact card to the terminal. Hostile evidence can never reach the card.
+- **Gestalt-first pass (the soullessness detector).** Fast lane step 2: a whole-product verdict recorded BEFORE element checks; gestalt-vs-elements divergence is its own finding class and blocks SHIP until judged against the named basis. Deep lane: the required `direction:gestalt-first` catalog check (`gestalt_verdict_recorded`, `divergence_resolved`).
+- **Loved-corpus v0** (`evals/corpus/loved/`): 20 quote-backed CEO product-verdict entries (product + date + verbatim quote + context + extracted principle + desk of record) — the ground truth the calibration loop measures against.
+
+### Engineering
+
+- Six engineering producers rerun at the v1.7.0 source; context-budget rerun passed within existing caps (the SKILL.md growth from the decision-card paragraph and the gestalt step stayed under the growth limit — no rebaseline needed); public status reprojected via `npm run finalize`.
+
 ## [1.6.0] — 2026-09-25
 
 ### Changed — `tastecheck-pass` first-principles rewrite (landed 2026-09-25; war-room order 2026-09-19)

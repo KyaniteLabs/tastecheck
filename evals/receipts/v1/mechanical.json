@@ -2,45 +2,45 @@
   "schema_version": 1,
   "kind": "mechanical",
   "producer_id": "tastecheck.release.mechanical.v1",
-  "source_tree_sha256": "0cac767be26f5b9ab669c5cec4612b4b45a36c09e43379cf8425e6c738dbcd2a",
+  "source_tree_sha256": "9a252b9e7377d6b6399922f26796f5d7eb614a7cf4813bad71bb07779f0a21c9",
   "nonce": "mechanical-release-v1",
-  "started_at": "2026-09-25T19:17:23.257Z",
-  "finished_at": "2026-09-25T19:17:38.786Z",
+  "started_at": "2026-09-25T20:01:43.106Z",
+  "finished_at": "2026-09-25T20:01:55.359Z",
   "checks": [
     {
       "id": "test",
       "command": "npm test",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "f18ccfa39830ca3732fd42dd713c3c92ce8d5b0f7fe1aef26f0b9c7fe825b08e"
+      "output_sha256": "584e298774f772e08dfb4a62816fbebb17fa3f2b21944b2d92a9de24863fdaa5"
     },
     {
       "id": "contracts",
       "command": "npm run test:contracts",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "79cf67ff5c3c6947d43eeb8fd111550bcabaf163e389ea55625e4b86d8fd3d72"
+      "output_sha256": "44d657d1f845ff7c8ac2c4b5c8a28e6af2bfcafc5c001f60b73d486978ba75a4"
     },
     {
       "id": "eval-schema",
       "command": "npm run test:eval-schema",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "a32374b74cd2fc040316373b599fd6921f5bacc35435b76b8981cb3e61906274"
+      "output_sha256": "2348f2119151ce767b2c35ce82132a150a746c899ace363088ebd8f08bccc6da"
     },
     {
       "id": "release-eval-contracts",
       "command": "npm run test:release-eval-contracts",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "b4bd1af5dca24cd069f6aef46e0b72fbf46dc598c5466bf687931a913c75b3bc"
+      "output_sha256": "92a54099b857cb12baeb6a1951798018ce4f6b6bc91b6de0673daa8dbbc4e062"
     },
     {
       "id": "source-stability",
       "command": "internal source digest comparison",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "0a4d75b760c7a852bf2e90697087da88081b24452c763697327787d642cb244c"
+      "output_sha256": "2c7f349491b295ec9147b1e5af3ea17d18c6f5c6609a65c71ff0ad1497617fd5"
     }
   ],
   "status": "pass",
