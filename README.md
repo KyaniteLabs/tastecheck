@@ -3,7 +3,7 @@
 TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who want evidence-backed UI quality.
 
 <!-- release-facts:v1:start -->
-Release inventory: v1.6.0 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
+Release inventory: v1.7.0 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
 <!-- release-facts:v1:end -->
 
 <!-- release-status:v1:start -->
@@ -104,6 +104,18 @@ The current public release status is projected from source-bound receipts (see t
 
 Run the repository’s repeatable engineering checks with `npm test`. Those checks cover repository contracts, installation, links, authored demo surfaces, and verification plumbing; they are not a universal effectiveness claim.
 
+## The v1.7.0 release: measured error rates, decision cards, gestalt-first
+
+v1.7.0 lands the measurement backbone and the decision-view output.
+
+**Measured error rates (the headline change).** A labeled regression corpus (`evals/corpus/`) harvests real org defect findings — every case cites the desk of record it came from — and `npm run calibrate` runs the checker over it, emitting dated JSON/Markdown reports with measured false-positive and false-negative counts and rates (`evals/calibration/`). Measured at the v1.7.0 source (real run, 2026-09-25): 17 cases — 12 true positives, 1 false negative, 4 true negatives, 0 false positives; FPR 0 (0/4 clean), FNR 0.0769 (1/13 bad). The one miss is a documented known-open floor, not a surprise: a falsified-but-internally-consistent structured observation cannot be caught offline, and the consume-don't-inspect browser/audio lane owns that class. Scope is the offline subset (verdict engine + markup-visible probes); tells that need a rendered surface stay in the browser lane. CI gates every change against the recorded baseline (`npm run calibrate:check`), so a release cannot ship with a worse measured rate than the last one.
+
+**Decision cards.** Every release-gate report now carries a `decision_card`: one-word verdict first, the evidence-cited lines that produced it (check IDs, row evidence, structural boundary errors), and the flip conditions — the exact repair-and-rerun that would reverse the verdict. With `--out` the CLI prints the compact card to the terminal. Consumers gate on the verdict; humans and agents read the card.
+
+**Gestalt-first.** The fast lane verdicts the WHOLE product in one look before any element check; when the gestalt verdict and the element results disagree, that divergence is its own finding — the soullessness detector — and blocks SHIP until judged against the named basis. The deep lane encodes it as the required `direction:gestalt-first` catalog check.
+
+**Also in this release.** The loved-corpus v0: a journal of 20 quote-backed CEO product verdicts with extracted principles (`evals/corpus/loved/`) — ground truth for the calibration loop, since the tool's real error rate is disagreement with those verdicts, not internal rubric agreement. What is still not claimed: no cross-model or inter-reviewer agreement score; subjective rows remain accountable judgment; effectiveness status stays BLOCKED.
+
 ## The v1.6.0 rewrite of `tastecheck-pass`: what changed, what is not claimed
 
 v1.6.0 lands the first-principles rewrite of `tastecheck-pass` (2026-09-19 war-room order) and moves the npm package to `@puenteworks/tastecheck`.
@@ -112,7 +124,7 @@ v1.6.0 lands the first-principles rewrite of `tastecheck-pass` (2026-09-19 war-r
 
 **What is recorded.** Each deep-lane ledger row carries skill, check ID, status, reason, remediation, evidence, and provenance, with repo-relative artifacts hashed by the runner. Release receipts (browser, e2e, mechanical, security, clean-clone, context-budget) bind to a source-tree digest and are reprojected together by `npm run finalize`.
 
-**What is not claimed.** No false-positive or false-negative rate is published — no labeled regression corpus exists yet (it is staged on the roadmap, not shipped). No cross-model or inter-reviewer agreement score exists. Subjective rows remain accountable human or agent judgment bound to a rubric and an independent review, not an objective design guarantee. A fast-lane SHIP is a scoped verdict at one revision, not a warranty. Effectiveness status stays BLOCKED: historical evidence did not clear its release threshold.
+**What was not claimed at v1.6.0.** No false-positive or false-negative rate was published then — no labeled regression corpus existed yet (it was staged on the roadmap, not shipped; v1.7.0 delivers it and publishes measured rates above). No cross-model or inter-reviewer agreement score exists. Subjective rows remain accountable human or agent judgment bound to a rubric and an independent review, not an objective design guarantee. A fast-lane SHIP is a scoped verdict at one revision, not a warranty. Effectiveness status stays BLOCKED: historical evidence did not clear its release threshold.
 
 ## Gallery
 
