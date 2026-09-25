@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "kind": "calibration-case",
+  "id": "surface/indigo-gradient",
+  "probe": "surface",
+  "label": "bad",
+  "class": "template-slop-tell",
+  "known_open": false,
+  "source": {
+    "desk": "tastecheck skills/tastecheck-pass/assets/gate-audit.js check 10",
+    "quote": "the indigo->violet gradient (computed, any element) ... the canonical AI tell"
+  },
+  "case": {
+    "html": "<!doctype html><html><head><title>launch</title><style>.hero { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }</style></head><body><section class=\"hero\"><h1>Ship faster with AI</h1></section></body></html>"
+  },
+  "expectation": { "verdict": "REVIEW", "findings_include": ["slop:indigo-gradient"] }
+}

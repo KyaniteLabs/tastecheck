@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "kind": "calibration-case",
+  "id": "ledger/unadjudicated-disagreement",
+  "probe": "ledger",
+  "label": "bad",
+  "class": "unresolved-review-disagreement",
+  "known_open": false,
+  "source": {
+    "desk": "product/internal-notes.md REMAINS item 1 (2026-09)",
+    "quote": "one design direction was driven to the reviewer's bar while three directions now coexist (one live-but-unseen, two preserved, one committee all-AMBER) with no adjudication"
+  },
+  "case": { "mutation": "unadjudicated-disagreement", "target": "first-subjective" },
+  "expectation": { "verdict": "HOLD" }
+}

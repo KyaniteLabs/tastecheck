@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "kind": "calibration-case",
+  "id": "surface/machine-path-leak",
+  "probe": "surface",
+  "label": "bad",
+  "class": "machine-path-leak",
+  "known_open": false,
+  "source": {
+    "desk": "tastecheck tools/evals/fixtures/release-gate/hostile-evidence.json (W4 redaction contract); org constitution law 4 leak-audit duty",
+    "quote": "assert(!redactedText.includes(\"/Users/private\"), \"absolute paths must not survive redaction\")"
+  },
+  "case": {
+    "html": "<!doctype html><html><head><title>untitled page</title></head><body><p>built from /Users/private/projects/secret-desk/ on the operator machine</p></body></html>"
+  },
+  "expectation": { "verdict": "FAIL", "findings_include": ["leak:machine-paths"] }
+}
