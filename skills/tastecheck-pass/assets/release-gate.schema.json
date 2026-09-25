@@ -4,7 +4,7 @@
   "title": "TasteCheck release gate output v1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "kind", "roots", "catalog", "browser_subjects", "subject_inventory", "artifact", "execution", "rows", "verdict", "release_eligible", "blockers", "validation"],
+  "required": ["schema_version", "kind", "roots", "catalog", "browser_subjects", "subject_inventory", "artifact", "execution", "rows", "verdict", "release_eligible", "blockers", "decision_card", "validation"],
   "properties": {
     "schema_version": { "const": 1 },
     "kind": { "const": "tastecheck-release-gate" },
@@ -61,6 +61,7 @@
     "verdict": { "enum": ["SHIP", "HOLD"] },
     "release_eligible": { "type": "boolean" },
     "blockers": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+    "decision_card": { "$ref": "#/$defs/decisionCard" },
     "validation": {
       "type": "object",
       "additionalProperties": false,
@@ -70,6 +71,39 @@
   },
   "$defs": {
     "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "decisionCard": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The decision view: one word, the evidence that produced it, and what would change it. Consumers gate on verdict; humans and agents read the card.",
+      "required": ["card_version", "verdict", "scope", "evidence_lines", "flip_conditions"],
+      "properties": {
+        "card_version": { "const": 1 },
+        "verdict": { "enum": ["SHIP", "HOLD"] },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["artifact_identity", "artifact_sha256", "artifact_hash_verified", "dependency_manifest_verified", "catalog", "check_count", "execution_mode", "execution_target_origin"],
+          "properties": {
+            "artifact_identity": { "type": "string" },
+            "artifact_sha256": { "type": "string" },
+            "artifact_hash_verified": { "type": "boolean" },
+            "dependency_manifest_verified": { "type": "boolean" },
+            "catalog": { "$ref": "#/$defs/decisionCardCatalog" },
+            "check_count": { "type": "integer", "minimum": 0 },
+            "execution_mode": { "oneOf": [{ "type": "null" }, { "enum": ["audit", "fix"] }] },
+            "execution_target_origin": { "oneOf": [{ "type": "null" }, { "enum": ["repo", "staging", "production"] }] }
+          }
+        },
+        "evidence_lines": { "type": "array", "minItems": 1, "maxItems": 12, "items": { "type": "string", "minLength": 1 } },
+        "flip_conditions": { "type": "array", "minItems": 1, "maxItems": 12, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "decisionCardCatalog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": { "path": { "type": "string" }, "sha256": { "type": "string" } }
+    },
     "outputRow": {
       "type": "object",
       "additionalProperties": false,

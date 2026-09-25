@@ -766,6 +766,67 @@ function missingRow(check) {
   };
 }
 
+const DECISION_CARD_VERSION = 1;
+const STRUCTURAL_BLOCKERS = new Set(["artifact", "artifact-dependencies", "subject-inventory", "catalog", "execution", "browser-subjects"]);
+
+function structuralBlockerEvidence(blocker, validation) {
+  const related = (validation?.errors || []).find((error) => error.toLowerCase().includes(blocker.replace("-", " ")) || error.startsWith(`${blocker}:`));
+  return related ?? `${blocker} boundary condition failed (see validation.errors)`;
+}
+
+/**
+ * The decision view: one word, then the evidence that produced it, then what
+ * would change it. Consumers gate on `verdict`; humans and agents read the
+ * card. Evidence lines cite check IDs and row evidence; flip conditions name
+ * the exact repair-and-rerun that could reverse the verdict.
+ */
+function buildDecisionCard({ verdict, blockers, rows, validation, artifact, catalog, execution }) {
+  const scope = {
+    artifact_identity: artifact.identity,
+    artifact_sha256: artifact.sha256,
+    artifact_hash_verified: artifact.hash_verified === true,
+    dependency_manifest_verified: artifact.dependency_manifest_hash_verified === true,
+    catalog,
+    check_count: rows.length,
+    execution_mode: execution?.mode ?? null,
+    execution_target_origin: execution?.target_origin ?? null,
+  };
+  const evidenceLines = [];
+  const flipConditions = [];
+  if (verdict === "SHIP") {
+    const passed = rows.filter((row) => row.status === "pass").length;
+    const absent = rows.filter((row) => row.status === "n/a").length;
+    evidenceLines.push(`${passed}/${rows.length} catalog checks passed with verified evidence; ${absent} n/a (subject absent, hashed proof)`);
+    evidenceLines.push(`artifact ${artifact.identity} (sha256 ${artifact.sha256.slice(0, 12)}) hash-verified; dependency manifest verified (${artifact.dependency_manifest?.assets?.length ?? 0} linked assets)`);
+    evidenceLines.push("every row's evidence and provenance hashes verified; no unadjudicated reviewer disagreement");
+    flipConditions.push("any change to the artifact bytes or its linked dependencies invalidates the evidence - rerun the gate on the fresh artifact");
+    flipConditions.push("a required check that fails, cannot run, or lacks citable evidence flips this to HOLD");
+  } else {
+    for (const blocker of blockers) {
+      if (STRUCTURAL_BLOCKERS.has(blocker)) {
+        evidenceLines.push(`${blocker}: ${structuralBlockerEvidence(blocker, validation)}`);
+        flipConditions.push(`${blocker}: repair the boundary condition, then rerun the full gate`);
+        continue;
+      }
+      const row = rows.find((item) => item.check_id === blocker);
+      if (!row) continue;
+      evidenceLines.push(`${row.check_id}: ${row.reason} (status ${row.status}; evidence: ${row.evidence?.summary ?? "none - no execution evidence supplied"})`);
+      const firstValidationError = row.validation_errors?.[0];
+      if (firstValidationError) evidenceLines.push(`${row.check_id}: ${firstValidationError}`);
+      flipConditions.push(`${row.check_id}: ${row.remediation} Then rerun this check on the fresh artifact and replace the affected rows, not the whole history.`);
+    }
+    if (!evidenceLines.length) evidenceLines.push("gate blocked; see validation.errors");
+    if (!flipConditions.length) flipConditions.push("repair the failing boundary and rerun the full gate");
+  }
+  return {
+    card_version: DECISION_CARD_VERSION,
+    verdict,
+    scope,
+    evidence_lines: evidenceLines.slice(0, 12),
+    flip_conditions: flipConditions.slice(0, 12),
+  };
+}
+
 function normalizeRow(row, check, artifact, inventoryState) {
   const errors = [];
   if (!isObject(row)) return missingRow(check);
@@ -824,6 +885,7 @@ export function evaluateReleaseGate(input, options = {}) {
       artifact: { type: "file", identity: "unresolved", sha256: "0".repeat(64), bytes: 0, hash_verified: false, dependency_manifest: null, dependency_manifest_sha256: "0".repeat(64), dependency_manifest_hash_verified: false },
       execution: execution.policy,
       rows: [], verdict: "HOLD", release_eligible: false, blockers: ["catalog", ...(execution.allowed ? [] : ["execution"])],
+      decision_card: buildDecisionCard({ verdict: "HOLD", blockers: ["catalog", ...(execution.allowed ? [] : ["execution"])], rows: [], validation: { errors: [`cannot load check catalog: ${error.message}`, ...browserAuthority.errors, ...execution.errors.map((item) => `execution: ${item}`)] }, artifact: { identity: "unresolved", sha256: "0".repeat(64), hash_verified: false, dependency_manifest_hash_verified: false, dependency_manifest: null }, catalog: { path: CATALOG_PATH, sha256: "0".repeat(64) }, execution: execution.policy }),
       validation: { input_valid: false, execution_policy_valid: execution.allowed, browser_subjects_valid: false, catalog_complete: false, subject_inventory_valid: false, subject_coverage_complete: false, artifact_hash_verified: false, artifact_dependency_manifest_verified: false, evidence_hashes_verified: false, provenance_hashes_verified: false, errors: [`cannot load check catalog: ${error.message}`, ...browserAuthority.errors, ...execution.errors.map((item) => `execution: ${item}`)] },
     };
   }
@@ -913,6 +975,7 @@ export function evaluateReleaseGate(input, options = {}) {
     verdict: releaseEligible ? "SHIP" : "HOLD",
     release_eligible: releaseEligible,
     blockers: uniqueBlockers,
+    decision_card: buildDecisionCard({ verdict: releaseEligible ? "SHIP" : "HOLD", blockers: uniqueBlockers, rows, validation, artifact: inspected.artifact, catalog: { path: CATALOG_PATH, sha256: loaded.sha256 }, execution: execution.policy }),
     validation,
   };
 }
@@ -1009,13 +1072,28 @@ function cli() {
   let result;
   try { result = evaluateReleaseGate(readInput(verifierRoot, inputPath), { verifierRoot, artifactRoot, browserManifestPath, requiredViewports }); }
   catch (error) {
-    result = { schema_version: SCHEMA_VERSION, kind: KIND, roots: { verifier: rootIdentity(verifierRoot), artifact: rootIdentity(artifactRoot) }, browser_subjects: null, subject_inventory: null, catalog: { path: CATALOG_PATH, sha256: "0".repeat(64), check_ids: [] }, artifact: { type: "file", identity: "unresolved", sha256: "0".repeat(64), bytes: 0, hash_verified: false, dependency_manifest: null, dependency_manifest_sha256: "0".repeat(64), dependency_manifest_hash_verified: false }, execution: { ...DEFAULT_EXECUTION }, rows: [], verdict: "HOLD", release_eligible: false, blockers: ["input"], validation: { input_valid: false, execution_policy_valid: true, browser_subjects_valid: false, catalog_complete: false, subject_inventory_valid: false, subject_coverage_complete: false, artifact_hash_verified: false, artifact_dependency_manifest_verified: false, evidence_hashes_verified: false, provenance_hashes_verified: false, errors: [error.message] } };
+    const fallbackArtifact = { type: "file", identity: "unresolved", sha256: "0".repeat(64), bytes: 0, hash_verified: false, dependency_manifest: null, dependency_manifest_sha256: "0".repeat(64), dependency_manifest_hash_verified: false };
+    const fallbackValidation = { input_valid: false, execution_policy_valid: true, browser_subjects_valid: false, catalog_complete: false, subject_inventory_valid: false, subject_coverage_complete: false, artifact_hash_verified: false, artifact_dependency_manifest_verified: false, evidence_hashes_verified: false, provenance_hashes_verified: false, errors: [error.message] };
+    result = { schema_version: SCHEMA_VERSION, kind: KIND, roots: { verifier: rootIdentity(verifierRoot), artifact: rootIdentity(artifactRoot) }, browser_subjects: null, subject_inventory: null, catalog: { path: CATALOG_PATH, sha256: "0".repeat(64), check_ids: [] }, artifact: fallbackArtifact, execution: { ...DEFAULT_EXECUTION }, rows: [], verdict: "HOLD", release_eligible: false, blockers: ["input"], decision_card: buildDecisionCard({ verdict: "HOLD", blockers: ["input"], rows: [], validation: fallbackValidation, artifact: fallbackArtifact, catalog: { path: CATALOG_PATH, sha256: "0".repeat(64) }, execution: DEFAULT_EXECUTION }), validation: fallbackValidation };
   }
   const output = `${JSON.stringify(result, null, 2)}\n`;
   if (outPath && !outPath.startsWith("--")) {
     writeAtomicNoFollow(resolveOutputPath(verifierRoot, outPath), output);
+    printDecisionCard(result.decision_card);
   } else process.stdout.write(output);
   if (result.verdict !== "SHIP") process.exitCode = 1;
+}
+
+/** Compact decision view for terminal consumers: the one-word verdict leads. */
+function printDecisionCard(card) {
+  if (!card) return;
+  const lines = [
+    `DECISION: ${card.verdict}`,
+    ...card.evidence_lines.map((line) => `- ${line}`),
+    "WHAT WOULD FLIP IT:",
+    ...card.flip_conditions.map((line) => `- ${line}`),
+  ];
+  console.error(lines.join("\n"));
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) cli();

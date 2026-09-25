@@ -85,7 +85,10 @@ independent reviewer, a matching decision, and the review hash — disagreement 
 HOLD until adjudicated; deterministic rows never accept reviewer judgment. Stop at the
 first failed row, emit HOLD, and hand each blocker its owner, repair, fresh rerun, and
 measurable acceptance rule; after a fix, replace affected rows with new evidence, not
-the whole history.
+the whole history. The report carries a decision card — one-word verdict first, then
+the evidence-cited lines that produced it, then the flip conditions that would change
+it (with --out the card also prints to the terminal). Consumers gate on the verdict;
+the card is the shape humans and agents read.
 
 Full-build coverage spans direction → foundations → structure/behavior → surface →
 accessibility/copy; the catalog encodes it. The fast-lane probes are the
