@@ -3,6 +3,22 @@
 All notable changes to the tastecheck skill pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow semver.
 
+## [1.6.0] — 2026-09-25
+
+### Changed — `tastecheck-pass` first-principles rewrite (landed 2026-09-25; war-room order 2026-09-19)
+
+- **Two lanes, verdict-first, fail-closed.** The pass now offers a fast lane (one agent, minutes, verdict plus an evidence line per probe) and a deep lane (one-row-per-check hashed ledger through the deterministic runner, independent review on subjective rows). The verdict leads; a required check that fails, could not run, or lacks evidence is `HOLD`.
+- **Evidence discipline tightened so a pass cannot be minted from claims.** A check counts only when the checker ran it and can cite what was seen (selector, URL, number, console line); URL evidence stays `HOLD` until bound to a hashable artifact; optional `n/a` needs hashed proof the subject is absent; reviewer disagreement stays `HOLD` until adjudicated; deterministic rows never accept reviewer judgment. `n/a` means the subject is absent, never "not tested".
+- **No rate claims added.** No false-positive or false-negative rate, cross-model agreement score, or effectiveness number is published with this rewrite; a labeled regression corpus is staged on the roadmap, not shipped.
+
+### Changed — package identity
+
+- **npm package renamed to `@puenteworks/tastecheck`.** The npm registry rejected the bare `tastecheck` name as typosquat-adjacent to `fast-check`; v1.6.0 is the first publish under the org scope. CLI binary remains `tastecheck`.
+
+### Engineering
+
+- All six engineering producers (browser, e2e, mechanical, security, clean-clone) plus context-budget rerun and rebound to the v1.6.0 source digest; public status reprojected via `npm run finalize`.
+
 ## [1.5.0] — 2026-09-14
 
 ### Added — video medium support (the battery now gates videos)
