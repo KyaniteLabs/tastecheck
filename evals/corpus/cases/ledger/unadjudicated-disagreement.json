@@ -7,7 +7,7 @@
   "class": "unresolved-review-disagreement",
   "known_open": false,
   "source": {
-    "desk": "product/internal-notes.md REMAINS item 1 (2026-09)",
+    "desk": "internal incident record (provenance sanitized 2026-09-25)",
     "quote": "one design direction driven to the CEO's warm/bold/human bar - three now coexist (STRIA live-but-unseen, R5/R6 preserved, splusplus committee all-AMBER)"
   },
   "case": { "mutation": "unadjudicated-disagreement", "target": "first-subjective" },

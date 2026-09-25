@@ -1,0 +1,663 @@
+{
+  "schema_version": 1,
+  "kind": "tastecheck-release-gate",
+  "roots": {
+    "verifier": {
+      "path": "[REDACTED:ABSOLUTE_PATH]",
+      "sha256": "3a1bdfb164d345f6d2f9ced34b7e55210b5ce410dbd91690d84023257d935c13"
+    },
+    "artifact": {
+      "path": "[REDACTED:ABSOLUTE_PATH]",
+      "sha256": "3a1bdfb164d345f6d2f9ced34b7e55210b5ce410dbd91690d84023257d935c13"
+    }
+  },
+  "execution": {
+    "mode": "audit",
+    "target_origin": "repo",
+    "authenticated": false,
+    "writes": false,
+    "injection": false,
+    "authorization": null
+  },
+  "browser_subjects": {
+    "manifest_path": "skills/tastecheck-pass/assets/browser-subject-manifest.json",
+    "manifest_sha256": "0e79c5e91e2ec9b71a819371333164a28ee5ada3b24aa564982131315f4d00f9",
+    "required_viewports": [
+      390,
+      768,
+      1280
+    ],
+    "routes": [
+      "/"
+    ],
+    "states": [
+      "default"
+    ],
+    "members": [
+      {
+        "id": "route:/|state:default|viewport:390",
+        "route": "/",
+        "state": "default",
+        "viewport": 390
+      },
+      {
+        "id": "route:/|state:default|viewport:768",
+        "route": "/",
+        "state": "default",
+        "viewport": 768
+      },
+      {
+        "id": "route:/|state:default|viewport:1280",
+        "route": "/",
+        "state": "default",
+        "viewport": 1280
+      }
+    ]
+  },
+  "catalog": {
+    "path": "skills/tastecheck-pass/assets/check-catalog.json",
+    "sha256": "5e028d8c5d00a3190bcb562aa032d1118bd1c9e8ff29f8cc2031e4d27305901d",
+    "check_ids": [
+      "direction:system",
+      "direction:gestalt-first",
+      "foundation:color",
+      "foundation:typography",
+      "foundation:spacing",
+      "foundation:theming",
+      "structure:responsive-layout",
+      "structure:component-states",
+      "structure:form-ux",
+      "structure:empty-states",
+      "surface:micro-motion",
+      "surface:data-viz",
+      "surface:art-direction",
+      "verification:a11y",
+      "verification:cognitive-a11y",
+      "verification:i18n",
+      "verification:deslop-ui",
+      "verification:humanize-copy",
+      "browser:rendering",
+      "browser:zoom-400",
+      "browser:keyboard",
+      "browser:theme-contrast",
+      "browser:reduced-motion",
+      "browser:cold-load",
+      "browser:shadow-iframe",
+      "gate:artifact-spec",
+      "gate:required-evidence",
+      "gate:blocker-handoff",
+      "video:reading-hold",
+      "video:motion-law",
+      "video:readability-960x540",
+      "video:audio-presence"
+    ]
+  },
+  "subject_inventory": null,
+  "artifact": {
+    "type": "file",
+    "identity": "unresolved",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "bytes": 0,
+    "hash_verified": false,
+    "dependency_manifest": null,
+    "dependency_manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "dependency_manifest_hash_verified": false
+  },
+  "rows": [
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "direction:system",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "direction:gestalt-first",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "foundation:color",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "foundation:typography",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "foundation:spacing",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "foundation:theming",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "structure:responsive-layout",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "structure:component-states",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "structure:form-ux",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "structure:empty-states",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "surface:micro-motion",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "surface:data-viz",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "surface:art-direction",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "verification:a11y",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "verification:cognitive-a11y",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "verification:i18n",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "verification:deslop-ui",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "verification:humanize-copy",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "browser:rendering",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "browser:zoom-400",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "browser:keyboard",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "browser:theme-contrast",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "browser:reduced-motion",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "browser:cold-load",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "browser:shadow-iframe",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "gate:artifact-spec",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "gate:required-evidence",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "gate:blocker-handoff",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "video:reading-hold",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "video:motion-law",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "video:readability-960x540",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    },
+    {
+      "skill": "tastecheck-pass",
+      "check_id": "video:audio-presence",
+      "status": "fail",
+      "reason": "No ledger row was supplied for this closed check.",
+      "remediation": "Run this check on the real artifact and attach complete evidence and provenance.",
+      "evidence": null,
+      "provenance": null,
+      "review": null,
+      "validation_errors": [
+        "missing ledger row"
+      ]
+    }
+  ],
+  "verdict": "HOLD",
+  "release_eligible": false,
+  "blockers": [
+    "direction:system",
+    "direction:gestalt-first",
+    "foundation:color",
+    "foundation:typography",
+    "foundation:spacing",
+    "foundation:theming",
+    "structure:responsive-layout",
+    "structure:component-states",
+    "structure:form-ux",
+    "structure:empty-states",
+    "surface:micro-motion",
+    "surface:data-viz",
+    "surface:art-direction",
+    "verification:a11y",
+    "verification:cognitive-a11y",
+    "verification:i18n",
+    "verification:deslop-ui",
+    "verification:humanize-copy",
+    "browser:rendering",
+    "browser:zoom-400",
+    "browser:keyboard",
+    "browser:theme-contrast",
+    "browser:reduced-motion",
+    "browser:cold-load",
+    "browser:shadow-iframe",
+    "gate:artifact-spec",
+    "gate:required-evidence",
+    "gate:blocker-handoff",
+    "video:reading-hold",
+    "video:motion-law",
+    "video:readability-960x540",
+    "video:audio-presence",
+    "artifact",
+    "artifact-dependencies",
+    "subject-inventory",
+    "browser-subjects"
+  ],
+  "decision_card": {
+    "card_version": 1,
+    "verdict": "HOLD",
+    "scope": {
+      "artifact_identity": "unresolved",
+      "artifact_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "artifact_hash_verified": false,
+      "dependency_manifest_verified": false,
+      "catalog": {
+        "path": "skills/tastecheck-pass/assets/check-catalog.json",
+        "sha256": "5e028d8c5d00a3190bcb562aa032d1118bd1c9e8ff29f8cc2031e4d27305901d"
+      },
+      "check_count": 32,
+      "execution_mode": "audit",
+      "execution_target_origin": "repo"
+    },
+    "evidence_lines": [
+      "direction:system: No ledger row was supplied for this closed check. (status fail; evidence: none - no execution evidence supplied)",
+      "direction:system: missing ledger row",
+      "direction:gestalt-first: No ledger row was supplied for this closed check. (status fail; evidence: none - no execution evidence supplied)",
+      "direction:gestalt-first: missing ledger row",
+      "foundation:color: No ledger row was supplied for this closed check. (status fail; evidence: none - no execution evidence supplied)",
+      "foundation:color: missing ledger row",
+      "foundation:typography: No ledger row was supplied for this closed check. (status fail; evidence: none - no execution evidence supplied)",
+      "foundation:typography: missing ledger row",
+      "foundation:spacing: No ledger row was supplied for this closed check. (status fail; evidence: none - no execution evidence supplied)",
+      "foundation:spacing: missing ledger row",
+      "foundation:theming: No ledger row was supplied for this closed check. (status fail; evidence: none - no execution evidence supplied)",
+      "foundation:theming: missing ledger row"
+    ],
+    "flip_conditions": [
+      "direction:system: Run this check on the real artifact and attach complete evidence and provenance. Then rerun this check on the fresh artifact and replace the affected rows, not the whole history.",
+      "direction:gestalt-first: Run this check on the real artifact and attach complete evidence and provenance. Then rerun this check on the fresh artifact and replace the affected rows, not the whole history.",
+      "foundation:color: Run this check on the real artifact and attach complete evidence and provenance. Then rerun this check on the fresh artifact and replace the affected rows, not the whole history.",
+      "foundation:typography: Run this check on the real artifact and attach complete evidence and provenance. Then rerun this check on the fresh artifact and replace the affected rows, not the whole history.",
+      "foundation:spacing: Run this check on the real artifact and attach complete evidence and provenance. Then rerun this check on the fresh artifact and replace the affected rows, not the whole history.",
+      "foundation:theming: Run this check on the real artifact and attach complete evidence and provenance. Then rerun this check on the fresh artifact and replace the affected rows, not the whole history.",
+      "structure:responsive-layout: Run this check on the real artifact and attach complete evidence and provenance. Then rerun this check on the fresh artifact and replace the affected rows, not the whole history.",
+      "structure:component-states: Run this check on the real artifact and attach complete evidence and provenance. Then rerun this check on the fresh artifact and replace the affected rows, not the whole history.",
+      "structure:form-ux: Run this check on the real artifact and attach complete evidence and provenance. Then rerun this check on the fresh artifact and replace the affected rows, not the whole history.",
+      "structure:empty-states: Run this check on the real artifact and attach complete evidence and provenance. Then rerun this check on the fresh artifact and replace the affected rows, not the whole history.",
+      "surface:micro-motion: Run this check on the real artifact and attach complete evidence and provenance. Then rerun this check on the fresh artifact and replace the affected rows, not the whole history.",
+      "surface:data-viz: Run this check on the real artifact and attach complete evidence and provenance. Then rerun this check on the fresh artifact and replace the affected rows, not the whole history."
+    ]
+  },
+  "validation": {
+    "input_valid": false,
+    "execution_policy_valid": true,
+    "browser_subjects_valid": false,
+    "catalog_complete": true,
+    "subject_inventory_valid": false,
+    "subject_coverage_complete": false,
+    "artifact_hash_verified": false,
+    "artifact_dependency_manifest_verified": false,
+    "evidence_hashes_verified": false,
+    "provenance_hashes_verified": false,
+    "errors": [
+      "ledger input contains unknown fields",
+      "ledger artifact is required",
+      "ledger browser_subjects is required",
+      "ledger subject_inventory is required",
+      "ledger rows must be an array",
+      "browser_subjects is required and must be an object",
+      "subject_inventory is required and must be an object",
+      "artifact: artifact must be an object",
+      "direction:system: missing ledger row",
+      "direction:gestalt-first: missing ledger row",
+      "foundation:color: missing ledger row",
+      "foundation:typography: missing ledger row",
+      "foundation:spacing: missing ledger row",
+      "foundation:theming: missing ledger row",
+      "structure:responsive-layout: missing ledger row",
+      "structure:component-states: missing ledger row",
+      "structure:form-ux: missing ledger row",
+      "structure:empty-states: missing ledger row",
+      "surface:micro-motion: missing ledger row",
+      "surface:data-viz: missing ledger row",
+      "surface:art-direction: missing ledger row",
+      "verification:a11y: missing ledger row",
+      "verification:cognitive-a11y: missing ledger row",
+      "verification:i18n: missing ledger row",
+      "verification:deslop-ui: missing ledger row",
+      "verification:humanize-copy: missing ledger row",
+      "browser:rendering: missing ledger row",
+      "browser:zoom-400: missing ledger row",
+      "browser:keyboard: missing ledger row",
+      "browser:theme-contrast: missing ledger row",
+      "browser:reduced-motion: missing ledger row",
+      "browser:cold-load: missing ledger row",
+      "browser:shadow-iframe: missing ledger row",
+      "gate:artifact-spec: missing ledger row",
+      "gate:required-evidence: missing ledger row",
+      "gate:blocker-handoff: missing ledger row",
+      "video:reading-hold: missing ledger row",
+      "video:motion-law: missing ledger row",
+      "video:readability-960x540: missing ledger row",
+      "video:audio-presence: missing ledger row"
+    ]
+  }
+}

@@ -7,7 +7,7 @@
   "class": "hollow-signal-verification",
   "known_open": false,
   "source": {
-    "desk": "product/smell-registry.md entry 17 (BUG 2026-09-19T11:0xZ)",
+    "desk": "internal incident record (provenance sanitized 2026-09-25)",
     "quote": "The prior \"REAL PLAYBACK: Transport=started, audioCtx=running\" verification passed anyway. Class: preview-shell/artwork DOM-contract mismatch + hollow-signal verification"
   },
   "case": { "mutation": "record-only-evidence", "target": "first-required-deterministic-boolean" },

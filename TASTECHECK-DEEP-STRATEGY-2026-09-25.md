@@ -1,0 +1,20 @@
+# tastecheck — deep strategy layer 3 (CEO "deeper deeper deeper", 2026-09-25; HoP session 7)
+
+1. SYSTEM-1 LAYER: taste verdicts precede articulation — the CEO judges in seconds, enumerates only when asked. Build the gestalt judge that verdicts BEFORE analysis; the divergence between gestalt-verdict and element-check-results IS the soullessness detector.
+2. TASTE IS RELATIVE: universal checklists manufacture the timidness they mean to prevent. Judge FIT-TO-INTENT: every product carries a taste spec (its register — cozy/cryptic/brutalist); rules derive from the product's OWN laws (felt-law, glass-laws, beetle-grammar precedent). Bold specific choices that violate generic rules PASS when they serve intent.
+3. THE LOVED-CORPUS: build the positive corpus — everything the CEO has loved (beetle carapace, labradorite, leadlight lancet, Fraunces WONK...), each annotated with the extracted principle; and the trash-corpus. Verdicts become distance-from-corpus in principle-space, enabling "fine but not US" — a verdict no generic tool can make.
+4. GENERATIVE SIDE: the checker's taste-model becomes a generator — check → diagnose → propose fixes IN THE PRODUCT'S OWN LAWS/TOKENS → re-check. At the limit: style transfer from the loved-corpus. (Primitive already proven: the post-audit "how to 10/10" consults.)
+5. IDENTITY-OVER-TIME: taste includes historical coherence — version N must refine N-1's soul, not wear its name. Drift-detection (semantic diff of intent-spec vs delivered artifact) is a first-class dimension; drift is the CEO's most-repeated complaint class.
+6. CONSUME-DON'T-INSPECT: taste the product the way it's consumed — real browser, real audio, real latency, break things (comorbidity law: verification runs in the consumer's frame). Static screenshots are structurally shallow.
+7. ATTENTION ECONOMICS: his verdict = the precious label. Design for verdict-yield-per-CEO-second: one-look surfaces, A/B moments as free labels, never ask him to explain — extraction from diff+one-word is our job. tastecheck is an AMPLIFIER of his taste: one word → thousands of training signals.
+8. HOUSE-STYLE LAYER: cross-product family coherence — do the 82 products feel like one hand made them? Family-level checks no external tool has; this is the org's actual moat (taste-at-scale).
+9. THE HONEST LIMIT: full automation of taste is the death of taste's point. The instrument approximates and amplifies, NEVER replaces the verdict (charter law). Terminal KPI: how rarely the CEO sees trash before the good version arrives.
+
+## THE PIVOT (CEO word 2026-09-25 ~20:45Z): "i dont want to sell only my taste — i want it to learn EACH USERS specific taste"
+Supersedes the single-calibration framing of §7: the calibration MECHANISM (verdict-ground-truth loop) was right, the SCOPE was wrong. tastecheck learns EACH user's taste.
+1. TASTE PROFILES: profile = loved-corpus + verdict journal + extracted principles + calibrated weights, per user, portable file. org-CEO = profile #1 (20 verdicts seeded). House-style = another profile (the family check).
+2. COLD START: new user → ~10 A/B preference picks seed the profile; every subsequent verdict (incl. one-word reactions to check results) refines it. Verdict-yield economics per user, not per CEO.
+3. THE HARD SPLIT: objective defects (a11y floors, credential leaks, privacy — physics/universal) NEVER personalize; the register/taste layer (warm-vs-minimal, bold-vs-quiet, fit-to-intent) is profile-weighted. Never personalize away a real defect.
+4. PRIVACY: a taste profile is the user's data — portable, exportable, deletable; never shipped between users.
+5. IDENTITY: taste-as-a-service becomes YOUR-taste-as-a-service — the checker that knows you. The org's use = the dogfood that proves it learns real operators.
+6. BUILD ORDER (staged for the post-wall wave): profile schema extending the loved-corpus format · `tastecheck profile init/teach/calibrate` family · the A/B cold-start picker · objective-vs-taste check separation in the gate · profile-scoped calibration reports. The v1.7.0 corpus/calibrate machinery is the foundation — it generalizes as-is.

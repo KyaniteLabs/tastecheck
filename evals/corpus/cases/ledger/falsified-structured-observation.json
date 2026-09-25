@@ -7,7 +7,7 @@
   "class": "hollow-signal-verification",
   "known_open": true,
   "source": {
-    "desk": "product/smell-registry.md entry 35 (BUG 2026-09-19T14:1xZ)",
+    "desk": "internal incident record (provenance sanitized 2026-09-25)",
     "quote": "bedStarted() read Tone.Transport.state alone - a STARTED TRANSPORT on a SUSPENDED context reported \"playing\" while silent (the clock runs logically without audio)"
   },
   "case": { "mutation": "none" },

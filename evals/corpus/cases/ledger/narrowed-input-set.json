@@ -7,7 +7,7 @@
   "class": "input-parity-regression",
   "known_open": false,
   "source": {
-    "desk": "product/smell-registry.md entry 13 (SMELL 2026-09-19T06:3xZ)",
+    "desk": "internal incident record (provenance sanitized 2026-09-25)",
     "quote": "rebuild silently narrowed the derivation input set (builder defaults = 1 ledger; prior build = 2 via --ledger; manifest-dist-v2.json rewritten before anyone diffed it) -> live page regressed 'of 5,868 scored'->'of 4,945' mid-CEO-look"
   },
   "case": { "mutation": "narrowed-input-set" },
