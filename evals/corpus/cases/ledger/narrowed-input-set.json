@@ -7,7 +7,7 @@
   "class": "input-parity-regression",
   "known_open": false,
   "source": {
-    "desk": "product/smell-registry.md entry 13 (SMELL 2026-09-19T06:3xZ)",
+    "desk": "internal incident record (provenance sanitized 2026-09-25)",
     "quote": "a rebuild silently narrowed the derivation input set (builder default = 1 ledger; prior build = 2) and rewrote the manifest before anyone diffed it -> the live page's scored count regressed mid-review"
   },
   "case": { "mutation": "narrowed-input-set" },
