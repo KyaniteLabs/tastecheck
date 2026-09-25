@@ -130,8 +130,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 3.4651,
-      "status": "warn"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -213,8 +213,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 4.9136,
-      "status": "warn"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -269,8 +269,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 3.6485,
-      "status": "warn"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -381,8 +381,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 4.6854,
-      "status": "warn"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -409,8 +409,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 5.5263,
-      "status": "ok"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -562,11 +562,9 @@
       "warnings": 1
     },
     "gate": {
-      "verdict": "REVIEW WARNS",
+      "verdict": "CLEAN",
       "fails": [],
-      "warns": [
-        "NIMA aesthetic score 5.16/10 below 5.5 threshold"
-      ],
+      "warns": [],
       "notes": [
         "display face resolves to \"Archivo\""
       ]
@@ -576,8 +574,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 5.1645,
-      "status": "warn"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -603,8 +601,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 5.7436,
-      "status": "ok"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -659,8 +657,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 5.6305,
-      "status": "ok"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -688,8 +686,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 2.9884,
-      "status": "warn"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -746,8 +744,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 5.5751,
-      "status": "ok"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -775,8 +773,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 6.0105,
-      "status": "ok"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -804,8 +802,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 5.6814,
-      "status": "ok"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -833,8 +831,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 7.8349,
-      "status": "ok"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -891,8 +889,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 7.3965,
-      "status": "ok"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -920,8 +918,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 5.9545,
-      "status": "ok"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -947,8 +945,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 5.5581,
-      "status": "ok"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -1001,8 +999,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 6.4878,
-      "status": "ok"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -1030,8 +1028,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 4.8146,
-      "status": "warn"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -1118,8 +1116,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 4.7517,
-      "status": "warn"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {
@@ -1203,8 +1201,8 @@
       "visible": true
     },
     "aesthetic": {
-      "nimaScore": 7.0513,
-      "status": "ok"
+      "nimaScore": null,
+      "status": "n/a"
     }
   },
   {

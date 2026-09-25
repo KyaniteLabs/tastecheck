@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_tree_sha256": "6d222f38f6692dd1896d505d3967d76ef95fc9634ce5ff220ef512239f06e45a",
+  "source_tree_sha256": "0cac767be26f5b9ab669c5cec4612b4b45a36c09e43379cf8425e6c738dbcd2a",
   "skills": [
     {
       "skill": "a11y-pass",
@@ -228,16 +228,16 @@
     },
     {
       "skill": "tastecheck-pass",
-      "skill_md_bytes": 4809,
-      "skill_md_tokens": 1203,
-      "baseline_tokens": 1076,
+      "skill_md_bytes": 6466,
+      "skill_md_tokens": 1617,
+      "baseline_tokens": 1617,
       "contract_block_tokens": 226,
       "checks": {
         "within_absolute_cap": true,
         "within_growth_cap": true,
         "contract_block_within_cap": true
       },
-      "growth_ratio": 0.118,
+      "growth_ratio": 0,
       "pass": true
     },
     {
