@@ -74,6 +74,11 @@ export const CANONICAL_TOKEN_PATTERNS = [
   /^stack-gap$/,
 ];
 
+// CLI flags documented in skill prose (tastecheck-pass deep-lane release-gate
+// invocation) share `--name` syntax with CSS custom properties but are not
+// design tokens. Scope: exactly the flags named in skills/tastecheck-pass/SKILL.md.
+export const CLI_FLAG_EXEMPT = new Set(["input", "out"]);
+
 /**
  * Walk directory tree, collect files with given extensions.
  */
@@ -156,6 +161,7 @@ export function lintSkills(root, opts = {}) {
       const next = text[match.index + match[0].length] ?? "";
       if (next === "*" || next === "…" || token.endsWith("-")) continue;
       if (CANONICAL_TOKEN_PATTERNS.some((re) => re.test(token))) continue;
+      if (CLI_FLAG_EXEMPT.has(token)) continue;
       if (!offenders.has(token)) offenders.set(token, new Set());
       offenders.get(token).add(rel(path));
     }
