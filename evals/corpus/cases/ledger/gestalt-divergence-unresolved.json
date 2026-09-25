@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "kind": "calibration-case",
+  "id": "ledger/gestalt-divergence-unresolved",
+  "probe": "ledger",
+  "label": "bad",
+  "class": "gestalt-elements-divergence",
+  "known_open": false,
+  "source": {
+    "desk": "HealthAdvocate/internal-notes.md EMPOR #1 (2026-09-25)",
+    "quote": "Every swatch but gold rendered gray (\"loading/broken\") through TWO full two-judge rounds (~166 judgments) - round 2's taste/artdirection/deslop failures were substantially MY regression, not the design"
+  },
+  "case": { "mutation": "gestalt-divergence-unresolved", "target": "direction:gestalt-first" },
+  "expectation": { "verdict": "HOLD" }
+}

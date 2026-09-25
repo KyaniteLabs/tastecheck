@@ -52,6 +52,8 @@ function loadCases() {
 }
 
 function selectCheck(catalog, target) {
+  const byId = catalog.checks.find((check) => check.id === target);
+  if (byId) return byId;
   const predicates = {
     "first-required": (check) => check.required,
     "first-required-deterministic-boolean": (check) => check.required && check.judgment === "deterministic" && check.observation.type === "boolean_bundle",
@@ -117,6 +119,22 @@ function applyLedgerMutation(spec) {
         row.review.disagreement = true;
         row.review.adjudication = null;
         row.review.sha256 = hashReview(row.review);
+      });
+      break;
+    case "gestalt-divergence-unresolved":
+      // The HA swatch-dot class in its gestalt form: every element judgment
+      // passed while the whole product rendered wrong — the divergence is the
+      // finding, and it must block SHIP.
+      mutateRow(spec.target, (row) => {
+        row.status = "fail";
+        row.reason = "Gestalt verdict: whole product reads off while element checks pass; divergence unresolved.";
+        row.remediation = "Adjudicate the gestalt-vs-elements divergence against the named basis and record the resolution.";
+        for (const observation of row.evidence.details.observations) observation.divergence_resolved = false;
+        rehashRowEvidence(row);
+        if (row.review) {
+          row.review.decision = "fail";
+          row.review.sha256 = hashReview(row.review);
+        }
       });
       break;
     case "hostile-evidence": {
