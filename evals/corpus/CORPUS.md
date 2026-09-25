@@ -17,8 +17,8 @@ surface (suite-proven SHIP fixture, browser-receipt-green landing). Cases
 without a citation are invalid — the runner enforces this.
 
 Sources of record: `~/workspaces/product/smell-registry.md` (the org's
-bug/smell registry), `~/workspaces/HealthAdvocate/internal-notes.md`,
-`~/workspaces/product/internal-notes.md`, and tastecheck's own suite fixtures.
+bug/smell registry), `~internal record (sanitized) `,
+`~internal record (sanitized) `, and tastecheck's own suite fixtures.
 
 ## Case file shape
 

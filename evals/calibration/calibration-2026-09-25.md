@@ -1,4 +1,4 @@
-# tastecheck calibration report — 2026-09-25T19:50:01.028Z
+# tastecheck calibration report — 2026-09-25T21:07:02.677Z
 
 Corpus: 17 cases (13 bad, 4 clean, 1 known-open).
 Rerun: `npm run calibrate` (or `node tools/calibrate/run-calibration.mjs`). Law: evals/corpus/CORPUS.md.

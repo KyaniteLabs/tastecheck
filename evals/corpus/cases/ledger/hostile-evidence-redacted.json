@@ -7,7 +7,7 @@
   "class": "receipt-privacy-redaction",
   "known_open": false,
   "source": {
-    "desk": "product/smell-registry.md entry 30 (BUG 2026-09-19T12:4xZ) + tastecheck W4 redaction contract",
+    "desk": "internal incident record (provenance sanitized 2026-09-25)",
     "quote": "the scrub pass redacted BODY strings but never titles, while the public taxonomy exists precisely to keep glsl/tone/strudel/hydra/ascii off the public surface"
   },
   "case": { "mutation": "hostile-evidence", "target": "verification:deslop-ui" },

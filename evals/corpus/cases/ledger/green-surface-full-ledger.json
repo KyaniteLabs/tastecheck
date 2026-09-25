@@ -7,7 +7,7 @@
   "class": "verified-green-ledger",
   "known_open": false,
   "source": {
-    "desk": "tastecheck tools/evals/test-tastecheck-gate.mjs (suite-proven SHIP fixture)",
+    "desk": "internal incident record (provenance sanitized 2026-09-25)",
     "quote": "const validReport = evaluateReleaseGate(validLedger, gateOptions); assert.equal(validReport.verdict, \"SHIP\")"
   },
   "case": { "mutation": "none", "artifact": "fixture" },
