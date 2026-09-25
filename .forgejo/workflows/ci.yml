@@ -11,6 +11,8 @@ jobs:
         run: npm ci --ignore-scripts
       - name: Verify skill pack (structure + skill lint + landing + integration)
         run: npm test
+      - name: Dogfood gate — calibration rates must not regress vs baseline
+        run: npm run calibrate:check
       - name: Validate HTML
         run: |
           npx --yes html-validate "*.html" "**/*.html" || true
