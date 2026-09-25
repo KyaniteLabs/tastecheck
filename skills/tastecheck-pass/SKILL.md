@@ -42,7 +42,16 @@ Three laws, always:
    is what renders, not what the repo says. Use `node assets/cdp-qa.mjs <url> <out-dir>`
    (headless Chrome, temp profile, writes evidence.json + screenshots) or a real
    browser; curl is not rendered evidence.
-2. **Run the probes; each gets status + one evidence line.**
+2. **Gestalt before elements.** Before any probe, verdict the WHOLE product in one
+   look: does it read as itself (a point of view, a register, one hand) or as
+   template/soulless/off — one sentence, recorded BEFORE the element checks run. When
+   the gestalt verdict and the element results disagree (everything passes but the
+   whole feels off, or elements fail while the whole reads right), that DIVERGENCE is
+   its own finding — the soullessness detector — and it blocks a fast-lane SHIP until
+   judged against the named basis. The deep lane encodes it as the
+   `direction:gestalt-first` catalog check (`gestalt_verdict_recorded`,
+   `divergence_resolved`).
+3. **Run the probes; each gets status + one evidence line.**
    Cold-load state (errors visible before input, hidden-defeated content) · console
    errors/warnings on cold load · keyboard-only pass (tab order, visible focus, no
    traps) · 320px width and 400% zoom (no horizontal scroll, nothing clipped) · tap
@@ -54,13 +63,13 @@ Three laws, always:
    template skeleton is a finding) · shadow roots and iframes included, not skipped.
    `assets/gate-audit.js` pasted into devtools automates the countable tells;
    automation supports but does not replace browser evidence.
-3. **Judge against a named basis.** The committed DESIGN-SYSTEM.md, the spec you were
+4. **Judge against a named basis.** The committed DESIGN-SYSTEM.md, the spec you were
    handed, or the artifact's own evident system — say which. If no basis can be
    named, that itself is the finding; scope the verdict honestly.
-4. **Report verdict-first.** SHIP or HOLD; a scope line (lane, checks run, date,
+5. **Report verdict-first.** SHIP or HOLD; a scope line (lane, checks run, date,
    artifact URL/revision); each blocker with evidence and fastest repair; the `n/a`
    list with absence reasons. Plain lists; tables optional.
-5. **A fix is a separate authorization.** Audit is read-only. After any repair, rerun
+6. **A fix is a separate authorization.** Audit is read-only. After any repair, rerun
    on the fresh artifact — stale evidence is not evidence.
 
 A fast-lane SHIP means: ship on the strength of these probes at this revision. Say so,
