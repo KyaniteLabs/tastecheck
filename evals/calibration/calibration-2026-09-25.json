@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "kind": "tastecheck-calibration-report",
-  "ran_at": "2026-09-25T20:17:31.231Z",
+  "ran_at": "2026-09-25T21:07:02.677Z",
   "corpus": {
     "case_count": 17,
     "bad": 13,
