@@ -7,6 +7,7 @@
  * baseline (the same check `npm run calibrate:check` applies).
  */
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { runCalibration, checkAgainstBaseline } from "./run-calibration.mjs";
 
 let passed = 0;
@@ -42,4 +43,18 @@ const baselineVerdict = checkAgainstBaseline(report);
 assert.equal(baselineVerdict.ok, true, baselineVerdict.failures?.join("; ") ?? "baseline check failed");
 passed++;
 
-console.log(`calibration corpus tests: ${passed} passed (corpus ${report.corpus.case_count} cases; FPR ${rates.false_positive_rate}, FNR ${rates.false_negative_rate})`);
+// Loved-corpus journal law: every entry quotes a CEO verdict verbatim, cites
+// its desk of record, extracts one principle, and ids stay unique.
+const loved = JSON.parse(readFileSync(new URL("../../evals/corpus/loved/loved-corpus.json", import.meta.url), "utf8"));
+assert.ok(loved.entries.length >= 15, `loved-corpus too thin: ${loved.entries.length}`);
+const lovedIds = new Set(loved.entries.map((entry) => entry.id));
+assert.equal(lovedIds.size, loved.entries.length, "loved-corpus ids must be unique");
+for (const entry of loved.entries) {
+  for (const field of ["id", "product", "date", "kind", "verdict_quote", "context", "principle"]) {
+    assert.ok(typeof entry[field] === "string" && entry[field].length > 0, `loved-corpus ${entry.id}: ${field} required`);
+  }
+  assert.ok(entry.source?.desk, `loved-corpus ${entry.id}: source.desk required`);
+}
+passed++;
+
+console.log(`calibration corpus tests: ${passed} passed (corpus ${report.corpus.case_count} cases; FPR ${rates.false_positive_rate}, FNR ${rates.false_negative_rate}; loved-corpus ${loved.entries.length} entries)`);
