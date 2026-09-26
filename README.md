@@ -56,7 +56,7 @@ The retrofit makes the release gate account for the evidence it records. These b
 | Release finalization | `npm run finalize` performs receipt refresh, receipt pins, public status projection, and verify-chain validation together. |
 | Measured error rates | A labeled regression corpus (`evals/corpus/`, every case citing the desk of record it was harvested from) measures false-positive/false-negative rates per run: `npm run calibrate` emits dated reports; the current measured state lives in `evals/calibration/`. |
 | Dogfood law — the tool gates itself | This repository's own CI runs the corpus calibration (`npm run calibrate:check`) and fails any change that worsens the measured FP/FN counts against the recorded baseline, so a release cannot ship with a worse measured rate than the last one. |
-| ASTRA review closure | The external ASTRA adversarial review found 8 findings, including 5 SEV-1 findings; the closure is recorded in [`ASTRA-REVIEW.md`](_retrofit-2026-09-04/ASTRA-REVIEW.md) and [`ASTRA-FIX-REPORT.md`](_retrofit-2026-09-04/ASTRA-FIX-REPORT.md). |
+| ASTRA review closure | The external ASTRA adversarial review found 8 findings, including 5 SEV-1 findings; the closure is recorded in `ASTRA-REVIEW.md` and `ASTRA-FIX-REPORT.md`. |
 
 ## Quickstart
 

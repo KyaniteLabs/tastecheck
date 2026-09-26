@@ -98,11 +98,11 @@ _Late changeloged (was tagged but never recorded; reconstructed from PR #32)._
   release inventory, executable release checks, safe execution and subjective
   review, reproducible verification, receipt-bound public status, and portable
   copy guidance. The wave reports remain in
-  [`_retrofit-2026-09-04/`](_retrofit-2026-09-04/).
+  `_retrofit-2026-09-04/`.
 - Independent **Grok r9b + Sol r10** reviews formed a post-ASTRA green pair:
   both completed with no findings and fully green structural verification; see
-  [`STREAK9b-grok.md`](_retrofit-2026-09-04/STREAK9b-grok.md) and
-  [`STREAK10-sol.md`](_retrofit-2026-09-04/STREAK10-sol.md).
+  `STREAK9b-grok.md` and
+  `STREAK10-sol.md`.
 
 ### Changed — ASTRA hardening
 
@@ -111,8 +111,8 @@ _Late changeloged (was tagged but never recorded; reconstructed from PR #32)._
   reviews bind to check/artifact/evidence digests, dependencies and subject
   inventories are reconciled, captures are complete, roots are split, craft
   floors are separated from style defaults, and authority claims are scoped.
-  See [`ASTRA-REVIEW.md`](_retrofit-2026-09-04/ASTRA-REVIEW.md) and
-  [`ASTRA-FIX-REPORT.md`](_retrofit-2026-09-04/ASTRA-FIX-REPORT.md).
+  See `ASTRA-REVIEW.md` and
+  `ASTRA-FIX-REPORT.md`.
 
 ### Changed — receipt and projector gates
 
