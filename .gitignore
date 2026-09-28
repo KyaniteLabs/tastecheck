@@ -9,6 +9,7 @@ node_modules/
 evals/replays/
 evals/receipts/v1/contracts/sanitizer.json
 evals/receipts/v1/contracts/sanitizer-fixtures.json
+evals/corpus/loved/
 .checkyourself/
 reports-tmp/
 .superpowers/
