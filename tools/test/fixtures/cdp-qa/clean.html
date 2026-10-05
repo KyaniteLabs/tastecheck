@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clean fixture</title>
+<style>
+  :root { color-scheme: light dark; --bg: #fbfaf7; --ink: #1d1b16; --accent: #0b5a4a; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #14130f; --ink: #f1eee6; --accent: #7fd8c3; } }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 18px/1.5 Georgia, serif; }
+  main { max-width: 40rem; margin: 0 auto; padding: 2rem 1rem; }
+  h1 { font-size: 2rem; margin: 0 0 1rem; }
+  a, button { color: var(--accent); }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  button { min-height: 44px; min-width: 44px; padding: 0 1rem; font: inherit; background: transparent; border: 2px solid var(--accent); border-radius: 4px; }
+  p a { display: inline-block; padding: 0.5rem 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Field notes</h1>
+  <p>A short, honest page with real text and accessible controls.</p>
+  <p><a href="#details">Jump to details</a></p>
+  <button type="button">Save note</button>
+  <h2 id="details">Details</h2>
+  <p>Nothing here overflows, nothing is hidden, and every link resolves.</p>
+</main>
+</body>
+</html>

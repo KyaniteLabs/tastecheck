@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bad fixture</title>
+<style>
+  body { margin: 0; background: #ffffff; color: #111; font: 18px/1.5 sans-serif; padding: 1rem; }
+  .wide { width: 900px; background: #eee; }
+  .faint { color: #cfcfcf; }
+  button { outline: none; }
+</style>
+</head>
+<body>
+<h1>Broken page</h1>
+<p class="faint">This text is far too faint on white.</p>
+<p>Build output lives in /Users/someone/projects/app/dist for now.</p>
+<img src="/assets/missing-hero.png" alt="Missing hero" width="40" height="40">
+<div class="wide">This block is wider than a phone.</div>
+<button type="button">Focus ring removed</button>
+<script>console.error("boom: cold-load failure");</script>
+</body>
+</html>
