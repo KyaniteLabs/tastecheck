@@ -7,7 +7,7 @@ All notable changes to the tastecheck skill pack. Format follows
 
 ### Added — measured error rates: the labeled regression corpus + `tastecheck calibrate`
 
-- **A 17-case labeled corpus** (`evals/corpus/`) harvested from real org defect findings — every BAD case reproduces a real defect class (provenance kept internally) (destructive-regex-edit, hollow-signal verification in both forms, input-parity narrowing, receipt-privacy title-vocabulary and hostile-evidence redaction, browser-reachable credential, unresolved reviewer disagreement, checkmark-without-verification, silently-skipped check, gestalt-elements divergence — provenance internal, sanitized); every CLEAN case is a verified-green surface (suite-proven SHIP ledger, redaction contract, browser-receipt-green landing, committed fixture). Corpus law, scoring semantics, and the offline scope boundary are recorded in `evals/corpus/CORPUS.md`.
+- **A 17-case labeled corpus** (`evals/corpus/`) harvested from real defect findings — every BAD case reproduces a real defect class (sources kept internal) (destructive-regex-edit, hollow-signal verification in both forms, input-parity narrowing, receipt-privacy title-vocabulary and hostile-evidence redaction, browser-reachable credential, unresolved reviewer disagreement, checkmark-without-verification, silently-skipped check, gestalt-elements divergence); every CLEAN case is a verified-green surface (suite-proven SHIP ledger, redaction contract, browser-receipt-green landing, committed fixture). Corpus law, scoring semantics, and the offline scope boundary are recorded in `evals/corpus/CORPUS.md`.
 - **`npm run calibrate`** runs the deterministic verdict engine and the offline surface probes over the corpus and emits dated JSON/Markdown reports to `evals/calibration/`; `tastecheck calibrate` (bin subcommand) forwards to the repo runner.
 - **Measured at this release (real run, not projected): 17 cases — 12 TP / 1 FN / 4 TN / 0 FP. False-positive rate 0 (0/4 clean); false-negative rate 0.0769 (1/13 bad); precision 1.** The single miss is the documented known-open floor: a falsified-but-internally-consistent structured observation (the hollow-signal class in its residual form) is not catchable offline — the consume-don't-inspect browser/audio lane owns it. This replaces v1.6.0's honest "no rate claimed" with numbers, counts, scope, and a named floor.
 - **Dogfood law: the tool gates its own repo.** `npm run calibrate:check` is an explicit CI step (Forgejo + GitHub workflows) and the corpus regression test runs inside `npm test` — a change that worsens measured FP/FN counts against `evals/calibration/baseline.json` fails the build.
@@ -16,7 +16,7 @@ All notable changes to the tastecheck skill pack. Format follows
 
 - **SHIP/HOLD decision cards.** Gate reports carry a `decision_card` (schema version 1): one-word verdict first, evidence-cited lines (check IDs, row evidence, structural boundary errors), and flip conditions naming the repair-and-rerun that would reverse the verdict. `--out` prints the compact card to the terminal. Hostile evidence can never reach the card.
 - **Gestalt-first pass (the soullessness detector).** Fast lane step 2: a whole-product verdict recorded BEFORE element checks; gestalt-vs-elements divergence is its own finding class and blocks SHIP until judged against the named basis. Deep lane: the required `direction:gestalt-first` catalog check (`gestalt_verdict_recorded`, `divergence_resolved`).
-- **Loved-corpus v0** (`evals/corpus/loved/`): 20 quote-backed CEO product-verdict entries (product + date + verbatim quote + context + extracted principle + desk of record) — the ground truth the calibration loop measures against.
+- **Loved-corpus v0**: a journal of 20 quote-backed product verdicts, intended as ground truth for the calibration loop. Note (added after release): this corpus was moved out of the public repository for privacy, because taste data is user-local. It is no longer shipped, and nothing in the public repo depends on it.
 
 ### Engineering
 
@@ -24,7 +24,7 @@ All notable changes to the tastecheck skill pack. Format follows
 
 ## [1.6.0] — 2026-09-25
 
-### Changed — `tastecheck-pass` first-principles rewrite (landed 2026-09-25; war-room order 2026-09-19)
+### Changed — `tastecheck-pass` first-principles rewrite (landed 2026-09-25; planned 2026-09-19)
 
 - **Two lanes, verdict-first, fail-closed.** The pass now offers a fast lane (one agent, minutes, verdict plus an evidence line per probe) and a deep lane (one-row-per-check hashed ledger through the deterministic runner, independent review on subjective rows). The verdict leads; a required check that fails, could not run, or lacks evidence is `HOLD`.
 - **Evidence discipline tightened so a pass cannot be minted from claims.** A check counts only when the checker ran it and can cite what was seen (selector, URL, number, console line); URL evidence stays `HOLD` until bound to a hashable artifact; optional `n/a` needs hashed proof the subject is absent; reviewer disagreement stays `HOLD` until adjudicated; deterministic rows never accept reviewer judgment. `n/a` means the subject is absent, never "not tested".
@@ -45,7 +45,7 @@ All notable changes to the tastecheck skill pack. Format follows
 - **Four `medium:video` checks** in the tastecheck-pass catalog: `video:reading-hold`,
   `video:motion-law` (authored local motion only — no fake camera moves),
   `video:readability-960x540`, and `video:audio-presence` (a silent artifact can
-  never count as a voiced cut). Source: org video-pipeline gap audit 2026-09-13
+  never count as a voiced cut). Found in an internal video-pipeline audit on 2026-09-13
   (the battery was web-only; videos passed "full battery" nominally).
 - **Video subject manifest** (`video-subject-manifest.json`) so video rows run
   against real subjects.
@@ -97,22 +97,18 @@ _Late changeloged (was tagged but never recorded; reconstructed from PR #32)._
 - **Seven-wave retrofit gauntlet** covering fail-closed gate authority, one
   release inventory, executable release checks, safe execution and subjective
   review, reproducible verification, receipt-bound public status, and portable
-  copy guidance. The wave reports remain in
-  `_retrofit-2026-09-04/`.
-- Independent **Grok r9b + Sol r10** reviews formed a post-ASTRA green pair:
-  both completed with no findings and fully green structural verification; see
-  `STREAK9b-grok.md` and
-  `STREAK10-sol.md`.
+  copy guidance. The wave reports are not part of the public repository.
+- Two independent model reviews, run after the adversarial review fixes,
+  both completed with no findings and fully green structural verification.
 
-### Changed — ASTRA hardening
+### Changed — hardening after an external adversarial review
 
-- The external ASTRA adversarial review identified 8 findings, including 5
+- An external adversarial review identified 8 findings, including 5
   SEV-1 findings. All eight are closed: verdicts derive from observations,
   reviews bind to check/artifact/evidence digests, dependencies and subject
   inventories are reconciled, captures are complete, roots are split, craft
   floors are separated from style defaults, and authority claims are scoped.
-  See `ASTRA-REVIEW.md` and
-  `ASTRA-FIX-REPORT.md`.
+  The review documents are not part of the public repository.
 
 ### Changed — receipt and projector gates
 
@@ -125,12 +121,12 @@ _Late changeloged (was tagged but never recorded; reconstructed from PR #32)._
 ### Changed — documentation and token-density passes (2026-09-05)
 
 - Public docs updated across remotes: README, `llms.txt`, and this changelog
-  reflect the ASTRA hardening arc (evidence-derived verdicts, review binding,
+  reflect the hardening work (evidence-derived verdicts, review binding,
   dependency-manifest capture, subject inventories, complete-capture hashing,
   verifier/consumer root split, scoped GEO claims, `npm run finalize`).
-- Token-density pass (caveman + ponytail compression; protected-verbatim
+- Token-density pass (prose compression; protected-verbatim
   classes — check ids, commands, verdict grammar, release-facts blocks —
-  untouched), per `_retrofit-2026-09-04/DENSITY-PASS-REPORT.md`:
+  untouched):
 
   | Scope | Before (tokens) | After (tokens) | Reduction |
   |---|---|---|---|
@@ -139,37 +135,37 @@ _Late changeloged (was tagged but never recorded; reconstructed from PR #32)._
   | Heaviest body (`web-typography`) | — | — | **31.6%** |
 
   Losslessness proven by the full structural lane after compression
-  (contracts, lint, projections, gate audit, NIMA tests, mutation
+  (contracts, lint, projections, gate audit, scoring tests, mutation
   score 4/4); receipts re-finalized at the landed source via
   `npm run finalize`.
-- Final landed state: 20 skills / 20 canonical commands; ASTRA 8/8 findings
-  closed (5 SEV-1 evidence-authority holes); post-ASTRA independent green
-  pair (Grok-4.6 round 9b + Codex-SOL round 10).
+- Final landed state: 20 skills / 20 canonical commands; all 8 review findings
+  closed (5 of them severe evidence-authority holes); two independent model
+  reviews came back green.
 
 ## [Unreleased]
 
 ### Added — first fully-live receipt set
 
-- First fully-live receipt set from the gpu-host floor: all 6 producers pass at
+- First fully-live receipt set from a GPU-backed test host: all 6 producers pass at
   the final source; verify-chain green via `npm run finalize`.
-- Honest HOLD self-audit via the own release gate: 3/27 evidenced (gpu-host
-  captures pinned); full self-pass dispatched per META-ROUND-REPORT.
+- Honest HOLD self-audit via the own release gate: 3/27 evidenced (GPU test host
+  captures pinned); a full self-pass was still pending.
 
 ### Changed — landing copy and a11y floors
 
 - Landing copy rewritten product-first (audience/problem/how-it-works/skills/
-  gate); all process-leak cut per CEO. Hero reworded to "AI-built interfaces,
+  gate); internal process language removed. Hero reworded to "AI-built interfaces,
   designed with intention."
 - Gallery contrast/a11y fixes ×3: open-sample accents cleared 4.5:1 (measured
-  4.06 on the gpu-host audit; final pass lightened accents for the dark card
+  4.06 on the GPU test host audit; final pass lightened accents for the dark card
   ground).
 - Landing a11y fix: global inline-anchor tap-target floor (24px+) per the
-  measured a11y-pass audit on gpu-host.
+  measured a11y-pass audit on GPU test host.
 
-### Changed — meta-round follow-ups
+### Changed — review follow-ups
 
-- Meta-round CY code-review fixes: finalize producer-identity, NIMA domain
-  validation, symlink out-path; ASTRA landing integrated to the canonical
+- Code-review fixes: finalize producer-identity, scoring domain
+  validation, symlink out-path; landing page integrated to the canonical
   contract (verify-landing green); CR/self-pass evidence recorded.
 - Effectiveness heading de-claimed (honest BLOCKED status body unchanged) —
   releases the claims gate.
