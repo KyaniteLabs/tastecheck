@@ -1,152 +1,57 @@
 # TasteCheck
 
-TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who want evidence-backed UI quality.
+TasteCheck is a set of skills for AI coding agents that stops AI-built UI from looking AI-built. A design interview and a deslop pass fix the generic look; a ship gate checks the result and returns SHIP or HOLD with evidence.
 
 <!-- release-facts:v1:start -->
 Release inventory: v1.7.0 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
 <!-- release-facts:v1:end -->
 
-## TasteCheck at a glance
+## Use it
 
-| Fact | Current release truth |
-|---|---|
-| Version | v1.7.0 |
-| Skills | 20 frontend craft skills |
-| Commands | 20 canonical Claude Code slash commands |
-| Alias | 1 approved alias: `/darkmode` for `/theming` |
-| Command files | 21 total command files |
-| Gallery | 8 committed browser-rendered design systems |
-| Video | v1.5.0: the battery also gates video artifacts — reading-hold, motion-law, readability-960x540, audio-presence (silent cuts never pass) |
-| npm package | `@puenteworks/tastecheck` (the registry rejected the bare name as typosquat-adjacent to `fast-check`) |
-| License | MIT; see [`LICENSE`](LICENSE) |
-| Install | `git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh` |
+- Install: `git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh` (Windows: WSL or Git Bash for now). npm: `@puenteworks/tastecheck`.
+- Skills are plain Markdown at `skills/<name>/SKILL.md`; read the relevant one. Canonical path after install: `~/.agents/skills/`.
+- Front-door commands (Claude Code): `/designsystem` (start: interview, writes DESIGN-SYSTEM.md), `/deslop` (fix generic UI tells), `/tastecheckpass` (check and ship/hold).
+- Canonical home: https://github.com/KyaniteLabs/tastecheck. License: MIT.
 
-## What is TasteCheck?
+## The 20 skills
 
-TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who need evidence-backed UI quality before shipping — for web interfaces and, since v1.5.0, for video artifacts (title/readability, authored-motion law, audio presence). It turns a brief or an existing site into an explicit design direction, carries that direction through checkable craft skills, and reports the evidence needed for a ship or hold decision.
-
-TasteCheck skills are plain Markdown, readable by any coding agent — no SDK or install required. The ship-gate adds optional dependency-free Node and browser scripts; the installer also creates the canonical `~/.agents/skills/` path and mirrors skills into detected agent homes.
-
-## Evidence-bound release behavior
-
-The retrofit makes the release gate account for the evidence it records. These behaviors describe scoped release decisions; they do not turn subjective design judgment into an objective guarantee.
-
-| Capability | Public behavior |
-|---|---|
-| Evidence-derived verdicts | Gate statuses are derived from recorded observations. Missing or contradictory observations produce `HOLD`; declared status alone is not trusted. |
-| Review binding | Human and independent reviews bind to the check ID, rubric, artifact digest, and complete-evidence digest. A transplanted approval produces `HOLD`. |
-| Dependency-manifest capture | File and directory captures hash the entry plus linked local CSS, JavaScript, and font assets. A changed dependency with an unchanged entry produces `HOLD`. |
-| Subject-inventory reconciliation | Browser checks reconcile route × state × viewport members from an authoritative manifest and its gate-computed Cartesian universe; a claimant cannot shrink that scope. Control checks reconcile control × state members. |
-| Complete-capture hashing | Lossy, truncated, depth-limited, or marker-bearing evidence is non-passing. Sanitization is presentation-only; complete evidence is what gets hashed. |
-| Verifier/consumer ROOT SPLIT | The CLI and API separate the pinned verifier root from the explicit target-project root, and record both root identities. |
-| Craft floors and style policies | Invariant craft requirements are separate from brief-dependent defaults. Spacing and tasteroll rails are defaults that can be overridden with evidence. |
-| Scoped authority claims | Subjective checks remain accountable human judgment, not an objective design guarantee. GEO copy keeps claims scoped to the recorded evidence. |
-| Release finalization | `npm run finalize` performs receipt refresh, receipt pins, public status projection, and verify-chain validation together. |
-| ASTRA review closure | The external ASTRA adversarial review found 8 findings, including 5 SEV-1 findings; the closure is recorded in [`ASTRA-REVIEW.md`](_retrofit-2026-09-04/ASTRA-REVIEW.md) and [`ASTRA-FIX-REPORT.md`](_retrofit-2026-09-04/ASTRA-FIX-REPORT.md). |
-
-## Quickstart
-
-Clone the repository and run the installer:
-
-```bash
-git clone https://github.com/KyaniteLabs/tastecheck
-./tastecheck/install.sh
-```
-
-Then ask your coding agent to read the relevant `SKILL.md`, or point it at the canonical `~/.agents/skills/` directory.
-
-## The 20 skills: what each checks
-
-| Skill | What it checks |
-|---|---|
-| [design-system-interview](skills/design-system-interview/SKILL.md) | Design direction for vague or generic frontend requests, including type, color, density, and tokens. |
-| [tasteroll](skills/tasteroll/SKILL.md) | Context-aware design exploration that audits broken work, rolls valid candidates, and locks the direction that works. |
-| [improve-existing-website](skills/improve-existing-website/SKILL.md) | Existing-site evidence, recognizable identity, scope, and redesign risk before changes. |
-| [color-system](skills/color-system/SKILL.md) | OKLCH palettes, ramps, semantic tokens, theme colors, and contrast. |
-| [web-typography](skills/web-typography/SKILL.md) | Contextual type systems, resilient font loading, multilingual glyphs, wrapping, and readable hierarchy. |
-| [spacing-system](skills/spacing-system/SKILL.md) | Layout rhythm, density, gaps, spacing scales, and deliberate exceptions. |
-| [theming](skills/theming/SKILL.md) | Semantic mappings across light, dark, forced-colors, saved preferences, contrast, and no-flash behavior. |
-| [responsive-layout](skills/responsive-layout/SKILL.md) | Narrow containers, long or translated content, zoom, reflow, and overflow without device-specific breakpoints. |
-| [component-states](skills/component-states/SKILL.md) | Interactive state matrices for controls, keyboard behavior, and ARIA. |
-| [form-ux](skills/form-ux/SKILL.md) | Forms, field labels, autocomplete, validation, mobile input behavior, errors, and disabled submits. |
-| [empty-states](skills/empty-states/SKILL.md) | Empty, loading, error, retry, first-run, offline, permission, and layout-stability states. |
-| [micro-motion](skills/micro-motion/SKILL.md) | Purposeful feedback and transitions without jank, interruption bugs, or hidden no-JS content, including reduced motion. |
-| [data-viz](skills/data-viz/SKILL.md) | Honest, accessible, themed charts, metrics, direct labels, and data tables. |
-| [art-direction](skills/art-direction/SKILL.md) | Imagery, illustration, iconography, hero images, favicons, OG cards, and generic AI imagery. |
-| [a11y-pass](skills/a11y-pass/SKILL.md) | WCAG 2.2 AA fixes for web UI, including keyboard, screen readers, contrast, labels, focus, landmarks, target size, reduced motion, and ARIA. |
-| [cognitive-a11y](skills/cognitive-a11y/SKILL.md) | Readability and predictability for ADHD, autism, dyslexia, and neurodivergent users. |
-| [i18n-ready](skills/i18n-ready/SKILL.md) | Locale expansion, language attributes, logical properties, RTL, formats, bilingual copy, and language toggles. |
-| [deslop-ui](skills/deslop-ui/SKILL.md) | Generated-UI tells such as purple gradients, pill CTAs, default type, centered heroes, card grids, glassmorphism, and template sameness. |
-| [humanize-copy](skills/humanize-copy/SKILL.md) | Landing, docs, README, UI, release, and social copy for LLM tells and robotic prose. |
-| [tastecheck-pass](skills/tastecheck-pass/SKILL.md) | Evidence-backed ship or hold decisions, fail-closed release gates, and actionable cross-skill verification reports. |
+- [design-system-interview](skills/design-system-interview/SKILL.md): Interviews you, then writes a design direction (type, color, density, tokens).
+- [tasteroll](skills/tasteroll/SKILL.md): Rolls and locks a design direction when the brief is open.
+- [improve-existing-website](skills/improve-existing-website/SKILL.md): Audits an existing site and keeps its identity while fixing it.
+- [color-system](skills/color-system/SKILL.md): OKLCH palettes, semantic tokens, contrast.
+- [web-typography](skills/web-typography/SKILL.md): Type systems, font loading, multilingual glyphs, hierarchy.
+- [spacing-system](skills/spacing-system/SKILL.md): Rhythm, density, gaps, spacing scales.
+- [theming](skills/theming/SKILL.md): Light, dark, forced-colors, saved preference, no flash.
+- [responsive-layout](skills/responsive-layout/SKILL.md): Narrow containers, long content, zoom, reflow, overflow.
+- [component-states](skills/component-states/SKILL.md): State matrices, keyboard behavior, ARIA.
+- [form-ux](skills/form-ux/SKILL.md): Labels, autocomplete, validation, errors, mobile input.
+- [empty-states](skills/empty-states/SKILL.md): Empty, loading, error, offline, first-run, layout stability.
+- [micro-motion](skills/micro-motion/SKILL.md): Purposeful feedback, reduced motion, no hidden content.
+- [data-viz](skills/data-viz/SKILL.md): Honest, accessible, themed charts and tables.
+- [art-direction](skills/art-direction/SKILL.md): Imagery, icons, hero images, OG cards, generic AI imagery.
+- [a11y-pass](skills/a11y-pass/SKILL.md): WCAG 2.2 AA: keyboard, screen readers, contrast, focus, target size.
+- [cognitive-a11y](skills/cognitive-a11y/SKILL.md): Readability and predictability for ADHD, autism, dyslexia.
+- [i18n-ready](skills/i18n-ready/SKILL.md): Locale expansion, RTL, logical properties, formats.
+- [deslop-ui](skills/deslop-ui/SKILL.md): Removes AI-generated UI tells: purple gradients, pill CTAs, default type, card-grid sameness.
+- [humanize-copy](skills/humanize-copy/SKILL.md): Removes LLM tells from landing, docs, UI and release copy.
+- [tastecheck-pass](skills/tastecheck-pass/SKILL.md): The ship gate: SHIP or HOLD with evidence for each check.
 
 ## How the gate works
 
-TasteCheck carries design intent through a shared pipeline: establish or infer the design system, check foundations, check structure and behavior, check surface decisions, run accessibility and language checks, remove visual and copy tells, and finish with `tastecheck-pass`.
+`tastecheck-pass` runs a fast lane (one agent loads the real rendered artifact and runs named probes, reporting verdict first with one evidence line per probe) and a deep lane (a hashed one-row-per-check ledger evaluated by a deterministic runner, with independent review on subjective rows). Rules: a checkmark is not evidence; a check counts only if it ran and cites what it saw; a required check that fails, could not run, or lacks evidence is HOLD; URL evidence stays HOLD until bound to a hashable artifact; `n/a` needs proof the subject is absent, never means "not tested"; reviewer disagreement stays HOLD until resolved. Each report carries a decision card: verdict, evidence lines, and what would flip it. The fast lane also gives a whole-product verdict before element checks; if the two disagree, that is a finding and blocks SHIP.
 
-Since v1.6.0, `tastecheck-pass` runs in two lanes and leads with its verdict. The **fast lane** (one agent, minutes) loads the real rendered artifact cold, runs named probes (cold-load state, console errors, keyboard-only, 320px/400% zoom, tap targets, measured contrast, reduced motion, link/asset resolution, leaks, template-slop tells, shadow roots and iframes included), and reports SHIP or HOLD with one evidence line per probe. The **deep lane** runs a one-row-per-check hashed ledger through the deterministic runner, with independent review on subjective rows. Three laws govern both lanes: checkmarks are not execution evidence; the verdict leads and fails closed; `n/a` means the subject is absent, never "not tested".
-
-The v1.6.0 rewrite tightened what counts as evidence so a pass cannot be minted from claims: a check counts only when the checker ran it and can cite what was seen (selector, URL, number, console line); a required check that fails, could not run, or lacks evidence is HOLD; URL evidence stays HOLD until bound to a hashable artifact; optional `n/a` needs hashed proof the subject is absent; reviewer disagreement stays HOLD until adjudicated; deterministic rows never accept reviewer judgment. What is not claimed: no cross-model or inter-reviewer agreement score exists; subjective rows remain accountable judgment, not an objective design guarantee; effectiveness status stays BLOCKED (historical evidence did not clear its release threshold).
-
-Since v1.7.0, error rates are measured, not projected: a labeled regression corpus (`evals/corpus/`, every case citing the desk of record it was harvested from — real org defect findings, verified-green surfaces on the clean side) runs through `npm run calibrate` against the deterministic verdict engine and the offline surface probes. Measured at the v1.7.0 source (real run, `evals/calibration/calibration-2026-09-25.md`): 17 cases — 12 true positives, 1 false negative, 4 true negatives, 0 false positives; false-positive rate 0 (0/4 clean), false-negative rate 0.0769 (1/13 bad, the documented known-open floor: a falsified-but-internally-consistent structured observation is not catchable offline — the consume-don't-inspect browser/audio lane owns that class). Scope: the offline subset; tells needing a rendered surface stay in the browser lane. CI gates every change against the recorded baseline (`calibrate:check`): a release cannot ship with a worse measured rate. v1.7.0 also reshapes verdict output as decision cards (one-word verdict, evidence-cited lines, flip conditions), and adds the gestalt-first check: a whole-product verdict recorded BEFORE element checks, with gestalt-vs-elements divergence surfaced as its own finding class.
-
-Run the repository’s repeatable engineering checks with `npm test`. Those checks cover repository contracts, installation, links, authored demo surfaces, and verification plumbing; they are not a universal effectiveness claim.
-
-## Gallery
-
-The gallery contains 8 committed browser-rendered design systems for the same product story and core information architecture. It demonstrates variance, not a menu to copy: derive a new direction from the user’s answers.
-
-| System | Territory | Signature structure |
-|---|---|---|
-| [Copper](samples/copper/) | dark, warm, geological | irregular tessellated bento with structural basalt columns |
-| [Swiss](samples/swiss/) | light, austere, exact | exposed column grid carrying the content |
-| [Maximal](samples/maximal/) | loud, kinetic | display word bleeding into a magenta block with sticker-wall collage |
-| [Concrete](samples/concrete/) | raw, mechanical, monochrome | ruled spec sheet with a dense ledger table and hazard accent |
-| [Clay](samples/clay/) | warm, soft, humanist | alternating zig-zag card flow with organic pebble shapes |
-| [Dispatch](samples/dispatch/) | dark, operational, emerald | reverse-chronological release timeline |
-| [Verge](samples/verge/) | cool, clinical, measured | hypothesis-to-verdict evidence cards |
-| [Seed](samples/tasteroll/) | warm, procedural, annotated | seeded specimen card with rolled dimensions |
-
-## Install
-
-The one-line install path is `git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh`.
-
-The npm package is `@puenteworks/tastecheck` (published from this repo; the registry rejected the bare `tastecheck` name as typosquat-adjacent to `fast-check`): `npm install @puenteworks/tastecheck`, then `npx tastecheck --help`.
-
-The installer creates canonical links in `~/.agents/skills/` and mirrors them into detected agent skill directories. Claude Code can also link all 21 command wrappers (20 canonical + the `/darkmode` alias) into `~/.claude/commands/`.
-
-## FAQ
-
-### What is TasteCheck?
-
-TasteCheck is a frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who want evidence-backed UI quality before shipping. It fails closed on generic/sloppy UI and organizes evidence for scoped ship-quality decisions; it does not turn those subjective calls into objective guarantees.
-
-### Who should use TasteCheck?
-
-TasteCheck is for frontend engineers and AI coding agents that need to turn design intent into checkable frontend work.
-
-### What does TasteCheck check?
-
-TasteCheck checks design direction, typography, color, spacing, theming, layout, states, forms, empty states, motion, visualization, art direction, accessibility, cognitive accessibility, internationalization, copy, and the final release gate.
-
-### How is TasteCheck different from a design prompt?
-
-TasteCheck makes design decisions explicit before implementation and checks the resulting frontend against those decisions instead of relying on subjective polish.
-
-### Is TasteCheck free?
-
-Yes; TasteCheck is open source under the MIT license in [`LICENSE`](LICENSE).
-
-### How do I install TasteCheck?
-
-Clone the repository and run `./tastecheck/install.sh`.
-
-### Effectiveness status
+## What is and is not measured
 
 <!-- release-status:v1:start -->
 The current public release status is source-bound: engineering release evidence is PASS and historical effectiveness is BLOCKED.
 <!-- release-status:v1:end -->
 
-## License
+At v1.7.0 the labeled corpus (`evals/corpus/`, run with `npm run calibrate`, gated in CI) has 17 cases: 12 true positives, 1 false negative, 4 true negatives, 0 false positives. Only 2 of the 17 are visual-taste tells; the rest test gate integrity (receipts, ledgers, leak detection). It does not measure design judgment. Effectiveness is BLOCKED: no controlled comparison yet shows TasteCheck produces better interfaces. Not measured: cross-model or inter-reviewer agreement. Subjective checks remain accountable judgment, not an objective guarantee. `npm test` is engineering evidence, not an effectiveness claim.
 
-TasteCheck is MIT licensed; the authoritative terms are in [`LICENSE`](LICENSE).
+## Gallery
+
+Eight browser-rendered design systems for one product story: Copper, Swiss, Maximal, Concrete, Clay, Dispatch, Verge, Seed, under `samples/`. They show variance; derive a new direction instead of copying one.
+
+## For agents working on this repo
+
+See `AGENTS.md`. Do not hand-edit generated marker blocks; run `node tools/release/project-facts.mjs`.
