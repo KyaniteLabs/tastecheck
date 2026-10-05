@@ -58,3 +58,8 @@ This system → color-system (copper ramp + contrast) → web-typography (scale)
 responsive-layout (asymmetric + tessellated, real mobile nav) → component-states/form-ux/
 empty-states (real live demos in the bento) → micro-motion (orchestrated, alive) →
 a11y-pass (gate) → deslop-ui audit against THIS spec.
+
+## Landing page type (index.html)
+Display: Redaction grade-0 (700 headings). Body: Archivo 400/600. Mono: system mono for labels only.
+Fallbacks are metric-adjusted (`size-adjust`) Georgia / Arial so the swap does not shift layout.
+`tools/test/test-landing-dogfood.mjs` runs the repo's own gate-audit against the page at 1280 and 390.
