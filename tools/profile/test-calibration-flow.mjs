@@ -124,8 +124,11 @@ const conflictCorpus = {
 const fit1 = calibrateWeights(importCorpus(conflictCorpus).entries);
 const fit2 = calibrateWeights(importCorpus(conflictCorpus).entries);
 assert.deepEqual(fit1.weights, fit2.weights, "same corpus -> same weights, always");
-assert.ok(fit1.weights.boldness > 1, "the dimension that sides with upheld verdicts gains weight");
-assert.ok(fit1.weights.composition < 1, "the dominated dimension loses relative weight");
+assert.deepEqual(fit1.side_weights, fit2.side_weights, "same corpus -> same dominance side weights, always");
+assert.ok(fit1.weights.boldness > 1, "the dimension with aligned evidence gains combined weight");
+assert.ok(fit1.side_weights.violated.boldness > fit1.side_weights.satisfied.boldness, "boldness's denial-power exceeds its saving-power where its evidence is violation-heavy");
+assert.equal(fit1.side_weights.violated.composition, 1, "zero violation evidence -> the violated side stays at the default weight (per-side silence law)");
+assert.ok(fit1.side_weights.violated.boldness > fit1.side_weights.satisfied.composition, "side weights compete on ONE shared scale (dominance comparability)");
 assert.equal(fit1.evidence.composition.count > 0, true, "evidence counts are recorded");
 passed++;
 
@@ -167,6 +170,79 @@ const flatGate = runBlindGate(importCorpus(flatCorpus).entries, fit1.params);
 assert.equal(flatGate.verdict, "no-win", "conflict-free corpus cannot claim calibration wins");
 assert.equal(flatGate.conflicts.conflict_entry_count, 0, "zero conflicts is reported as the measured reason");
 assert.equal(flatGate.delta, 0, "delta is honestly zero, not massaged");
+passed++;
+
+// Dominance law end-to-end (the conflict-class shape): a dimension repeatedly
+// violated in denials must out-power one merely satisfied in upholds, and a
+// held-out conflict mixing the two must flip to the violated side — which the
+// plain unit-weight sum cannot do (its ±1 salience cancels to an abstain).
+const dominanceCorpus = {
+  schema_version: 1,
+  kind: "tastecheck-calibration-corpus",
+  entries: [
+    entry({ id: "d-1", salience: { "color-register": -1 } }),
+    entry({ id: "d-2", salience: { "color-register": -1 } }),
+    entry({ id: "d-3", kind: "positive", salience: { boldness: 1 } }),
+    entry({ id: "d-5", salience: { "color-register": -0.5 } }),
+    entry({ id: "d-6", kind: "positive", salience: { boldness: 0.5 } }),
+    entry({ id: "d-7", kind: "positive", salience: { boldness: 0.5 } }),
+    // held-out by the deterministic split: d-4, d-8. d-4 is the conflict:
+    // boldness satisfied +1, color-register violated -1, verdict DENIED.
+    entry({ id: "d-4", salience: { boldness: 1, "color-register": -1 } }),
+    entry({ id: "d-8", salience: { "drift-fidelity": -1 } }),
+  ],
+};
+const dominanceFit = calibrateWeights(importCorpus(dominanceCorpus).entries.filter((e) => e.id !== "d-4" && e.id !== "d-8"));
+assert.ok(
+  dominanceFit.side_weights.violated["color-register"] > dominanceFit.side_weights.satisfied.boldness,
+  "violated-dimension dominance: denial power of the violated dimension out-weighs saving power of the satisfied one",
+);
+const dominanceGate = runBlindGate(importCorpus(dominanceCorpus).entries, fit1.params);
+assert.equal(dominanceGate.verdict, "pass", `dominance gate must pass on conflict-class data (got ${dominanceGate.verdict}: cal ${dominanceGate.calibrated?.accuracy} vs unc ${dominanceGate.uncalibrated?.accuracy})`);
+assert.ok(dominanceGate.delta > 0, "dominance structure earns a measured positive delta");
+const dominanceCase = dominanceGate.per_case.find((row) => row.id === "d-4");
+assert.equal(dominanceCase.calibrated.correct, true, "calibrated profile resolves the conflict to the violated side");
+assert.equal(dominanceCase.uncalibrated.abstain, true, "plain unit-weight sum cancels to an abstain on the same conflict");
+passed++;
+
+// Shared scale: one unit of violation balance buys exactly what one unit of
+// satisfaction balance buys — the two sides must stay comparable.
+const sharedScaleCorpus = {
+  schema_version: 1,
+  kind: "tastecheck-calibration-corpus",
+  entries: [
+    entry({ id: "q-1", salience: { boldness: -1 } }),
+    entry({ id: "q-2", kind: "positive", salience: { composition: 1 } }),
+    entry({ id: "q-3", salience: { "type-voice": -0.5 } }),
+    entry({ id: "q-4", kind: "positive", salience: { "interaction-fit": 0.5 } }),
+  ],
+};
+const sharedFit = calibrateWeights(importCorpus(sharedScaleCorpus).entries);
+assert.equal(
+  sharedFit.side_weights.violated.boldness,
+  sharedFit.side_weights.satisfied.composition,
+  "equal violated and satisfied balances earn equal weights (one shared normalization scale)",
+);
+passed++;
+
+// Reduction law: with zero aligned evidence the fit earns nothing — every
+// weight (both sides) stays at the default 1.0 and the gate measures delta 0,
+// so the dominance machinery adds no power the corpus did not pay for.
+const oppositeSideCorpus = {
+  schema_version: 1,
+  kind: "tastecheck-calibration-corpus",
+  entries: Array.from({ length: 8 }, (_, index) =>
+    entry({ id: `o-${index + 1}`, salience: { composition: 1 } })),
+};
+const oppositeImport = importCorpus(oppositeSideCorpus);
+const oppositeFit = calibrateWeights(oppositeImport.entries);
+for (const dimension of Object.keys(oppositeFit.weights)) {
+  assert.equal(oppositeFit.weights[dimension], 1, `no aligned evidence -> default combined weight for ${dimension}`);
+  assert.equal(oppositeFit.side_weights.violated[dimension], 1, `no violation evidence -> default violated weight for ${dimension}`);
+  assert.equal(oppositeFit.side_weights.satisfied[dimension], 1, `no satisfaction evidence -> default satisfied weight for ${dimension}`);
+}
+const oppositeGate = runBlindGate(oppositeImport.entries, fit1.params);
+assert.equal(oppositeGate.delta, 0, "an all-default fit cannot distinguish itself from the default (delta 0)");
 passed++;
 
 // Small corpora refuse to gate at all rather than guessing.

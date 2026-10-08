@@ -9,24 +9,32 @@
  *
  * Prediction task per held-out entry: from the entry's dimension salience
  * pattern (which dimensions drove the verdict, in which direction), predict
- * the verdict's polarity. pred = Σ w_d × salience_d; sign(pred) must equal
- * the polarity. An exact-zero prediction is an abstain and counts as a miss
- * for both profiles alike.
+ * the verdict's polarity. The uncalibrated (shipped default) profile scores
+ * pred = Σ 1 × salience_d. The calibrated profile scores with the fit's
+ * violated/satisfied dominance weights: a satisfied dimension contributes
+ * satisfied[d] × salience_d, a violated one violated[d] × salience_d — the
+ * violated-dimension dominance law. When every side weight is 1 (zero
+ * evidence) the calibrated scorer reduces exactly to the default. sign(pred)
+ * must equal the polarity; an exact-zero prediction is an abstain and counts
+ * as a miss for both profiles alike.
  */
 import { calibrateWeights } from "./calibrate-profile.mjs";
 
 const HOLDOUT_MODULO = 4; // every 4th scoreable entry (sorted by id) is held out
 
-function predictScore(entry, weights) {
+function predictScore(entry, weights, sideWeights) {
   let score = 0;
   for (const [dimension, salience] of Object.entries(entry.salience)) {
-    score += (weights[dimension] ?? 1) * salience;
+    const weight = sideWeights
+      ? (salience >= 0 ? sideWeights.satisfied[dimension] : sideWeights.violated[dimension]) ?? 1
+      : weights[dimension] ?? 1;
+    score += weight * salience;
   }
   return score;
 }
 
-function scoreEntry(entry, weights) {
-  const score = predictScore(entry, weights);
+function scoreEntry(entry, weights, sideWeights) {
+  const score = predictScore(entry, weights, sideWeights);
   const predicted = score > 0 ? 1 : score < 0 ? -1 : 0;
   return {
     id: entry.id,
@@ -89,8 +97,8 @@ export function runBlindGate(entries, params) {
 
   const calibrated = calibrateWeights(train, params);
   const uncalibratedWeights = Object.fromEntries(Object.keys(calibrated.weights).map((dimension) => [dimension, 1]));
-  const calibratedRows = heldout.map((entry) => scoreEntry(entry, calibrated.weights));
-  const uncalibratedRows = heldout.map((entry) => scoreEntry(entry, uncalibratedWeights));
+  const calibratedRows = heldout.map((entry) => scoreEntry(entry, null, calibrated.side_weights));
+  const uncalibratedRows = heldout.map((entry) => scoreEntry(entry, uncalibratedWeights, null));
   const calibratedAccuracy = accuracy(calibratedRows);
   const uncalibratedAccuracy = accuracy(uncalibratedRows);
   const delta = Number((calibratedAccuracy - uncalibratedAccuracy).toFixed(4));
@@ -105,5 +113,6 @@ export function runBlindGate(entries, params) {
     conflicts: { conflict_entry_count: conflicts, note: conflicts === 0 ? "no held-out candidate mixes violated and satisfied dimensions — no weighting can beat the default on this corpus; grow the corpus with conflict-class verdicts" : undefined },
     per_case: heldout.map((entry, index) => ({ id: entry.id, calibrated: calibratedRows[index], uncalibrated: uncalibratedRows[index] })),
     weights: calibrated.weights,
+    side_weights: calibrated.side_weights,
   };
 }
