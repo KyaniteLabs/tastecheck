@@ -63,6 +63,9 @@ function validateEntry(raw, index) {
  * ("explicit" | "derived"), layer ("taste" | "process"), and scoreable flag.
  * Entries whose salience touches no taste dimension (process-only or empty)
  * are imported and counted, but excluded from weight fitting and gate scoring.
+ * Entries with status "SuperSeded" (prune law: the CEO's later ruling overrode
+ * the earlier verdict) are kept for provenance and excluded from splits the
+ * same way — recorded in stats.superseded, never silently dropped.
  */
 export function importCorpus(raw) {
   if (typeof raw !== "object" || raw === null) throw new Error("corpus is not an object");
@@ -86,6 +89,7 @@ export function importCorpus(raw) {
     const salienceSource = entry.salience !== undefined ? "explicit" : "derived";
     const salience = salienceSource === "explicit" ? entry.salience : deriveSalience({ ...entry, polarity });
     const tasteDimensions = Object.keys(salience).filter((dimension) => !PROCESS_DIMENSIONS.includes(dimension));
+    const superseded = entry.status === "SuperSeded";
     return {
       id: entry.id,
       product: entry.product,
@@ -94,12 +98,13 @@ export function importCorpus(raw) {
       verdict_quote: entry.verdict_quote,
       context: entry.context ?? "",
       principle: entry.principle,
+      ...(superseded ? { status: "SuperSeded" } : {}),
       source: { desk: entry.source.desk, ...(entry.source.note ? { note: entry.source.note } : {}) },
       polarity,
       salience,
       salience_source: salienceSource,
       layer: tasteDimensions.length ? "taste" : "process",
-      scoreable: tasteDimensions.length > 0,
+      scoreable: tasteDimensions.length > 0 && !superseded,
     };
   });
 
@@ -112,6 +117,8 @@ export function importCorpus(raw) {
       explicit: entries.filter((entry) => entry.salience_source === "explicit").length,
       derived: entries.filter((entry) => entry.salience_source === "derived").length,
       derived_unscoreable: entries.filter((entry) => entry.salience_source === "derived" && !entry.scoreable).length,
+      superseded: entries.filter((entry) => entry.status === "SuperSeded").length,
+      superseded_scoreable_excluded: entries.filter((entry) => entry.status === "SuperSeded" && Object.keys(entry.salience).some((d) => !PROCESS_DIMENSIONS.includes(d))).length,
     },
   };
 }

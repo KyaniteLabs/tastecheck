@@ -71,6 +71,23 @@ assert.equal(derived.entries[0].salience_source, "derived");
 assert.ok(derived.entries[0].salience["material-depth"] < 0, "lexicon maps material language with the verdict's negative sign");
 passed++;
 
+// Prune law: a SuperSeded entry is kept for provenance but excluded from the
+// scoreable set (never fitted, never held out), and the exclusion is counted.
+const pruned = importCorpus({
+  schema_version: 1,
+  kind: "tastecheck-calibration-corpus",
+  entries: [
+    entry({ id: "p-1", salience: { composition: 1 }, status: "SuperSeded" }),
+    entry({ id: "p-2", salience: { composition: -1 } }),
+  ],
+});
+assert.equal(pruned.entries[0].status, "SuperSeded", "superseded status is carried on the imported entry");
+assert.equal(pruned.entries[0].scoreable, false, "superseded entry is excluded from calibration splits");
+assert.equal(pruned.entries[1].scoreable, true, "active entry stays scoreable");
+assert.equal(pruned.stats.superseded, 1, "superseded count recorded in stats");
+assert.equal(pruned.stats.superseded_scoreable_excluded, 1, "taste-dimension supersession counted");
+passed++;
+
 // Explicit salience wins and process-only entries are imported but not scoreable.
 const mixed = importCorpus({
   schema_version: 1,
@@ -117,6 +134,25 @@ const gate = runBlindGate(importCorpus(conflictCorpus).entries, fit1.params);
 assert.equal(gate.verdict, "pass", `gate should pass on a conflict corpus (got ${gate.verdict}: cal ${gate.calibrated?.accuracy} vs unc ${gate.uncalibrated?.accuracy})`);
 assert.ok(gate.delta > 0, "measured delta is positive on conflict data");
 assert.equal(gate.split.heldout.length, 2, "deterministic split held out exactly every 4th scoreable entry");
+assert.ok(gate.split.heldout.includes("t-4") || gate.split.heldout.includes("t-8"), "the regular held-out slice includes a conflict example");
+passed++;
+
+// Conflict presence deterministically shapes the holdout when regular
+// modulo positions contain no conflicts.
+const stratifiedCorpus = {
+  schema_version: 1,
+  kind: "tastecheck-calibration-corpus",
+  entries: Array.from({ length: 8 }, (_, index) => entry({
+    id: `s-${index + 1}`,
+    salience: index < 2 ? { boldness: -1, composition: 0.5 } : { composition: index % 2 ? 1 : -1 },
+  })),
+};
+const stratifiedEntries = importCorpus(stratifiedCorpus).entries;
+const stratifiedGate = runBlindGate(stratifiedEntries, fit1.params);
+const repeatStratifiedGate = runBlindGate(stratifiedEntries, fit1.params);
+assert.deepEqual(stratifiedGate.split, repeatStratifiedGate.split, "conflict-aware split remains deterministic");
+assert.ok(stratifiedGate.split.heldout.some((id) => id === "s-1" || id === "s-2"), "held-out always includes a conflict when the corpus contains one");
+assert.equal(stratifiedGate.split.heldout.length, 2, "conflict stratification preserves holdout size");
 passed++;
 
 // A conflict-free corpus cannot distinguish any weighting from the default:
