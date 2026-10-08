@@ -53,6 +53,7 @@ export function runProfileCalibration({ corpusPath, receiptPath, profileOutPath,
       params: calibration.params,
       scoreable_count: calibration.scoreable_count,
       weights: calibration.weights,
+      side_weights: calibration.side_weights,
       evidence: calibration.evidence,
     },
     gate,
@@ -62,7 +63,7 @@ export function runProfileCalibration({ corpusPath, receiptPath, profileOutPath,
     mkdirSync(dirname(receiptResolved), { recursive: true });
     mkdirSync(dirname(profileResolved), { recursive: true });
     writeFileSync(receiptResolved, `${JSON.stringify(receipt, null, 2)}\n`);
-    writeFileSync(profileResolved, `${JSON.stringify({ schema_version: 1, kind: "tastecheck-profile-weights", generated_at: ranAt, source_corpus: corpusResolved, weights: calibration.weights, evidence: calibration.evidence, params: calibration.params }, null, 2)}\n`);
+    writeFileSync(profileResolved, `${JSON.stringify({ schema_version: 1, kind: "tastecheck-profile-weights", generated_at: ranAt, source_corpus: corpusResolved, weights: calibration.weights, side_weights: calibration.side_weights, evidence: calibration.evidence, params: calibration.params }, null, 2)}\n`);
     receipt.outputs = { receipt: receiptResolved, profile: profileResolved };
   }
 
