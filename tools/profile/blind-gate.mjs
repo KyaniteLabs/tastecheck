@@ -60,6 +60,22 @@ export function runBlindGate(entries, params) {
   const scoreable = [...entries.filter((entry) => entry.scoreable)].sort((a, b) => a.id.localeCompare(b.id));
   const train = scoreable.filter((_, index) => index % HOLDOUT_MODULO !== HOLDOUT_MODULO - 1);
   const heldout = scoreable.filter((_, index) => index % HOLDOUT_MODULO === HOLDOUT_MODULO - 1);
+  const conflictEntries = scoreable.filter((entry) => {
+    const values = Object.values(entry.salience);
+    return values.some((value) => value > 0) && values.some((value) => value < 0);
+  });
+
+  // Preserve the regular deterministic split, but guarantee that the blind
+  // slice exercises the weighting decision whenever the corpus has conflicts.
+  if (conflictEntries.length > 0 && !heldout.some((entry) => conflictEntries.includes(entry))) {
+    const conflict = conflictEntries[0]; // scoreable and conflicts are both id-sorted
+    const displaced = heldout.pop();
+    train.splice(train.indexOf(conflict), 1);
+    heldout.push(conflict);
+    if (displaced) train.push(displaced);
+    train.sort((a, b) => a.id.localeCompare(b.id));
+    heldout.sort((a, b) => a.id.localeCompare(b.id));
+  }
 
   const insufficient = train.length < 4 || heldout.length < 2;
   if (insufficient) {
