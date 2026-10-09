@@ -20,7 +20,7 @@ Release inventory: v1.7.0 · 20 skills · 20 canonical commands · 1 alias · 21
 
 | Fact | Current release truth |
 |---|---|
-| Version | v1.6.0 |
+| Version | v1.7.0 |
 | Skills | 20 frontend craft skills |
 | Commands | 20 canonical Claude Code slash commands |
 | Alias | 1 approved alias: `/darkmode` for `/theming` |
@@ -56,7 +56,7 @@ The retrofit makes the release gate account for the evidence it records. These b
 | Release finalization | `npm run finalize` performs receipt refresh, receipt pins, public status projection, and verify-chain validation together. |
 | Measured error rates | A labeled regression corpus (`evals/corpus/`, every case citing the desk of record it was harvested from) measures false-positive/false-negative rates per run: `npm run calibrate` emits dated reports; the current measured state lives in `evals/calibration/`. |
 | Dogfood law — the tool gates itself | This repository's own CI runs the corpus calibration (`npm run calibrate:check`) and fails any change that worsens the measured FP/FN counts against the recorded baseline, so a release cannot ship with a worse measured rate than the last one. |
-| ASTRA review closure | The external ASTRA adversarial review found 8 findings, including 5 SEV-1 findings; the closure is recorded in `ASTRA-REVIEW.md` and `ASTRA-FIX-REPORT.md`. |
+| ASTRA review closure | The external ASTRA adversarial review found 8 findings, including 5 SEV-1 findings; the closure is recorded in the ASTRA review and fix reports (not included in this repository). |
 
 ## Quickstart
 
@@ -206,7 +206,7 @@ TasteCheck is MIT licensed; the authoritative terms are in [`LICENSE`](LICENSE).
 | **Category** | frontend taste and ship-gate toolkit |
 | **Best for** | AI coding agents and frontend engineers |
 | **Not** | a design Figma plugin |
-| **Source** | [Forgejo](https://git.kyanitelabs.tech/KyaniteLabs/tastecheck) · [GitHub](https://github.com/KyaniteLabs/tastecheck) |
+| **Source** | [Forgejo](https://git.kyanitelabs.tech/KyaniteLabs/tastecheck) (private, maintainers only) · [GitHub](https://github.com/KyaniteLabs/tastecheck) |
 | **Keywords** | UI taste check, anti-slop frontend gate, design QA |
 
 ## Who it's for
@@ -237,7 +237,7 @@ Treat the README status and release tags as source of truth for maturity. Valida
 
 - Maintained as of 2026 on the default branch
 - Prefer release tags when pinning dependencies
-- Report issues on the canonical remote listed above
+- Report issues on [GitHub](https://github.com/KyaniteLabs/tastecheck/issues)
 
 ## Agent surface
 
@@ -247,7 +247,7 @@ Treat the README status and release tags as source of truth for maturity. Valida
 
 ## Contributing
 
-Issues and PRs welcome on the canonical remote. Keep public docs free of secrets and machine-local paths.
+Issues and PRs welcome on [GitHub](https://github.com/KyaniteLabs/tastecheck). Keep public docs free of secrets and machine-local paths.
 
 ## License
 
@@ -266,7 +266,7 @@ See [LICENSE](LICENSE) in this repository (or package metadata if license is pac
 - [Install](#install)
 - [FAQ](#faq)
 - [License](#license)
-- [Who it's for](#whos-it-for)
+- [Who it's for](#who-its-for)
 - [Status](#status)
 - [Agent surface](#agent-surface)
 - [Contributing](#contributing)
