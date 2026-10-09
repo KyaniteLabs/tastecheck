@@ -36,6 +36,8 @@ readiness only.
 5. For an in-product language choice, self-label/persist the control, update `lang`, and
    provide `hreflang`/per-locale metadata for indexed locale routes where applicable.
 
+Locale verification does not require installer/provider credentials. Use approved local fixtures and public locale references; never read credential stores, dump environment values, or send private strings, credentials, or project data to translation services. Remote translation or authenticated testing needs separately approved scope and data handling.
+
 ## Non-negotiables
 
 - Correct language attributes, longest-string-safe layout, and logical CSS—no text images
