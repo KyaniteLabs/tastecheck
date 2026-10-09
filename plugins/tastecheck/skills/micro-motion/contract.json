@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "skill": "micro-motion",
+  "class": "generative",
+  "trigger": {
+    "positive": [
+      "An interface needs purposeful transition, feedback, choreography, or reduced-motion behavior."
+    ],
+    "negative": [
+      "The request is only static visual styling or decorative animation without an interaction purpose."
+    ],
+    "adjacent_skills": [
+      "component-states",
+      "responsive-layout",
+      "a11y-pass"
+    ]
+  },
+  "exclusions": [
+    "Do not add motion without a user-facing purpose.",
+    "Do not make reduced motion a blank or broken experience.",
+    "Do not animate essential content into invisibility."
+  ],
+  "inputs": {
+    "required": [
+      "interaction or narrative purpose",
+      "motion constraints",
+      "reduced-motion requirement"
+    ],
+    "optional": [
+      "existing timing tokens",
+      "device constraints",
+      "performance trace"
+    ]
+  },
+  "outputs": {
+    "primary": "purposeful motion choreography and token plan",
+    "artifacts": [
+      "motion map",
+      "timing/easing values",
+      "reduced-motion equivalence",
+      "evidence-backed self-check"
+    ],
+    "handoff_fields": [
+      "trigger",
+      "purpose",
+      "duration",
+      "easing",
+      "reduced_motion",
+      "evidence"
+    ]
+  },
+  "stop_conditions": [
+    "Stop when no purpose or interruption policy exists.",
+    "Stop when motion would compromise accessibility or performance without an approved tradeoff."
+  ],
+  "handoff": {
+    "receives_from": [
+      "component-states",
+      "design-system-interview",
+      "deslop-ui",
+      "tasteroll"
+    ],
+    "sends_to": [
+      "a11y-pass",
+      "tastecheck-pass"
+    ]
+  },
+  "self_check_shape": "table_with_evidence",
+  "required_evidence_fields": [
+    "status",
+    "reason",
+    "remediation",
+    "evidence",
+    "provenance"
+  ],
+  "context_budget": {
+    "skill_md_max_tokens": 5000,
+    "resource_max_tokens": 6000
+  }
+}

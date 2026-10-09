@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/contracts/v1/skill-contract.schema.json",
+  "title": "TasteCheck Skill Contract v1",
+  "description": "Machine-readable semantic contract for one TasteCheck skill. Kept minimal — domain decision logic stays in SKILL.md and focused references.",
+  "type": "object",
+  "required": ["schema_version", "skill", "class", "trigger", "exclusions", "inputs", "outputs", "stop_conditions", "handoff", "self_check_shape", "required_evidence_fields"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "skill": {
+      "type": "string",
+      "description": "Canonical skill name matching skills.json and directory name"
+    },
+    "class": {
+      "type": "string",
+      "enum": ["generative", "repair", "gate"],
+      "description": "Skill class determining diversity/determinism requirements"
+    },
+    "trigger": {
+      "type": "object",
+      "description": "Activation boundaries",
+      "required": ["positive", "negative"],
+      "additionalProperties": false,
+      "properties": {
+        "positive": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "description": "Conditions that correctly activate this skill"
+        },
+        "negative": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "description": "Adjacent or confusable conditions that must NOT activate this skill"
+        },
+        "adjacent_skills": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Skills commonly confused with this one; routing boundary notes"
+        }
+      }
+    },
+    "exclusions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "What this skill explicitly does not do"
+    },
+    "inputs": {
+      "type": "object",
+      "required": ["required", "optional"],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "optional": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "required": ["primary"],
+      "additionalProperties": false,
+      "properties": {
+        "primary": {
+          "type": "string",
+          "description": "The main deliverable type"
+        },
+        "artifacts": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Named output files or structured artifacts if any"
+        },
+        "handoff_fields": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Fields emitted for downstream skill consumption"
+        }
+      }
+    },
+    "stop_conditions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "Explicit conditions that halt skill execution and require clarification or handoff"
+    },
+    "handoff": {
+      "type": "object",
+      "required": ["receives_from", "sends_to"],
+      "additionalProperties": false,
+      "properties": {
+        "receives_from": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Skills that feed into this one"
+        },
+        "sends_to": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Skills that consume this skill's output"
+        }
+      }
+    },
+    "self_check_shape": {
+      "type": "string",
+      "enum": ["checklist_with_evidence", "table_with_evidence", "ledger_with_verdict"],
+      "description": "Machine-interpretable shape of the skill's self-check output"
+    },
+    "required_evidence_fields": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["status", "reason", "remediation", "evidence", "provenance"] },
+      "minItems": 5,
+      "maxItems": 5,
+      "uniqueItems": true,
+      "allOf": [
+        { "contains": { "const": "status" } },
+        { "contains": { "const": "reason" } },
+        { "contains": { "const": "remediation" } },
+        { "contains": { "const": "evidence" } },
+        { "contains": { "const": "provenance" } }
+      ],
+      "description": "Exactly the canonical fields emitted by every authoritative self-check"
+    },
+    "context_budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "skill_md_max_tokens": {
+          "type": "integer",
+          "description": "Max estimated tokens for SKILL.md activation"
+        },
+        "resource_max_tokens": {
+          "type": "integer",
+          "description": "Max additional tokens from resources loaded per task"
+        }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional rationale or constraints"
+    }
+  }
+}

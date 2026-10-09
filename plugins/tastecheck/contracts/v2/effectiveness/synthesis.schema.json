@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/contracts/v2/effectiveness/synthesis.schema.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "kind", "run_id", "status", "families", "hard_regressions", "claim_allowed"],
+  "properties": {
+    "schema_version": { "const": 2 }, "kind": { "const": "effectiveness-v2-synthesis" }, "run_id": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["supported", "inconclusive", "blocked", "production_incomplete"] },
+    "families": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/definitions/family" } },
+    "hard_regressions": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }, "claim_allowed": { "type": "boolean" }
+  },
+  "definitions": {
+    "family": { "type": "object", "additionalProperties": false, "required": ["family_id", "preference_score", "scenario_majorities", "dimension_means", "absolute_mean", "passed"], "properties": { "family_id": { "type": "string", "minLength": 1 }, "preference_score": { "type": "number", "minimum": 0, "maximum": 24 }, "scenario_majorities": { "type": "integer", "minimum": 0, "maximum": 12 }, "dimension_means": { "$ref": "#/definitions/dimensions" }, "absolute_mean": { "type": "number", "minimum": 1, "maximum": 5 }, "passed": { "type": "boolean" } } },
+    "dimensions": { "type": "object", "additionalProperties": false, "required": ["direction", "structure", "accessibility", "verbal", "integration"], "properties": { "direction": { "$ref": "#/definitions/mean" }, "structure": { "$ref": "#/definitions/mean" }, "accessibility": { "$ref": "#/definitions/mean" }, "verbal": { "$ref": "#/definitions/mean" }, "integration": { "$ref": "#/definitions/mean" } } },
+    "mean": { "type": "number", "minimum": 1, "maximum": 5 }
+  }
+}

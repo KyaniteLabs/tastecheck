@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/contracts/v2/effectiveness/protocol.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "baseline_revision", "candidate_revision", "strata", "scenarios_per_stratum", "seeds", "comparison_units", "generation_calls", "production_judgments", "anchor_judgments", "max_external_calls", "incremental_spend_cap_usd", "retry_policy", "exclusions", "family_quorum", "judge_identities_per_family", "candidate_preference_floor", "scenario_majority_floor", "absolute_mean_floor", "dimension_floor", "human_calibration_claimed", "randomization_commitment_sha256", "packet_validator_version", "packet_validator_sha256"],
+  "properties": {
+    "schema_version": { "const": 2 }, "kind": { "const": "effectiveness-v2-protocol" },
+    "baseline_revision": { "$ref": "#/definitions/revision" }, "candidate_revision": { "$ref": "#/definitions/revision" },
+    "strata": { "type": "array", "minItems": 6, "maxItems": 6, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "scenarios_per_stratum": { "type": "integer" }, "seeds": { "type": "array", "items": { "type": "integer" } },
+    "comparison_units": { "type": "integer" }, "generation_calls": { "type": "integer" }, "production_judgments": { "type": "integer" }, "anchor_judgments": { "type": "integer" }, "max_external_calls": { "type": "integer" },
+    "incremental_spend_cap_usd": { "type": "number" }, "retry_policy": { "type": "string" },
+    "exclusions": { "type": "array", "maxItems": 0 }, "family_quorum": { "type": "integer" }, "judge_identities_per_family": { "type": "integer" },
+    "candidate_preference_floor": { "type": "number" }, "scenario_majority_floor": { "type": "integer" }, "absolute_mean_floor": { "type": "number" }, "dimension_floor": { "type": "number" },
+    "human_calibration_claimed": { "const": false }, "randomization_commitment_sha256": { "$ref": "#/definitions/sha256" },
+    "packet_validator_version": { "type": "string", "minLength": 1 }, "packet_validator_sha256": { "$ref": "#/definitions/sha256" }
+  },
+  "definitions": { "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" }, "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }
+}

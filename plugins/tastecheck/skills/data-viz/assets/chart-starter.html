@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>data-viz — honest AND premium, on-system</title>
+<style>
+/* TOKENS: canonical tastecheck names (design-system-interview contract).
+   The VALUES below are one EXAMPLE system (forest-green on warm paper) so this file
+   renders standalone — in a real project DELETE this :root block and inherit the
+   tokens your color-system/theming pass generated. Never copy this palette into a
+   project whose DESIGN-SYSTEM.md says otherwise. Honest in ink, rich in craft. */
+:root{
+  --color-bg:#faf8f3; --color-surface-1:#fffefb; --color-border:#e3ded2;
+  --color-text:#1d231d; --color-text-muted:#5f6a5e;
+  --series-1:#2f6b4f;          /* the data (primary series) */
+  --series-2:#34557f;          /* secondary series — hue-distinct AND CVD-safe vs series-1 */
+  --chart-grid:#e7e2d6; --chart-label:#5f6a5e;
+  --font-display:Georgia,"Times New Roman",serif;   /* editorial numerals = premium */
+  --font-body:ui-sans-serif,system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--color-bg);color:var(--color-text);font-family:var(--font-body);line-height:1.5;
+  padding:clamp(1.5rem,1rem + 3vw,3.5rem);max-width:60rem;margin-inline:auto;-webkit-font-smoothing:antialiased}
+.eyebrow{font-family:ui-monospace,Menlo,monospace;font-size:.8rem;letter-spacing:.22em;text-transform:uppercase;color:var(--series-1);margin-bottom:2.5rem}
+h1{font-family:var(--font-display);font-size:clamp(2rem,1.4rem + 2.5vw,3rem);line-height:1.05;margin:0 0 2rem}
+figure{margin:0 0 3rem}
+figcaption{font-size:1.05rem;color:var(--color-text);margin-bottom:1.2rem;max-width:54ch;text-wrap:pretty}
+figcaption b{font-weight:600}
+text{font-family:var(--font-body);fill:var(--chart-label);font-size:.8rem}
+.dlabel{fill:var(--color-text);font-weight:600}
+.num{font-family:var(--font-display);font-variant-numeric:tabular-nums;fill:var(--color-text)}
+svg{width:100%;height:auto;display:block;overflow:hidden}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* premium KPI row: the number is the hero, sparkline beneath */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(13rem,100%),1fr));gap:1px;background:var(--color-border);border:1px solid var(--color-border);border-radius:14px;overflow:hidden;margin-bottom:3rem}
+.kpi{background:var(--color-surface-1);padding:1.4rem}
+.kpi .n{font-family:var(--font-display);font-size:clamp(2.2rem,1.5rem + 2vw,3rem);line-height:1;font-variant-numeric:tabular-nums}
+.kpi .d{color:var(--series-2);font-size:.85rem;font-weight:600;margin-top:.2rem}
+.kpi .l{color:var(--color-text-muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;margin-top:.7rem}
+.kpi svg{margin-top:.7rem;height:30px}
+table{border-collapse:collapse;font-variant-numeric:tabular-nums;width:100%;max-width:34rem}
+caption{text-align:left;color:var(--color-text-muted);font-size:.85rem;margin-bottom:.5rem}
+th,td{padding:.45rem .9rem;border-bottom:1px solid var(--chart-grid);text-align:right}
+th:first-child,td:first-child{text-align:left;color:var(--color-text-muted);font-weight:400}
+th{color:var(--color-text-muted);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em}
+td.big{font-family:var(--font-display);font-size:1.1rem;color:var(--color-text)}
+.sm{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.sm figcaption{font-size:.85rem;color:var(--color-text-muted);margin-bottom:.4rem}
+.sm .v{font-family:var(--font-display);font-size:1.4rem}
+</style></head>
+<body>
+<main>
+<p class="eyebrow">data-viz · honest, premium, on-system</p>
+<h1>Honest chart starter</h1>
+
+<!-- PREMIUM KPI ROW — big editorial numerals + range-frame sparkline -->
+<div class="kpis">
+  <div class="kpi"><div class="n">4.2<span style="font-size:.5em;color:var(--color-text-muted)">M</span></div><div class="d">↑ 31% QoQ</div><div class="l">Revenue</div>
+    <svg viewBox="0 0 120 30" role="img" aria-label="Revenue by quarter, 2.1 to 4.2 million"><polyline fill="none" stroke="var(--series-1)" stroke-width="1.5" points="0,26 16,24 32,22 48,17 64,15 80,11 96,15 120,3"/><circle cx="120" cy="3" r="2" fill="var(--series-1)"/></svg>
+    <table class="visually-hidden"><caption>Revenue sparkline data</caption><tbody><tr><td>Q3 2024</td><td>2.1M</td></tr><tr><td>Q4 2024</td><td>2.3M</td></tr><tr><td>Q1 2025</td><td>2.4M</td></tr><tr><td>Q2 2025</td><td>2.8M</td></tr><tr><td>Q3 2025</td><td>3.0M</td></tr><tr><td>Q4 2025</td><td>3.4M</td></tr><tr><td>Q1 2026</td><td>2.8M</td></tr><tr><td>Q2 2026</td><td>4.2M</td></tr></tbody></table></div>
+  <div class="kpi"><div class="n">2,400</div><div class="d">↑ 12%</div><div class="l">Kitchens</div>
+    <svg viewBox="0 0 120 30" role="img" aria-label="Kitchens by period, 1700 to 2400"><polyline fill="none" stroke="var(--series-2)" stroke-width="1.5" points="0,24 20,23 40,21 60,18 80,16 100,12 120,8"/><circle cx="120" cy="8" r="2" fill="var(--series-2)"/></svg>
+    <table class="visually-hidden"><caption>Kitchens sparkline data</caption><tbody><tr><td>P1</td><td>1700</td></tr><tr><td>P2</td><td>1740</td></tr><tr><td>P3</td><td>1820</td></tr><tr><td>P4</td><td>1960</td></tr><tr><td>P5</td><td>2080</td></tr><tr><td>P6</td><td>2260</td></tr><tr><td>P7</td><td>2400</td></tr></tbody></table></div>
+  <div class="kpi"><div class="n">31<span style="font-size:.5em;color:var(--color-text-muted)">%</span></div><div class="d">less waste</div><div class="l">Avg. impact</div>
+    <svg viewBox="0 0 120 30" role="img" aria-label="Waste rate decreasing from 42% to 31%"><polyline fill="none" stroke="var(--series-1)" stroke-width="1.5" points="0,8 20,11 40,12 60,16 80,18 100,21 120,24"/><circle cx="120" cy="24" r="2" fill="var(--series-1)"/></svg>
+    <table class="visually-hidden"><caption>Waste sparkline data</caption><tbody><tr><td>P1</td><td>42%</td></tr><tr><td>P2</td><td>40%</td></tr><tr><td>P3</td><td>39%</td></tr><tr><td>P4</td><td>36%</td></tr><tr><td>P5</td><td>34%</td></tr><tr><td>P6</td><td>32%</td></tr><tr><td>P7</td><td>31%</td></tr></tbody></table></div>
+</div>
+
+<!-- HONEST RANGE-FRAME LINE, crafted -->
+<figure>
+  <figcaption><b>Revenue grew 31% in Q2 2026</b> — the steepest quarter on record.</figcaption>
+  <svg viewBox="0 0 640 240" role="img" aria-label="Quarterly revenue 2024–2026, rising 2.1 to 4.2 million, steepest Q2 2026">
+    <line x1="64" y1="200" x2="600" y2="200" stroke="var(--chart-grid)"/>
+    <line x1="64" y1="44" x2="64" y2="200" stroke="var(--chart-grid)"/>
+    <text x="56" y="48" text-anchor="end" class="num">4.2</text>
+    <text x="56" y="204" text-anchor="end" class="num">2.1</text>
+    <text x="64" y="222">Q3 ’24</text><text x="600" y="222" text-anchor="end">Q2 ’26</text>
+    <polyline fill="none" stroke="var(--series-1)" stroke-width="2.5" points="64,188 140,176 216,170 292,150 368,134 444,108 520,150 600,52"/>
+    <circle cx="600" cy="52" r="4" fill="var(--series-1)"/>
+    <text class="dlabel num" x="588" y="44" text-anchor="end" style="font-size:1.05rem">$4.2M</text>
+  </svg>
+  <table class="visually-hidden"><caption>Quarterly revenue ($M)</caption><thead><tr><th>Quarter</th><th>Revenue</th></tr></thead><tbody><tr><td>Q3 2024</td><td>2.1</td></tr><tr><td>Q4 2024</td><td>2.3</td></tr><tr><td>Q1 2025</td><td>2.4</td></tr><tr><td>Q2 2025</td><td>2.8</td></tr><tr><td>Q3 2025</td><td>3.0</td></tr><tr><td>Q4 2025</td><td>3.4</td></tr><tr><td>Q1 2026</td><td>2.8</td></tr><tr><td>Q2 2026</td><td>4.2</td></tr></tbody></table>
+</figure>
+
+<!-- SMALL MULTIPLES — shared scale, the Tufte move over a spaghetti chart -->
+<figure>
+  <figcaption><b>Adoption by region</b> — all three rising, West fastest. <span style="color:var(--color-text-muted)">Small multiples, shared scale.</span></figcaption>
+  <div class="sm">
+    <div><figcaption>West <span class="v" style="color:var(--series-1)">+38%</span></figcaption>
+      <svg viewBox="0 0 180 70" role="img" aria-label="West adoption +38%"><line x1="4" y1="62" x2="176" y2="62" stroke="var(--chart-grid)"/><polyline fill="none" stroke="var(--series-1)" stroke-width="2" points="4,56 40,50 76,40 112,28 148,16 176,8"/></svg></div>
+    <div><figcaption>Central <span class="v" style="color:var(--series-1)">+21%</span></figcaption>
+      <svg viewBox="0 0 180 70" role="img" aria-label="Central adoption +21%"><line x1="4" y1="62" x2="176" y2="62" stroke="var(--chart-grid)"/><polyline fill="none" stroke="var(--series-1)" stroke-width="2" points="4,54 40,50 76,46 112,38 148,32 176,26"/></svg></div>
+    <div><figcaption>East <span class="v" style="color:var(--series-1)">+14%</span></figcaption>
+      <svg viewBox="0 0 180 70" role="img" aria-label="East adoption +14%"><line x1="4" y1="62" x2="176" y2="62" stroke="var(--chart-grid)"/><polyline fill="none" stroke="var(--series-1)" stroke-width="2" points="4,52 40,50 76,48 112,44 148,42 176,38"/></svg></div>
+  </div>
+  <table class="visually-hidden"><caption>Adoption by region</caption><thead><tr><th>Region</th><th>Period</th><th>Adoption</th></tr></thead><tbody><tr><td>West</td><td>P1</td><td>18</td></tr><tr><td>West</td><td>P2</td><td>22</td></tr><tr><td>West</td><td>P3</td><td>30</td></tr><tr><td>West</td><td>P4</td><td>40</td></tr><tr><td>West</td><td>P5</td><td>50</td></tr><tr><td>West</td><td>P6</td><td>56</td></tr><tr><td>Central</td><td>P1</td><td>20</td></tr><tr><td>Central</td><td>P2</td><td>22</td></tr><tr><td>Central</td><td>P3</td><td>24</td></tr><tr><td>Central</td><td>P4</td><td>31</td></tr><tr><td>Central</td><td>P5</td><td>36</td></tr><tr><td>Central</td><td>P6</td><td>41</td></tr><tr><td>East</td><td>P1</td><td>22</td></tr><tr><td>East</td><td>P2</td><td>23</td></tr><tr><td>East</td><td>P3</td><td>24</td></tr><tr><td>East</td><td>P4</td><td>27</td></tr><tr><td>East</td><td>P5</td><td>29</td></tr><tr><td>East</td><td>P6</td><td>36</td></tr></tbody></table>
+</figure>
+
+<!-- TABLE-FIRST — small data, premium-set -->
+<figure>
+  <figcaption><b>Plan mix</b> — Pro drives revenue. <span style="color:var(--color-text-muted)">6 numbers → a table, not a pie.</span></figcaption>
+  <table>
+    <thead><tr><th scope="col">Plan</th><th scope="col">Customers</th><th scope="col">Revenue</th></tr></thead>
+    <tbody>
+      <tr><td>Free</td><td>8,200</td><td class="big">$0</td></tr>
+      <tr><td>Pro</td><td>1,940</td><td class="big" style="color:var(--series-1)">$291K</td></tr>
+      <tr><td>Team</td><td>410</td><td class="big">$184K</td></tr>
+    </tbody>
+  </table>
+</figure>
+</main>
+</body></html>
