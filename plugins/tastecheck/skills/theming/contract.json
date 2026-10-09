@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "skill": "theming",
+  "class": "generative",
+  "trigger": {
+    "positive": [
+      "An interface needs coherent light, dark, high-contrast, or forced-colors mappings",
+      "Theme switching or persistent preference needs implementation"
+    ],
+    "negative": [
+      "The request is to invent the source palette rather than map semantic roles",
+      "The request is a one-off color correction with no theme-system scope"
+    ],
+    "adjacent_skills": [
+      "color-system",
+      "a11y-pass",
+      "cognitive-a11y"
+    ]
+  },
+  "exclusions": [
+    "Do not invert a light palette and call it dark mode",
+    "Do not override user forced-colors behavior"
+  ],
+  "inputs": {
+    "required": [
+      "Semantic color roles",
+      "Supported theme modes and target surfaces"
+    ],
+    "optional": [
+      "Source color ramp",
+      "User preference policy",
+      "Native-control and browser-chrome requirements"
+    ]
+  },
+  "outputs": {
+    "primary": "Semantic mappings for every supported theme, plus forced-colors behavior, preference policy, and measured pairs",
+    "artifacts": [
+      "theme token mappings",
+      "theme preference policy",
+      "contrast table"
+    ],
+    "handoff_fields": [
+      "semantic_roles",
+      "supported_theme_maps",
+      "forced_colors_behavior",
+      "preference_behavior",
+      "contrast_pairs"
+    ]
+  },
+  "stop_conditions": [
+    "Pause when semantic roles are missing and theme values would be raw-color copies",
+    "Do not claim a theme is accessible without per-theme measurements"
+  ],
+  "handoff": {
+    "receives_from": [
+      "color-system",
+      "design-system-interview",
+      "improve-existing-website",
+      "tasteroll"
+    ],
+    "sends_to": [
+      "a11y-pass",
+      "cognitive-a11y",
+      "responsive-layout",
+      "component-states"
+    ]
+  },
+  "self_check_shape": "table_with_evidence",
+  "required_evidence_fields": [
+    "status",
+    "reason",
+    "remediation",
+    "evidence",
+    "provenance"
+  ],
+  "context_budget": {
+    "skill_md_max_tokens": 5000,
+    "resource_max_tokens": 6000
+  }
+}

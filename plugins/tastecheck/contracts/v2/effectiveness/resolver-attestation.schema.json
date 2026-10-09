@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/contracts/v2/effectiveness/resolver-attestation.schema.json",
+  "title": "Effectiveness v2 trusted resolver attestation",
+  "description": "Closed shape of a trusted, introspection-only resolver attestation binding a canonical ASCII subject identity to an immutable resolved model version and verified foundation lineage with an evidence digest. Rejects aliases, self-declared mappings, mutation capability, and incremental cost.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "issuer", "subject_kind", "subject_canonical_id", "provider", "resolved_version", "foundation_lineage", "evidence_sha256", "introspection_only", "cost_kind", "incremental_spend_usd"],
+  "properties": {
+    "schema_version": { "const": 2 },
+    "kind": { "const": "effectiveness-v2-resolver-attestation" },
+    "issuer": { "type": "string", "minLength": 1 },
+    "subject_kind": { "enum": ["generator", "judge"] },
+    "subject_canonical_id": { "type": "string", "minLength": 1 },
+    "provider": { "type": "string", "minLength": 1 },
+    "resolved_version": { "type": "string", "minLength": 1 },
+    "foundation_lineage": { "type": "string", "minLength": 1 },
+    "evidence_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "introspection_only": { "const": true },
+    "cost_kind": { "enum": ["flat-rate", "already-provisioned"] },
+    "incremental_spend_usd": { "type": "number", "minimum": 0, "maximum": 0 }
+  }
+}

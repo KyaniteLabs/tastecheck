@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/contracts/v1/live-execution-receipt.schema.json",
+  "title": "TasteCheck Live Execution Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "producer_id", "producer", "source_tree_sha256", "nonce", "runtime", "started_at", "finished_at", "executed", "reproducible", "artifacts", "checks", "status"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "kind": { "enum": ["browser", "e2e"] },
+    "producer_id": { "const": "tastecheck.release.live-execution.v1" },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "const": "tastecheck-live-execution" },
+        "version": { "const": 1 }
+      }
+    },
+    "source_tree_sha256": { "$ref": "#/definitions/sha256" },
+    "nonce": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{15,127}$" },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node", "playwright", "browser", "platform"],
+      "properties": {
+        "node": { "type": "string", "pattern": "^v?[0-9]+\\.[0-9]+\\.[0-9]+" },
+        "playwright": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+" },
+        "browser": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "platform": { "enum": ["darwin", "linux", "win32", "other"] }
+      }
+    },
+    "started_at": { "$ref": "#/definitions/utc" },
+    "finished_at": { "$ref": "#/definitions/utc" },
+    "executed": { "const": true },
+    "reproducible": { "type": "boolean" },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "path", "sha256", "bytes"],
+        "properties": {
+          "id": { "$ref": "#/definitions/id" },
+          "path": { "type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)[A-Za-z0-9._/-]+$" },
+          "sha256": { "$ref": "#/definitions/sha256" },
+          "bytes": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "passed", "detail"],
+        "properties": {
+          "id": { "$ref": "#/definitions/id" },
+          "passed": { "type": "boolean" },
+          "detail": { "type": "string", "minLength": 1, "maxLength": 240 }
+        }
+      }
+    },
+    "status": { "enum": ["pass", "fail"] }
+  },
+  "definitions": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "maxLength": 100 },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "utc": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$" }
+  }
+}

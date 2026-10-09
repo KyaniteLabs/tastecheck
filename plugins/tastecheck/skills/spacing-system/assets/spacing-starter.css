@@ -1,0 +1,58 @@
+/* ============================================================================
+   spacing-system — starter stylesheet
+   One 4px-base ladder for every gap, margin, and padding. Copy into a project,
+   keep the names, tune the values only where content pressure justifies it.
+   Principles: single source of truth, ≥1.5× between semantic levels,
+   one-direction logical margins, gap-first layout.
+   ========================================================================== */
+
+:root {
+  /* --- 4px-base ladder (--space-1 through --space-9) --- */
+  --space-1: 0.25rem;   /*  4px — attachment: icon-to-label, inline metadata */
+  --space-2: 0.5rem;    /*  8px — control: label-to-input, inside a button */
+  --space-3: 0.75rem;   /* 12px — tight control pairs */
+  --space-4: 1rem;      /* 16px — task: repeated list items, card padding */
+  --space-5: 1.5rem;    /* 24px — group: related items, card-to-card */
+  --space-6: 2rem;      /* 32px — region: section subdivisions */
+  --space-7: 3rem;      /* 48px — large region break */
+  --space-8: 4rem;      /* 64px — major region separation */
+  --space-9: 6rem;      /* 96px — chapter / full-screen transition */
+
+  /* --- Fluid section spacing (scales with viewport) --- */
+  --space-section: clamp(3rem, 2rem + 4vw, 6rem);
+}
+
+/* --- Base element spacing (uses the ladder, not arbitrary values) --- */
+* { box-sizing: border-box; margin: 0; }
+
+body {
+  /* One base; everything else is relative via the ladder */
+  padding-inline: var(--space-4);
+}
+
+/* Headings: more space above than below (binds to following content) */
+:is(h1, h2, h3, h4, h5, h6) { margin-block-end: var(--space-2); }
+:is(h2, h3) { margin-block-start: var(--space-7); }
+:is(h4, h5, h6) { margin-block-start: var(--space-5); }
+
+/* Paragraphs: task-level gap, not indent */
+p { margin-block: 0 var(--space-4); }
+p:last-child { margin-block-end: 0; }
+
+/* Lists: compact task rhythm */
+li { margin-block: var(--space-1); }
+
+/* --- Layout primitives (gap-first, no margin collapse headaches) --- */
+.stack { display: flex; flex-direction: column; gap: var(--space-4); }
+.stack-tight { display: flex; flex-direction: column; gap: var(--space-2); }
+.cluster { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.grid-auto { display: grid; gap: var(--space-5); grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr)); }
+
+/* Section rhythm: use --space-section for major view boundaries */
+section { padding-block: var(--space-section); }
+
+/* --- Migration helpers (replace arbitrary values with these) --- */
+/*  13px → var(--space-3)  ·  17px → var(--space-4)  ·  19px → PENDING */
+/*  Bare 24px → var(--space-5)  ·  Bare 32px → var(--space-6)  */
+
+/* --- Reduced motion: spacing is static, no motion conflict --- */

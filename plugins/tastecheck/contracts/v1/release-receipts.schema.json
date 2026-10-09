@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tastecheck.dev/contracts/v1/release-receipts.schema.json",
+  "title": "TasteCheck engineering release and effectiveness claim manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "target_release", "engineering_readiness", "effectiveness_claim"],
+  "properties": {
+    "schema_version": { "const": 2 },
+    "target_release": { "const": "1.0.0" },
+    "engineering_readiness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_cells"],
+      "properties": {
+        "required_cells": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": { "$ref": "#/$defs/engineeringCell" }
+        }
+      }
+    },
+    "effectiveness_claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claimed_status", "sources"],
+      "properties": {
+        "claimed_status": { "const": "blocked" },
+        "sources": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "$ref": "#/$defs/effectivenessSource" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "engineeringCell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "path", "sha256", "producer_id", "assertions"],
+      "properties": {
+        "id": { "enum": ["context-budget", "browser", "e2e", "mechanical", "security", "clean-clone"] },
+        "path": { "type": "string" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "producer_id": { "enum": ["context-budget", "browser", "e2e", "mechanical", "security", "clean-clone"] },
+        "assertions": { "type": "object" }
+      }
+    },
+    "effectivenessSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "path", "sha256"],
+      "properties": {
+        "id": { "enum": ["w1-effectiveness", "terminal-v5-effectiveness"] },
+        "path": { "type": "string" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}
