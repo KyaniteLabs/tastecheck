@@ -153,7 +153,12 @@ function launch(browserPath, profileDir) {
   ];
   if ((process.getuid && process.getuid() === 0) || process.env.CI) args.push("--no-sandbox");
   args.push("about:blank");
-  return spawn(browserPath, args, { stdio: "ignore", windowsHide: true });
+  // Browser subprocesses need platform/runtime configuration, not installer or provider credentials.
+  const env = {};
+  for (const key of ["PATH", "SYSTEMROOT", "WINDIR", "TEMP", "TMP", "TMPDIR", "LANG", "LC_ALL", "DISPLAY", "XDG_RUNTIME_DIR"]) {
+    if (process.env[key] !== undefined) env[key] = process.env[key];
+  }
+  return spawn(browserPath, args, { stdio: "ignore", windowsHide: true, env });
 }
 
 async function connect(profileDir, child) {

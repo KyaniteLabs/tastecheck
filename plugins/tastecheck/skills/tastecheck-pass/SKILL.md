@@ -104,6 +104,8 @@ Full-build coverage spans direction → foundations → structure/behavior → s
 accessibility/copy; the catalog encodes it. The fast-lane probes are the
 always-load-bearing subset — run them even when the ledger is the deliverable.
 
+Never collect installer/provider credentials or dump the host environment. Browser checks use a fresh temporary profile and approved artifact targets only. Do not copy credentials into URLs, browser injection, shell commands, evidence, or remote requests. Do not download and execute tooling during a pass; use an already installed supported browser. Authorized authenticated checks require a separately approved scoped session; never discover or reuse ambient installer/provider credentials.
+
 ## Boundaries
 
 Read-only by default (`mode:audit`, repo target, no auth, writes, or injection).
