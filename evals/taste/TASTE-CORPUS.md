@@ -76,14 +76,35 @@ and authored, because the repo-sourced slice is the one that was not written
 with the detector in mind. The report also lists how many true positives were
 caught only by the default-display-face tell.
 
-## Known confound: quoted exhibits
+## Quoted exhibits (found by this corpus, then fixed)
 
-Six repo gallery samples (clay, concrete, copper, maximal, swiss, verge)
-include a "what it refuses" section that shows an indigo-to-violet swatch
-(`div.sw.p`) as an exhibit of the slop they reject. The detector checks every
-element's computed background and cannot tell a quoted exhibit from the
-page's own style, so these score as false positives. They are kept as FPs,
-labeled crafted, because that is what the detector does on shipped work.
+The first run (report `reports/taste-2026-10-11-before-exhibit-fix.md`) scored
+6 false positives: six gallery samples (clay, concrete, copper, maximal, swiss,
+verge) show an indigo-to-violet swatch (`div.sw.p`) in a "what it refuses"
+section, as an exhibit of the slop they reject. The detector could not tell a
+quoted exhibit from the page's own style.
+
+Fix: a page can mark a deliberate exhibit with the `data-tastecheck-exhibit`
+attribute. `gate-audit.js` skips marked regions in its tell checks (card grid,
+stat band, pill CTA, gradient) but never in its cold-load checks, and lists every
+skipped region in its notes. Markers are honored only while all marked regions
+together cover 25% of the page or less; above that the audit warns and counts the
+tells inside them. Case `fixture-slop-19-exhibit-marker-abuse` wraps a whole slop
+page in a marker and must still be caught.
+
+The same change made the gradient check judge by hue (a saturated blue-indigo stop
+plus a violet-purple stop) instead of four exact hex values, which also catches
+`fixture-slop-02`'s blue-to-purple gradient.
+
+| run | cases | TP | FN | TN | FP |
+|---|---|---|---|---|---|
+| before the fix | 35 | 18 | 1 | 10 | 6 |
+| after the fix (baseline) | 36 | 19 | 1 | 16 | 0 |
+
+The repo samples were marked by the same people who wrote the detector, and the
+authored fixtures were written from a list of known tells. Both lean toward what
+the detector looks for. Treat these numbers as a regression floor, not as
+evidence that TasteCheck improves design quality.
 
 ## Scope boundary (honest)
 

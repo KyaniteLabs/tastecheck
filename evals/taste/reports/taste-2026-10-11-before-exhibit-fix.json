@@ -6,42 +6,43 @@
   "browser": "chromium 141.0.7390.37",
   "scope": "surface-tells-only; effectiveness remains BLOCKED",
   "overall": {
-    "cases": 36,
+    "cases": 35,
     "errors": 0,
-    "TP": 19,
+    "TP": 18,
     "FN": 1,
-    "TN": 16,
-    "FP": 0,
-    "recall": 0.95,
-    "precision": 1,
-    "fpr": 0,
-    "fnr": 0.05
+    "TN": 10,
+    "FP": 6,
+    "recall": 0.947,
+    "precision": 0.75,
+    "fpr": 0.375,
+    "fnr": 0.053
   },
   "repo": {
     "cases": 11,
     "errors": 0,
     "TP": 1,
     "FN": 0,
-    "TN": 10,
-    "FP": 0,
+    "TN": 4,
+    "FP": 6,
     "recall": 1,
-    "precision": 1,
-    "fpr": 0,
+    "precision": 0.143,
+    "fpr": 0.6,
     "fnr": 0
   },
   "authored": {
-    "cases": 25,
+    "cases": 24,
     "errors": 0,
-    "TP": 18,
+    "TP": 17,
     "FN": 1,
     "TN": 6,
     "FP": 0,
-    "recall": 0.947,
+    "recall": 0.944,
     "precision": 1,
     "fpr": 0,
-    "fnr": 0.053
+    "fnr": 0.056
   },
   "tp_face_only": [
+    "fixture-slop-02-blue-purple-gradient-inter",
     "fixture-slop-07-centered-emoji-sections",
     "fixture-slop-09-tailwind-indigo-buttons",
     "fixture-slop-11-pricing-three-tiers"
@@ -307,8 +308,7 @@
       "target": "evals/taste/fixtures/slop/02-blue-purple-gradient-inter.html",
       "outcome": "TP",
       "tells_fired": [
-        "default-display-face",
-        "indigo-violet-gradient"
+        "default-display-face"
       ],
       "viewports": [
         {
@@ -320,11 +320,6 @@
               "level": "warn",
               "message": "display face resolves to \"Inter\" — the safe-font tell (computed, after font fallback)",
               "tell": "default-display-face"
-            },
-            {
-              "level": "warn",
-              "message": "indigo→violet gradient on header.top — the canonical AI tell",
-              "tell": "indigo-violet-gradient"
             }
           ],
           "other_findings": [],
@@ -340,11 +335,6 @@
               "level": "warn",
               "message": "display face resolves to \"Inter\" — the safe-font tell (computed, after font fallback)",
               "tell": "default-display-face"
-            },
-            {
-              "level": "warn",
-              "message": "indigo→violet gradient on header.top — the canonical AI tell",
-              "tell": "indigo-violet-gradient"
             }
           ],
           "other_findings": [],
@@ -1198,72 +1188,6 @@
       ]
     },
     {
-      "id": "fixture-slop-19-exhibit-marker-abuse",
-      "label": "slop",
-      "group": "authored",
-      "kind": "authored-fixture",
-      "target": "evals/taste/fixtures/slop/19-exhibit-marker-abuse.html",
-      "outcome": "TP",
-      "tells_fired": [
-        "uniform-card-grid",
-        "default-display-face"
-      ],
-      "viewports": [
-        {
-          "viewport": "desktop",
-          "width": 1280,
-          "verdict": "REVIEW WARNS",
-          "tells": [
-            {
-              "level": "warn",
-              "message": "uniform card grid: 3× identical div.card in div.grid (equal size, bordered/rounded — the \"three cards\" tell?)",
-              "tell": "uniform-card-grid"
-            },
-            {
-              "level": "warn",
-              "message": "display face resolves to \"Segoe UI\" — the safe-font tell (computed, after font fallback)",
-              "tell": "default-display-face"
-            }
-          ],
-          "other_findings": [
-            {
-              "level": "warn",
-              "message": "exhibit markers cover 64% of the page (> 25%) — not honored; tells inside them count",
-              "tell": null
-            }
-          ],
-          "notes": [],
-          "asset_errors": []
-        },
-        {
-          "viewport": "mobile",
-          "width": 390,
-          "verdict": "REVIEW WARNS",
-          "tells": [
-            {
-              "level": "warn",
-              "message": "uniform card grid: 3× identical div.card in div.grid (equal size, bordered/rounded — the \"three cards\" tell?)",
-              "tell": "uniform-card-grid"
-            },
-            {
-              "level": "warn",
-              "message": "display face resolves to \"Segoe UI\" — the safe-font tell (computed, after font fallback)",
-              "tell": "default-display-face"
-            }
-          ],
-          "other_findings": [
-            {
-              "level": "warn",
-              "message": "exhibit markers cover 100% of the page (> 25%) — not honored; tells inside them count",
-              "tell": null
-            }
-          ],
-          "notes": [],
-          "asset_errors": []
-        }
-      ]
-    },
-    {
       "id": "repo-demo-after",
       "label": "crafted",
       "group": "repo",
@@ -1411,14 +1335,22 @@
       "group": "repo",
       "kind": "repo-sample",
       "target": "samples/clay/index.html",
-      "outcome": "TN",
-      "tells_fired": [],
+      "outcome": "FP",
+      "tells_fired": [
+        "indigo-violet-gradient"
+      ],
       "viewports": [
         {
           "viewport": "desktop",
           "width": 1280,
           "verdict": "REVIEW WARNS",
-          "tells": [],
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
           "other_findings": [
             {
               "level": "warn",
@@ -1442,7 +1374,6 @@
             }
           ],
           "notes": [
-            "4 exhibit region(s) skipped by tell checks (1% of page): div.sw, div.sw, div.wf, div.slopx",
             "display face resolves to \"Mulish\""
           ],
           "asset_errors": []
@@ -1451,7 +1382,13 @@
           "viewport": "mobile",
           "width": 390,
           "verdict": "REVIEW WARNS",
-          "tells": [],
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
           "other_findings": [
             {
               "level": "warn",
@@ -1475,7 +1412,6 @@
             }
           ],
           "notes": [
-            "4 exhibit region(s) skipped by tell checks (2% of page): div.sw, div.sw, div.wf, div.slopx",
             "display face resolves to \"Mulish\""
           ],
           "asset_errors": []
@@ -1488,14 +1424,22 @@
       "group": "repo",
       "kind": "repo-sample",
       "target": "samples/concrete/index.html",
-      "outcome": "TN",
-      "tells_fired": [],
+      "outcome": "FP",
+      "tells_fired": [
+        "indigo-violet-gradient"
+      ],
       "viewports": [
         {
           "viewport": "desktop",
           "width": 1280,
           "verdict": "REVIEW WARNS",
-          "tells": [],
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
           "other_findings": [
             {
               "level": "warn",
@@ -1519,7 +1463,6 @@
             }
           ],
           "notes": [
-            "4 exhibit region(s) skipped by tell checks (1% of page): div.sw, div.sw, div.wf, div.slopx",
             "display face resolves to \"Grotesk\""
           ],
           "asset_errors": []
@@ -1528,7 +1471,13 @@
           "viewport": "mobile",
           "width": 390,
           "verdict": "REVIEW WARNS",
-          "tells": [],
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
           "other_findings": [
             {
               "level": "warn",
@@ -1552,7 +1501,6 @@
             }
           ],
           "notes": [
-            "4 exhibit region(s) skipped by tell checks (3% of page): div.sw, div.sw, div.wf, div.slopx",
             "display face resolves to \"Grotesk\""
           ],
           "asset_errors": []
@@ -1565,14 +1513,22 @@
       "group": "repo",
       "kind": "repo-sample",
       "target": "samples/copper/index.html",
-      "outcome": "TN",
-      "tells_fired": [],
+      "outcome": "FP",
+      "tells_fired": [
+        "indigo-violet-gradient"
+      ],
       "viewports": [
         {
           "viewport": "desktop",
           "width": 1280,
           "verdict": "REVIEW WARNS",
-          "tells": [],
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
           "other_findings": [
             {
               "level": "warn",
@@ -1596,7 +1552,6 @@
             }
           ],
           "notes": [
-            "4 exhibit region(s) skipped by tell checks (1% of page): div.sw, div.sw, div.wf, div.slopx",
             "display face resolves to \"Red0\""
           ],
           "asset_errors": []
@@ -1605,7 +1560,13 @@
           "viewport": "mobile",
           "width": 390,
           "verdict": "REVIEW WARNS",
-          "tells": [],
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
           "other_findings": [
             {
               "level": "warn",
@@ -1629,7 +1590,6 @@
             }
           ],
           "notes": [
-            "4 exhibit region(s) skipped by tell checks (2% of page): div.sw, div.sw, div.wf, div.slopx",
             "display face resolves to \"Red0\""
           ],
           "asset_errors": []
@@ -1707,14 +1667,22 @@
       "group": "repo",
       "kind": "repo-sample",
       "target": "samples/maximal/index.html",
-      "outcome": "TN",
-      "tells_fired": [],
+      "outcome": "FP",
+      "tells_fired": [
+        "indigo-violet-gradient"
+      ],
       "viewports": [
         {
           "viewport": "desktop",
           "width": 1280,
           "verdict": "REVIEW WARNS",
-          "tells": [],
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
           "other_findings": [
             {
               "level": "warn",
@@ -1738,7 +1706,6 @@
             }
           ],
           "notes": [
-            "4 exhibit region(s) skipped by tell checks (1% of page): div.sw, div.sw, div.wf, div.slopx",
             "display face resolves to \"Bricolage\""
           ],
           "asset_errors": []
@@ -1747,7 +1714,13 @@
           "viewport": "mobile",
           "width": 390,
           "verdict": "REVIEW WARNS",
-          "tells": [],
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
           "other_findings": [
             {
               "level": "warn",
@@ -1771,7 +1744,6 @@
             }
           ],
           "notes": [
-            "4 exhibit region(s) skipped by tell checks (3% of page): div.sw, div.sw, div.wf, div.slopx",
             "display face resolves to \"Bricolage\""
           ],
           "asset_errors": []
@@ -1784,14 +1756,22 @@
       "group": "repo",
       "kind": "repo-sample",
       "target": "samples/swiss/index.html",
-      "outcome": "TN",
-      "tells_fired": [],
+      "outcome": "FP",
+      "tells_fired": [
+        "indigo-violet-gradient"
+      ],
       "viewports": [
         {
           "viewport": "desktop",
           "width": 1280,
           "verdict": "REVIEW WARNS",
-          "tells": [],
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
           "other_findings": [
             {
               "level": "warn",
@@ -1815,7 +1795,6 @@
             }
           ],
           "notes": [
-            "4 exhibit region(s) skipped by tell checks (2% of page): div.sw, div.sw, div.wf, div.slopx",
             "display face resolves to \"Hanken\""
           ],
           "asset_errors": []
@@ -1824,7 +1803,13 @@
           "viewport": "mobile",
           "width": 390,
           "verdict": "REVIEW WARNS",
-          "tells": [],
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
           "other_findings": [
             {
               "level": "warn",
@@ -1848,7 +1833,6 @@
             }
           ],
           "notes": [
-            "4 exhibit region(s) skipped by tell checks (3% of page): div.sw, div.sw, div.wf, div.slopx",
             "display face resolves to \"Hanken\""
           ],
           "asset_errors": []
@@ -1871,7 +1855,6 @@
           "tells": [],
           "other_findings": [],
           "notes": [
-            "4 exhibit region(s) skipped by tell checks (1% of page): div.sw, div.sw, div.wf, div.slopx",
             "display face resolves to \"Georgia\""
           ],
           "asset_errors": []
@@ -1883,7 +1866,6 @@
           "tells": [],
           "other_findings": [],
           "notes": [
-            "4 exhibit region(s) skipped by tell checks (2% of page): div.sw, div.sw, div.wf, div.slopx",
             "display face resolves to \"Georgia\""
           ],
           "asset_errors": []
@@ -1896,14 +1878,22 @@
       "group": "repo",
       "kind": "repo-sample",
       "target": "samples/verge/index.html",
-      "outcome": "TN",
-      "tells_fired": [],
+      "outcome": "FP",
+      "tells_fired": [
+        "indigo-violet-gradient"
+      ],
       "viewports": [
         {
           "viewport": "desktop",
           "width": 1280,
           "verdict": "REVIEW WARNS",
-          "tells": [],
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
           "other_findings": [
             {
               "level": "warn",
@@ -1927,7 +1917,6 @@
             }
           ],
           "notes": [
-            "4 exhibit region(s) skipped by tell checks (1% of page): div.sw, div.sw, div.wf, div.slopx",
             "display face resolves to \"Fraunces\""
           ],
           "asset_errors": []
@@ -1936,7 +1925,13 @@
           "viewport": "mobile",
           "width": 390,
           "verdict": "REVIEW WARNS",
-          "tells": [],
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
           "other_findings": [
             {
               "level": "warn",
@@ -1960,7 +1955,6 @@
             }
           ],
           "notes": [
-            "4 exhibit region(s) skipped by tell checks (2% of page): div.sw, div.sw, div.wf, div.slopx",
             "display face resolves to \"Fraunces\""
           ],
           "asset_errors": []

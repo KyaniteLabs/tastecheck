@@ -6,17 +6,23 @@ Detector: `skills/tastecheck-pass/assets/gate-audit.js` (surface tells only). La
 
 | slice | cases | TP | FN | TN | FP | recall | precision | FPR | FNR |
 |---|---|---|---|---|---|---|---|---|---|
-| overall | 36 | 19 | 1 | 16 | 0 | 95.0% | 100.0% | 0.0% | 5.0% |
-| repo-sourced | 11 | 1 | 0 | 10 | 0 | 100.0% | 100.0% | 0.0% | 0.0% |
-| authored | 25 | 18 | 1 | 6 | 0 | 94.7% | 100.0% | 0.0% | 5.3% |
+| overall | 35 | 18 | 1 | 10 | 6 | 94.7% | 75.0% | 37.5% | 5.3% |
+| repo-sourced | 11 | 1 | 0 | 4 | 6 | 100.0% | 14.3% | 60.0% | 0.0% |
+| authored | 24 | 17 | 1 | 6 | 0 | 94.4% | 100.0% | 0.0% | 5.6% |
 
 Browser: chromium 141.0.7390.37. Viewports: 1280x800 and 390x844.
 
-Caught ONLY by the default-display-face tell (no structural or gradient tell): 3 of 19 true positives - `fixture-slop-07-centered-emoji-sections`, `fixture-slop-09-tailwind-indigo-buttons`, `fixture-slop-11-pricing-three-tiers`.
+Caught ONLY by the default-display-face tell (no structural or gradient tell): 4 of 18 true positives - `fixture-slop-02-blue-purple-gradient-inter`, `fixture-slop-07-centered-emoji-sections`, `fixture-slop-09-tailwind-indigo-buttons`, `fixture-slop-11-pricing-three-tiers`.
 
 ## Misses and false alarms
 
 - **FN** `fixture-slop-08-dark-neon-bento` (authored, label slop): no template tell fired (verdicts: CLEAN / CLEAN)
+- **FP** `repo-sample-clay` (repo, label crafted): tells fired: indigo-violet-gradient
+- **FP** `repo-sample-concrete` (repo, label crafted): tells fired: indigo-violet-gradient
+- **FP** `repo-sample-copper` (repo, label crafted): tells fired: indigo-violet-gradient
+- **FP** `repo-sample-maximal` (repo, label crafted): tells fired: indigo-violet-gradient
+- **FP** `repo-sample-swiss` (repo, label crafted): tells fired: indigo-violet-gradient
+- **FP** `repo-sample-verge` (repo, label crafted): tells fired: indigo-violet-gradient
 
 ## Per-case table
 
@@ -29,7 +35,7 @@ Caught ONLY by the default-display-face tell (no structural or gradient tell): 3
 | fixture-crafted-c5-bakery-by-hour | authored | crafted | TN | CLEAN | CLEAN | - |
 | fixture-crafted-c6-print-shop-zine | authored | crafted | TN | CLEAN | CLEAN | - |
 | fixture-slop-01-indigo-violet-hero | authored | slop | TP | REVIEW WARNS | REVIEW WARNS | default-display-face, indigo-violet-gradient |
-| fixture-slop-02-blue-purple-gradient-inter | authored | slop | TP | REVIEW WARNS | REVIEW WARNS | default-display-face, indigo-violet-gradient |
+| fixture-slop-02-blue-purple-gradient-inter | authored | slop | TP | REVIEW WARNS | REVIEW WARNS | default-display-face |
 | fixture-slop-03-three-feature-cards | authored | slop | TP | REVIEW WARNS | REVIEW WARNS | uniform-card-grid, default-display-face |
 | fixture-slop-04-stat-band | authored | slop | TP | REVIEW WARNS | REVIEW WARNS | stat-counter-band, default-display-face |
 | fixture-slop-05-pill-ctas | authored | slop | TP | REVIEW WARNS | REVIEW WARNS | default-display-face, pill-text-cta |
@@ -46,18 +52,17 @@ Caught ONLY by the default-display-face tell (no structural or gradient tell): 3
 | fixture-slop-16-saas-footer-newsletter | authored | slop | TP | REVIEW WARNS | REVIEW WARNS | default-display-face, pill-text-cta |
 | fixture-slop-17-ai-sparkle-glow | authored | slop | TP | REVIEW WARNS | REVIEW WARNS | default-display-face, indigo-violet-gradient |
 | fixture-slop-18-admin-kpi-cards | authored | slop | TP | REVIEW WARNS | REVIEW WARNS | uniform-card-grid, stat-counter-band, default-display-face |
-| fixture-slop-19-exhibit-marker-abuse | authored | slop | TP | REVIEW WARNS | REVIEW WARNS | uniform-card-grid, default-display-face |
 | repo-demo-after | repo | crafted | TN | CLEAN | CLEAN | - |
 | repo-demo-before | repo | slop | TP | REVIEW WARNS | REVIEW WARNS | uniform-card-grid, default-display-face, pill-text-cta, indigo-violet-gradient |
 | repo-landing-index | repo | crafted | TN | CLEAN | CLEAN | - |
-| repo-sample-clay | repo | crafted | TN | REVIEW WARNS | REVIEW WARNS | - |
-| repo-sample-concrete | repo | crafted | TN | REVIEW WARNS | REVIEW WARNS | - |
-| repo-sample-copper | repo | crafted | TN | REVIEW WARNS | REVIEW WARNS | - |
+| repo-sample-clay | repo | crafted | FP | REVIEW WARNS | REVIEW WARNS | indigo-violet-gradient |
+| repo-sample-concrete | repo | crafted | FP | REVIEW WARNS | REVIEW WARNS | indigo-violet-gradient |
+| repo-sample-copper | repo | crafted | FP | REVIEW WARNS | REVIEW WARNS | indigo-violet-gradient |
 | repo-sample-dispatch | repo | crafted | TN | REVIEW WARNS | REVIEW WARNS | - |
-| repo-sample-maximal | repo | crafted | TN | REVIEW WARNS | REVIEW WARNS | - |
-| repo-sample-swiss | repo | crafted | TN | REVIEW WARNS | REVIEW WARNS | - |
+| repo-sample-maximal | repo | crafted | FP | REVIEW WARNS | REVIEW WARNS | indigo-violet-gradient |
+| repo-sample-swiss | repo | crafted | FP | REVIEW WARNS | REVIEW WARNS | indigo-violet-gradient |
 | repo-sample-tasteroll | repo | crafted | TN | CLEAN | CLEAN | - |
-| repo-sample-verge | repo | crafted | TN | REVIEW WARNS | REVIEW WARNS | - |
+| repo-sample-verge | repo | crafted | FP | REVIEW WARNS | REVIEW WARNS | indigo-violet-gradient |
 
 ## Findings detail (template tells)
 
@@ -68,9 +73,7 @@ Caught ONLY by the default-display-face tell (no structural or gradient tell): 3
   - mobile: WARN indigo→violet gradient on header.hero — the canonical AI tell
 - `fixture-slop-02-blue-purple-gradient-inter`
   - desktop: WARN display face resolves to "Inter" — the safe-font tell (computed, after font fallback)
-  - desktop: WARN indigo→violet gradient on header.top — the canonical AI tell
   - mobile: WARN display face resolves to "Inter" — the safe-font tell (computed, after font fallback)
-  - mobile: WARN indigo→violet gradient on header.top — the canonical AI tell
 - `fixture-slop-03-three-feature-cards`
   - desktop: WARN uniform card grid: 3× identical div.card in div.grid (equal size, bordered/rounded — the "three cards" tell?)
   - desktop: WARN display face resolves to "Segoe UI" — the safe-font tell (computed, after font fallback)
@@ -146,11 +149,6 @@ Caught ONLY by the default-display-face tell (no structural or gradient tell): 3
   - mobile: WARN uniform card grid: 4× identical div.kc in div.k (equal size, bordered/rounded — the "three cards" tell?)
   - mobile: WARN stat-counter band: 3 numeric callouts in div.k (the SaaS social-proof tell?)
   - mobile: WARN display face resolves to "Roboto" — the safe-font tell (computed, after font fallback)
-- `fixture-slop-19-exhibit-marker-abuse`
-  - desktop: WARN uniform card grid: 3× identical div.card in div.grid (equal size, bordered/rounded — the "three cards" tell?)
-  - desktop: WARN display face resolves to "Segoe UI" — the safe-font tell (computed, after font fallback)
-  - mobile: WARN uniform card grid: 3× identical div.card in div.grid (equal size, bordered/rounded — the "three cards" tell?)
-  - mobile: WARN display face resolves to "Segoe UI" — the safe-font tell (computed, after font fallback)
 - `repo-demo-before`
   - desktop: WARN uniform card grid: 3× identical div.card in div.cards (equal size, bordered/rounded — the "three cards" tell?)
   - desktop: WARN display face resolves to "Inter" — the safe-font tell (computed, after font fallback)
@@ -160,11 +158,27 @@ Caught ONLY by the default-display-face tell (no structural or gradient tell): 3
   - mobile: WARN display face resolves to "Inter" — the safe-font tell (computed, after font fallback)
   - mobile: WARN pill text CTA: "Get Started" (button.cta, radius 9999px on 46px)
   - mobile: WARN indigo→violet gradient on div.hero — the canonical AI tell
+- `repo-sample-clay`
+  - desktop: WARN indigo→violet gradient on div.sw — the canonical AI tell
+  - mobile: WARN indigo→violet gradient on div.sw — the canonical AI tell
+- `repo-sample-concrete`
+  - desktop: WARN indigo→violet gradient on div.sw — the canonical AI tell
+  - mobile: WARN indigo→violet gradient on div.sw — the canonical AI tell
+- `repo-sample-copper`
+  - desktop: WARN indigo→violet gradient on div.sw — the canonical AI tell
+  - mobile: WARN indigo→violet gradient on div.sw — the canonical AI tell
+- `repo-sample-maximal`
+  - desktop: WARN indigo→violet gradient on div.sw — the canonical AI tell
+  - mobile: WARN indigo→violet gradient on div.sw — the canonical AI tell
+- `repo-sample-swiss`
+  - desktop: WARN indigo→violet gradient on div.sw — the canonical AI tell
+  - mobile: WARN indigo→violet gradient on div.sw — the canonical AI tell
+- `repo-sample-verge`
+  - desktop: WARN indigo→violet gradient on div.sw — the canonical AI tell
+  - mobile: WARN indigo→violet gradient on div.sw — the canonical AI tell
 
 ## Non-tell findings (cold-load state; ignored for scoring)
 
-- `fixture-slop-19-exhibit-marker-abuse` desktop: WARN exhibit markers cover 64% of the page (> 25%) — not honored; tells inside them count
-- `fixture-slop-19-exhibit-marker-abuse` mobile: WARN exhibit markers cover 100% of the page (> 25%) — not honored; tells inside them count
 - `repo-sample-clay` desktop: WARN content at opacity 0 on load (unrevealed?): div.wrap — "nineteen skills What you get. All of it. Each skil…"
 - `repo-sample-clay` desktop: WARN content at opacity 0 on load (unrevealed?): div.wrap — "how it works It interviews you first. No menus. It…"
 - `repo-sample-clay` desktop: WARN content at opacity 0 on load (unrevealed?): div.wrap — "what it gently refuses Three planes of slop. All o…"

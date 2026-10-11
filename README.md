@@ -86,6 +86,8 @@ The gate has a labeled test corpus (`evals/corpus/`) and CI fails any change tha
 
 Read that number carefully. Only 2 of the 17 cases are visual-taste tells. The other 15 test gate integrity: forged or stale receipts, ledger tampering, leak detection. So this measures whether the gate can be fooled, not whether it has good design judgment. The one miss is a falsified but internally consistent observation, which cannot be caught offline.
 
+There is also a separate visual corpus (`evals/taste/`, 36 pages: 20 generic AI-default, 16 deliberately designed). The browser tell detector flags 19 of the 20 generic pages and none of the 16 designed ones. It counts surface tells such as default fonts, indigo-violet gradients, identical card grids, stat bands and pill buttons. It does not judge composition or brand fit. Most pages were written or marked by us, so treat this as a regression floor, not proof of design quality. Its first run flagged 6 of our own gallery pages (they show a purple swatch as an example of what they reject); we fixed that and kept the before-and-after record in `evals/taste/TASTE-CORPUS.md`.
+
 "Effectiveness BLOCKED" means we have not yet shown, with a controlled comparison, that using TasteCheck produces better interfaces. An earlier attempt did not clear its threshold, and we do not claim a result until one does. Also not measured: agreement between different models or reviewers.
 
 `npm test` checks repository contracts, install, links and verification plumbing. It is engineering evidence, not an effectiveness claim.
