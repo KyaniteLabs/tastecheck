@@ -126,4 +126,4 @@ Live: [landing page](https://kyanitelabs.github.io/tastecheck/), [gallery](https
 
 MIT. See [`LICENSE`](LICENSE). Contributions: [`CONTRIBUTING.md`](CONTRIBUTING.md). Security reports: [`SECURITY.md`](SECURITY.md).
 
-GitHub ([KyaniteLabs/tastecheck](https://github.com/KyaniteLabs/tastecheck)) is the canonical home. A mirror exists at [Forgejo](https://forgejo.example.invalid/KyaniteLabs/tastecheck).
+GitHub ([KyaniteLabs/tastecheck](https://github.com/KyaniteLabs/tastecheck)) is the home for code, [issues](https://github.com/KyaniteLabs/tastecheck/issues) and pull requests.
