@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "taste-case",
+  "id": "repo-demo-before",
+  "label": "slop",
+  "source_group": "repo",
+  "provenance": {
+    "kind": "repo-demo",
+    "path": "demos/example-build/before.html",
+    "why_this_label": "The documented generic \"before\": its own header comment says \"unguided AI default: purple gradient, Inter, centered hero, 3 emoji cards, pill button, shadow-2xl\". Hand-typed by maintainers to represent typical no-skills output."
+  },
+  "target": "demos/example-build/before.html",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ]
+}

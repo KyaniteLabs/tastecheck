@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "taste-case",
+  "id": "fixture-crafted-c5-bakery-by-hour",
+  "label": "crafted",
+  "source_group": "authored",
+  "provenance": {
+    "kind": "authored-fixture",
+    "description": "Authored for this corpus by the TasteCheck maintainers (this session) as a brief-specific design with locally licensed fonts (FONTS-LICENSES.md). Written without consulting gate-audit.js output, then run unmodified.",
+    "why_this_label": "Redaction + Mulish, half-and-half split organised by time of day (the bakery constraint), ruled schedule instead of feature cards. Label is the author's design intent; it is not an independent human rating."
+  },
+  "target": "evals/taste/fixtures/crafted/c5-bakery-by-hour.html",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ]
+}

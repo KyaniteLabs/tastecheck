@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "taste-case",
+  "id": "repo-sample-swiss",
+  "label": "crafted",
+  "source_group": "repo",
+  "provenance": {
+    "kind": "repo-sample",
+    "path": "samples/swiss/index.html",
+    "why_this_label": "Swiss: grid-and-type-led gallery sample. Committed gallery sample built to a named design brief with its own type pairing and layout (see samples/swiss.case-study.md where present); authored by the repo maintainers as the intended anti-slop reference. Label is the maintainers' intent, not a third-party rating."
+  },
+  "target": "samples/swiss/index.html",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ]
+}
