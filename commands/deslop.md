@@ -13,3 +13,6 @@ what belongs there is incomplete.
 Target: $ARGUMENTS (if empty, apply to the current file / most recent work in context).
 
 Run the skill's self-check before reporting.
+
+This is step 2 of 3. If there is no `DESIGN-SYSTEM.md` to judge against, suggest `/designsystem`
+first. When the repairs land, the next step is `/tastecheckpass`.

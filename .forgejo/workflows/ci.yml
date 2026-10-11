@@ -13,6 +13,10 @@ jobs:
         run: npm test
       - name: Dogfood gate — calibration rates must not regress vs baseline
         run: npm run calibrate:check
+      - name: Browser checks (skip with a notice when the runner has no Chrome)
+        run: |
+          npm run test:cdp-qa
+          npm run test:dogfood
       - name: Validate HTML
         run: |
           npx --yes html-validate "*.html" "**/*.html" || true
