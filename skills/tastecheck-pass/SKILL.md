@@ -39,8 +39,8 @@ Three laws, always:
 
 1. **Load the real artifact cold.** Fresh profile or incognito, no clicks, no scrolls
    first — cold-load state is a claim that must be checked, not assumed. The artifact
-   is what renders, not what the repo says. Use `node assets/cdp-qa.mjs <url> <out-dir>`
-   (headless Chrome, temp profile, writes evidence.json + screenshots) or a real
+   is what renders, not what the repo says. Use `node assets/cdp-qa.mjs <url-or-file>`
+   (Node 22+, local Chrome; runs step 3's probes, writes evidence.json) or a real
    browser; curl is not rendered evidence.
 2. **Gestalt before elements.** Before any probe, verdict the WHOLE product in one
    look: does it read as itself (a point of view, a register, one hand) or as

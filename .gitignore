@@ -9,3 +9,9 @@ node_modules/
 evals/replays/
 evals/receipts/v1/contracts/sanitizer.json
 evals/receipts/v1/contracts/sanitizer-fixtures.json
+.checkyourself/
+reports-tmp/
+.superpowers/
+*.bak*
+*.key
+.env*

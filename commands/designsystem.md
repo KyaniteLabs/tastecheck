@@ -10,6 +10,10 @@ the questions that would materially change the build. Reflect each decision as i
 Finish with the one-line direction, `DESIGN-SYSTEM.md`, explicit refusals, semantic-token
 handoff, readiness state, and first build action.
 
+This is step 1 of 3. Once UI exists, the next step is `/deslop` to remove generic tells,
+then `/tastecheckpass` before shipping. Pull in the specialist skills (type, color, spacing,
+states, forms, motion) as the build needs them; you don't need to call them by hand.
+
 Context: $ARGUMENTS
 
 <!-- contract:v1:start -->

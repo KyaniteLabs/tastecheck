@@ -1,116 +1,121 @@
-# Launch kit — TasteCheck
+# Launch kit: TasteCheck
 
 <!-- release-facts:v1:start -->
 Release inventory: v1.7.0 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
 <!-- release-facts:v1:end -->
 
-Public copy for the 20-skill pack. Attach `docs/hero/before-after.png`. Before posting,
-replace placeholders, verify links, and keep claims within the evidence boundary in
-`docs/VERIFICATION.md`.
+Public copy for launch. One promise runs through every post: **your AI-built UI
+stops looking AI-built.** The before/after image carries it; attach
+`docs/hero/before-after.png` to every post that allows an image. Do not lead
+with feature counts. Before posting, verify links and keep claims inside the
+evidence boundary in `docs/VERIFICATION.md` (no claim that TasteCheck is proven
+to improve designs; effectiveness is still BLOCKED).
 
-The durable story is not “purple is bad.” It is: **an agent cannot preserve design intent
-that was never made explicit. TasteCheck turns that intent into a build contract.**
+The durable story: an agent cannot keep design intent that was never made
+explicit. TasteCheck makes it explicit, removes the generic tells, then checks
+the result.
 
 ## X / Twitter
 
-**Post 1 — image**
+**Post 1 (image)**
 
-> Same product story through 8 committed design systems, with different structures, type systems, color systems, and rhythms.
+> Your AI-built UI stops looking AI-built.
 >
-> I built TasteCheck because coding agents need design decisions they can carry through a
-> build—not another prompt that says “make it polished.”
+> Left: what the agent made by default. Right: same product, after a short
+> design interview and a deslop pass.
 >
 > [attach `docs/hero/before-after.png`]
 
-**Post 2 — the interaction**
+**Post 2 (how)**
 
-> TasteCheck starts before the first component.
+> Three commands:
+> /designsystem  interviews you, writes DESIGN-SYSTEM.md
+> /deslop        removes the purple-gradient, pill-button, card-grid look
+> /tastecheckpass  checks the real page, says SHIP or HOLD with evidence
 >
-> “This product is a fast operational instrument, so I recommend compact editorial
-> hierarchy with one high-signal accent. Dense and immediate, or paced and explanatory?”
->
-> The answer becomes `DESIGN-SYSTEM.md`, semantic tokens, structural rules, and refusals.
+> Plain Markdown skills. MIT.
 
-**Post 3 — the system**
+**Post 3 (try it)**
 
-> The specialist skills carry that decision through type, color, spacing, themes,
-> responsive layout, states, forms, motion, imagery, data viz, copy, a11y, i18n, and the
-> final ship gate.
+> Try it on your own site: npx @puenteworks/tastecheck audit https://your-site
+> <!-- verify audit command shipped before posting -->
 >
-> Twenty skills total. Twenty canonical slash commands plus one approved alias. Plain Markdown. MIT.
-
-**Post 4 — install**
-
-> Works with agents that can read Markdown skills. The installer creates a canonical
-> `~/.agents/skills` path and links supported agent homes it detects.
->
-> `git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh`
->
+> Install: git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh
 > Repo: https://github.com/KyaniteLabs/tastecheck
 
-## Hacker News — Show HN
+**Post 4 (honest limits)**
+
+> What we have measured: the ship gate's own error counts on a 17-case test
+> set. What we have not: that it makes designs better. Only 2 of the 17 cases
+> are visual-taste tells; the rest test whether the gate can be fooled.
+> Numbers and limits are in the README.
+
+## Hacker News: Show HN
 
 **Title**
 
-> Show HN: TasteCheck – design decisions and ship gates for coding agents
+> Show HN: Make AI-built UIs stop looking AI-built (skills for coding agents)
 
 **First comment**
 
-> I kept seeing a predictable failure in agent-built frontends: the brief would specify
-> the product but leave hierarchy, density, type, color, and structure open. The agent had
-> to fill those gaps, and unrelated products converged on familiar defaults.
+> Coding agents build interfaces that all look alike: purple gradients, pill
+> buttons, centered heroes, card grids. The brief usually says what the product
+> is and leaves hierarchy, density, type and color open, so the agent fills the
+> gaps with the same defaults.
 >
-> TasteCheck moves that work upstream. Its design-system interview reads the supplied
-> evidence, recommends a concrete direction, and asks only the questions that materially
-> change the build. It writes a source-controlled `DESIGN-SYSTEM.md` with semantic tokens,
-> structure, refusals, accessibility constraints, and the next implementation move.
+> TasteCheck is a set of Markdown skills with three entry points. /designsystem
+> runs a short interview and writes a DESIGN-SYSTEM.md the agent builds against.
+> /deslop finds and removes the generic tells in existing UI. /tastecheckpass
+> loads the real rendered page and returns SHIP or HOLD, with one line of
+> evidence per check. It fails closed: a check that did not run is a HOLD, not a
+> pass.
 >
-> The other skills each own one craft concern: typography, color, spacing, themes,
-> responsive layout, component states, forms, empty states, motion, art direction, data
-> visualization, copy, accessibility, internationalization, existing-site repair, and a
-> fail-closed release gate. They share one token vocabulary and handoff order.
+> Try it on your own site: npx @puenteworks/tastecheck audit https://your-site
+> <!-- verify audit command shipped before posting -->
 >
-> The pack is plain Markdown, MIT licensed, and currently contains 20 skills plus 20 canonical
-> slash commands and one approved alias. `npm test` verifies repository contracts, installation, links, and demo
-> behavior; those checks are engineering evidence, not a universal effectiveness claim.
+> What we have and have not measured: the gate has a 17-case labeled test set
+> (12 true positives, 1 false negative, 4 true negatives, 0 false positives),
+> checked in CI. Only 2 of those cases are visual-taste tells; the other 15 test
+> gate integrity (forged receipts, tampered ledgers, leaks). So it shows the
+> gate is hard to fool, not that it has good design taste. We have not yet shown
+> in a controlled comparison that it works as intended.
 >
-> Repo: https://github.com/KyaniteLabs/tastecheck
+> MIT, repo: https://github.com/KyaniteLabs/tastecheck
 >
-> I’d especially value feedback on the interview output and whether the handoffs remain
-> clear across different coding agents.
+> Feedback I would most like: which of the before/after changes do you think are
+> real improvements, and which are just a different kind of sameness?
 
-## Reddit — r/webdev / agent communities
+## Reddit: r/webdev and agent communities
 
 **Title**
 
-> I built a design-quality system for coding agents, from brief to ship gate
+> I made a set of skills so AI-generated UIs stop looking AI-generated
 
 **Body**
 
-> A vague design brief creates a hidden problem: the agent still has to choose hierarchy,
-> density, type, color, structure, component behavior, and motion. If those decisions stay
-> implicit, familiar defaults accumulate even when each one looks reasonable alone.
->
-> TasteCheck is my attempt to make that decision chain explicit. It starts with a short,
-> opinionated design-system interview, writes the result to `DESIGN-SYSTEM.md`, and hands
-> the same decisions through 20 connected frontend skills. The final skill returns
-> **SHIP** or **HOLD** with measured evidence and a repair path.
+> Agent-built frontends converge on the same look because the brief leaves the
+> design decisions open. TasteCheck asks those questions first (a short
+> interview that writes DESIGN-SYSTEM.md), strips the usual tells from existing
+> UI (/deslop), and then checks the real page and says SHIP or HOLD with
+> evidence (/tastecheckpass).
 >
 > [attach `docs/hero/before-after.png`]
 >
-> It is plain Markdown, MIT licensed, and works with coding agents that can load or read
-> skill files. The repo includes 20 canonical slash commands plus one alias, an installer,
-> local verification, and eight browser-rendered systems built from the same product story.
+> Try it on your own site: npx @puenteworks/tastecheck audit https://your-site
+> <!-- verify audit command shipped before posting -->
+>
+> Plain Markdown, MIT, works with agents that can read skill files. Limits: the
+> gate's own error rate is measured on a small test set that mostly tests gate
+> integrity, and we have not yet shown it improves designs in a controlled test.
 >
 > Repo: https://github.com/KyaniteLabs/tastecheck
 >
-> I’m looking for concrete feedback: where does the interview still feel abstract, and
-> which handoff would you trust least on a real project?
+> Where does the before/after still look generic to you?
 
 ## Posting checklist
 
-- Use the before-and-after image; verify the gallery and repo links immediately before posting.
-- Stagger channels so feedback from one can improve the next post.
-- Answer questions with the brief → artifact → implementation → ship-gate chain.
-- Describe `npm test` as repository verification, not proof of universal design improvement.
-- Capture recurring objections as product inputs; do not argue with taste preferences.
+- Use the before/after image; verify the repo and gallery links right before posting.
+- Confirm the audit command works (see the HTML comments above) or delete those lines.
+- Stagger channels so feedback from one improves the next.
+- Describe `npm test` as repository verification, not proof of better design.
+- Treat recurring objections as product input; do not argue with taste preferences.

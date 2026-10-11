@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark light">
   <meta name="theme-color" content="#171815">
-  <meta name="description" content="TasteCheck gives developers building with AI coding agents a real design system before code, craft skills during the build, and a clear SHIP or HOLD call before release.">
-  <title>TasteCheck — AI-built interfaces, designed with intention.</title>
+  <meta name="description" content="Your AI-built UI stops looking AI-built. TasteCheck runs a design interview before your agent writes code, adds 20 craft skills, and ends with a SHIP or HOLD gate that checks the rendered page.">
+  <title>TasteCheck — Your AI-built UI stops looking AI-built</title>
+  <link rel="preload" href="site/fonts/redaction-0-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="site/fonts/archivo-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23e5ef73'/%3E%3Cpath d='M7 17l6 6L25 9' fill='none' stroke='%23171815' stroke-width='4'/%3E%3C/svg%3E">
   <script type="application/ld+json">
     {
@@ -20,7 +22,14 @@
   <style>
     /* Evidence edition. DESIGN-NOTES.md owns the inferred system and measurements.
        Bounded sRGB primitives; measured OKLCH equivalents are in the notes.
-       There is no out-of-gamut expansion or external font dependency. */
+       Fonts are the bundled site/fonts files (see FONTS-LICENSES.md); no external font dependency. */
+    @font-face { font-family: "Redaction"; src: url("site/fonts/redaction-0-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+    @font-face { font-family: "Redaction"; src: url("site/fonts/redaction-0-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: "Archivo"; src: url("site/fonts/archivo-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: "Archivo"; src: url("site/fonts/archivo-600.woff2") format("woff2"); font-weight: 600 700; font-style: normal; font-display: swap; }
+    /* Metric-matched fallbacks keep the swap from shifting layout. */
+    @font-face { font-family: "Redaction Fallback"; src: local("Georgia"), local("Times New Roman"); size-adjust: 96%; ascent-override: 92%; descent-override: 28%; line-gap-override: 0%; }
+    @font-face { font-family: "Archivo Fallback"; src: local("Arial"), local("Helvetica Neue"), local("Liberation Sans"); size-adjust: 104%; ascent-override: 88%; descent-override: 22%; line-gap-override: 0%; }
     :root {
       color-scheme: dark;
       --neutral-950: oklch(20.675% .00601 121.96); --neutral-900: oklch(25.605% .01135 122.21);
@@ -57,8 +66,8 @@
       --input-border: oklch(66.414% .03401 121.09);
       --error-ink: oklch(95.240% .01325 106.65);
       --success-ink: oklch(91.992% .14819 113.11);
-      --font-body: Arial, "Helvetica Neue", Helvetica, sans-serif;
-      --font-display: Arial, "Helvetica Neue", Helvetica, sans-serif;
+      --font-body: "Archivo", "Archivo Fallback", Arial, sans-serif;
+      --font-display: "Redaction", "Redaction Fallback", Georgia, serif;
       --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
       --step--1: .875rem; --step-0: 1rem;
       --step-1: clamp(1.125rem, 1.05rem + .3vw, 1.3125rem);
@@ -115,9 +124,9 @@
     body { margin: 0; background: var(--color-bg); color: var(--color-text); font: var(--step-0)/1.6 var(--font-body); }
     h1, h2, h3, p, figure, ol, ul, dl, dd, pre { margin: 0; }
     h1, h2, h3 { font-family: var(--font-display); font-weight: 700; text-wrap: balance; }
-    h1 { font-size: var(--step-5); line-height: 1.02; letter-spacing: -.055em; }
-    h2 { font-size: var(--step-4); line-height: 1.08; letter-spacing: -.045em; }
-    h3 { font-size: var(--step-2); line-height: 1.2; letter-spacing: -.025em; }
+    h1 { font-size: clamp(2.75rem, 1.4rem + 4.2vw, 4.75rem); line-height: 1.02; letter-spacing: -.02em; }
+    h2 { font-size: var(--step-4); line-height: 1.08; letter-spacing: -.015em; }
+    h3 { font-size: var(--step-2); line-height: 1.2; letter-spacing: 0; }
     p { max-inline-size: var(--measure); text-wrap: pretty; }
     a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .22em; display: inline-block; min-block-size: 1.5rem; padding-block: .125rem; }
     a:visited { color: var(--color-text-muted); }
@@ -140,16 +149,27 @@
     .header-tools { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: var(--space-5); }
     .theme-controls { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); color: var(--color-text-muted); font: var(--step--1)/1.5 var(--font-mono); }
     .theme-controls span { margin-inline-end: var(--space-1); }
-    .theme-controls button { min-block-size: 2.25rem; padding: var(--space-2) var(--space-3); border: 1px solid var(--color-control-border); background: transparent; color: var(--color-text); font: inherit; cursor: pointer; }
+    .theme-controls button { border: 1px solid var(--color-control-border); background: transparent; color: var(--color-text); font: inherit; cursor: pointer; }
     .theme-controls button[aria-pressed="true"] { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-primary-ink); }
     .menu a, .footer a { display: inline-flex; align-items: center; min-block-size: 2.75rem; }
     .menu a { text-decoration: none; }
     .menu a:last-child { color: var(--color-primary); gap: var(--space-2); }
-    .hero { padding-block: var(--space-7) var(--space-8); }
-    .edition { display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; color: var(--color-text-muted); margin-block-end: var(--space-7); }
+    .theme-controls { gap: 0; }
+    .theme-controls > span { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    .theme-controls button + button { margin-inline-start: -1px; }
+    .theme-controls button { min-block-size: 2.25rem; padding: var(--space-1) var(--space-2); font-size: .8125rem; }
+    .header-tools { display: contents; }
+    .masthead { gap: var(--space-2) var(--space-4); padding-block: var(--space-3); }
+    .wordmark { order: 1; min-block-size: 2.5rem; }
+    .theme-controls { order: 2; }
+    .menu { order: 3; flex: 1 0 100%; flex-wrap: nowrap; overflow-x: auto; gap: var(--space-5); scrollbar-width: none; }
+    .menu a { white-space: nowrap; min-block-size: 2.5rem; }
+    .hero { padding-block: var(--space-5) var(--space-8); }
+    .edition { display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; color: var(--color-text-muted); margin-block-end: var(--space-5); }
     .hero-layout { display: grid; gap: var(--space-7); align-items: end; }
     .hero-copy { min-inline-size: 0; }
     .hero h1 span { display: block; }
+    .hero h1 .nb { display: inline; white-space: nowrap; }
     .hero h1 .accent { color: var(--color-primary); }
     .hero-intro { margin-block-start: var(--space-6); max-inline-size: 46ch; font-size: var(--step-1); color: var(--color-text-muted); }
     .actions { display: flex; align-items: center; gap: var(--space-5); flex-wrap: wrap; margin-block-start: var(--space-6); }
@@ -172,6 +192,9 @@
     .status-label .d { display: inline-block; inline-size: 8px; block-size: 8px; border-radius: 50%; background: #c47b44; vertical-align: middle; margin-inline-end: .4em; }
     .status-label .pend { background: var(--color-text-muted); }
     .status-label .aa { color: #e5484d; }
+    .shot { padding-block: var(--space-7) 0; }
+    .shot img { display: block; inline-size: 100%; block-size: auto; border: 1px solid var(--color-border); }
+    .shot figcaption { margin-block-start: var(--space-3); color: var(--color-text-muted); font-size: var(--step--1); }
     .chapter { padding-block: var(--space-section); }
     .section-head { display: grid; gap: var(--space-5); margin-block-end: var(--space-7); }
     .section-head .eyebrow { color: var(--color-text-muted); }
@@ -221,10 +244,14 @@
     .skill-group a { display: inline-flex; align-items: center; min-block-size: 2.75rem; font: var(--step--1)/1.5 var(--font-mono); overflow-wrap: anywhere; }
     .skill-group li { min-inline-size: 0; max-inline-size: 100%; }
     .gallery-link { border-block-start: 1px solid var(--color-border); padding-block-start: var(--space-5); }
-    .contract-rail { display: grid; gap: var(--space-5); margin-block-start: var(--space-7); padding-block-start: var(--space-5); border-block-start: 1px solid var(--color-border); }
-    .contract-demo { min-inline-size: 0; padding: var(--space-5); border: 1px solid var(--color-control-border); }
-    .contract-demo h3 { font-size: var(--step-1); }
-    .contract-demo > p:first-child { color: var(--color-text-muted); }
+    .contract-rail { display: grid; gap: var(--space-6); margin-block-start: var(--space-7); padding-block-start: var(--space-5); border-block-start: 1px solid var(--color-border); }
+    .contract-lead { min-inline-size: 0; padding: var(--space-6); background: var(--color-surface-1); border-inline-start: 4px solid var(--color-primary); display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-5); }
+    .contract-lead h3 { font-size: var(--step-3); line-height: 1.1; max-inline-size: 14ch; }
+    .contract-row { min-inline-size: 0; display: grid; gap: var(--space-2) var(--space-5); align-content: start; padding-block: var(--space-4); border-block-start: 1px solid var(--color-border); }
+    .contract-row h3 { font-size: var(--step-1); line-height: 1.3; font-family: var(--font-body); font-weight: 600; }
+    .contract-row .demo-controls, .contract-row .contract-form { margin-block-start: var(--space-2); }
+    .contract-stack { display: grid; gap: var(--space-5); align-content: start; }
+    .contract-lead .eyebrow, .contract-row .eyebrow { color: var(--color-text-muted); }
     .demo-controls { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); margin-block-start: var(--space-4); }
     .demo-button { min-block-size: 2.75rem; padding: var(--space-2) var(--space-4); border: 1px solid var(--color-control-border); background: transparent; color: var(--color-text); font: var(--step--1)/1.5 var(--font-mono); cursor: pointer; }
     .demo-button:hover, .demo-button:focus-visible { border-color: var(--color-primary); }
@@ -261,6 +288,14 @@
     /* Two readable evidence columns and a compact 16rem trail at 44rem;
        a wider 19rem trail above 64rem. Narrow reading order follows the DOM. */
     @media (min-width:44rem) {
+      .header-tools { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-5); flex-wrap: nowrap; order: 1; }
+      .masthead { padding-block: var(--space-5); flex-wrap: nowrap; }
+      .wordmark { order: 0; }
+      .nb-wide { white-space: nowrap; }
+      .menu { order: 0; flex: 0 1 auto; overflow: visible; }
+      .menu a { min-block-size: 2.75rem; }
+      .theme-controls { order: 0; }
+      .theme-controls button { padding-inline: var(--space-3); }
       .hero-layout { grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 1fr); gap: var(--space-6); }
       .section-head { grid-template-columns: 1fr 1fr; column-gap: var(--space-7); }
       .section-head .eyebrow { grid-column: 1 / -1; }
@@ -270,12 +305,13 @@
       .changes p { grid-column: auto; }
       .how-it-works-layout { grid-template-columns: 1fr 1fr; }
       .skill-group { grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); }
-      .contract-rail { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .contract-rail { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: stretch; }
       .use-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
       .boundary { grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); column-gap: var(--space-6); }
     }
     @media (min-width:64rem) {
-      .edition { margin-block-end: var(--space-8); }
+      .edition { margin-block-end: var(--space-7); }
+      .hero { padding-block-start: var(--space-7); }
       .hero-layout { grid-template-columns: minmax(0, 1.8fr) minmax(19rem, 1fr); gap: var(--space-8); }
       .trail { padding: var(--space-6); }
     }
@@ -289,7 +325,7 @@
     @media (forced-colors:active) {
       :root { --color-bg: Canvas; --color-surface-1: Canvas; --color-text: CanvasText; --color-text-muted: CanvasText; --color-border: CanvasText; --color-control-border: ButtonText; --color-primary: LinkText; --color-primary-hover: LinkText; --color-primary-active: LinkText; --color-primary-ink: Canvas; --focus-ring: Highlight; --button-bg: ButtonFace; --button-ink: ButtonText; --button-hover-bg: ButtonFace; --button-active-bg: ButtonFace; --input-bg: Canvas; --input-ink: CanvasText; --input-border: ButtonText; --status-ink: CanvasText; --chart-line: LinkText; --chart-axis: CanvasText; }
       .trail, .mark, .skip, .theme-controls button[aria-pressed="true"] { background: Canvas; color: CanvasText; border: 1px solid CanvasText; }
-      .button, .theme-controls button, .demo-button, .contract-demo, .install { border-color: ButtonText; }
+      .button, .theme-controls button, .demo-button, .contract-lead, .install { border-color: ButtonText; }
       .contract-form input { background: Canvas; color: CanvasText; }
       a { color: LinkText; }
     }
@@ -322,8 +358,8 @@
       </div>
       <div class="hero-layout">
         <div class="hero-copy">
-          <h1 id="hero-title"><span>AI-built interfaces,</span> <span class="accent">designed</span> <span class="accent">with intention.</span></h1>
-          <p class="hero-intro">TasteCheck helps you set a real design system before your coding agent writes UI. Twenty craft skills keep type, OKLCH color, spacing, states, forms, charts, and motion from falling back to defaults.</p>
+          <h1 id="hero-title"><span class="nb-wide"><span class="nb">Your AI-built</span> UI</span> <span class="accent">stops looking</span> <span class="accent nb">AI-built.</span></h1>
+          <p class="hero-intro">TasteCheck interviews you for a design direction before your agent writes code, gives it 20 craft skills for type, color, spacing, states, and motion, then ends with a SHIP or HOLD gate that checks the rendered page.</p>
           <div class="actions">
             <a class="button" href="#use" data-test="primary-action">Install TasteCheck <span aria-hidden="true">↗</span></a>
             <a class="text-link" href="#how-it-works">See how it works <span aria-hidden="true">↓</span></a>
@@ -355,6 +391,10 @@
 <!-- release-status:v1:end -->
  </p>
     </div>
+    <figure class="shot wrap">
+      <img src="docs/hero/before-after.png" width="2640" height="1562" loading="lazy" decoding="async" alt="Two real renders of the same SaaS landing-page prompt. Before, with no skills: a purple gradient hero with a rocket emoji, a pill button and three emoji cards. After, built from TasteCheck's tokens: a serif headline, indexed numerals, hairline rules and an oxblood accent.">
+      <figcaption>Same prompt, same model, skills off and on. Both panels are real renders, not mockups.</figcaption>
+    </figure>
     <section class="chapter wrap" id="how-it-works" aria-labelledby="problem-title">
       <div class="section-head">
         <p class="eyebrow">01 / The problem</p>
@@ -444,7 +484,7 @@
       </div>
       <div class="gallery-link"><a class="text-link" href="samples/index.html">See the 8 gallery systems <span aria-hidden="true">↗</span></a></div>
       <div class="contract-rail" aria-label="Landing contract demonstrations">
-        <div class="contract-demo">
+        <div class="contract-lead">
           <p class="eyebrow">States</p>
           <h3>Every state gets a place.</h3>
           <div class="demo-controls">
@@ -453,7 +493,8 @@
           </div>
           <p class="demo-status" role="status" aria-live="polite" data-test="state-status">Default state. Activate to inspect loading and disabled.</p>
         </div>
-        <div class="contract-demo">
+        <div class="contract-stack">
+        <div class="contract-row">
           <p class="eyebrow">Forms</p>
           <h3>A good form tells you what to fix.</h3>
           <form class="contract-form" data-test="landing-form" novalidate>
@@ -462,7 +503,7 @@
             <p class="demo-status" id="email-status" role="status" aria-live="polite" data-test="email-status">We’ll check the address when you leave the field.</p>
           </form>
         </div>
-        <div class="contract-demo">
+        <div class="contract-row">
           <p class="eyebrow">Recovery</p>
           <h3>Empty and error states keep the next move visible.</h3>
           <div class="demo-controls">
@@ -471,6 +512,7 @@
             <button class="demo-button" type="button" data-test="retry-list">Retry</button>
           </div>
           <p class="demo-status" role="status" aria-live="polite" data-test="task-list">A preview is ready.</p>
+        </div>
         </div>
       </div>
     </section>

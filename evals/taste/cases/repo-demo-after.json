@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "taste-case",
+  "id": "repo-demo-after",
+  "label": "crafted",
+  "source_group": "repo",
+  "provenance": {
+    "kind": "repo-demo",
+    "path": "demos/example-build/after.html",
+    "why_this_label": "The documented \"after\" of the example build: the same Prep page rebuilt with TasteCheck guidance (see demos/example-build/README.md). Label follows the repo documentation."
+  },
+  "target": "demos/example-build/after.html",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ]
+}
