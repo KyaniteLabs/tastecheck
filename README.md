@@ -93,7 +93,7 @@ npm install @puenteworks/tastecheck
 npx tastecheck --help
 ```
 
-The installer links skills into `~/.agents/skills/` and into any agent skill directories it detects. For Claude Code it can also link the 21 command files (20 commands plus the `/darkmode` alias for `/theming`) into `~/.claude/commands/`. It needs a POSIX shell: on Windows, use WSL or Git Bash for now.
+The installer links skills into `~/.agents/skills/` and into any agent skill directories it detects. For Claude Code it can also link the 21 command files (20 commands plus the `/darkmode` alias for `/theming`) into `~/.claude/commands/`. `install.sh` needs a POSIX shell. On Windows, use `npx @puenteworks/tastecheck install`, which runs the same installer in Node.
 
 Also: the gate has checks for video artifacts (reading time, authored motion, readability, audio presence).
 
