@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "taste-case",
+  "id": "repo-sample-clay",
+  "label": "crafted",
+  "source_group": "repo",
+  "provenance": {
+    "kind": "repo-sample",
+    "path": "samples/clay/index.html",
+    "why_this_label": "Clay: soft tactile gallery sample. Committed gallery sample built to a named design brief with its own type pairing and layout (see samples/clay.case-study.md where present); authored by the repo maintainers as the intended anti-slop reference. Label is the maintainers' intent, not a third-party rating."
+  },
+  "target": "samples/clay/index.html",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ]
+}

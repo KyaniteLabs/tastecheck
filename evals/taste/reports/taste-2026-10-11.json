@@ -1,0 +1,1965 @@
+{
+  "schema_version": 1,
+  "kind": "taste-calibration-report",
+  "date": "2026-10-11",
+  "detector": "skills/tastecheck-pass/assets/gate-audit.js",
+  "browser": "chromium 141.0.7390.37",
+  "scope": "surface-tells-only; effectiveness remains BLOCKED",
+  "overall": {
+    "cases": 35,
+    "errors": 0,
+    "TP": 18,
+    "FN": 1,
+    "TN": 10,
+    "FP": 6,
+    "recall": 0.947,
+    "precision": 0.75,
+    "fpr": 0.375,
+    "fnr": 0.053
+  },
+  "repo": {
+    "cases": 11,
+    "errors": 0,
+    "TP": 1,
+    "FN": 0,
+    "TN": 4,
+    "FP": 6,
+    "recall": 1,
+    "precision": 0.143,
+    "fpr": 0.6,
+    "fnr": 0
+  },
+  "authored": {
+    "cases": 24,
+    "errors": 0,
+    "TP": 17,
+    "FN": 1,
+    "TN": 6,
+    "FP": 0,
+    "recall": 0.944,
+    "precision": 1,
+    "fpr": 0,
+    "fnr": 0.056
+  },
+  "tp_face_only": [
+    "fixture-slop-02-blue-purple-gradient-inter",
+    "fixture-slop-07-centered-emoji-sections",
+    "fixture-slop-09-tailwind-indigo-buttons",
+    "fixture-slop-11-pricing-three-tiers"
+  ],
+  "results": [
+    {
+      "id": "fixture-crafted-c1-ceramics-editorial",
+      "label": "crafted",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/crafted/c1-ceramics-editorial.html",
+      "outcome": "TN",
+      "tells_fired": [],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Redaction\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Redaction\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-crafted-c2-bike-coop-timetable",
+      "label": "crafted",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/crafted/c2-bike-coop-timetable.html",
+      "outcome": "TN",
+      "tells_fired": [],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Bric\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Bric\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-crafted-c3-tide-station-log",
+      "label": "crafted",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/crafted/c3-tide-station-log.html",
+      "outcome": "TN",
+      "tells_fired": [],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"SG\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"SG\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-crafted-c4-bookshop-catalog",
+      "label": "crafted",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/crafted/c4-bookshop-catalog.html",
+      "outcome": "TN",
+      "tells_fired": [],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Redaction70\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Redaction70\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-crafted-c5-bakery-by-hour",
+      "label": "crafted",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/crafted/c5-bakery-by-hour.html",
+      "outcome": "TN",
+      "tells_fired": [],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Redaction\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Redaction\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-crafted-c6-print-shop-zine",
+      "label": "crafted",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/crafted/c6-print-shop-zine.html",
+      "outcome": "TN",
+      "tells_fired": [],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Hanken\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Hanken\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-01-indigo-violet-hero",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/01-indigo-violet-hero.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "default-display-face",
+        "indigo-violet-gradient"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Inter\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            },
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on header.hero — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Inter\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            },
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on header.hero — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-02-blue-purple-gradient-inter",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/02-blue-purple-gradient-inter.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "default-display-face"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Inter\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Inter\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-03-three-feature-cards",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/03-three-feature-cards.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "uniform-card-grid",
+        "default-display-face"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "uniform card grid: 3× identical div.card in div.grid (equal size, bordered/rounded — the \"three cards\" tell?)",
+              "tell": "uniform-card-grid"
+            },
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Segoe UI\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "uniform card grid: 3× identical div.card in div.grid (equal size, bordered/rounded — the \"three cards\" tell?)",
+              "tell": "uniform-card-grid"
+            },
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Segoe UI\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-04-stat-band",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/04-stat-band.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "stat-counter-band",
+        "default-display-face"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "stat-counter band: 3 numeric callouts in section.stats (the SaaS social-proof tell?)",
+              "tell": "stat-counter-band"
+            },
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Arial\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "stat-counter band: 3 numeric callouts in section.stats (the SaaS social-proof tell?)",
+              "tell": "stat-counter-band"
+            },
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Arial\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-05-pill-ctas",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/05-pill-ctas.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "default-display-face",
+        "pill-text-cta"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Roboto\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            },
+            {
+              "level": "warn",
+              "message": "pill text CTA: \"Sign up free\" (button.pill, radius 999px on 42px)",
+              "tell": "pill-text-cta"
+            },
+            {
+              "level": "warn",
+              "message": "pill text CTA: \"Start learning today\" (button.pill, radius 999px on 46px)",
+              "tell": "pill-text-cta"
+            },
+            {
+              "level": "warn",
+              "message": "pill text CTA: \"Explore the courses\" (button.pill, radius 999px on 46px)",
+              "tell": "pill-text-cta"
+            },
+            {
+              "level": "warn",
+              "message": "pill text CTA: \"Create your account\" (button.pill, radius 999px on 42px)",
+              "tell": "pill-text-cta"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Roboto\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            },
+            {
+              "level": "warn",
+              "message": "pill text CTA: \"Sign up free\" (button.pill, radius 999px on 42px)",
+              "tell": "pill-text-cta"
+            },
+            {
+              "level": "warn",
+              "message": "pill text CTA: \"Start learning today\" (button.pill, radius 999px on 42px)",
+              "tell": "pill-text-cta"
+            },
+            {
+              "level": "warn",
+              "message": "pill text CTA: \"Explore the courses\" (button.pill, radius 999px on 46px)",
+              "tell": "pill-text-cta"
+            },
+            {
+              "level": "warn",
+              "message": "pill text CTA: \"Create your account\" (button.pill, radius 999px on 42px)",
+              "tell": "pill-text-cta"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-06-glassmorphism",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/06-glassmorphism.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "uniform-card-grid"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "uniform card grid: 3× identical div.glass in div.wrap (equal size, bordered/rounded — the \"three cards\" tell?)",
+              "tell": "uniform-card-grid"
+            }
+          ],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Poppins\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Poppins\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-07-centered-emoji-sections",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/07-centered-emoji-sections.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "default-display-face"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"system-ui\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-08-dark-neon-bento",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/08-dark-neon-bento.html",
+      "outcome": "FN",
+      "tells_fired": [],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Space Grotesk\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Space Grotesk\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-09-tailwind-indigo-buttons",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/09-tailwind-indigo-buttons.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "default-display-face"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"ui-sans-serif\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"ui-sans-serif\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-10-testimonial-cards",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/10-testimonial-cards.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "uniform-card-grid",
+        "default-display-face"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "uniform card grid: 3× identical div.q in div.row (equal size, bordered/rounded — the \"three cards\" tell?)",
+              "tell": "uniform-card-grid"
+            },
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Inter\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "uniform card grid: 3× identical div.q in div.row (equal size, bordered/rounded — the \"three cards\" tell?)",
+              "tell": "uniform-card-grid"
+            },
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Inter\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-11-pricing-three-tiers",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/11-pricing-three-tiers.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "default-display-face"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Segoe UI\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Segoe UI\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-12-gradient-text-logo-cloud",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/12-gradient-text-logo-cloud.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "default-display-face",
+        "indigo-violet-gradient"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Inter\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            },
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on h1 > span — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Inter\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            },
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on h1 > span — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-13-blob-orbs-dashboard-mock",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/13-blob-orbs-dashboard-mock.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "default-display-face",
+        "pill-text-cta",
+        "indigo-violet-gradient"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Inter\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            },
+            {
+              "level": "warn",
+              "message": "pill text CTA: \"Request a demo\" (a.btn, radius 9999px on 47px)",
+              "tell": "pill-text-cta"
+            },
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.orb — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Inter\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            },
+            {
+              "level": "warn",
+              "message": "pill text CTA: \"Request a demo\" (a.btn, radius 9999px on 47px)",
+              "tell": "pill-text-cta"
+            },
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.orb — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-14-numbered-steps",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/14-numbered-steps.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "uniform-card-grid",
+        "default-display-face"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "uniform card grid: 3× identical div.s in div.steps (equal size, bordered/rounded — the \"three cards\" tell?)",
+              "tell": "uniform-card-grid"
+            },
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Open Sans\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Open Sans\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-15-blog-gradient-thumbs",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/15-blog-gradient-thumbs.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "uniform-card-grid",
+        "default-display-face"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "uniform card grid: 3× identical article.p in div.g (equal size, bordered/rounded — the \"three cards\" tell?)",
+              "tell": "uniform-card-grid"
+            },
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Roboto\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "uniform card grid: 3× identical article.p in div.g (equal size, bordered/rounded — the \"three cards\" tell?)",
+              "tell": "uniform-card-grid"
+            },
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Roboto\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-16-saas-footer-newsletter",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/16-saas-footer-newsletter.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "default-display-face",
+        "pill-text-cta"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Helvetica\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            },
+            {
+              "level": "warn",
+              "message": "pill text CTA: \"Subscribe now\" (form.sub > button, radius 999px on 45px)",
+              "tell": "pill-text-cta"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Helvetica\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            },
+            {
+              "level": "warn",
+              "message": "pill text CTA: \"Subscribe now\" (form.sub > button, radius 999px on 45px)",
+              "tell": "pill-text-cta"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-17-ai-sparkle-glow",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/17-ai-sparkle-glow.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "default-display-face",
+        "indigo-violet-gradient"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Inter\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            },
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on body > h1 — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Inter\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            },
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on body > h1 — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "fixture-slop-18-admin-kpi-cards",
+      "label": "slop",
+      "group": "authored",
+      "kind": "authored-fixture",
+      "target": "evals/taste/fixtures/slop/18-admin-kpi-cards.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "uniform-card-grid",
+        "stat-counter-band",
+        "default-display-face"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "uniform card grid: 4× identical div.kc in div.k (equal size, bordered/rounded — the \"three cards\" tell?)",
+              "tell": "uniform-card-grid"
+            },
+            {
+              "level": "warn",
+              "message": "stat-counter band: 3 numeric callouts in div.k (the SaaS social-proof tell?)",
+              "tell": "stat-counter-band"
+            },
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Roboto\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "uniform card grid: 4× identical div.kc in div.k (equal size, bordered/rounded — the \"three cards\" tell?)",
+              "tell": "uniform-card-grid"
+            },
+            {
+              "level": "warn",
+              "message": "stat-counter band: 3 numeric callouts in div.k (the SaaS social-proof tell?)",
+              "tell": "stat-counter-band"
+            },
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Roboto\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "repo-demo-after",
+      "label": "crafted",
+      "group": "repo",
+      "kind": "repo-demo",
+      "target": "demos/example-build/after.html",
+      "outcome": "TN",
+      "tells_fired": [],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Georgia\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Georgia\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "repo-demo-before",
+      "label": "slop",
+      "group": "repo",
+      "kind": "repo-demo",
+      "target": "demos/example-build/before.html",
+      "outcome": "TP",
+      "tells_fired": [
+        "uniform-card-grid",
+        "default-display-face",
+        "pill-text-cta",
+        "indigo-violet-gradient"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "uniform card grid: 3× identical div.card in div.cards (equal size, bordered/rounded — the \"three cards\" tell?)",
+              "tell": "uniform-card-grid"
+            },
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Inter\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            },
+            {
+              "level": "warn",
+              "message": "pill text CTA: \"Get Started\" (button.cta, radius 9999px on 46px)",
+              "tell": "pill-text-cta"
+            },
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.hero — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "uniform card grid: 3× identical div.card in div.cards (equal size, bordered/rounded — the \"three cards\" tell?)",
+              "tell": "uniform-card-grid"
+            },
+            {
+              "level": "warn",
+              "message": "display face resolves to \"Inter\" — the safe-font tell (computed, after font fallback)",
+              "tell": "default-display-face"
+            },
+            {
+              "level": "warn",
+              "message": "pill text CTA: \"Get Started\" (button.cta, radius 9999px on 46px)",
+              "tell": "pill-text-cta"
+            },
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.hero — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [],
+          "notes": [],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "repo-landing-index",
+      "label": "crafted",
+      "group": "repo",
+      "kind": "repo-sample",
+      "target": "index.html",
+      "outcome": "TN",
+      "tells_fired": [],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Redaction\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Redaction\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "repo-sample-clay",
+      "label": "crafted",
+      "group": "repo",
+      "kind": "repo-sample",
+      "target": "samples/clay/index.html",
+      "outcome": "FP",
+      "tells_fired": [
+        "indigo-violet-gradient"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"nineteen skills What you get. All of it. Each skil…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"how it works It interviews you first. No menus. It…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"what it gently refuses Three planes of slop. All o…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"install One command. Then just build. $ git clone …\"",
+              "tell": null
+            }
+          ],
+          "notes": [
+            "display face resolves to \"Mulish\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"nineteen skills What you get. All of it. Each skil…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"how it works It interviews you first. No menus. It…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"what it gently refuses Three planes of slop. All o…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"install One command. Then just build. $ git clone …\"",
+              "tell": null
+            }
+          ],
+          "notes": [
+            "display face resolves to \"Mulish\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "repo-sample-concrete",
+      "label": "crafted",
+      "group": "repo",
+      "kind": "repo-sample",
+      "target": "samples/concrete/index.html",
+      "outcome": "FP",
+      "tells_fired": [
+        "indigo-violet-gradient"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"Fig. 01Nineteen skills. Zero vibes. The bill of ma…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"Fig. 02It interviews you first. No menus. It surfa…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"Fig. 03Rejected: the three planes of slop. Out of …\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"Fig. 04One command. Then just build. $ git clone h…\"",
+              "tell": null
+            }
+          ],
+          "notes": [
+            "display face resolves to \"Grotesk\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"Fig. 01Nineteen skills. Zero vibes. The bill of ma…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"Fig. 02It interviews you first. No menus. It surfa…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"Fig. 03Rejected: the three planes of slop. Out of …\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"Fig. 04One command. Then just build. $ git clone h…\"",
+              "tell": null
+            }
+          ],
+          "notes": [
+            "display face resolves to \"Grotesk\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "repo-sample-copper",
+      "label": "crafted",
+      "group": "repo",
+      "kind": "repo-sample",
+      "target": "samples/copper/index.html",
+      "outcome": "FP",
+      "tells_fired": [
+        "indigo-violet-gradient"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"each skill, working Nineteen skills. Zero vibes. 0…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"what it refuses There isn’t one AI slop. There are…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"the method It interviews you first. No menus. It s…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"install One command. Then just build. $ git clone …\"",
+              "tell": null
+            }
+          ],
+          "notes": [
+            "display face resolves to \"Red0\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"each skill, working Nineteen skills. Zero vibes. 0…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"what it refuses There isn’t one AI slop. There are…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"the method It interviews you first. No menus. It s…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"install One command. Then just build. $ git clone …\"",
+              "tell": null
+            }
+          ],
+          "notes": [
+            "display face resolves to \"Red0\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "repo-sample-dispatch",
+      "label": "crafted",
+      "group": "repo",
+      "kind": "repo-sample",
+      "target": "samples/dispatch/index.html",
+      "outcome": "TN",
+      "tells_fired": [],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [],
+          "other_findings": [
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"the log Every change is a checkable contract. Newe…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"what it proves A green check is necessary. Never s…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"install One command. Then just build. Links the ca…\"",
+              "tell": null
+            }
+          ],
+          "notes": [
+            "display face resolves to \"Bric\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [],
+          "other_findings": [
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"the log Every change is a checkable contract. Newe…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"what it proves A green check is necessary. Never s…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"install One command. Then just build. Links the ca…\"",
+              "tell": null
+            }
+          ],
+          "notes": [
+            "display face resolves to \"Bric\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "repo-sample-maximal",
+      "label": "crafted",
+      "group": "repo",
+      "kind": "repo-sample",
+      "target": "samples/maximal/index.html",
+      "outcome": "FP",
+      "tells_fired": [
+        "indigo-violet-gradient"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"nineteen skills · zero vibes The whole wall. Every…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"the method It interviews you first. No menus. It s…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"what we refuse No. Hard no. It’s not just the look…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"install One command. Then just build. $ git clone …\"",
+              "tell": null
+            }
+          ],
+          "notes": [
+            "display face resolves to \"Bricolage\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"nineteen skills · zero vibes The whole wall. Every…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"the method It interviews you first. No menus. It s…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"what we refuse No. Hard no. It’s not just the look…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"install One command. Then just build. $ git clone …\"",
+              "tell": null
+            }
+          ],
+          "notes": [
+            "display face resolves to \"Bricolage\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "repo-sample-swiss",
+      "label": "crafted",
+      "group": "repo",
+      "kind": "repo-sample",
+      "target": "samples/swiss/index.html",
+      "outcome": "FP",
+      "tells_fired": [
+        "indigo-violet-gradient"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.skl-grid — \"00design-system-interviewGrills you into a committ…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): article.feat — \"01It grills youFunction first, then references — i…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): article.feat — \"02It commitsOKLCH palette with verified contrast, …\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): article.feat — \"03It builds & checksThe skills apply the system, t…\"",
+              "tell": null
+            }
+          ],
+          "notes": [
+            "display face resolves to \"Hanken\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.skl-grid — \"00design-system-interviewGrills you into a committ…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): article.feat — \"01It grills youFunction first, then references — i…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): article.feat — \"02It commitsOKLCH palette with verified contrast, …\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): article.feat — \"03It builds & checksThe skills apply the system, t…\"",
+              "tell": null
+            }
+          ],
+          "notes": [
+            "display face resolves to \"Hanken\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "repo-sample-tasteroll",
+      "label": "crafted",
+      "group": "repo",
+      "kind": "repo-sample",
+      "target": "samples/tasteroll/index.html",
+      "outcome": "TN",
+      "tells_fired": [],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Georgia\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "CLEAN",
+          "tells": [],
+          "other_findings": [],
+          "notes": [
+            "display face resolves to \"Georgia\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    },
+    {
+      "id": "repo-sample-verge",
+      "label": "crafted",
+      "group": "repo",
+      "kind": "repo-sample",
+      "target": "samples/verge/index.html",
+      "outcome": "FP",
+      "tells_fired": [
+        "indigo-violet-gradient"
+      ],
+      "viewports": [
+        {
+          "viewport": "desktop",
+          "width": 1280,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"nineteen skills What you get. All of it. Each skil…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"method It interviews you first. No menus. It surfa…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"findings Three planes of slop. All of them. It's n…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"install One command. Then just build. $ git clone …\"",
+              "tell": null
+            }
+          ],
+          "notes": [
+            "display face resolves to \"Fraunces\""
+          ],
+          "asset_errors": []
+        },
+        {
+          "viewport": "mobile",
+          "width": 390,
+          "verdict": "REVIEW WARNS",
+          "tells": [
+            {
+              "level": "warn",
+              "message": "indigo→violet gradient on div.sw — the canonical AI tell",
+              "tell": "indigo-violet-gradient"
+            }
+          ],
+          "other_findings": [
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"nineteen skills What you get. All of it. Each skil…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"method It interviews you first. No menus. It surfa…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"findings Three planes of slop. All of them. It's n…\"",
+              "tell": null
+            },
+            {
+              "level": "warn",
+              "message": "content at opacity 0 on load (unrevealed?): div.wrap — \"install One command. Then just build. $ git clone …\"",
+              "tell": null
+            }
+          ],
+          "notes": [
+            "display face resolves to \"Fraunces\""
+          ],
+          "asset_errors": []
+        }
+      ]
+    }
+  ]
+}

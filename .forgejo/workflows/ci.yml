@@ -17,6 +17,7 @@ jobs:
         run: |
           npm run test:cdp-qa
           npm run test:profile
+          npm run calibrate:taste:check
           npm run test:dogfood
       - name: Validate HTML
         run: |

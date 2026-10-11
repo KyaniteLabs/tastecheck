@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "taste-case",
+  "id": "fixture-slop-03-three-feature-cards",
+  "label": "slop",
+  "source_group": "authored",
+  "provenance": {
+    "kind": "authored-fixture",
+    "description": "Authored for this corpus by the TasteCheck maintainers (this session) to reproduce a common AI-default page template. Not scraped from any real site.",
+    "why_this_label": "Three identical bordered/rounded/shadowed feature cards with pastel icon squares; Segoe UI/Roboto stack."
+  },
+  "target": "evals/taste/fixtures/slop/03-three-feature-cards.html",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ]
+}

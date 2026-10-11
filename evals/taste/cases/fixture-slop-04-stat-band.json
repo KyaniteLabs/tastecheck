@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "taste-case",
+  "id": "fixture-slop-04-stat-band",
+  "label": "slop",
+  "source_group": "authored",
+  "provenance": {
+    "kind": "authored-fixture",
+    "description": "Authored for this corpus by the TasteCheck maintainers (this session) to reproduce a common AI-default page template. Not scraped from any real site.",
+    "why_this_label": "Four-number social-proof band (10k+ / 99.9% / 24/7 / 50+) under a centered Arial hero."
+  },
+  "target": "evals/taste/fixtures/slop/04-stat-band.html",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ]
+}

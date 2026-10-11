@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "taste-case",
+  "id": "repo-landing-index",
+  "label": "crafted",
+  "source_group": "repo",
+  "provenance": {
+    "kind": "repo-sample",
+    "path": "index.html",
+    "why_this_label": "The project landing page, built on site/DESIGN-SYSTEM.md (Redaction + Archivo). Maintainer-authored design work; label is maintainer intent."
+  },
+  "target": "index.html",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ]
+}
