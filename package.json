@@ -16,10 +16,12 @@
     "ship gate"
   ],
   "homepage": "https://kyanitelabs.github.io/tastecheck/",
+  "bugs": {
+    "url": "https://github.com/KyaniteLabs/tastecheck/issues"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KyaniteLabs/tastecheck.git",
-    "mirror": "https://git.kyanitelabs.tech/KyaniteLabs/tastecheck"
+    "url": "git+https://github.com/KyaniteLabs/tastecheck.git"
   },
   "license": "MIT",
   "type": "module",
