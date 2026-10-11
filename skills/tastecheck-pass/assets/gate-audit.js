@@ -36,6 +36,24 @@
   const px=v=>parseFloat(v)||0;
   const bodyFont=px(cs(document.body).fontSize)||16;
 
+  /* Exhibits: a page that SHOWS a tell on purpose (a "what we reject" swatch, a
+     before/after demo) marks that region with data-tastecheck-exhibit. Tell checks
+     (6, 7, 9, 10) skip it; cold-load checks never do. Honored only while all
+     marked regions together cover <= 25% of the page, so a whole slop page cannot
+     opt out. Every skip is listed in notes so a reviewer can see it. */
+  const root=document.documentElement||document.body||{};
+  const pageArea=Math.max(1,(root.scrollWidth||0)*(root.scrollHeight||0));
+  let exhibitEls=[];
+  try{exhibitEls=[...document.querySelectorAll('[data-tastecheck-exhibit]')];}catch(e){exhibitEls=[];}
+  const exhibitArea=exhibitEls.reduce((a,el)=>{const r=el.getBoundingClientRect();return a+r.width*r.height;},0);
+  const exhibitShare=exhibitArea/pageArea;
+  const honorExhibits=exhibitEls.length>0&&exhibitShare<=0.25;
+  if(exhibitEls.length&&!honorExhibits)
+    warns.push(`exhibit markers cover ${Math.round(exhibitShare*100)}% of the page (> 25%) — not honored; tells inside them count`);
+  else if(honorExhibits)
+    notes.push(`${exhibitEls.length} exhibit region(s) skipped by tell checks (${Math.round(exhibitShare*100)}% of page): ${exhibitEls.slice(0,4).map(name).join(', ')}`);
+  const inExhibit=el=>honorExhibits&&typeof el.closest==='function'&&!!el.closest('[data-tastecheck-exhibit]');
+
   /* 1. FAIL — [hidden] defeated by author CSS (a display rule beats the attribute) */
   const hiddenHits=[];
   document.querySelectorAll('[hidden]').forEach(el=>{
@@ -83,6 +101,7 @@
   /* 6. WARN — the uniform card grid (N identical bordered/rounded siblings) */
   const seen=new Set();
   document.querySelectorAll('body *').forEach(parent=>{
+    if(inExhibit(parent))return;
     const kids=[...parent.children].filter(visible);
     if(kids.length<3)return;
     const sig=el=>el.tagName+'|'+[...el.classList].sort().join('.');
@@ -112,7 +131,7 @@
         Not stats: ordered lists, 01/02/03 ordinals (enumerations), and bare prices
         ($29 = pricing tier; currency only counts with a magnitude suffix, $2M) */
   document.querySelectorAll('body *').forEach(parent=>{
-    if(parent.tagName==='OL')return;
+    if(parent.tagName==='OL'||inExhibit(parent))return;
     const kids=[...parent.children].filter(visible);
     if(kids.length<3)return;
     const stat=kids.filter(k=>{
@@ -144,17 +163,33 @@
 
   /* 9. WARN — pill text CTA (computed radius ≥ half the height on a text button) */
   document.querySelectorAll('a,button,[role="button"],input[type="submit"]').forEach(el=>{
-    if(!visible(el))return;
+    if(!visible(el)||inExhibit(el))return;
     const t=text(el)||el.value||'';
     const r=el.getBoundingClientRect();
     if(t.length>=8&&r.height>=30&&px(cs(el).borderRadius)>=r.height/2)
       warns.push(`pill text CTA: "${t.slice(0,30)}" (${name(el)}, radius ${cs(el).borderRadius} on ${Math.round(r.height)}px)`);
   });
 
-  /* 10. WARN — the indigo→violet gradient (computed, any element) */
+  /* 10. WARN — the blue/indigo→violet gradient (computed, any element). Judged by
+        hue, not exact hex: one saturated stop in blue–indigo (215–250°) and one in
+        violet–purple (255–300°) inside the same gradient. */
+  const rgbStops=bg=>[...bg.matchAll(/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/g)].map(m=>m.slice(1,4).map(Number));
+  const hueSat=([r,g,b])=>{
+    r/=255;g/=255;b/=255;
+    const mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn,l=(mx+mn)/2;
+    if(!d)return [0,0];
+    const sat=d/(1-Math.abs(2*l-1));
+    let h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;
+    h*=60;if(h<0)h+=360;
+    return [h,sat];
+  };
   for(const el of document.querySelectorAll('body, body *')){
+    if(inExhibit(el))continue;
     const bg=cs(el).backgroundImage;
-    if(bg.includes('gradient')&&(/99[,\s]+102[,\s]+241|129[,\s]+140[,\s]+248|#6366f1|#818cf8/.test(bg))&&(/168[,\s]+85[,\s]+247|192[,\s]+132[,\s]+252|#a855f7|#c084fc/.test(bg))){
+    if(!bg.includes('gradient'))continue;
+    const hs=rgbStops(bg).map(hueSat).filter(([,sat])=>sat>=0.45);
+    const blue=hs.some(([h])=>h>=215&&h<250), violet=hs.some(([h])=>h>=255&&h<=300);
+    if(blue&&violet){
       warns.push(`indigo→violet gradient on ${name(el)} — the canonical AI tell`);
       break;
     }
