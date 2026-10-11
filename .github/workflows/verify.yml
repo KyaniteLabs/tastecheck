@@ -30,3 +30,9 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run preflight:browser
       - run: npm run test:oracle
+      - run: npm run test:cdp-qa
+      - run: npm run test:profile
+      - run: npm run calibrate:taste:check
+        env:
+          CI: "true"
+      - run: npm run test:dogfood

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "taste-case",
+  "id": "fixture-slop-02-blue-purple-gradient-inter",
+  "label": "slop",
+  "source_group": "authored",
+  "provenance": {
+    "kind": "authored-fixture",
+    "description": "Authored for this corpus by the TasteCheck maintainers (this session) to reproduce a common AI-default page template. Not scraped from any real site.",
+    "why_this_label": "Variant of the gradient hero using blue->purple (#2563eb->#7c3aed), not the exact indigo/violet pair; Inter face; overlapping floating panel."
+  },
+  "target": "evals/taste/fixtures/slop/02-blue-purple-gradient-inter.html",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ]
+}

@@ -13,3 +13,10 @@ font binaries, which keep their own licenses:
 The OFL permits bundling and redistribution with the license intact; the canonical OFL
 text is at <https://openfontlicense.org>. If you fork this repo and ship the fonts,
 these obligations travel with them.
+
+## Where the fonts are used
+
+`index.html` loads `site/fonts/redaction-0-{400,700}.woff2` (display) and
+`site/fonts/archivo-{400,600}.woff2` (body) through `@font-face` with relative URLs and
+`font-display: swap`. Redaction grades 35/70 are shipped for the gallery/site system but not
+used by the landing page.

@@ -2,24 +2,24 @@
   "schema_version": 1,
   "kind": "clean-clone",
   "producer_id": "tastecheck.release.clean-clone.v1",
-  "source_tree_sha256": "9a252b9e7377d6b6399922f26796f5d7eb614a7cf4813bad71bb07779f0a21c9",
+  "source_tree_sha256": "80a7d76cc90d55d48d4c943a030603732f3e62c100914e4f0587c48962b37d09",
   "nonce": "clean-clone-release-v1",
-  "started_at": "2026-09-25T20:03:41.434Z",
-  "finished_at": "2026-09-25T20:03:55.218Z",
+  "started_at": "2026-10-11T04:08:45.768Z",
+  "finished_at": "2026-10-11T04:09:14.479Z",
   "checks": [
     {
       "id": "npm-ci",
       "command": "npm ci --ignore-scripts",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "470951852fa3704221a2556e6985285ec57a53cc15f94f7e1c9d310e2149ca6d"
+      "output_sha256": "a1a15a97fa731b93d8cae34f8edd12721e227ccae6903655c2ab1501d3d0f954"
     },
     {
       "id": "test",
       "command": "npm test",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "7bb6fa71dab91d4f9c020b02418b6218941e17d22d7d77bbbfdf6a9462d1522a"
+      "output_sha256": "36d63a7427ddc6ca144d001ce51b1dc967f818a0066ce6096c0eaadbf5e84eae"
     },
     {
       "id": "contracts",
@@ -40,14 +40,14 @@
       "command": "internal HEAD source digest comparison",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "2c7f349491b295ec9147b1e5af3ea17d18c6f5c6609a65c71ff0ad1497617fd5"
+      "output_sha256": "48a84d82baaf51e8fff40480158d7e624c772ed15f3cabd745413145c4f5eedf"
     },
     {
       "id": "source-stability",
       "command": "internal source digest comparison",
       "passed": true,
       "exit_code": 0,
-      "output_sha256": "2c7f349491b295ec9147b1e5af3ea17d18c6f5c6609a65c71ff0ad1497617fd5"
+      "output_sha256": "48a84d82baaf51e8fff40480158d7e624c772ed15f3cabd745413145c4f5eedf"
     }
   ],
   "status": "pass",

@@ -1,7 +1,7 @@
 # tastecheck calibration corpus — the law
 
 A labeled regression corpus of known-BAD and known-CLEAN cases, harvested from
-real org defect findings, used to measure the checker's false-positive and
+real defect findings, used to measure the checker's false-positive and
 false-negative rates per release. Until this corpus existed (v1.6.0 and
 earlier) no rate was claimed; from v1.7.0 the rates below are measured numbers
 from real runs, refreshed by `npm run calibrate` and gated in CI
@@ -10,15 +10,15 @@ rate than the recorded baseline.
 
 ## Where the labels come from
 
-Every BAD case reproduces a defect class that actually fired in the org, and
-carries the desk-of-record citation (`source.desk` + verbatim `source.quote`)
-for the finding it was harvested from. Every CLEAN case is a verified-green
+Every BAD case reproduces a defect class that was actually found, and
+carries a source citation (`source.desk` + verbatim `source.quote`)
+for the finding it was harvested from. The `desk` field names the internal
+record the finding came from; those records are not published. Every CLEAN case is a verified-green
 surface (suite-proven SHIP fixture, browser-receipt-green landing). Cases
 without a citation are invalid — the runner enforces this.
 
-Sources of record: `~/workspaces/product/smell-registry.md` (the org's
-bug/smell registry), `~internal record (sanitized) `,
-`~internal record (sanitized) `, and tastecheck's own suite fixtures.
+Sources: an internal bug registry, internal review records (not published),
+and tastecheck's own suite fixtures.
 
 ## Case file shape
 
@@ -41,7 +41,7 @@ bug/smell registry), `~internal record (sanitized) `,
 
 - `probe: ledger` cases run a mutation of the suite-proven valid deep-lane
   ledger through `evaluateReleaseGate` (the deterministic verdict engine).
-  Mutations are named for the org defect class they reproduce
+  Mutations are named for the defect class they reproduce
   (`tools/calibrate/run-calibration.mjs` is the registry of mutations).
 - `probe: surface` cases run the offline static surface probes
   (`tools/calibrate/surface-probes.mjs`): markup-visible leak classes and
@@ -85,7 +85,7 @@ out of scope for this runner until a browser-driven corpus harness exists.
 
 ## Adding a case
 
-1. Reproduce a REAL defect (cite the desk of record verbatim) or a
+1. Reproduce a REAL defect (cite the source verbatim) or a
    verified-green surface; no synthetic plausibilities.
 2. Add the case JSON; run `npm run calibrate` — the new case appears in the
    dated report.
@@ -98,3 +98,10 @@ out of scope for this runner until a browser-driven corpus harness exists.
 See `evals/calibration/baseline.json` (the gated baseline) and the dated
 reports in `evals/calibration/`. The CHANGELOG carries the measured numbers
 per release.
+
+## What this corpus does and does not measure
+
+Of the 17 cases, 2 are visual-taste tells. The rest test gate integrity:
+forged or stale receipts, ledger tampering, leak detection. The rates
+therefore describe how hard the gate is to fool, not how good its design
+judgment is.

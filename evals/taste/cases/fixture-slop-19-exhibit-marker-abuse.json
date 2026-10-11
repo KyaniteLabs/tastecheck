@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "taste-case",
+  "id": "fixture-slop-19-exhibit-marker-abuse",
+  "label": "slop",
+  "source_group": "authored",
+  "provenance": {
+    "kind": "authored-fixture",
+    "description": "Authored for this corpus by the TasteCheck maintainers (this session) to reproduce a common AI-default page template. Not scraped from any real site.",
+    "why_this_label": "Same three-identical-cards page as slop-03, with the whole body wrapped in data-tastecheck-exhibit to try to opt out of the tell checks. Exhibit markers covering more than 25% of the page must not be honored."
+  },
+  "target": "evals/taste/fixtures/slop/19-exhibit-marker-abuse.html",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "taste-case",
+  "id": "fixture-slop-07-centered-emoji-sections",
+  "label": "slop",
+  "source_group": "authored",
+  "provenance": {
+    "kind": "authored-fixture",
+    "description": "Authored for this corpus by the TasteCheck maintainers (this session) to reproduce a common AI-default page template. Not scraped from any real site.",
+    "why_this_label": "Everything centered, emoji used as section markers, system-ui, green-on-mint default palette, repeating hero-then-sections stack."
+  },
+  "target": "evals/taste/fixtures/slop/07-centered-emoji-sections.html",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ]
+}

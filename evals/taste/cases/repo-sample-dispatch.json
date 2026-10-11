@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "taste-case",
+  "id": "repo-sample-dispatch",
+  "label": "crafted",
+  "source_group": "repo",
+  "provenance": {
+    "kind": "repo-sample",
+    "path": "samples/dispatch/index.html",
+    "why_this_label": "Dispatch: changelog/release-feed gallery sample. Committed gallery sample built to a named design brief with its own type pairing and layout (see samples/dispatch.case-study.md where present); authored by the repo maintainers as the intended anti-slop reference. Label is the maintainers' intent, not a third-party rating."
+  },
+  "target": "samples/dispatch/index.html",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ]
+}

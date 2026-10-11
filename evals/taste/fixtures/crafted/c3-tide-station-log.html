@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pier 4 tide station</title><style>
+@font-face{font-family:"SG";src:url("../../../../samples/concrete/fonts/space-grotesk-700.woff2") format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"SG";src:url("../../../../samples/concrete/fonts/space-grotesk-500.woff2") format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"SM";src:url("../../../../samples/concrete/fonts/space-mono-400.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"SM";src:url("../../../../samples/concrete/fonts/space-mono-700.woff2") format("woff2");font-weight:700;font-display:swap}
+:root{--bg:#0e1a1f;--fg:#d7e6e3;--hi:#7fe0c4;--dim:#6b8a88}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:500 16px/1.5 SG,sans-serif;padding:4vh 5vw}
+h1{font:700 clamp(2rem,6vw,4.5rem)/1 SG,sans-serif;margin:0 0 .3rem}.meta{font:400 .85rem SM,monospace;color:var(--dim);margin-bottom:3rem}
+.now{display:flex;align-items:baseline;gap:1.5rem;border-top:1px solid var(--dim);border-bottom:1px solid var(--dim);padding:1.2rem 0;margin-bottom:2.5rem}
+.now b{font:700 clamp(3rem,10vw,7rem)/1 SM,monospace;color:var(--hi)}.now span{font:400 .95rem SM,monospace;color:var(--dim);max-width:24ch}
+table{border-collapse:collapse;width:100%;font:400 .95rem SM,monospace}th,td{text-align:left;padding:.5rem 1rem .5rem 0;border-bottom:1px dotted var(--dim)}th{color:var(--dim);font-weight:400}.hi{color:var(--hi)}
+.note{margin-top:2.5rem;max-width:60ch;color:var(--dim)}
+@media(max-width:600px){.now{flex-direction:column;gap:.3rem}}
+</style></head><body><h1>Pier 4 tide station</h1><div class="meta">lat 47.6021 &middot; lon -122.3402 &middot; sensor: pressure, 6-min samples</div>
+<div class="now"><b>2.41 m</b><span>rising, 3.1 cm per sample, high water at 14:52</span></div>
+<table><tr><th>Time</th><th>Event</th><th>Height</th><th>vs. prediction</th></tr>
+<tr><td>02:17</td><td>Low</td><td>0.38 m</td><td>-0.02</td></tr><tr><td class="hi">08:44</td><td class="hi">High</td><td class="hi">3.02 m</td><td class="hi">+0.11</td></tr>
+<tr><td>14:52</td><td>High (pred.)</td><td>2.97 m</td><td>-</td></tr><tr><td>21:05</td><td>Low (pred.)</td><td>0.61 m</td><td>-</td></tr></table>
+<p class="note">Residuals above 10 cm usually mean a storm surge or a barometric dip. This station is run by volunteers; do not use it for navigation.</p></body></html>
