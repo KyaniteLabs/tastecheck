@@ -3,7 +3,7 @@
  * tastecheck npm bin.
  *
  * Subcommands:
- *   install [--force] [--yes|--no-commands]   link the skills into agent homes (runs install.sh)
+ *   install [--force] [--yes|--no-commands]   link the skills into agent homes (bin/install.mjs)
  *   uninstall                                 remove links created by install
  *   audit <url-or-path> [out-dir] [--json]    run the browser ship gate (cdp-qa.mjs)
  *   calibrate                                 run the labeled regression corpus (repo checkout only)
@@ -26,7 +26,7 @@ Usage:
   tastecheck install [--force] [--yes | --no-commands]
                               Link the skills into ~/.agents/skills (and any agent homes
                               that exist). --yes also links Claude Code slash commands;
-                              --no-commands skips them. Needs bash (WSL or Git Bash on Windows).
+                              --no-commands skips them. Works on macOS, Linux and Windows.
   tastecheck uninstall        Remove every link the installer created.
   tastecheck audit <url-or-path> [out-dir] [--json]
                               Run the browser ship gate against a URL or local file/dir.
@@ -44,10 +44,6 @@ const INSTALL_FLAGS = new Set(["--force", "--yes", "--no-commands", "--uninstall
 function run(command, argv) {
   const child = spawn(command, argv, { stdio: "inherit" });
   child.on("error", (err) => {
-    if (err.code === "ENOENT" && command === "bash") {
-      console.error("tastecheck: the installer requires bash. On Windows, run it from WSL or Git Bash.");
-      process.exit(1);
-    }
     console.error(`tastecheck: failed to start ${command}: ${err.message}`);
     process.exit(2);
   });
@@ -57,19 +53,24 @@ function run(command, argv) {
   });
 }
 
-const installer = (extra) => run("bash", [join(pkgRoot, "install.sh"), ...extra]);
+// Node port of install.sh (parity-tested in tools/test/test-node-installer.mjs), so Windows
+// users don't need bash. install.sh stays for git checkouts.
+async function installer(extra) {
+  const { runInstall } = await import("./install.mjs");
+  process.exitCode = await runInstall(extra, { repoRoot: pkgRoot });
+}
 
 if (cmd === undefined || cmd === "help" || cmd === "-h" || cmd === "--help") {
   process.stdout.write(USAGE);
 } else if (cmd === "--version" || cmd === "-v") {
   console.log(JSON.parse(readFileSync(join(pkgRoot, "package.json"), "utf8")).version);
 } else if (cmd === "install") {
-  installer(args.slice(1));
+  await installer(args.slice(1));
 } else if (cmd === "uninstall") {
-  installer(["--uninstall", ...args.slice(1)]);
+  await installer(["--uninstall", ...args.slice(1)]);
 } else if (INSTALL_FLAGS.has(cmd)) {
   console.error(`tastecheck: bare \`${cmd}\` is deprecated; use \`tastecheck install ...\` (or \`tastecheck uninstall\`).`);
-  installer(args);
+  await installer(args);
 } else if (cmd === "audit") {
   const rest = args.slice(1);
   if (!rest.some((a) => !a.startsWith("--"))) {

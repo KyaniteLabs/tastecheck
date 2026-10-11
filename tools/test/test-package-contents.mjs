@@ -16,7 +16,7 @@ for (const f of files) {
   if (forbiddenDir.some((d) => f.startsWith(d))) failures.push(`forbidden path in tarball: ${f}`);
 }
 
-const required = ["bin/tastecheck.mjs", "install.sh", "skills/tastecheck-pass/assets/cdp-qa.mjs", "skills/tastecheck-pass/assets/gate-audit.js"];
+const required = ["bin/tastecheck.mjs", "bin/install.mjs", "install.sh", "skills/tastecheck-pass/assets/cdp-qa.mjs", "skills/tastecheck-pass/assets/gate-audit.js"];
 const manifest = JSON.parse(readFileSync(join(root, "skills.json"), "utf8"));
 if (manifest.skills.length !== 20) failures.push(`skills.json lists ${manifest.skills.length} skills, expected 20`);
 for (const s of manifest.skills) required.push(`skills/${s.name}/SKILL.md`);
