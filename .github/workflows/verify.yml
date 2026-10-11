@@ -31,4 +31,5 @@ jobs:
       - run: npm run preflight:browser
       - run: npm run test:oracle
       - run: npm run test:cdp-qa
+      - run: npm run test:profile
       - run: npm run test:dogfood

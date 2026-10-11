@@ -6,6 +6,7 @@
  *   install [--force] [--yes|--no-commands]   link the skills into agent homes (bin/install.mjs)
  *   uninstall                                 remove links created by install
  *   audit <url-or-path> [out-dir] [--json]    run the browser ship gate (cdp-qa.mjs)
+ *   profile <command>                         manage your local taste profile (bin/profile.mjs)
  *   calibrate                                 run the labeled regression corpus (repo checkout only)
  *   --version
  *
@@ -32,6 +33,9 @@ Usage:
                               Run the browser ship gate against a URL or local file/dir.
                               Exit codes: 0 SHIP, 1 HOLD, 2 tool error. Needs Node 22+
                               and a Chromium/Chrome install.
+  tastecheck profile <show|accept|reject|forget|export|import|reset>
+                              Your local taste profile: tells you keep on purpose or want
+                              treated strictly. Only affects template-tell judgments in audit.
   tastecheck calibrate        Measure checker FP/FN rates (needs a repository checkout).
   tastecheck --version
   tastecheck help
@@ -79,6 +83,9 @@ if (cmd === undefined || cmd === "help" || cmd === "-h" || cmd === "--help") {
     process.exit(2);
   }
   run(process.execPath, [join(pkgRoot, "skills/tastecheck-pass/assets/cdp-qa.mjs"), ...rest]);
+} else if (cmd === "profile") {
+  const { runProfile } = await import("./profile.mjs");
+  process.exitCode = runProfile(args.slice(1));
 } else if (cmd === "calibrate") {
   const runner = join(pkgRoot, "tools/calibrate/run-calibration.mjs");
   if (!existsSync(runner)) {

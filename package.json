@@ -52,6 +52,7 @@
     "test:cli": "node tools/test/test-cli.mjs",
     "test:package": "node tools/test/test-package-contents.mjs",
     "test:cdp-qa": "node tools/test/test-cdp-qa.mjs",
+    "test:profile": "node tools/test/test-profile.mjs",
     "test:dogfood": "node tools/test/test-landing-dogfood.mjs",
     "verify:skills": "node tools/verify.mjs",
     "lint:skills": "node tools/lint-skills.mjs",

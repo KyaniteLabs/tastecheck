@@ -6,7 +6,9 @@
    using Node's built-in WebSocket, runs every probe the tastecheck-pass fast lane
    promises, writes evidence.json + screenshots, and prints a verdict-first summary.
 
-   Usage:   node cdp-qa.mjs <url | file path | file://url> [out-dir] [--json]
+   Usage:   node cdp-qa.mjs <url | file path | file://url> [out-dir] [--json] [--profile <file> | --no-profile]
+            Taste profile (optional, local): $TASTECHECK_PROFILE or ~/.tastecheck/profile.json is read
+            if present; it only changes how templateSlop counts individual tells.
    Output:  <out-dir>/evidence.json, shot-light.png, shot-dark.png, shot-narrow-390.png
             out-dir defaults to a fresh directory under os.tmpdir().
    Exit:    0 SHIP · 1 HOLD (any probe fail, or a required probe not_run) · 2 tool error
@@ -45,9 +47,47 @@ const trunc = (s, n = 160) => (String(s).length > n ? String(s).slice(0, n - 1) 
 
 /* ------------------------------------------------------------------ args */
 function parseArgs(argv) {
-  const flags = new Set(argv.filter((a) => a.startsWith("--")));
-  const pos = argv.filter((a) => !a.startsWith("--"));
-  return { json: flags.has("--json"), help: flags.has("--help"), target: pos[0], out: pos[1] };
+  let profile = null;
+  const rest = [];
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === "--profile") {
+      if (!argv[i + 1] || argv[i + 1].startsWith("--")) throw new ToolError("--profile needs a file path");
+      profile = argv[++i];
+    } else rest.push(argv[i]);
+  }
+  const flags = new Set(rest.filter((a) => a.startsWith("--")));
+  const pos = rest.filter((a) => !a.startsWith("--"));
+  return { json: flags.has("--json"), help: flags.has("--help"), noProfile: flags.has("--no-profile"), profile, target: pos[0], out: pos[1] };
+}
+
+/* ------------------------------------------------- taste profile (optional)
+   Only the templateSlop judgment reads this. Objective probes never do. The tell
+   ids and file format mirror bin/profile.mjs (kept inline so this file stays standalone). */
+const TELL_PATTERNS = [
+  ["uniform-card-grid", /^uniform card grid/], ["stat-counter-band", /^stat-counter band/],
+  ["safe-display-face", /^display face resolves to/], ["pill-cta", /^pill text CTA/],
+  ["indigo-violet-gradient", /^indigo→violet gradient/],
+];
+const tellId = (w) => (TELL_PATTERNS.find(([, re]) => re.test(w)) || [])[0] || null;
+function scopeMatches(scope, url) {
+  if (!scope) return true;
+  if (!/[*?]/.test(scope)) { const s = scope.replace(/\/+$/, ""); return url === s || /^[/?#]/.test(url.slice(s.length)) && url.startsWith(s); }
+  return new RegExp("^" + scope.replace(/[.+^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*").replace(/\?/g, ".") + "$").test(url);
+}
+function loadTasteProfile(args) {
+  if (args.noProfile) return null;
+  const explicit = args.profile || process.env.TASTECHECK_PROFILE;
+  const path = explicit ? resolve(explicit) : join(process.env.HOME || homedir(), ".tastecheck", "profile.json");
+  if (!existsSync(path)) {
+    if (args.profile) throw new ToolError(`--profile file not found: ${path}`);
+    return null;
+  }
+  let p;
+  try { p = JSON.parse(readFileSync(path, "utf8")); } catch (e) { throw new ToolError(`cannot read taste profile ${path}: ${e.message}`); }
+  if (!p || p.kind !== "tastecheck-taste-profile" || p.schema_version !== 1 || !Array.isArray(p.entries)) {
+    throw new ToolError(`${path} is not a tastecheck taste profile (run: tastecheck profile show)`);
+  }
+  return { path, entries: p.entries };
 }
 
 function toUrl(target) {
@@ -512,13 +552,14 @@ const page = (fn, ...args) => `(${fn})((${helpers})(), ...${JSON.stringify(args)
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help || !args.target) {
-    process.stderr.write("usage: node cdp-qa.mjs <url | file path | file://url> [out-dir] [--json]\n");
+    process.stderr.write("usage: node cdp-qa.mjs <url | file path | file://url> [out-dir] [--json] [--profile <file> | --no-profile]\n");
     return args.help ? 0 : 2;
   }
   if (typeof WebSocket === "undefined") {
     throw new ToolError(`cdp-qa requires Node 22+ (global WebSocket); you have ${process.version}. Upgrade Node, or on Node 20.10+/21 run: node --experimental-websocket ${process.argv[1]} ...`);
   }
   const url = toUrl(args.target);
+  const tasteProfile = loadTasteProfile(args);
   const found = await findBrowser();
   if (!found) {
     throw new ToolError([
@@ -632,10 +673,29 @@ async function main() {
       return { status: "pass", evidence: "0 console errors/warnings and 0 uncaught exceptions on cold load" };
     });
 
+    let profileBlock = null;
     await run("templateSlop", async () => {
       if (!gate) return { status: "not_run", evidence: "assets/gate-audit.js not found next to cdp-qa.mjs" };
       if (gate.error) return { status: "not_run", evidence: `gate-audit.js failed to run: ${trunc(gate.error, 120)}` };
       const tells = (gate.warns || []).filter((w) => !/opacity 0|skeleton/.test(w));
+      if (tasteProfile) {
+        profileBlock = { path: tasteProfile.path, applied: [], ignored_objective: true };
+        const counted = [], accepted = [], rejected = [];
+        for (const w of tells) {
+          const id = tellId(w);
+          const hits = id ? tasteProfile.entries.filter((e) => e.tell === id && scopeMatches(e.scope, url)) : [];
+          const d = hits.find((e) => e.decision === "reject") || hits[0];
+          if (d && d.decision === "reject") { rejected.push(w); profileBlock.applied.push({ tell: id, decision: "reject", reason: d.reason || "" }); }
+          else if (d) { accepted.push(`${trunc(w, 70)} [accepted by your taste profile: ${d.reason || "no reason given"}]`); profileBlock.applied.push({ tell: id, decision: "accept", reason: d.reason || "" }); }
+          else counted.push(w);
+        }
+        if (rejected.length) return { status: "fail", evidence: `${rejected.length} tell(s) you asked to treat strictly: ${rejected.slice(0, 3).map((w) => trunc(w, 90)).join(" | ")}${counted.length ? `; plus ${counted.length} other tell(s)` : ""}` };
+        if (accepted.length) {
+          const note = `accepted by your taste profile, not counted: ${accepted.join(" | ")}`;
+          if (counted.length) return { status: "warn", evidence: `${counted.length} template tell(s): ${counted.slice(0, 3).map((w) => trunc(w, 90)).join(" | ")}; ${note}` };
+          return { status: "pass", evidence: `no uncounted template tells; ${note}` };
+        }
+      }
       if (tells.length) return { status: "warn", evidence: `${tells.length} template tell(s): ${tells.slice(0, 3).map((w) => trunc(w, 90)).join(" | ")}` };
       return { status: "pass", evidence: `gate-audit verdict ${gate.verdict}; no uniform card grids, stat bands, pill CTAs, default faces or indigo gradient` };
     });
@@ -837,6 +897,7 @@ async function main() {
       target: args.target, url, generatedAt: new Date().toISOString(),
       browser: { product: browserVersion, found: found.via }, node: process.version,
       outDir: OUT, screenshots: shots, probes,
+      ...(profileBlock ? { profile: profileBlock } : {}),
     };
     const tmp = join(OUT, ".evidence.json.tmp");
     writeFileSync(tmp, JSON.stringify(evidence, null, 2) + "\n");

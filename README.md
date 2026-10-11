@@ -27,6 +27,16 @@ Skills are plain Markdown, so any agent that can read files can use them. Slash 
 | `/deslop` | You have UI that looks generic. It finds and removes the tells. |
 | `/tastecheckpass` | You want to ship. It checks the real page and returns SHIP or HOLD. |
 
+## Check any page from the terminal
+
+```bash
+npx @puenteworks/tastecheck audit https://your-site.example
+```
+
+It loads the page in Chrome, runs 13 checks (keyboard, contrast, 320px and 400% zoom, tap targets, broken links, leaks, template tells and more) and prints SHIP or HOLD first, with one evidence line per check. Exit code 0 is SHIP, 1 is HOLD. It needs Node 22+ and a Chrome or Chromium install.
+
+If a "tell" is a deliberate choice on your site, record it once: `tastecheck profile accept uniform-card-grid --reason "real product catalog"`. Your profile stays on your machine and only changes how template tells are judged. Accessibility and the other objective checks never change.
+
 ## The 20 skills
 
 | Skill | What it does |
