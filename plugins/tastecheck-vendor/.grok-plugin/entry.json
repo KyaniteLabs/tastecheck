@@ -1,0 +1,18 @@
+{
+  "status": "UNSUBMITTED",
+  "note": "Payload for a future PR to xai-org/plugin-marketplace. Do not submit without CEO gate.",
+  "name": "tastecheck",
+  "version": "1.7.0",
+  "description": "Use when an agent has just shipped a UI change and needs a ship-vs-hold check with evidence.",
+  "keywords": [
+    "tastecheck",
+    "kyanite-labs",
+    "deslop",
+    "ship-gate"
+  ],
+  "source": {
+    "source": "url",
+    "url": "https://github.com/KyaniteLabs/tastecheck.git",
+    "sha": "PIN-AFTER-MERGE"
+  }
+}
