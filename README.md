@@ -30,7 +30,7 @@ Skills are plain Markdown, so any agent that can read files can use them. Slash 
 ## Check any page from the terminal
 
 ```bash
-npx @puenteworks/tastecheck audit https://your-site.example
+npx @kyanitelabs/tastecheck audit https://your-site.example
 ```
 
 It loads the page in Chrome, runs 13 checks (keyboard, contrast, 320px and 400% zoom, tap targets, broken links, leaks, template tells and more) and prints SHIP or HOLD first, with one evidence line per check. Exit code 0 is SHIP, 1 is HOLD. It needs Node 22+ and a Chrome or Chromium install.
@@ -101,11 +101,13 @@ git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh
 Or from npm (the bare name `tastecheck` was rejected by the registry as too close to `fast-check`):
 
 ```bash
-npm install @puenteworks/tastecheck
+npm install @kyanitelabs/tastecheck
 npx tastecheck --help
 ```
 
-The installer links skills into `~/.agents/skills/` and into any agent skill directories it detects. For Claude Code it can also link the 21 command files (20 commands plus the `/darkmode` alias for `/theming`) into `~/.claude/commands/`. `install.sh` needs a POSIX shell. On Windows, use `npx @puenteworks/tastecheck install`, which runs the same installer in Node.
+> **Package renamed.** It was formerly published as `@puenteworks/tastecheck`, which is deprecated and kept only as a pointer. Use `@kyanitelabs/tastecheck`.
+
+The installer links skills into `~/.agents/skills/` and into any agent skill directories it detects. For Claude Code it can also link the 21 command files (20 commands plus the `/darkmode` alias for `/theming`) into `~/.claude/commands/`. `install.sh` needs a POSIX shell. On Windows, use `npx @kyanitelabs/tastecheck install`, which runs the same installer in Node.
 
 Also: the gate has checks for video artifacts (reading time, authored motion, readability, audio presence).
 
