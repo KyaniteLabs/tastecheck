@@ -37,7 +37,7 @@ the result.
 
 **Post 3 (try it)**
 
-> Try it on your own site: npx @puenteworks/tastecheck audit https://your-site
+> Try it on your own site: npx @kyanitelabs/tastecheck audit https://your-site
 > <!-- verify audit command shipped before posting -->
 >
 > Install: git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh
@@ -70,7 +70,7 @@ the result.
 > evidence per check. It fails closed: a check that did not run is a HOLD, not a
 > pass.
 >
-> Try it on your own site: npx @puenteworks/tastecheck audit https://your-site
+> Try it on your own site: npx @kyanitelabs/tastecheck audit https://your-site
 > <!-- verify audit command shipped before posting -->
 >
 > What we have and have not measured: the gate has a 17-case labeled test set
@@ -101,7 +101,7 @@ the result.
 >
 > [attach `docs/hero/before-after.png`]
 >
-> Try it on your own site: npx @puenteworks/tastecheck audit https://your-site
+> Try it on your own site: npx @kyanitelabs/tastecheck audit https://your-site
 > <!-- verify audit command shipped before posting -->
 >
 > Plain Markdown, MIT, works with agents that can read skill files. Limits: the

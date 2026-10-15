@@ -3,6 +3,12 @@
 All notable changes to the tastecheck skill pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow semver.
 
+## [Unreleased]
+
+### Changed — npm package renamed to `@kyanitelabs/tastecheck`
+
+- **The npm package is now `@kyanitelabs/tastecheck`.** The org realigned to the KyaniteLabs scope (2026-10); the former `@puenteworks/tastecheck` is deprecated and kept only as a pointer to this one. The first publish under the new scope is v1.7.0 from the reconciliation tip (`f99c2749`). The CLI binary remains `tastecheck`.
+
 ## [1.7.0] — 2026-09-25
 
 ### Added — measured error rates: the labeled regression corpus + `tastecheck calibrate`
