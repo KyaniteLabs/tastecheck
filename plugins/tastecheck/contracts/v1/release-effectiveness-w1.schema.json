@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tastecheck.dev/contracts/v1/release-effectiveness-w1.schema.json",
+  "title": "Immutable W1 effectiveness projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "source_evidence_sha256", "effectiveness_status", "jobs", "judgments", "paired", "diversity", "immutable_stop_rule"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "kind": { "const": "immutable-w1-effectiveness-projection" },
+    "source_evidence_sha256": { "const": "663b6a4729ff3b59636578ac5262ae7ae28aa673fbc214930b87803b34a8fce8" },
+    "effectiveness_status": { "const": "blocked" },
+    "jobs": { "$ref": "#/$defs/completedJobs" },
+    "judgments": { "$ref": "#/$defs/completedJudgments" },
+    "paired": { "$ref": "#/$defs/redResult" },
+    "diversity": { "$ref": "#/$defs/redResult" },
+    "immutable_stop_rule": { "const": true }
+  },
+  "$defs": {
+    "completedJobs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["complete", "required"],
+      "properties": { "complete": { "const": 12 }, "required": { "const": 12 } }
+    },
+    "completedJudgments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["complete", "required"],
+      "properties": { "complete": { "const": 27 }, "required": { "const": 27 } }
+    },
+    "redResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pass_count", "required_count"],
+      "properties": {
+        "pass_count": { "const": 0 },
+        "required_count": { "const": 3 }
+      }
+    }
+  }
+}

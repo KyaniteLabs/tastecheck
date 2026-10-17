@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/contracts/v1/public-receipt.schema.json",
+  "title": "TasteCheck Public Receipt v1",
+  "description": "Sanitized-at-write public evidence receipt. Never contains absolute paths, usernames, secrets, or internal process text.",
+  "type": "object",
+  "required": ["schema_version", "skill", "scenario_id", "variant", "run_id", "prompt_hash", "context_hash", "tool_policy", "model_runtime", "output_ref", "rubric", "verdict"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "skill": {
+      "type": "string"
+    },
+    "scenario_id": {
+      "type": "string"
+    },
+    "variant": {
+      "type": "string",
+      "enum": ["baseline", "upgraded"]
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "prompt_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "context_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "tool_policy": {
+      "type": "string",
+      "description": "Description of tool access policy (e.g. read-only, write-allowed)"
+    },
+    "model_runtime": {
+      "type": "string",
+      "description": "Public model identifier and runtime name/version (no host, username, or token)"
+    },
+    "seed": {
+      "type": ["integer", "null"],
+      "description": "Seed used for this run; null if unsupported"
+    },
+    "temperature": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 2
+    },
+    "output_ref": {
+      "type": "string",
+      "description": "Repo-relative path to the content-addressed output blob OR sha256:<digest>"
+    },
+    "rubric": {
+      "type": "object",
+      "required": ["brief_fit", "specificity", "actionability", "coherence", "usability", "non_generic_judgment", "skill_requirements"],
+      "additionalProperties": false,
+      "properties": {
+        "brief_fit":            { "type": "number", "minimum": 1, "maximum": 5 },
+        "specificity":          { "type": "number", "minimum": 1, "maximum": 5 },
+        "actionability":        { "type": "number", "minimum": 1, "maximum": 5 },
+        "coherence":            { "type": "number", "minimum": 1, "maximum": 5 },
+        "usability":            { "type": "number", "minimum": 1, "maximum": 5 },
+        "non_generic_judgment": { "type": "number", "minimum": 1, "maximum": 5 },
+        "skill_requirements":   { "type": "number", "minimum": 1, "maximum": 5 }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Bounded evidence excerpts (no raw prompts, no absolute paths)"
+    },
+    "regressions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["improved", "no_material_lift", "regressed"]
+    },
+    "reviewer_provenance": {
+      "type": "string",
+      "description": "Public model identifier, rubric version, evaluator version, calibration result"
+    },
+    "diversity_pair": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Present only in diversity comparison records",
+      "properties": {
+        "run_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "structural_difference": { "type": "string" },
+        "aesthetic_difference":  { "type": "string" },
+        "voice_difference":      { "type": "string" },
+        "coherence_a": { "type": "boolean" },
+        "coherence_b": { "type": "boolean" },
+        "usability_a": { "type": "boolean" },
+        "usability_b": { "type": "boolean" },
+        "brief_fit_a": { "type": "boolean" },
+        "brief_fit_b": { "type": "boolean" },
+        "diversity_passed": { "type": "boolean" }
+      }
+    }
+  },
+  "definitions": {
+    "BANNED_PATTERNS": {
+      "description": "Sanitizer rejects any value matching: absolute paths (/ or ~/ or C:\\), usernames, email addresses, tokens/secrets, hostnames other than public URLs, private repo names, raw internal prompts, unrelated environment data. Repo-relative paths normalized with forward slashes are allowed."
+    }
+  }
+}

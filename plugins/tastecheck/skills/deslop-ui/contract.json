@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "skill": "deslop-ui",
+  "class": "repair",
+  "trigger": {"positive": ["A rendered or coded interface feels generic and needs a structural, visual, and verbal anti-slop audit.", "A page contains recognizable template attractors and needs a committed, brief-compatible direction."], "negative": ["The task is a greenfield aesthetic interview before a page exists.", "The task is only copy editing without a UI or committed design direction."], "adjacent_skills": ["design-system-interview", "humanize-copy", "art-direction", "tastecheck-pass"]},
+  "exclusions": ["Do not replace a coherent brand system merely because it is not your preference.", "Do not declare success after removing surface tells while leaving the page skeleton generic.", "Do not use aesthetic novelty to conceal functional, accessibility, or content defects."],
+  "inputs": {"required": ["rendered page or source", "committed design direction or explicit brief", "observable defects"], "optional": ["screenshots", "design tokens", "copy source", "browser/a11y findings"]},
+  "outputs": {"primary": "prioritized anti-slop repair specification and committed direction", "artifacts": ["surface/structure/verbal findings", "severity-ranked repair specification", "type, color, shape, and section decisions", "positive commitment statement", "post-repair verification checklist", "evidence-backed self-check"], "handoff_fields": ["plane", "finding", "severity", "preserved_signal", "repair", "concrete_decision", "verification", "evidence"]},
+  "stop_conditions": ["Stop before changing a coherent branded choice that is supported by the brief.", "Stop and request direction when no committed aesthetic or acceptance criteria exist.", "Stop when a proposed repair would change content facts, accessibility behavior, or product meaning."],
+  "handoff": {"receives_from": ["design-system-interview", "improve-existing-website", "art-direction", "responsive-layout"], "sends_to": ["web-typography", "color-system", "humanize-copy", "tastecheck-pass", "a11y-pass", "empty-states", "form-ux", "micro-motion"]},
+  "self_check_shape": "table_with_evidence",
+  "required_evidence_fields": ["status", "reason", "remediation", "evidence", "provenance"],
+  "context_budget": {"skill_md_max_tokens": 5000, "resource_max_tokens": 6000},
+  "notes": "Repair findings and severity converge across runs; variation belongs in response architecture, evidence-bound repair strategy, concrete design territory, and explanation, never in observed truth. A finding ledger without a severity-ranked repair specification and post-repair checks is incomplete."
+}

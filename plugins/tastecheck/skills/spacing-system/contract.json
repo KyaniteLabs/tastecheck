@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "skill": "spacing-system",
+  "class": "generative",
+  "trigger": {
+    "positive": [
+      "An interface needs a spacing scale, content-derived rhythm, or gap consistency",
+      "A page feels mechanically even or inconsistently spaced"
+    ],
+    "negative": [
+      "The request is only responsive reflow or component state behavior",
+      "The request is to choose type or color"
+    ],
+    "adjacent_skills": [
+      "responsive-layout",
+      "web-typography",
+      "deslop-ui"
+    ]
+  },
+  "exclusions": [
+    "Do not impose one uniform cadence across dissimilar content",
+    "Do not leave off-scale spacing values without an evidence-backed exception"
+  ],
+  "inputs": {
+    "required": [
+      "Content hierarchy and density direction",
+      "Existing layout or implementation context"
+    ],
+    "optional": [
+      "Design-system artifact",
+      "Existing spacing values",
+      "Responsive constraints"
+    ]
+  },
+  "outputs": {
+    "primary": "A tokenized spacing scale and stated section-rhythm strategy tied to content hierarchy",
+    "artifacts": [
+      "space token map",
+      "proximity map",
+      "rhythm evidence"
+    ],
+    "handoff_fields": [
+      "spacing_scale",
+      "density",
+      "section_rhythm",
+      "proximity_rules"
+    ]
+  },
+  "stop_conditions": [
+    "Pause when content hierarchy is absent and spacing would be arbitrary",
+    "Do not declare completion without checking off-scale values"
+  ],
+  "handoff": {
+    "receives_from": [
+      "design-system-interview",
+      "improve-existing-website",
+      "tasteroll",
+      "web-typography"
+    ],
+    "sends_to": [
+      "responsive-layout",
+      "component-states",
+      "form-ux"
+    ]
+  },
+  "self_check_shape": "table_with_evidence",
+  "required_evidence_fields": [
+    "status",
+    "reason",
+    "remediation",
+    "evidence",
+    "provenance"
+  ],
+  "context_budget": {
+    "skill_md_max_tokens": 5000,
+    "resource_max_tokens": 6000
+  }
+}

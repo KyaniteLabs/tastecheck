@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "skill": "fixture",
+  "class": "repair",
+  "trigger": { "positive": ["valid"], "negative": [] },
+  "exclusions": [],
+  "inputs": { "required": [], "optional": [] },
+  "outputs": { "primary": "valid" },
+  "stop_conditions": [],
+  "handoff": { "receives_from": [], "sends_to": [] },
+  "self_check_shape": "table_with_evidence",
+  "required_evidence_fields": ["status", "reason", "remediation", "evidence", "provenance"]
+}
