@@ -37,10 +37,8 @@ the result.
 
 **Post 3 (try it)**
 
-> Try it on your own site: npx @kyanitelabs/tastecheck audit https://your-site
-> <!-- verify audit command shipped before posting -->
->
 > Install: git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh
+>
 > Repo: https://github.com/KyaniteLabs/tastecheck
 
 **Post 4 (honest limits)**
@@ -70,8 +68,7 @@ the result.
 > evidence per check. It fails closed: a check that did not run is a HOLD, not a
 > pass.
 >
-> Try it on your own site: npx @kyanitelabs/tastecheck audit https://your-site
-> <!-- verify audit command shipped before posting -->
+> Install: git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh
 >
 > What we have and have not measured: the gate has a 17-case labeled test set
 > (12 true positives, 1 false negative, 4 true negatives, 0 false positives),
@@ -101,8 +98,7 @@ the result.
 >
 > [attach `docs/hero/before-after.png`]
 >
-> Try it on your own site: npx @kyanitelabs/tastecheck audit https://your-site
-> <!-- verify audit command shipped before posting -->
+> Install: git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh
 >
 > Plain Markdown, MIT, works with agents that can read skill files. Limits: the
 > gate's own error rate is measured on a small test set that mostly tests gate
@@ -115,7 +111,7 @@ the result.
 ## Posting checklist
 
 - Use the before/after image; verify the repo and gallery links right before posting.
-- Confirm the audit command works (see the HTML comments above) or delete those lines.
+- Public install is git clone + `./tastecheck/install.sh`. Do not claim an npm audit CLI.
 - Stagger channels so feedback from one improves the next.
 - Describe `npm test` as repository verification, not proof of better design.
 - Treat recurring objections as product input; do not argue with taste preferences.

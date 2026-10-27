@@ -12,6 +12,7 @@ and claimed-but-unrun checks are failures.
 
 Target: $ARGUMENTS (if empty, gate the most recent build in context).
 
-This is step 3 of 3. For a quick browser pass, run `npx @kyanitelabs/tastecheck audit <url-or-path>`
-and use its `evidence.json` as the starting evidence; it does not replace judging against the spec.
+This is step 3 of 3. For a browser evidence bag from a git checkout, run
+`node skills/tastecheck-pass/assets/cdp-qa.mjs <url-or-path>` (v1.7.0: eight-section
+harness; Node 22+ and local Chrome). It does not replace judging against the spec.
 If the verdict is HOLD on generic-looking UI, route the repair to `/deslop`.
