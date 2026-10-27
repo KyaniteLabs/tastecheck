@@ -31,7 +31,7 @@ Skills are plain Markdown, so any agent that can read files can use them. Slash 
 
 There is no published `audit` CLI. After install, `/tastecheckpass` is the ship gate: an agent loads the real page and returns SHIP or HOLD with evidence.
 
-At v1.7.0 the browser evidence driver is `skills/tastecheck-pass/assets/cdp-qa.mjs`, an eight-section harness: cold load, gate-audit.js, keyboard tab trace, 320px reflow, contrast samples, optional curate path, AX-tree summary, screenshots. Run it from a git checkout if you need that evidence bag. It uses Node's built-in WebSocket (Node 22+) and a local Chrome.
+At v1.7.0 the browser evidence driver is `skills/tastecheck-pass/assets/cdp-qa.mjs`, an eight-section harness: cold load, gate-audit.js, keyboard tab trace, 320px reflow, contrast samples, optional curate path, AX-tree summary, screenshots. Run it from a git checkout if you need that evidence bag. Node 22+ applies only to that driver (it uses Node's built-in WebSocket) and a local Chrome — not to `install.sh` or the skills, and not as a package floor.
 
 ## The 20 skills
 
