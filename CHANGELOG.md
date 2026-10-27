@@ -5,9 +5,9 @@ All notable changes to the tastecheck skill pack. Format follows
 
 ## [Unreleased]
 
-### Changed — npm package renamed to `@kyanitelabs/tastecheck`
+### Changed — public install is git clone (no new npm scope)
 
-- **The npm package is now `@kyanitelabs/tastecheck`.** The org realigned to the KyaniteLabs scope (2026-10); the former `@puenteworks/tastecheck` is deprecated and kept only as a pointer to this one. The first publish under the new scope is v1.7.0 from the reconciliation tip (`f99c2749`). The CLI binary remains `tastecheck`.
+- **Install from git:** `git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh`. That is the verified public path. A KyaniteLabs-scoped npm name is not in the registry. The last published package remains `@puenteworks/tastecheck@1.7.0` (an `install.sh` trampoline; not deprecated). Publishing a new npm scope stays gated.
 
 ## [1.7.0] — 2026-09-25
 

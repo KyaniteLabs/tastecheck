@@ -39,7 +39,7 @@
     "CHANGELOG.md"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "test": "npm run preflight:all && npm run test:structural && npm run test:oracle",

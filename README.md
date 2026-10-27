@@ -27,15 +27,11 @@ Skills are plain Markdown, so any agent that can read files can use them. Slash 
 | `/deslop` | You have UI that looks generic. It finds and removes the tells. |
 | `/tastecheckpass` | You want to ship. It checks the real page and returns SHIP or HOLD. |
 
-## Check any page from the terminal
+## Ship gate and evidence harness
 
-```bash
-npx @kyanitelabs/tastecheck audit https://your-site.example
-```
+There is no published `audit` CLI. After install, `/tastecheckpass` is the ship gate: an agent loads the real page and returns SHIP or HOLD with evidence.
 
-It loads the page in Chrome, runs 13 checks (keyboard, contrast, 320px and 400% zoom, tap targets, broken links, leaks, template tells and more) and prints SHIP or HOLD first, with one evidence line per check. Exit code 0 is SHIP, 1 is HOLD. It needs Node 22+ and a Chrome or Chromium install.
-
-If a "tell" is a deliberate choice on your site, record it once: `tastecheck profile accept uniform-card-grid --reason "real product catalog"`. Your profile stays on your machine and only changes how template tells are judged. Accessibility and the other objective checks never change.
+At v1.7.0 the browser evidence driver is `skills/tastecheck-pass/assets/cdp-qa.mjs`, an eight-section harness: cold load, gate-audit.js, keyboard tab trace, 320px reflow, contrast samples, optional curate path, AX-tree summary, screenshots. Run it from a git checkout if you need that evidence bag. It uses Node's built-in WebSocket (Node 22+) and a local Chrome.
 
 ## The 20 skills
 
@@ -98,16 +94,7 @@ There is also a separate visual corpus (`evals/taste/`, 36 pages: 20 generic AI-
 git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh
 ```
 
-Or from npm (the bare name `tastecheck` was rejected by the registry as too close to `fast-check`):
-
-```bash
-npm install @kyanitelabs/tastecheck
-npx tastecheck --help
-```
-
-> **Package renamed.** It was formerly published as `@puenteworks/tastecheck`, which is deprecated and kept only as a pointer. Use `@kyanitelabs/tastecheck`.
-
-The installer links skills into `~/.agents/skills/` and into any agent skill directories it detects. For Claude Code it can also link the 21 command files (20 commands plus the `/darkmode` alias for `/theming`) into `~/.claude/commands/`. `install.sh` needs a POSIX shell. On Windows, use `npx @kyanitelabs/tastecheck install`, which runs the same installer in Node.
+That is the install path. The installer links skills into `~/.agents/skills/` and into any agent skill directories it detects. For Claude Code it can also link the 21 command files (20 commands plus the `/darkmode` alias for `/theming`) into `~/.claude/commands/`. `install.sh` needs a POSIX shell. On Windows, use WSL or Git Bash.
 
 Also: the gate has checks for video artifacts (reading time, authored motion, readability, audio presence).
 
