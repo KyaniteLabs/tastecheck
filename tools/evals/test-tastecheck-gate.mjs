@@ -196,6 +196,27 @@ Object.assign(contrastControlPair, { ratio: 7.2, foreground: "#111111", backgrou
 contrastControlRow.evidence.sha256 = hashEvidence(contrastControlRow.evidence);
 assert.equal(evaluateReleaseGate({ ...validLedger, rows: contrastControlRows }, gateOptions).verdict, "SHIP", "dark text on white passes computed contrast control");
 
+const transparentTextRows = structuredClone(validRows);
+const transparentTextRow = transparentTextRows.find((row) => row.check_id === contrastCheck.id);
+const transparentTextPair = transparentTextRow.evidence.details.observations[0].pairs[0];
+Object.assign(transparentTextPair, { ratio: 21, foreground: "rgba(0, 0, 0, 0)", background: "#ffffff", theme: "light" });
+transparentTextRow.evidence.sha256 = hashEvidence(transparentTextRow.evidence);
+assert.equal(evaluateReleaseGate({ ...validLedger, rows: transparentTextRows }, gateOptions).verdict, "HOLD", "transparent text cannot pass by claiming opaque black contrast");
+
+const lowAlphaTextRows = structuredClone(validRows);
+const lowAlphaTextRow = lowAlphaTextRows.find((row) => row.check_id === contrastCheck.id);
+const lowAlphaTextPair = lowAlphaTextRow.evidence.details.observations[0].pairs[0];
+Object.assign(lowAlphaTextPair, { ratio: 21, foreground: "rgba(0, 0, 0, 0.5)", background: "#ffffff", theme: "light" });
+lowAlphaTextRow.evidence.sha256 = hashEvidence(lowAlphaTextRow.evidence);
+assert.equal(evaluateReleaseGate({ ...validLedger, rows: lowAlphaTextRows }, gateOptions).verdict, "HOLD", "translucent text cannot be evaluated as opaque black");
+
+const malformedAlphaRows = structuredClone(validRows);
+const malformedAlphaRow = malformedAlphaRows.find((row) => row.check_id === contrastCheck.id);
+const malformedAlphaPair = malformedAlphaRow.evidence.details.observations[0].pairs[0];
+Object.assign(malformedAlphaPair, { ratio: 21, foreground: "rgba(0, 0, 0, 2)", background: "#ffffff", theme: "light" });
+malformedAlphaRow.evidence.sha256 = hashEvidence(malformedAlphaRow.evidence);
+assert.equal(evaluateReleaseGate({ ...validLedger, rows: malformedAlphaRows }, gateOptions).verdict, "HOLD", "out-of-range alpha cannot pass");
+
 const requiredCheck = loadedCatalog.catalog.checks.find((check) => check.required);
 const optionalCheck = loadedCatalog.catalog.checks.find((check) => !check.required);
 const missingReport = evaluateReleaseGate({ ...validLedger, rows: validRows.filter((row) => row.check_id !== requiredCheck.id) }, gateOptions);

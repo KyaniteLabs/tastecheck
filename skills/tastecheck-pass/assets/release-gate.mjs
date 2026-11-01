@@ -672,10 +672,12 @@ function observationItemStatus(item, check, label, errors) {
           const raw = hex[1].length === 3 ? [...hex[1]].map((c) => c + c).join("") : hex[1];
           return [0, 2, 4].map((i) => parseInt(raw.slice(i, i + 2), 16));
         }
-        const rgb = value.match(/^rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})(?:\s*,\s*[\d.]+)?\s*\)$/i);
+        const rgb = value.match(/^(rgba?)\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})(?:\s*,\s*([\d.]+))?\s*\)$/i);
         if (!rgb) return null;
-        const channels = rgb.slice(1, 4).map(Number);
-        return channels.every((channel) => channel <= 255) ? channels : null;
+        const channels = rgb.slice(2, 5).map(Number);
+        const hasAlpha = rgb[1].toLowerCase() === "rgba";
+        const alpha = hasAlpha ? Number(rgb[5]) : 1;
+        return channels.every((channel) => channel <= 255) && Number.isFinite(alpha) && alpha === 1 ? channels : null;
       };
       const luminance = (color) => color.map((channel) => {
         const value = channel / 255;
