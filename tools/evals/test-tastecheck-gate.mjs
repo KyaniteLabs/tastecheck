@@ -210,6 +210,13 @@ Object.assign(lowAlphaTextPair, { ratio: 21, foreground: "rgba(0, 0, 0, 0.5)", b
 lowAlphaTextRow.evidence.sha256 = hashEvidence(lowAlphaTextRow.evidence);
 assert.equal(evaluateReleaseGate({ ...validLedger, rows: lowAlphaTextRows }, gateOptions).verdict, "HOLD", "translucent text cannot be evaluated as opaque black");
 
+const malformedRgbRows = structuredClone(validRows);
+const malformedRgbRow = malformedRgbRows.find((row) => row.check_id === contrastCheck.id);
+const malformedRgbPair = malformedRgbRow.evidence.details.observations[0].pairs[0];
+Object.assign(malformedRgbPair, { ratio: 21, foreground: "rgb(0, 0, 0, 0)", background: "#ffffff", theme: "light" });
+malformedRgbRow.evidence.sha256 = hashEvidence(malformedRgbRow.evidence);
+assert.equal(evaluateReleaseGate({ ...validLedger, rows: malformedRgbRows }, gateOptions).verdict, "HOLD", "rgb() with a fourth component is malformed and cannot pass");
+
 const malformedAlphaRows = structuredClone(validRows);
 const malformedAlphaRow = malformedAlphaRows.find((row) => row.check_id === contrastCheck.id);
 const malformedAlphaPair = malformedAlphaRow.evidence.details.observations[0].pairs[0];
