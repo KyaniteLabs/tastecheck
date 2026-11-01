@@ -179,6 +179,23 @@ assert.equal(validReport.release_eligible, true);
 assert.equal(validReport.rows.length, loadedCatalog.catalog.checks.length);
 assert.equal(new Set(validReport.rows.map((row) => row.check_id)).size, loadedCatalog.catalog.checks.length);
 
+const contrastCheck = loadedCatalog.catalog.checks.find((check) => check.observation.type === "contrast");
+assert(contrastCheck, "catalog includes a measured contrast check");
+const lightOnLightRows = structuredClone(validRows);
+const lightOnLightRow = lightOnLightRows.find((row) => row.check_id === contrastCheck.id);
+const lightOnLightPair = lightOnLightRow.evidence.details.observations[0].pairs[0];
+Object.assign(lightOnLightPair, { ratio: 21, foreground: "#e8e8ea", background: "#ffffff", theme: "light" });
+lightOnLightRow.evidence.sha256 = hashEvidence(lightOnLightRow.evidence);
+const lightOnLightReport = evaluateReleaseGate({ ...validLedger, rows: lightOnLightRows }, gateOptions);
+assert.equal(lightOnLightReport.verdict, "HOLD", "computed foreground/background contrast rejects light grey on white despite a forged reported ratio");
+
+const contrastControlRows = structuredClone(validRows);
+const contrastControlRow = contrastControlRows.find((row) => row.check_id === contrastCheck.id);
+const contrastControlPair = contrastControlRow.evidence.details.observations[0].pairs[0];
+Object.assign(contrastControlPair, { ratio: 7.2, foreground: "#111111", background: "#ffffff", theme: "light" });
+contrastControlRow.evidence.sha256 = hashEvidence(contrastControlRow.evidence);
+assert.equal(evaluateReleaseGate({ ...validLedger, rows: contrastControlRows }, gateOptions).verdict, "SHIP", "dark text on white passes computed contrast control");
+
 const requiredCheck = loadedCatalog.catalog.checks.find((check) => check.required);
 const optionalCheck = loadedCatalog.catalog.checks.find((check) => !check.required);
 const missingReport = evaluateReleaseGate({ ...validLedger, rows: validRows.filter((row) => row.check_id !== requiredCheck.id) }, gateOptions);

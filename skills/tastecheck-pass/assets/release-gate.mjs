@@ -665,8 +665,33 @@ function observationItemStatus(item, check, label, errors) {
       if (!isObject(pair)) { errors.push(`${pairLabel} must be an object`); passed = false; continue; }
       if (!nonempty(pair.kind) || !["body", "ui", "large"].includes(pair.kind)) errors.push(`${pairLabel}.kind must be body, ui, or large`);
       if (!Number.isFinite(pair.ratio) || pair.ratio < 0) { errors.push(`${pairLabel}.ratio must be a non-negative measured number`); passed = false; continue; }
+      const parseColor = (value) => {
+        if (typeof value !== "string") return null;
+        const hex = value.match(/^#([\da-f]{3}|[\da-f]{6})$/i);
+        if (hex) {
+          const raw = hex[1].length === 3 ? [...hex[1]].map((c) => c + c).join("") : hex[1];
+          return [0, 2, 4].map((i) => parseInt(raw.slice(i, i + 2), 16));
+        }
+        const rgb = value.match(/^rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})(?:\s*,\s*[\d.]+)?\s*\)$/i);
+        if (!rgb) return null;
+        const channels = rgb.slice(1, 4).map(Number);
+        return channels.every((channel) => channel <= 255) ? channels : null;
+      };
+      const luminance = (color) => color.map((channel) => {
+        const value = channel / 255;
+        return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+      }).reduce((sum, value, index) => sum + value * [0.2126, 0.7152, 0.0722][index], 0);
+      const foreground = parseColor(pair.foreground);
+      const background = parseColor(pair.background);
+      if (!foreground || !background) {
+        errors.push(`${pairLabel} requires resolved foreground and background colors (#hex or rgb[a])`);
+        passed = false;
+        continue;
+      }
+      const [lighter, darker] = [luminance(foreground), luminance(background)].sort((a, b) => b - a);
+      const computedRatio = (lighter + 0.05) / (darker + 0.05);
       const minimum = pair.kind === "body" ? 4.5 : 3;
-      if (pair.ratio < minimum) passed = false;
+      if (computedRatio < minimum) passed = false;
     }
     return passed;
   }
