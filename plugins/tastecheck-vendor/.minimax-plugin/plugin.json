@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "name": "kyanite-tastecheck",
+  "displayName": "TasteCheck",
+  "version": "1.7.0",
+  "description": "Use when an agent has just shipped a UI change and needs a ship-vs-hold check with evidence.",
+  "author": "Kyanite Labs",
+  "category": "Design & UX",
+  "exampleQueries": [
+    "Run a deslop pass on this page and report what changed",
+    "Should I ship this UI? Run the tastecheck ship gate"
+  ],
+  "apps": [],
+  "mcpServers": [],
+  "skills": [
+    "skills/tastecheck-pass/SKILL.md"
+  ]
+}
