@@ -4,7 +4,7 @@
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, readFileSync, writeFileSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
@@ -24,11 +24,11 @@ function run(target) {
   return { r, ev, out };
 }
 
-function runFixture(html) {
+function runFixture(html, { atRoot = false } = {}) {
   const fixtureDir = mkdtempSync(join(root, ".cdp-qa-contrast-test-"));
-  const target = join(fixtureDir, "fixture.html");
+  const target = atRoot ? join(root, `${basename(fixtureDir)}.html`) : join(fixtureDir, "fixture.html");
   writeFileSync(target, html);
-  return { ...run(target), fixtureDir };
+  return { ...run(target), fixtureDir, target };
 }
 
 let failed = 0;
@@ -83,10 +83,11 @@ check(lowPaint.ev && /p\.ordinary-low/.test(lowPaint.ev.probes.contrast.evidence
 const sourcePage = readFileSync(join(root, "tasteroll.html"), "utf8");
 const sourceMarker = "</body>";
 check(sourcePage.includes(sourceMarker), "source page has a closing body marker for a derived deterministic probe fixture");
-const displayWord = runFixture(sourcePage.replace(sourceMarker, '<script>document.documentElement.dataset.sig = "display-word";</script></body>'));
-outs.push(displayWord.out, displayWord.fixtureDir);
+const displayWord = runFixture(sourcePage.replace(sourceMarker, '<script>document.documentElement.dataset.sig = "display-word";</script></body>'), { atRoot: true });
+outs.push(displayWord.out, displayWord.fixtureDir, displayWord.target);
 check(displayWord.ev && displayWord.ev.probes.contrast.status === "pass", `real tasteroll display-word state passes measured contrast (exit ${displayWord.r.status})`);
 check(displayWord.ev && /1 transparent-fill text stroke\(s\) measured/.test(displayWord.ev.probes.contrast.evidence), "real tasteroll aria-hidden display-word is counted as measured stroke paint");
+check(displayWord.ev && displayWord.ev.probes.resources.status === "pass", "real tasteroll display-word fixture preserves checkout-relative resources");
 
 const idx = run(join(root, "index.html"));
 outs.push(idx.out);
