@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tastecheck.dev/contracts/v2/effectiveness/packet.schema.json",
+  "title": "Effectiveness v2 opaque blind packet",
+  "description": "Closed shape of the opaque packet shown to machine judges. Contains only opaque IDs, common brief and rubric, unmodified treatment-produced artifact bytes, verified render-evidence hashes, and content hashes. Rejects revisions, versions, paths, timestamps, provider data, generator receipts, and asymmetric arm fields.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["packet_id", "unit_id", "scenario_id_token", "arms", "brief", "rubric", "viewport_ids"],
+  "properties": {
+    "packet_id": { "$ref": "#/definitions/sha256" },
+    "unit_id": { "$ref": "#/definitions/sha256" },
+    "scenario_id_token": { "$ref": "#/definitions/sha256" },
+    "arms": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "$ref": "#/definitions/arm" },
+      "allOf": [
+        { "contains": { "type": "object", "properties": { "opaque_slot": { "const": 0 } }, "required": ["opaque_slot"] } },
+        { "contains": { "type": "object", "properties": { "opaque_slot": { "const": 1 } }, "required": ["opaque_slot"] } }
+      ]
+    },
+    "brief": { "type": "string", "minLength": 1 },
+    "rubric": { "type": "string", "minLength": 1 },
+    "viewport_ids": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": { "enum": ["mobile", "desktop"] }
+    }
+  },
+  "definitions": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "arm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["opaque_slot", "artifact_id", "label_id", "artifact_bytes", "artifact_sha256", "brief", "render_evidence"],
+      "properties": {
+        "opaque_slot": { "enum": [0, 1] },
+        "artifact_id": { "$ref": "#/definitions/sha256" },
+        "label_id": { "$ref": "#/definitions/sha256" },
+        "artifact_bytes": { "type": "string", "minLength": 1 },
+        "artifact_sha256": { "$ref": "#/definitions/sha256" },
+        "brief": { "type": "string", "minLength": 1 },
+        "render_evidence": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/renderEvidence" },
+          "allOf": [
+            { "contains": { "type": "object", "properties": { "viewport_id": { "const": "mobile" } }, "required": ["viewport_id"] } },
+            { "contains": { "type": "object", "properties": { "viewport_id": { "const": "desktop" } }, "required": ["viewport_id"] } }
+          ]
+        }
+      }
+    },
+    "renderEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["viewport_id", "viewport_id_token", "evidence_id", "artifact_sha256", "screenshot_sha256", "dom_sha256", "style_sha256"],
+      "properties": {
+        "viewport_id": { "enum": ["mobile", "desktop"] },
+        "viewport_id_token": { "$ref": "#/definitions/sha256" },
+        "evidence_id": { "$ref": "#/definitions/sha256" },
+        "artifact_sha256": { "$ref": "#/definitions/sha256" },
+        "screenshot_sha256": { "$ref": "#/definitions/sha256" },
+        "dom_sha256": { "$ref": "#/definitions/sha256" },
+        "style_sha256": { "$ref": "#/definitions/sha256" }
+      }
+    }
+  }
+}

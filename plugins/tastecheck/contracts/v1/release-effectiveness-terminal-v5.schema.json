@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tastecheck.dev/contracts/v1/release-effectiveness-terminal-v5.schema.json",
+  "title": "Immutable terminal V5 effectiveness projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "source_evidence_sha256", "effectiveness_status", "release_eligible", "mean_delta", "threshold", "preference", "immutable_stop_rule"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "kind": { "const": "immutable-terminal-v5-effectiveness-projection" },
+    "source_evidence_sha256": { "const": "6cb65b37b87bcf59cd4d851b7fc65038fb8de9c65cd19c30fbc612315989d218" },
+    "effectiveness_status": { "const": "blocked" },
+    "release_eligible": { "const": false },
+    "mean_delta": { "const": 0.3 },
+    "threshold": { "const": 0.6 },
+    "preference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["current", "total"],
+      "properties": {
+        "current": { "const": 11 },
+        "total": { "const": 12 }
+      }
+    },
+    "immutable_stop_rule": { "const": true }
+  }
+}
