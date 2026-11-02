@@ -176,13 +176,15 @@ html[data-sig="display-word"] .eyebrow{font-family:var(--font-display);font-size
 html[data-sig="display-word"] .sec h2{font-size:clamp(1.85rem,3.3vw,2.65rem)}
 
 html[data-sig="color-block"] .hero-panel{background:var(--acc);border-color:var(--acc)}
-html[data-sig="color-block"] .hero-panel .cell{border-color:color-mix(in oklab,var(--on-acc) 40%,transparent);color:var(--on-acc)}
-html[data-sig="color-block"] .hero-panel .cell-label,html[data-sig="color-block"] .hero-panel .cell-note{color:color-mix(in oklab,var(--on-acc) 78%,transparent)}
+/* cells go transparent over the accent slab: a ref-supplied light cell fill would strand on-accent text on it */
+html[data-sig="color-block"] .hero-panel .cell{background:transparent;border-color:color-mix(in oklab,var(--on-acc) 40%,transparent);color:var(--on-acc)}
+html[data-sig="color-block"] .hero-panel .cell-label,html[data-sig="color-block"] .hero-panel .cell-note{color:var(--on-acc)}
 html[data-sig="color-block"] .hero-panel .cell b{color:var(--on-acc)}
 html[data-sig="color-block"] .hero-panel .cell--die svg{stroke:var(--on-acc)}
 html[data-sig="color-block"] .hero-panel .cell--die svg .pip{fill:var(--on-acc)}
-html[data-sig="color-block"] #footer{background:var(--acc);border-top-color:var(--acc)}
-html[data-sig="color-block"] #footer .foot-brand,html[data-sig="color-block"] #footer .foot-note,html[data-sig="color-block"] #footer a{color:var(--on-acc)}
+html[data-sig="color-block"] #footer{background:var(--acc);border-top-color:var(--acc);color:var(--on-acc)}
+html[data-sig="color-block"] #footer .foot-brand,html[data-sig="color-block"] #footer .foot-note,html[data-sig="color-block"] #footer .foot-brand span,html[data-sig="color-block"] #footer a{color:var(--on-acc)}
+html[data-sig="color-block"] #footer a:hover{color:var(--on-acc)}
 html[data-sig="color-block"] .sixling i{border-color:color-mix(in oklab,var(--on-acc) 40%,transparent);background:color-mix(in oklab,var(--on-acc) 18%,transparent)}
 
 html[data-sig="bento"] .hero-panel{grid-template-columns:1.2fr 1fr;grid-template-areas:"die die" "id note"}
@@ -208,7 +210,7 @@ html[data-sig="sixling"] .step{border-style:dashed}
 /* mineral: asymmetric editorial with hairline bands */
 html[data-ref="mineral"] .sec + .sec{border-top:1px solid var(--line)}
 html[data-ref="mineral"] .hero-panel{box-shadow:0.75rem 0.75rem 0 var(--s2)}
-html[data-ref="mineral"] h1,h2,h3{font-family:var(--font-display)}
+html[data-ref="mineral"] h1,html[data-ref="mineral"] h2,html[data-ref="mineral"] h3{font-family:var(--font-display)}
 
 /* Swiss: strict label|content grid with heavy rules */
 html[data-ref="Swiss"] .sec{row-gap:1.15rem}
@@ -269,7 +271,8 @@ html[data-mode="dual"] .sec:nth-of-type(even) .sec-body,html[data-mode="dual"] .
 html[data-mode="dual"] .sec:nth-of-type(even) .sec-note,html[data-mode="dual"] .sec:nth-of-type(even) .step{--bg:var(--panel-bg);--ink:var(--panel-ink);--muted:var(--panel-muted);--line:var(--panel-line);background:var(--panel-bg);color:var(--panel-ink)}
 html[data-mode="dual"] .sec:nth-of-type(even) .sec-note p,html[data-mode="dual"] .sec:nth-of-type(even) .step p{color:var(--panel-muted)}
 html[data-mode="dual"] .sec:nth-of-type(even) .floor-list li{color:var(--panel-muted)}
-html[data-mode="dual"] .sec:nth-of-type(even){--acc:var(--acc-l);--on-acc:var(--on-l)}
+/* panel world: rebind every surface token so all descendants (incl. .sec-body p) resolve panel colors */
+html[data-mode="dual"] .sec:nth-of-type(even){--acc:var(--acc-l);--on-acc:var(--on-l);--bg:var(--panel-bg);--s2:#ece5d8;--ink:var(--panel-ink);--muted:var(--panel-muted);--line:var(--panel-line)}
 
 /* ============ responsive ============ */
 @media (max-width:860px){
@@ -418,7 +421,7 @@ html[data-mode="dual"] .sec:nth-of-type(even){--acc:var(--acc-l);--on-acc:var(--
   "use strict";
   var inv = JSON.parse(document.getElementById("tasteroll-inventory").textContent);
   var rolls = inv.rolls;
-  var byId = {};
+  var byId = Object.create(null); // own entries only — no inherited keys (__proto__, constructor, …) can resolve
   for (var i = 0; i < rolls.length; i++) byId[rolls[i].id] = rolls[i];
   var DIMS = ["ref", "vibe", "mode", "sig"];
   var html = document.documentElement;
@@ -520,7 +523,7 @@ html[data-mode="dual"] .sec:nth-of-type(even){--acc:var(--acc-l);--on-acc:var(--
   var wanted = null;
   try {
     var q = new URL(location.href).searchParams.get("roll");
-    if (q && byId[q]) wanted = byId[q];
+    if (q && Object.prototype.hasOwnProperty.call(byId, q)) wanted = byId[q]; // own inventory entry only
   } catch (e) { /* ignore */ }
   apply(wanted || rolls[randInt(rolls.length)], false);
 })();
