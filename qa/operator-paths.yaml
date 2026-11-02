@@ -1,0 +1,158 @@
+schema_version: 1
+repository: "KyaniteLabs/tastecheck"
+tested_merge_sha: "cec8bd5085ad4633e0954f6b32fe9193d47646fa"
+notes: "MCP is not exposed by this product; npm test remains supplementary and is not counted as an operator path."
+paths:
+  # Installer paths always use runner-created empty HOME directories.
+  - id: "I1"
+    surface: "install"
+    operation: "install.bash-fresh"
+    action: "bash install.sh --no-commands in a fresh empty HOME"
+    expected: "Exit 0; exactly 20 canonical skill symlinks point into this checkout."
+    fixtures: ["runner:empty-home"]
+  - id: "I2"
+    surface: "install"
+    operation: "install.bash-idempotent"
+    action: "Run bash install.sh --no-commands twice with the same fresh HOME"
+    expected: "Both runs exit 0; the second adds no duplicate or incorrect skill links."
+    fixtures: ["runner:empty-home"]
+  - id: "I3"
+    surface: "install"
+    operation: "install.bash-uninstall"
+    action: "Install with bash install.sh --no-commands, then bash install.sh --uninstall"
+    expected: "Both exit 0; uninstall removes every link into this checkout."
+    fixtures: ["runner:empty-home"]
+  - id: "I4"
+    surface: "install"
+    operation: "install.node-fresh"
+    action: "tastecheck install --no-commands in a fresh empty HOME"
+    expected: "Exit 0; exactly 20 canonical skill symlinks point into this checkout."
+    fixtures: ["runner:empty-home"]
+  - id: "I5"
+    surface: "install"
+    operation: "install.node-uninstall"
+    action: "Install with the Node bin, then tastecheck uninstall"
+    expected: "Both exit 0; uninstall removes every link into this checkout."
+    fixtures: ["runner:empty-home"]
+
+  # CLI and profile state are isolated into task-runner-owned HOME directories.
+  - id: "C1"
+    surface: "cli"
+    operation: "cli.version"
+    action: "tastecheck --version"
+    expected: "Exit 0 and print exactly the package.json version."
+    fixtures: ["repo:package.json"]
+  - id: "C2"
+    surface: "cli"
+    operation: "cli.usage"
+    action: "Run tastecheck with no arguments"
+    expected: "Exit 0; stdout contains usage text and stderr is empty."
+    fixtures: []
+  - id: "C3"
+    surface: "cli"
+    operation: "cli.unknown"
+    action: "Run tastecheck with bogus-command"
+    expected: "Exit 2; stderr contains the unknown-command error and usage."
+    fixtures: []
+  - id: "C4"
+    surface: "profile"
+    operation: "profile.show-empty"
+    action: "tastecheck profile show under a fresh empty HOME"
+    expected: "Exit 0; reports zero entries and that defaults apply without a profile file."
+    fixtures: ["runner:empty-home"]
+  - id: "C5"
+    surface: "profile"
+    operation: "profile.accept-reject"
+    action: "Accept uniform-card-grid, reject pill-cta, then show the local profile"
+    expected: "Both decisions are recorded and visible; exit 0 for every command."
+    fixtures: ["runner:empty-home"]
+  - id: "C6"
+    surface: "profile"
+    operation: "profile.export-import"
+    action: "Accept a tell, export JSON, reset, import the export, and show"
+    expected: "Export is valid profile JSON and import restores the same decision."
+    fixtures: ["runner:empty-home"]
+  - id: "C7"
+    surface: "profile"
+    operation: "profile.forget-reset"
+    action: "Accept a tell, forget it, then create and reset profile state"
+    expected: "Forget removes the decision; reset --yes deletes the local profile file."
+    fixtures: ["runner:empty-home"]
+  - id: "C8"
+    surface: "profile"
+    operation: "profile.invalid-import"
+    action: "Import the invalid profile fixture while a valid profile already exists"
+    expected: "Exit 2; invalid input is refused and the pre-existing profile bytes stay unchanged."
+    fixtures: ["runner:empty-home", "repo:qa/fixtures/profile-invalid.json"]
+
+  # Product ship gate paths. HOLD is the expected fail-closed result for the slop fixture.
+  - id: "G1"
+    surface: "audit"
+    operation: "audit.ship"
+    action: "tastecheck audit tasteroll.html with JSON evidence"
+    expected: "Exit 0; evidence.json verdict is SHIP and contains per-probe evidence."
+    fixtures: ["repo:tasteroll.html", "runner:chromium"]
+  - id: "G2"
+    surface: "audit"
+    operation: "audit.hold-slop"
+    action: "tastecheck audit the known generic testimonial-cards fixture"
+    expected: "Exit 1; evidence.json verdict is HOLD with at least one failed probe."
+    fixtures: ["repo:evals/taste/fixtures/slop/10-testimonial-cards.html", "runner:chromium"]
+  - id: "G3"
+    surface: "audit"
+    operation: "audit.usage-error"
+    action: "Run tastecheck audit without a target"
+    expected: "Exit 2; stderr reports the missing target and audit usage."
+    fixtures: []
+
+  # Browser UI paths run in fresh Playwright contexts against a loopback static server.
+  - id: "U1"
+    surface: "web-ui"
+    operation: "ui.cold-load"
+    action: "Cold-load tasteroll.html and validate the initial roll against embedded inventory"
+    expected: "Inventory has 1536 rows; initial roll, displayed ids, and all four data attributes match one row."
+    fixtures: ["repo:tasteroll.html", "runner:chromium", "runner:static-server"]
+  - id: "U2"
+    surface: "web-ui"
+    operation: "ui.roll"
+    action: "Click #diceBtn once"
+    expected: "Roll id changes; tuple matches an inventory row; live region announces the new id."
+    fixtures: ["repo:tasteroll.html", "runner:chromium", "runner:static-server"]
+  - id: "U3"
+    surface: "web-ui"
+    operation: "ui.lock"
+    action: "Lock ref and re-roll until an unlocked dimension changes"
+    expected: "aria-pressed is true; ref remains fixed; at least one unlocked dimension changes; announcement is present."
+    fixtures: ["repo:tasteroll.html", "runner:chromium", "runner:static-server"]
+  - id: "U4"
+    surface: "web-ui"
+    operation: "ui.unlock"
+    action: "Unlock ref and re-roll until its value changes"
+    expected: "aria-pressed becomes false; ref can change again; announcement is present."
+    fixtures: ["repo:tasteroll.html", "runner:chromium", "runner:static-server"]
+  - id: "U5"
+    surface: "web-ui"
+    operation: "ui.share"
+    action: "Click #shareBtn with clipboard permission granted"
+    expected: "Native clipboard write resolves with a URL containing the current ?roll id and the live region confirms copy."
+    fixtures: ["repo:tasteroll.html", "runner:chromium", "runner:static-server"]
+  - id: "U6"
+    surface: "web-ui"
+    operation: "ui.deep-link-hostile"
+    action: "Open ?roll=r0004 and ?roll=__proto__ in separate fresh pages"
+    expected: "r0004 loads its exact inventory tuple; __proto__ falls back to a valid inventory row without page errors."
+    fixtures: ["repo:tasteroll.html", "runner:chromium", "runner:static-server"]
+  - id: "U7"
+    surface: "web-ui"
+    operation: "ui.no-external-requests"
+    action: "Cold-load tasteroll.html while recording requests and console errors"
+    expected: "Zero external requests and zero browser console/page errors."
+    fixtures: ["repo:tasteroll.html", "runner:chromium", "runner:static-server"]
+
+  # Static HTTP endpoints served from this checkout.
+  - id: "H1"
+    surface: "http"
+    operation: "http.static-responses"
+    action: "GET the homepage, tasteroll, samples, skill manifest, index, and one missing URL"
+    expected: "Expected pages are HTTP 200 with HTML/JSON content types; the missing URL is HTTP 404."
+    fixtures: ["runner:static-server", "repo:index.html", "repo:tasteroll.html", "repo:samples/tasteroll/index.html", "repo:skills.json"]

@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "kind": "tastecheck-taste-profile",
+  "entries": [],
+  "unexpected_field": "invalid-fixture-must-be-refused"
+}
