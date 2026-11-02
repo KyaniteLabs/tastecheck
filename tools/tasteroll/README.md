@@ -12,11 +12,18 @@ consumer, not this directory.
   `description`, `minted_with`, `seed`, `legal_fingerprint`, `face_product`,
   `count`, `faces`, `rolls`
 
+The envelope is a **closed set**: no other top-level key is allowed, and the
+metadata is typed (`description` is a string when present — the only optional
+field; `legal_fingerprint` is a 64-char lowercase hex sha256; counts are
+integers). Roll results live only in `rolls[]` rows, so a page/HTML/CSS
+payload cannot ride in beside the data — the validator rejects any unknown
+root key (`pages`, `html`, `css`, …), not just HTML-bearing row content.
+
 ## Commands
 
 ```bash
 npm run mint:tasteroll     # (re)mint the artifact
-npm run test:tasteroll     # external validator (also part of npm test / CI)
+npm run test:tasteroll     # external validator + regression battery (also part of npm test / CI)
 node tools/tasteroll/test-inventory.mjs --artifact /tmp/some-mint.json
                             # validate a mint written elsewhere
 ```
@@ -82,3 +89,18 @@ the faces/recipes change.
   `npm test`.
 - The `verify` GitHub workflow runs it explicitly in the `structural` job, so
   a missing or stale artifact fails CI.
+
+## Regression battery
+
+`tools/tasteroll/test-inventory-regressions.mjs` pins the closed-envelope
+contract with black-box cases against the real CLI (`test-inventory.mjs
+--artifact <fixture>`). It runs as the second half of `test:tasteroll`, so it
+is wired into `npm test` and the `verify` workflow:
+
+- **valid controls** — the committed artifact, a fresh fallback mint (chance
+  stripped from `PATH`), and an envelope without the optional `description`;
+- **must reject** — unknown root keys carrying page payloads (`pages`, `html`,
+  `css`, `prebuilt`) or benign names (`notes`), an object/array-valued
+  `description`, string-typed scalars (`schema_version`, `count`), a non-hex
+  `legal_fingerprint`, a smuggled payload key inside `faces`, row-level extra
+  keys, and non-object roots (array, null, string).

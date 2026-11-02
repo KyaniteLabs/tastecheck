@@ -8,6 +8,9 @@
  *   node tools/tasteroll/test-inventory.mjs --artifact /tmp/other-mint.json
  *
  * Checks (exit 1 on the first failure):
+ *   - root-object envelope with a CLOSED key set: unknown top-level keys
+ *     (e.g. a `pages`/`html`/`css` payload) fail; metadata is typed
+ *     (description string when present, legal_fingerprint 64-hex sha256)
  *   - envelope schema: schema_version, kind, minted_with, seed, faces,
  *     face_product, count, legal_fingerprint
  *   - staleness: legal_fingerprint matches the current faces/recipes sources
@@ -58,6 +61,47 @@ try {
   fail(`inventory is not valid JSON (${inventoryPath}): ${error.message}`);
 }
 
+// --- root-object envelope with a closed key set ----------------------------
+// Roll results live ONLY in rolls[] rows. The envelope is a closed schema:
+// any other top-level key (a `pages`/`html`/`css` payload, or anything else)
+// fails here, so page payloads cannot ride in beside the data.
+const ALLOWED_ENVELOPE_KEYS = new Set([
+  'schema_version',
+  'kind',
+  'description',
+  'minted_with',
+  'seed',
+  'legal_fingerprint',
+  'face_product',
+  'count',
+  'faces',
+  'rolls',
+]);
+if (doc === null || typeof doc !== 'object' || Array.isArray(doc)) {
+  const shape = doc === null ? 'null' : Array.isArray(doc) ? 'an array' : typeof doc;
+  fail(`root must be a JSON object (the inventory envelope), got ${shape}`);
+}
+const unknownKeys = Object.keys(doc).filter((k) => !ALLOWED_ENVELOPE_KEYS.has(k));
+if (unknownKeys.length > 0) {
+  fail(
+    `unknown envelope key${unknownKeys.length > 1 ? 's' : ''} ` +
+      `${unknownKeys.map((k) => JSON.stringify(k)).join(', ')} — the envelope is a closed set ` +
+      `(roll results live only in rolls[] rows; no page/HTML/CSS payloads)`
+  );
+}
+for (const key of ALLOWED_ENVELOPE_KEYS) {
+  if (key === 'description') continue; // the only optional envelope field
+  if (!(key in doc)) fail(`missing required envelope key "${key}"`);
+}
+if ('description' in doc && typeof doc.description !== 'string') {
+  const shape = Array.isArray(doc.description) ? 'an array' : typeof doc.description;
+  fail(`description must be a string when present, got ${shape}`);
+}
+if (typeof doc.faces !== 'object' || doc.faces === null || Array.isArray(doc.faces)) {
+  const shape = Array.isArray(doc.faces) ? 'an array' : typeof doc.faces;
+  fail(`faces must be an object of face-dimension arrays, got ${shape}`);
+}
+
 // --- envelope schema -------------------------------------------------------
 if (doc.schema_version !== 1) fail(`schema_version must be 1, got ${doc.schema_version}`);
 if (doc.kind !== 'tasteroll-live-demo-inventory') fail(`unexpected kind ${JSON.stringify(doc.kind)}`);
@@ -77,8 +121,11 @@ if (actualFaces !== expectedFaces) {
 
 // --- staleness: faces/recipes fingerprint ----------------------------------
 const expectedFingerprint = legalFingerprint();
-if (typeof doc.legal_fingerprint !== 'string' || doc.legal_fingerprint.length === 0) {
-  fail('legal_fingerprint missing — the artifact predates fingerprinting; re-run: npm run mint:tasteroll');
+if (typeof doc.legal_fingerprint !== 'string' || !/^[0-9a-f]{64}$/.test(doc.legal_fingerprint)) {
+  fail(
+    'legal_fingerprint missing or malformed (must be a 64-char lowercase hex sha256) — ' +
+      'the artifact predates fingerprinting; re-run: npm run mint:tasteroll'
+  );
 }
 if (doc.legal_fingerprint !== expectedFingerprint) {
   fail(
