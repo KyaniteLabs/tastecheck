@@ -9,6 +9,7 @@ import { tmpdir } from "node:os";
 import { dirname, extname, isAbsolute, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadCatalog } from "./catalog.mjs";
+import { createRunState, runnerProvenance } from "./run-state.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const PACKAGE_BIN = resolve(ROOT, "bin/tastecheck.mjs");
@@ -261,8 +262,8 @@ function closeUi(ui) { return ui.context.close(); }
 
 async function runPath(path, runtime, outputDir) {
   const lines = [`# ${path.id} — ${path.surface}`, `Action: ${path.action}`, `Expected: ${path.expected}`, `Fixtures: ${path.fixtures.join(", ") || "none"}`];
-  const home = join(outputDir, "homes", path.id);
-  const stateRoot = join(outputDir, "isolated-state", path.id);
+  const home = runtime.runState.home(path.id);
+  const stateRoot = runtime.runState.xdg(path.id);
   mkdirSync(home, { recursive: true });
   const env = minimalEnv(home, runtime.chrome?.executable, stateRoot);
   const ctx = {
@@ -595,9 +596,9 @@ async function main() {
   const outputDir = resolve(requestedOut || join(tmpdir(), `tastecheck-qa-${runId}`));
   if (existsSync(outputDir) && readdirSync(outputDir).length) throw new Error(`output directory is not empty: ${outputDir}`);
   mkdirSync(join(outputDir, "transcripts"), { recursive: true });
-  mkdirSync(join(outputDir, "homes"), { recursive: true });
   const chrome = await findChrome();
-  const runtime = { chrome, browser: null, staticServer: null, log: (message) => console.log(message) };
+  const runState = createRunState(ROOT);
+  const runtime = { chrome, browser: null, staticServer: null, runState, log: (message) => console.log(message) };
   console.log(`TasteCheck QA: ${catalog.paths.length} catalog paths`);
   console.log(`Browser: ${chrome ? chrome.version : "unavailable (browser paths will be BLOCKED)"}`);
   const results = [];
@@ -606,12 +607,13 @@ async function main() {
   } finally {
     if (runtime.browser) await runtime.browser.close().catch(() => {});
     if (runtime.staticServer) await new Promise((resolveClose) => runtime.staticServer.server.close(resolveClose));
+    runState.cleanup();
   }
 
   const summary = {
-    schema_version: 1,
+    schema_version: 2,
     repository: catalog.repository,
-    catalog_tested_merge_sha: catalog.tested_merge_sha,
+    ...runnerProvenance(ROOT, catalog.tested_merge_sha),
     run_id: runId,
     node: process.version,
     browser: chrome?.version || null,

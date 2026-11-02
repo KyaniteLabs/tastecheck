@@ -331,7 +331,7 @@ function helpers() {
 function pageContrast(H) {
   const { all, cs, parent, rgba, ratio, over, visible, sel, px, rectOf } = H;
   const bad = [];
-  let checked = 0, skipped = 0, worst = null;
+  let checked = 0, skipped = 0, strokeMeasured = 0, worst = null;
   const seen = new Set();
   for (const el of all(true)) {
     if (/^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE|HEAD|TITLE|META|LINK|SVG|OPTION)$/i.test(el.tagName)) continue;
@@ -360,17 +360,25 @@ function pageContrast(H) {
     if (indeterminate) { skipped++; continue; }
     let base = [255, 255, 255, 1];
     for (let i = layers.length - 1; i >= 0; i--) base = over(layers[i], base);
-    const fg0 = rgba(s.color);
+    const fill = rgba(s.webkitTextFillColor || s.color);
+    const stroke = rgba(s.webkitTextStrokeColor || "transparent");
+    const strokeWidth = px(s.webkitTextStrokeWidth);
+    // Transparent-fill text is painted by its outline when a visible text stroke is present.
+    // Measure that actual paint; aria-hidden is intentionally not an exclusion from visual QA.
+    const strokePaint = fill[3] === 0 && strokeWidth > 0 && stroke[3] > 0;
+    if (strokePaint) strokeMeasured++;
+    const fg0 = strokePaint ? stroke : fill;
     const fg = over([fg0[0], fg0[1], fg0[2], fg0[3] * opacity], base);
     const rt = ratio(fg, base);
     const size = px(s.fontSize);
     const large = size >= 24 || (size >= 18.66 && parseInt(s.fontWeight, 10) >= 700);
     const need = large ? 3 : 4.5;
+    const paint = strokePaint ? `text-stroke ${s.webkitTextStrokeWidth}` : "text-fill";
     checked++;
-    if (!worst || rt < worst.ratio) worst = { sel: sel(el), ratio: +rt.toFixed(2) };
-    if (rt < need) bad.push({ sel: sel(el), ratio: +rt.toFixed(2), need, text: (el.textContent || "").trim().slice(0, 30) });
+    if (!worst || rt < worst.ratio) worst = { sel: sel(el), ratio: +rt.toFixed(2), paint };
+    if (rt < need) bad.push({ sel: sel(el), ratio: +rt.toFixed(2), need, paint, text: (el.textContent || "").trim().slice(0, 30) });
   }
-  return { checked, skipped, worst, bad: bad.length, sample: bad.slice(0, 5) };
+  return { checked, skipped, strokeMeasured, worst, bad: bad.length, sample: bad.slice(0, 5) };
 }
 
 /* horizontal reflow at the current viewport; offenders ignore html/body overflow hacks */
@@ -765,8 +773,8 @@ async function main() {
       const r = await evaluate(page(pageContrast));
       if (r.checked === 0) return { status: "not_run", evidence: `no measurable text pairs (${r.skipped} skipped: gradients/images/disabled)` };
       const w = r.worst ? `worst ${r.worst.ratio}:1 at ${r.worst.sel}` : "";
-      if (r.bad) return { status: "fail", evidence: `${r.bad}/${r.checked} text pair(s) below WCAG AA: ${r.sample.slice(0, 3).map((s) => `${s.sel} ${s.ratio}:1 (needs ${s.need}) «${s.text}»`).join(", ")}` };
-      return { status: "pass", evidence: `${r.checked} text pairs ≥ AA; ${w}${r.skipped ? `; ${r.skipped} skipped (background image/gradient)` : ""}` };
+      if (r.bad) return { status: "fail", evidence: `${r.bad}/${r.checked} text pair(s) below WCAG AA: ${r.sample.slice(0, 3).map((s) => `${s.sel} ${s.ratio}:1 (needs ${s.need}${s.paint === "text-fill" ? "" : `; ${s.paint}`}) «${s.text}»`).join(", ")}` };
+      return { status: "pass", evidence: `${r.checked} text pairs ≥ AA; ${w}${r.strokeMeasured ? `; ${r.strokeMeasured} transparent-fill text stroke(s) measured` : ""}${r.skipped ? `; ${r.skipped} skipped (background image/gradient)` : ""}` };
     });
 
     let lightTheme = null, darkTheme = null, darkContrast = null;
