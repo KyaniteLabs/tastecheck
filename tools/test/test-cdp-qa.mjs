@@ -2,9 +2,9 @@
 // probes failing, and the repo's own index.html runs end to end with every probe present.
 // Skips (exit 0) only when no browser can be found or Node lacks a global WebSocket.
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
@@ -18,10 +18,17 @@ if (typeof WebSocket === "undefined") { console.log("skipped: no browser (Node 2
 
 function run(target) {
   const out = mkdtempSync(join(tmpdir(), "cdp-qa-test-"));
-  const r = spawnSync(process.execPath, [script, target, out], { encoding: "utf8", timeout: 120_000 });
+  const r = spawnSync(process.execPath, [script, target, out, "--no-profile"], { encoding: "utf8", timeout: 120_000 });
   const evPath = join(out, "evidence.json");
   const ev = existsSync(evPath) ? JSON.parse(readFileSync(evPath, "utf8")) : null;
   return { r, ev, out };
+}
+
+function runFixture(html, { atRoot = false } = {}) {
+  const fixtureDir = mkdtempSync(join(root, ".cdp-qa-contrast-test-"));
+  const target = atRoot ? join(root, `${basename(fixtureDir)}.html`) : join(fixtureDir, "fixture.html");
+  writeFileSync(target, html);
+  return { ...run(target), fixtureDir, target };
 }
 
 let failed = 0;
@@ -53,6 +60,34 @@ if (bad.ev) {
   check(/missing-hero/.test(p.resources.evidence), "bad: resources evidence names the 404 image");
   check(/\/Users\/someone/.test(p.leaks.evidence), "bad: leaks evidence names the machine path");
 } else check(false, "bad: evidence.json written");
+
+const highStroke = runFixture(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>High contrast stroke</title><style>
+  body { margin: 0; background: #000; color: #fff; }
+  .stroke-high { margin: 40px; font: 800 60px/1 sans-serif; color: transparent; -webkit-text-fill-color: transparent; -webkit-text-stroke: 2px #fff; }
+</style></head><body><p class="stroke-high" aria-hidden="true">ROLL</p></body></html>`);
+outs.push(highStroke.out, highStroke.fixtureDir);
+check(highStroke.ev && highStroke.ev.probes.contrast.status === "pass", `high-contrast text stroke passes even with transparent fill and aria-hidden (exit ${highStroke.r.status})`);
+check(highStroke.ev && /p\.stroke-high/.test(highStroke.ev.probes.contrast.evidence), "high-contrast aria-hidden stroke is included in measured contrast evidence");
+
+const lowPaint = runFixture(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Low contrast paint controls</title><style>
+  body { margin: 0; background: #fff; color: #111; font: 18px/1.5 sans-serif; }
+  .stroke-wrap { margin: 20px; padding: 8px; background: #222; }
+  .stroke-low { margin: 0; font: 800 60px/1 sans-serif; color: transparent; -webkit-text-fill-color: transparent; -webkit-text-stroke: 2px #333; }
+  .ordinary-low { margin: 20px; color: #ccc; }
+</style></head><body><div class="stroke-wrap"><p class="stroke-low" aria-hidden="true">ROLL</p></div><p class="ordinary-low" aria-hidden="true">Ordinary faint text</p></body></html>`);
+outs.push(lowPaint.out, lowPaint.fixtureDir);
+check(lowPaint.ev && lowPaint.ev.probes.contrast.status === "fail", `low-contrast stroke and ordinary text remain failures when aria-hidden (exit ${lowPaint.r.status})`);
+check(lowPaint.ev && /p\.stroke-low/.test(lowPaint.ev.probes.contrast.evidence), "low-contrast aria-hidden stroke remains in failure evidence");
+check(lowPaint.ev && /p\.ordinary-low/.test(lowPaint.ev.probes.contrast.evidence), "ordinary low-contrast aria-hidden text remains in failure evidence");
+
+const sourcePage = readFileSync(join(root, "tasteroll.html"), "utf8");
+const sourceMarker = "</body>";
+check(sourcePage.includes(sourceMarker), "source page has a closing body marker for a derived deterministic probe fixture");
+const displayWord = runFixture(sourcePage.replace(sourceMarker, '<script>document.documentElement.dataset.sig = "display-word";</script></body>'), { atRoot: true });
+outs.push(displayWord.out, displayWord.fixtureDir, displayWord.target);
+check(displayWord.ev && displayWord.ev.probes.contrast.status === "pass", `real tasteroll display-word state passes measured contrast (exit ${displayWord.r.status})`);
+check(displayWord.ev && /1 transparent-fill text stroke\(s\) measured/.test(displayWord.ev.probes.contrast.evidence), "real tasteroll aria-hidden display-word is counted as measured stroke paint");
+check(displayWord.ev && displayWord.ev.probes.resources.status === "pass", "real tasteroll display-word fixture preserves checkout-relative resources");
 
 const idx = run(join(root, "index.html"));
 outs.push(idx.out);
