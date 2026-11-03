@@ -176,6 +176,8 @@ html[data-sig="display-word"] .eyebrow{font-family:var(--font-display);font-size
 html[data-sig="display-word"] .sec h2{font-size:clamp(1.85rem,3.3vw,2.65rem)}
 
 html[data-sig="color-block"] .hero-panel{background:var(--acc);border-color:var(--acc)}
+/* Stack the color-block cells so this signature changes panel topology, not color alone. */
+html[data-sig="color-block"] .hero-panel{grid-template-columns:1fr}
 /* cells go transparent over the accent slab: a ref-supplied light cell fill would strand on-accent text on it */
 html[data-sig="color-block"] .hero-panel .cell{background:transparent;border-color:color-mix(in oklab,var(--on-acc) 40%,transparent);color:var(--on-acc)}
 html[data-sig="color-block"] .hero-panel .cell-label,html[data-sig="color-block"] .hero-panel .cell-note{color:var(--on-acc)}
