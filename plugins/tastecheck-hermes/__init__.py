@@ -19,8 +19,12 @@ import logging
 import os
 import re
 import shlex
+import signal
 import subprocess
+import tempfile
+import threading
 import time
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -36,6 +40,7 @@ DEFAULTS: Dict[str, Any] = {
 }
 LEDGER_MAX = 200
 AUDITS_KEEP = 20
+TOOL_RESULT_MAX = 20000
 
 _UI_RE = re.compile(
     r"\b(?:ui|frontend|front-end|landing ?page|website|web ?page|page|site|design|css|layout|"
@@ -85,15 +90,91 @@ def _load_json(path: Path, default: Any) -> Any:
 
 
 def _save_json(path: Path, payload: Any) -> None:
+    """Atomic write through a per-writer temp file in the same directory."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    tmp.replace(path)
+    fd, tmp = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=str(path.parent))
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write(json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
+        os.replace(tmp, path)
+    except BaseException:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise
+
+
+_THREAD_LOCK = threading.Lock()
+
+
+@contextmanager
+def _locked(path: Path):
+    """Exclusive cross-thread + cross-process lock for a read-modify-write of *path*."""
+    lock_path = path.with_name(path.name + ".lock")
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with _THREAD_LOCK, open(lock_path, "a+b") as fh:
+        if os.name == "nt":
+            import msvcrt
+
+            fh.seek(0)
+            while True:
+                try:
+                    msvcrt.locking(fh.fileno(), msvcrt.LK_LOCK, 1)
+                    break
+                except OSError:
+                    continue
+            try:
+                yield
+            finally:
+                fh.seek(0)
+                msvcrt.locking(fh.fileno(), msvcrt.LK_UNLCK, 1)
+        else:
+            import fcntl
+
+            fcntl.flock(fh.fileno(), fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(fh.fileno(), fcntl.LOCK_UN)
+
+
+# Mirrors gateway.session_context.NON_MESSAGING_SESSION_SURFACES (Hermes v0.21.6); only used
+# when the runtime module is unavailable (standalone import, tests without Hermes).
+_NON_MESSAGING = frozenset({
+    "", "api_server", "cli", "codex", "desktop", "gateway", "kanban", "local",
+    "msgraph_webhook", "tool", "tui", "webhook",
+})
 
 
 def _on_gateway() -> bool:
-    plat = (os.environ.get("HERMES_PLATFORM") or os.environ.get("HERMES_SESSION_PLATFORM") or "").lower()
-    return bool(plat) and plat not in {"cli", "tui", "desktop", "local", "acp"}
+    """True when this turn arrives over a human messaging surface.
+
+    Hermes binds platform/source in task-local ContextVars, so ask the runtime. Any
+    failure other than the module being absent fails closed (treated as messaging).
+    """
+    try:
+        from gateway.session_context import session_is_messaging_surface
+    except ImportError:
+        idents = (
+            os.environ.get("HERMES_PLATFORM") or os.environ.get("HERMES_SESSION_PLATFORM") or "",
+            os.environ.get("HERMES_SESSION_SOURCE") or "",
+        )
+        return any(str(v).strip().lower() not in _NON_MESSAGING for v in idents)
+    try:
+        return bool(session_is_messaging_surface())
+    except Exception:
+        logger.debug("tastecheck: session_is_messaging_surface failed; failing closed", exc_info=True)
+        return True
+
+
+def _agent_cwd() -> Path:
+    """The active session's workspace (Hermes resolve_agent_cwd), else the process cwd."""
+    try:
+        from agent.runtime_cwd import resolve_agent_cwd
+    except ImportError:
+        return Path.cwd()
+    return Path(resolve_agent_cwd())
 
 
 # --- child process ----------------------------------------------------------
@@ -115,19 +196,81 @@ def _scrubbed_env() -> Dict[str, str]:
     return env
 
 
+def _descendants(pid: int) -> List[int]:
+    """All live descendant pids of *pid* (POSIX `ps`; empty on failure)."""
+    try:
+        out = subprocess.run(["ps", "-A", "-o", "pid=", "-o", "ppid="], capture_output=True,
+                             text=True, timeout=5).stdout
+    except Exception:
+        return []
+    children: Dict[int, List[int]] = {}
+    for line in out.splitlines():
+        parts = line.split()
+        if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
+            children.setdefault(int(parts[1]), []).append(int(parts[0]))
+    found: List[int] = []
+    stack = [pid]
+    while stack:
+        for child in children.get(stack.pop(), []):
+            if child not in found:
+                found.append(child)
+                stack.append(child)
+    return found
+
+
+def _kill_tree(proc: "subprocess.Popen[str]") -> None:
+    """Terminate the CLI and everything it spawned (npx -> CLI -> CDP runner -> Chrome)."""
+    if os.name == "nt":
+        subprocess.run(["taskkill", "/PID", str(proc.pid), "/T", "/F"], capture_output=True)
+        proc.kill()
+        return
+    # Snapshot before killing: once the parent dies, orphans re-parent and the walk loses them.
+    pids = _descendants(proc.pid)
+    try:
+        os.killpg(proc.pid, signal.SIGKILL)
+    except (ProcessLookupError, PermissionError):
+        pass
+    for pid in pids + _descendants(proc.pid):
+        try:
+            os.kill(pid, signal.SIGKILL)
+        except (ProcessLookupError, PermissionError):
+            pass
+
+
 def run_tastecheck(args: List[str]) -> Dict[str, Any]:
     cmd = shlex.split(str(_cfg("tastecheck_command"))) + args
+    popen_kw: Dict[str, Any] = {}
+    if os.name == "nt":
+        popen_kw["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
+    else:
+        popen_kw["start_new_session"] = True  # own process group so the whole tree can be killed
     try:
-        proc = subprocess.run(
-            cmd, capture_output=True, text=True, timeout=int(_cfg("timeout_seconds")),
-            env=_scrubbed_env(), cwd=str(_data_dir()),
+        proc = subprocess.Popen(
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.DEVNULL,
+            text=True, env=_scrubbed_env(), cwd=str(_data_dir()), **popen_kw,
         )
     except FileNotFoundError as exc:
         return {"ok": False, "error": f"tastecheck not runnable (need Node >=22 + npx): {exc}"}
+    try:
+        stdout, stderr = proc.communicate(timeout=int(_cfg("timeout_seconds")))
     except subprocess.TimeoutExpired:
+        _kill_tree(proc)
+        proc.communicate()
         return {"ok": False, "error": "tastecheck timed out"}
-    out = (proc.stdout or "").strip()
-    err = (proc.stderr or "").strip()
+    except BaseException:  # cancellation / interpreter shutdown: never leave browser work behind
+        _kill_tree(proc)
+        proc.communicate()
+        raise
+    finally:
+        if proc.poll() is None:
+            _kill_tree(proc)
+        elif os.name != "nt":
+            try:  # reap strays (e.g. a Chrome the CLI failed to close) left in our group
+                os.killpg(proc.pid, signal.SIGKILL)
+            except (ProcessLookupError, PermissionError):
+                pass
+    out = (stdout or "").strip()
+    err = (stderr or "").strip()
     res: Dict[str, Any] = {"ok": proc.returncode in (0, 1), "exit": proc.returncode}
     data: Any = None
     i = out.find("{")
@@ -158,7 +301,7 @@ def _resolve_target(target: str) -> str:
     if re.match(r"^[a-z][a-z0-9+.-]*:", t, re.IGNORECASE) and not re.match(r"^[a-zA-Z]:[\\/]", t):
         raise ValueError("only http(s) URLs or local paths are allowed")
     p = Path(t).expanduser()
-    p = (Path.cwd() / p).resolve() if not p.is_absolute() else p.resolve()
+    p = (_agent_cwd() / p).resolve() if not p.is_absolute() else p.resolve()
     if not p.exists():
         raise ValueError(f"path does not exist: {p}")
     return str(p)
@@ -175,21 +318,41 @@ def _prune_audits(root: Path) -> None:
         logger.debug("tastecheck: prune failed", exc_info=True)
 
 
+def _hold(res: Dict[str, Any], reason: str) -> Dict[str, Any]:
+    res["ok"] = False
+    res["verdict"] = "HOLD"
+    res.setdefault("error", reason)
+    return res
+
+
 def audit(target: str) -> Dict[str, Any]:
+    """Run one audit in its own exclusive evidence dir. Fail closed: SHIP only when the CLI
+    exited 0 and evidence for *this* target says SHIP; every other outcome is HOLD."""
     tgt = _resolve_target(target)
     root = _data_dir() / "audits"
-    out_dir = root / time.strftime("%Y%m%d-%H%M%S")
-    out_dir.mkdir(parents=True, exist_ok=True)
+    root.mkdir(parents=True, exist_ok=True)
+    out_dir = Path(tempfile.mkdtemp(prefix=time.strftime("%Y%m%d-%H%M%S") + "-", dir=str(root)))
     res = run_tastecheck(["audit", tgt, str(out_dir), "--json"])
     res["evidence_dir"] = str(out_dir)
-    if "data" not in res:
-        ev = _load_json(out_dir / "evidence.json", None)
-        if ev is not None:
+    exit_code = res.get("exit")
+    if exit_code not in (0, 1):
+        res.pop("data", None)  # tool/process failure: never trust any evidence
+        _prune_audits(root)
+        return _hold(res, res.get("error") or res.get("stderr") or f"tastecheck exit {exit_code}")
+    if not isinstance(res.get("data"), dict):
+        ev = _load_json(out_dir / "evidence.json", None)  # dir is exclusive to this run
+        if isinstance(ev, dict):
             res["data"] = ev
-    if isinstance(res.get("data"), dict):
-        res["verdict"] = res["data"].get("verdict")
-    elif res.get("exit") in (0, 1):
-        res["verdict"] = "SHIP" if res["exit"] == 0 else "HOLD"
+    data = res.get("data")
+    if not isinstance(data, dict):
+        res["verdict"] = "SHIP" if exit_code == 0 else "HOLD"
+    elif data.get("target") not in (None, tgt):
+        res.pop("data", None)
+        _hold(res, f"evidence target {str(data.get('target'))[:200]!r} does not match {tgt!r}")
+    elif data.get("verdict") == "SHIP" and exit_code == 0:
+        res["verdict"] = "SHIP"
+    else:
+        res["verdict"] = "HOLD"
     _prune_audits(root)
     return res
 
@@ -248,9 +411,13 @@ def _on_post_tool(tool_name: str = "", args: Optional[Dict[str, Any]] = None, re
             "hold_reasons": [str(r)[:200] for r in (data.get("holdReasons") or [])][:10],
             "evidence_dir": payload.get("evidence_dir"),
         }
-        ledger = _load_json(_ledger_path(), [])
-        ledger.append(entry)
-        _save_json(_ledger_path(), ledger[-LEDGER_MAX:])
+        path = _ledger_path()
+        with _locked(path):
+            ledger = _load_json(path, [])
+            if not isinstance(ledger, list):
+                ledger = []
+            ledger.append(entry)
+            _save_json(path, ledger[-LEDGER_MAX:])
     except Exception:
         logger.debug("tastecheck: post_tool_call failed", exc_info=True)
     return None
@@ -286,10 +453,74 @@ VERSION_SCHEMA = {
 }
 
 
+def _shrink(obj: Any, str_max: int, list_max: int) -> Any:
+    if isinstance(obj, str):
+        return obj if len(obj) <= str_max else obj[:str_max] + f"…[+{len(obj) - str_max} chars]"
+    if isinstance(obj, list):
+        items = [_shrink(v, str_max, list_max) for v in obj[:list_max]]
+        if len(obj) > list_max:
+            items.append(f"…[+{len(obj) - list_max} items]")
+        return items
+    if isinstance(obj, dict):
+        keys = list(obj)
+        out = {k: _shrink(obj[k], str_max, list_max) for k in keys[:list_max * 5]}
+        if len(keys) > list_max * 5:
+            out["…"] = f"[+{len(keys) - list_max * 5} keys]"
+        return out
+    return obj
+
+
+_CORE_KEYS = ("ok", "exit", "verdict", "error", "evidence_dir")
+
+
+def _bounded_json(res: Any, limit: int = TOOL_RESULT_MAX) -> str:
+    """Serialize *res* to at most *limit* chars of valid JSON. Oversized results keep the
+    verdict, hold reasons, error and evidence identity; the full result goes to a file."""
+    text = json.dumps(res, ensure_ascii=False)
+    if len(text) <= limit or not isinstance(res, dict):
+        return text if len(text) <= limit else json.dumps({"ok": False, "error": "result too large"})
+    full_path = None
+    try:
+        out_root = _data_dir() / "results"
+        out_root.mkdir(parents=True, exist_ok=True)
+        fd, full_path = tempfile.mkstemp(prefix=time.strftime("%Y%m%d-%H%M%S") + "-", suffix=".json",
+                                         dir=str(out_root))
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write(text)
+        _prune_files(out_root)
+    except Exception:
+        logger.debug("tastecheck: could not save full result", exc_info=True)
+        full_path = None
+    data = res.get("data") if isinstance(res.get("data"), dict) else None
+    pinned_data = {k: data[k] for k in ("verdict", "target", "holdReasons") if data and k in data}
+    marker = {"truncated": True, "full_result_path": full_path, "original_chars": len(text)}
+    for str_max, list_max in ((2000, 50), (500, 20), (200, 10), (80, 5), (40, 2)):
+        slim = _shrink(res, str_max, list_max)
+        if data is not None:
+            slim["data"] = {**slim["data"], **_shrink(pinned_data, 500, 20)}
+        out = json.dumps({**slim, **marker}, ensure_ascii=False)
+        if len(out) <= limit:
+            return out
+    core = {k: res[k] for k in _CORE_KEYS if k in res}
+    if pinned_data:
+        core["data"] = _shrink(pinned_data, 200, 10)
+    # Fixed key set with bounded values: always far below TOOL_RESULT_MAX, always valid JSON.
+    return json.dumps(_shrink({**core, **marker}, 500, 10), ensure_ascii=False)
+
+
+def _prune_files(root: Path) -> None:
+    try:
+        files = sorted([f for f in root.iterdir() if f.is_file()], key=lambda f: f.name)
+        for f in files[:-AUDITS_KEEP]:
+            f.unlink(missing_ok=True)
+    except Exception:
+        logger.debug("tastecheck: prune failed", exc_info=True)
+
+
 def _wrap(fn):
     def handler(args: Optional[Dict[str, Any]] = None, **_: Any) -> str:
         try:
-            return json.dumps(fn(args or {}), ensure_ascii=False)[:20000]
+            return _bounded_json(fn(args or {}))
         except ValueError as exc:
             return json.dumps({"ok": False, "error": str(exc)})
         except Exception as exc:
@@ -318,14 +549,16 @@ _HELP = (
 
 
 def _fmt(res: Dict[str, Any]) -> str:
-    if res.get("error") and "data" not in res:
-        return f"Tastecheck failed: {res['error']}"
     if res.get("verdict"):
         data = res.get("data") if isinstance(res.get("data"), dict) else {}
         reasons = data.get("holdReasons") or []
         lines = [str(res["verdict"])] + [f"- {r}" for r in reasons[:10]]
+        if res.get("error"):
+            lines.append(f"- Tastecheck failed: {res['error']}")
         lines.append(f"evidence: {res.get('evidence_dir')}")
         return "\n".join(lines)
+    if res.get("error") and "data" not in res:
+        return f"Tastecheck failed: {res['error']}"
     if "data" in res:
         return json.dumps(res["data"], indent=2, ensure_ascii=False)[:3500]
     return str(res.get("text", ""))[:3500]
@@ -344,7 +577,8 @@ def _slash(raw_args: str) -> str:
                 "Ask the agent to use the tool instead, or set allow_audit_slash_on_gateway: true.")
     try:
         if cmd == "status":
-            return json.dumps(_load_json(_ledger_path(), [])[-10:], indent=2)
+            ledger = _load_json(_ledger_path(), [])
+            return json.dumps(ledger[-10:] if isinstance(ledger, list) else [], indent=2)
         if cmd == "version":
             return _fmt(version())
         if cmd == "profile":

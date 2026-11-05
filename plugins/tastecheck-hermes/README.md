@@ -25,9 +25,11 @@ Requires **Node ≥ 22**, `npx` on PATH, and a local **Chrome / Chromium** (or a
 
 - **Downloads code:** first use runs `npx -y github:KyaniteLabs/tastecheck#5168f89bdd2759b99b81545896c47638727cda14` (fetches that exact commit from GitHub). Override with `tastecheck_command` (e.g. `tastecheck` after a global install). Will switch to the npm package once it is published.
 - **Network:** `audit` opens the URL or local file you name in headless Chrome; that page may make its own network requests. Tastecheck itself sends no telemetry.
-- **Filesystem:** nothing is written into your project. Audit evidence (last 20 runs), the verdict ledger and the taste profile (`TASTECHECK_PROFILE`) live under `<HERMES_HOME>/plugin-data/tastecheck/` (per profile).
+- **Filesystem:** nothing is written into your project. Audit evidence (last 20 runs), the verdict ledger and the taste profile (`TASTECHECK_PROFILE`) live under `<HERMES_HOME>/plugin-data/tastecheck/` (per profile). Each audit gets its own exclusive evidence dir; tool results over 20k chars are returned as bounded JSON (`truncated: true`) with the full result saved under `results/` (last 20). Ledger appends are file-locked.
+- **Local paths:** relative audit targets resolve against the active Hermes session workspace (`resolve_agent_cwd`), not the service's launch dir.
+- **Timeouts:** the CLI runs in its own process group; on timeout or cancellation the whole tree (npx → CLI → CDP runner → Chrome) is killed.
 - **Secrets:** child env is scrubbed (PATH/HOME/locale/display/proxy/npm cache/Playwright path only). No API keys are required or copied from Hermes secret scope.
-- **Gateway:** `/tastecheck audit` is refused on gateway platforms unless `allow_audit_slash_on_gateway: true`. Agent tools still work.
+- **Gateway:** `/tastecheck audit` is refused on messaging surfaces (Hermes `session_is_messaging_surface()`, task-local) unless `allow_audit_slash_on_gateway: true`. Agent tools still work.
 - **Not in v0.1.0:** `install` / `uninstall` (write skill links into agent homes), `calibrate`, and profile writes (`accept/reject/forget/import/reset`) — use the Tastecheck CLI directly.
 - **No background jobs;** nothing runs unless a hook matches or you call a tool/slash.
 
@@ -43,8 +45,16 @@ Requires **Node ≥ 22**, `npx` on PATH, and a local **Chrome / Chromium** (or a
 ## Known issues
 
 - First call is slow (GitHub fetch via npx); offline machines need a pre-installed `tastecheck` on PATH.
-- Node < 22 or no Chrome → audit exits 2 (tool error); report it as HOLD (not run).
+- Node < 22 or no Chrome → audit exits 2 (tool error); the plugin returns HOLD with the error (never a prior run's verdict).
 - No Desktop pane, 2:1 banner, or screenshots yet.
+
+## Tests
+
+```bash
+python3 -m pytest plugins/tastecheck-hermes/tests -q
+```
+
+Runs against the Hermes v0.21.6 `gateway/session_context.py` and `agent/runtime_cwd.py`, vendored verbatim under `tests/hermes_runtime/`.
 
 ## Demo (< 90s)
 
