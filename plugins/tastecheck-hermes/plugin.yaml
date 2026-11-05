@@ -1,0 +1,37 @@
+name: tastecheck
+version: "0.1.0"
+manifest_version: 2
+description: "Tastecheck for Hermes: frontend ship gate — before UI work is called done, run the TasteCheck browser audit against the real rendered page and get a fail-closed SHIP / HOLD verdict with evidence. Adds pre_llm_call ship-gate brief, post_tool_call verdict ledger, /tastecheck (audit/profile/version/status/help), tastecheck_audit / tastecheck_profile / tastecheck_version tools, and a bundled tastecheck skill. Disclosure — shells out to `npx -y github:KyaniteLabs/tastecheck#5168f89bdd2759b99b81545896c47638727cda14` (downloads the pinned commit from GitHub on first run; needs Node >=22 and a local Chrome/Chromium); audit loads the URL or local file you name in headless Chrome (that page may make its own network requests); no telemetry; evidence.json, screenshots, the verdict ledger and the taste profile live under <HERMES_HOME>/plugin-data/tastecheck/; child env is scrubbed (parent environment is never passed through); /tastecheck audit is refused on gateway platforms unless opted in; profile is read-only (show/export) and install/uninstall/calibrate are NOT exposed in v0.1.0."
+author: "Kyanite Labs"
+license: MIT
+homepage: https://github.com/KyaniteLabs/tastecheck/tree/main/plugins/tastecheck-hermes
+tags: [frontend, design, ui, ship-gate, audit, accessibility, local-first]
+requires_hermes: ">=0.21.6"
+requires_env: []
+provides_tools:
+  - tastecheck_audit
+  - tastecheck_profile
+  - tastecheck_version
+provides_hooks:
+  - pre_llm_call
+  - post_tool_call
+hooks:
+  - pre_llm_call
+  - post_tool_call
+config_schema:
+  tastecheck_command:
+    type: str
+    default: "npx -y github:KyaniteLabs/tastecheck#5168f89bdd2759b99b81545896c47638727cda14"
+    description: "Command prefix for the Tastecheck CLI (e.g. 'tastecheck' if installed globally)."
+  inject_on_ship:
+    type: bool
+    default: true
+    description: "When true, pre_llm_call injects a ship-gate brief if the message claims frontend/UI work is done or ready to ship."
+  allow_audit_slash_on_gateway:
+    type: bool
+    default: false
+    description: "When false, /tastecheck audit is refused on gateway platforms (it opens local files/URLs in a browser)."
+  timeout_seconds:
+    type: int
+    default: 240
+    description: "Per CLI call timeout."
