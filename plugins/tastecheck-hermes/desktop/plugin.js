@@ -1,27 +1,40 @@
 /**
  * Tastecheck — desktop half: Taste Roll comparison workspace.
  *
- * The user clicks "Taste Roll" in the composer. We read THEIR project's HTML
- * (the session workspace folder, via the SDK folder grant — never the canned
- * demo page), open a workspace pane (stable id `tastecheck:tasteroll`) and
- * show their unchanged page as the left column. Every later click adds one
- * more restyled column; previous columns stay. Each column is an iframe
- * sandboxed exactly like the built-in preview frame: sandbox="allow-forms
- * allow-scripts", allow="fullscreen", referrerPolicy="no-referrer" — opaque
- * origin, no same-origin access.
+ * The user clicks "Taste Roll" (composer button or command palette). We read
+ * THEIR project's HTML inside the session workspace (via the SDK folder grant —
+ * never the canned demo page), open a workspace pane (stable id
+ * `tastecheck:tasteroll`) and show their unchanged page as the left column.
+ * Every later click appends one more restyled column to the right; previous
+ * columns stay. Each column is an iframe sandboxed exactly like the built-in
+ * preview frame: sandbox="allow-forms allow-scripts", allow="fullscreen",
+ * referrerPolicy="no-referrer" — opaque origin, no same-origin access.
+ *
+ * Each rolled column is also GATED: its exact srcdoc is POSTed to this plugin's
+ * own backend namespace (`ctx.rest('/roll-audit')` → the agent half's audit on
+ * an installed browser) and the column header is stamped SHIP or HOLD with its
+ * reasons. Fail closed — a missing REST surface, a busy gate or any error is a
+ * visible HOLD, never a silent pass, and a HOLD column stays visible.
  *
  * The roll system is the one merged on KyaniteLabs/tastecheck main (PR #35
  * head c41683068357258a7dae582de1a41191ae2153fe, incl. the #37–#39 QA
  * refinements): the verbatim seeded xoshiro128++ engine from
  * skills/tasteroll/assets/tasteroll-engine.js and the data-ref / data-vibe /
- * data-mode / data-sig token system from tasteroll.html, applied to the
- * user's own markup through generic element selectors.
+ * data-mode / data-sig token system from tasteroll.html, applied to the user's
+ * own markup through valid attributes on their real <html> element.
  *
- * No network, no telemetry, no raw bridge. Sensitive door used: none beyond
- * the folder grant (ctx.files) and host.openWorkspace.
+ * Surface resolution (no active-file SDK seam exists): the newest-edited HTML
+ * in the session workspace is "the surface they are actually on"; if the
+ * newest edit is CSS, the nearest HTML to that CSS is used and named. Nothing
+ * outside the session workspace is ever read, tasteroll.html is never eligible,
+ * and a workspace with no HTML gets an honest strip that says so.
+ *
+ * No network, no telemetry, no raw bridge. Sensitive doors used: the folder
+ * grant (ctx.files), host.openWorkspace (feature-detected BEFORE any side
+ * effect) and ctx.rest to this plugin's own namespace.
  */
 
-import { COMPOSER_AREAS, GHOST_ICON_BTN, host } from '@hermes/plugin-sdk'
+import { COMPOSER_AREAS, GHOST_ICON_BTN, PALETTE_AREA, host } from '@hermes/plugin-sdk'
 import { createElement as h } from 'react'
 
 /* tasteroll — seeded PRNG engine with lock/reroll support (xoshiro128++)
@@ -99,9 +112,9 @@ const FACES = {
 }
 
 /* Token system from tasteroll.html @ 5168f89 (values verbatim), plus a generic
-   application layer so the tokens restyle ARBITRARY user markup, not just the
-   demo page's own structure. Applied only inside rolled columns, driven by
-   the same html[data-ref][data-vibe][data-mode][data-sig] attributes. */
+   application layer so the tokens restyle ARBITRARY user markup. Applied only
+   inside rolled columns, driven by the same html[data-ref][data-vibe][data-mode]
+   [data-sig] attributes. */
 const ROLL_CSS = `
 html[data-taste-roll]{--bg:#fff;--s1:#fff;--s2:#f3f3f3;--line:#ddd;--line-strong:#999;--ink:#111;--muted:#555;--acc:#055;--on-acc:#fff}
 html[data-taste-roll][data-mode="light"]{--bg:#f6f2ea;--s1:#fffdf8;--s2:#ece5d8;--line:#d8cfbd;--line-strong:#9c917e;--ink:#211b13;--muted:#574d3f}
@@ -174,20 +187,62 @@ html[data-taste-roll][data-sig="sixling"] body{column-count:2;column-gap:calc(va
 html[data-taste-roll][data-sig="sixling"] h1{column-span:all}
 `
 
-/** Build a rolled copy of the user's HTML: roll attributes on <html> plus the
- *  roll stylesheet. String surgery only — never executes or rewrites the
- *  user's scripts; the column iframe stays opaque-origin sandboxed. */
+/* ---- roll attribute surgery (R1) ------------------------------------------
+ * Valid attributes ON the actual <html> element, preserving the user's
+ * document: quote-aware tag scan, stale roll attributes stripped, one — and
+ * only one — '>' emitted. No regex munging of the tag body. */
+const ROLL_ATTR_NAMES = ['data-taste-roll', 'data-roll', 'data-ref', 'data-vibe', 'data-mode', 'data-sig']
+
+function findTagEnd(html, from) {
+  /* Index of the '>' closing the tag whose attributes start at `from`
+   * (right after '<html'), honoring quoted attribute values. -1 = none. */
+  let quote = null
+  for (let i = from; i < html.length; i++) {
+    const c = html[i]
+    if (quote) { if (c === quote) quote = null; continue }
+    if (c === '"' || c === "'") { quote = c; continue }
+    if (c === '>') return i
+  }
+  return -1
+}
+
+function stripRollAttrs(attrText) {
+  let out = String(attrText || '')
+  for (const name of ROLL_ATTR_NAMES) {
+    out = out.replace(new RegExp(`\\s+${name}\\s*=\\s*(?:"[^"]*"|'[^']*'|[^\\s>]+)`, 'gi'), '')
+  }
+  return out
+}
+
+function rollAttrString(roll, seed) {
+  return ` data-taste-roll="1" data-roll="s${seed}" data-ref="${roll.ref}" data-vibe="${roll.vibe}" data-mode="${roll.mode}" data-sig="${roll.sig}"`
+}
+
 function buildRolledHtml(html, roll, seed) {
-  const attrs = ` data-taste-roll="1" data-roll="s${seed}" data-ref="${roll.ref}" data-vibe="${roll.vibe}" data-mode="${roll.mode}" data-sig="${roll.sig}"`
+  const attrs = rollAttrString(roll, seed)
   const style = `<style id="tastecheck-roll">${ROLL_CSS}</style>`
   let out = String(html || '')
-  if (/<html(\s[^>]*)?>/i.test(out)) {
-    out = out.replace(/<html(\s[^>]*)?>/i, (m) => m.replace(/\s*$/,'') + attrs + '>')
+  const open = /<html[\s>]/i.exec(out)
+  if (open) {
+    const tagEnd = findTagEnd(out, open.index + 5)
+    if (tagEnd >= 0) {
+      const before = out.slice(0, open.index)
+      const attrText = stripRollAttrs(out.slice(open.index + 5, tagEnd))
+      const rest = out.slice(tagEnd + 1)
+      out = `${before}<html${attrText}${attrs}>${rest}`
+    } else {
+      /* '<html' with no closing '>' anywhere: treat as text, wrap defensively. */
+      out = `<html${attrs}><head><meta charset="utf-8"></head><body>${out}</body></html>`
+    }
+  } else if (/<body(\s[^>]*)?>/i.test(out)) {
+    /* body without an html element: open one just before <body>, close at EOF. */
+    out = out.replace(/<body(\s[^>]*)?>/i, (m) => `<html${attrs}>${m}`)
+    if (!/<\/html\s*>/i.test(out)) out += '</html>'
   } else {
     out = `<html${attrs}><head><meta charset="utf-8"></head><body>${out}</body></html>`
   }
-  if (/<\/head>/i.test(out)) {
-    out = out.replace(/<\/head>/i, style + '</head>')
+  if (/<\/head\s*>/i.test(out)) {
+    out = out.replace(/<\/head\s*>/i, style + '</head>')
   } else if (/<body(\s[^>]*)?>/i.test(out)) {
     out = out.replace(/<body(\s[^>]*)?>/i, (m) => m + style)
   } else {
@@ -196,9 +251,12 @@ function buildRolledHtml(html, roll, seed) {
   return out
 }
 
-/* ---- module state (the plugin's own; roll history persisted via ctx.storage) */
+/* ---- module state --------------------------------------------------------- */
 let pluginCtx = null
-let comparison = null /* { cwd, file, filePath, columns: [{ seed, roll }] } */
+/* comparison = { cwd, file, filePath, why,
+ *                columns: [{ seed, roll, srcdoc, verdict, reasons, error }],
+ *                noHtml: { message } | undefined } */
+let comparison = null
 let inFlight = false
 
 function storageKey(cwd) { return `roll:${cwd || '(detached)'}` }
@@ -214,13 +272,14 @@ function loadComparison(cwd) {
 
 function persistComparison() {
   if (!pluginCtx || !comparison) return
-  /* Slim copy: seeds + rolls + file identity only. The HTML text and built
-   * column srcdocs are session-memory; they rebuild from the file on the
-   * next click, keeping storage small. */
+  /* Slim copy: seeds + rolls + file identity only. The HTML text, built column
+   * srcdocs and verdicts are session state; srcdocs rebuild from the file on
+   * the next click and verdicts re-audit, keeping storage small. */
   const slim = {
     cwd: comparison.cwd,
     file: comparison.file,
     filePath: comparison.filePath,
+    why: comparison.why,
     columns: (comparison.columns || []).map((c) => ({ seed: c.seed, roll: c.roll }))
   }
   const all = pluginCtx.storage.get('comparisons', {})
@@ -228,47 +287,106 @@ function persistComparison() {
   pluginCtx.storage.set('comparisons', all)
 }
 
-/** Deterministic "nearest HTML": fewest path segments under the grant, paths
- *  under the session cwd first, tasteroll.html NEVER eligible. */
-function pickHtml(entriesByDir, cwd, grantPath) {
-  const rows = []
-  for (const [dir, entries] of Object.entries(entriesByDir)) {
-    for (const e of entries) {
-      if (e.isDirectory) continue
-      if (!/\.html?$/i.test(e.name)) continue
-      if (e.name.toLowerCase() === 'tasteroll.html') continue
-      const rel = dir ? `${dir}/${e.name}` : e.name
-      const abs = `${grantPath}/${rel}`
-      rows.push({ rel, abs, depth: rel.split('/').length })
-    }
+/* ---- surface resolution (R3) ----------------------------------------------
+ * The session workspace (host cwd) IS the boundary: candidates come from the
+ * cwd subtree only — a folder grant wider than the cwd never leaks a sibling
+ * project in. Newest mtime wins ("the surface they are actually on"); a CSS
+ * newest edit maps to the nearest HTML, which is named in the strip header. */
+const SKIP_DIRS = new Set(['node_modules', '.git', '.hermes', '__pycache__', 'dist', 'build', '.next'])
+
+async function listDir(files, folderId, rel) {
+  try {
+    const res = await files.list(folderId, rel || undefined)
+    if (!res || res.ok !== true || !Array.isArray(res.entries)) return null
+    return res.entries
+  } catch {
+    return null
   }
-  if (!rows.length) return null
-  const cwdPrefix = cwd && cwd !== '' ? String(cwd).replace(/\/+$/, '') + '/' : null
-  rows.sort((a, b) => {
-    const au = cwdPrefix && a.abs.startsWith(cwdPrefix) ? 0 : 1
-    const bu = cwdPrefix && b.abs.startsWith(cwdPrefix) ? 0 : 1
-    if (au !== bu) return au - bu
-    if (a.depth !== b.depth) return a.depth - b.depth
-    return a.rel < b.rel ? -1 : a.rel > b.rel ? 1 : 0
-  })
-  return rows[0]
 }
 
-async function collectHtml(files, folderId, cwd, grantPath) {
-  const entriesByDir = {}
+async function collectFrontend(files, folderId, rootRel) {
+  const rows = [] /* { rel, isCss } */
   const walk = async (rel, depth) => {
-    if (depth > 3) return
-    const res = await files.list(folderId, rel || undefined)
-    if (!res || res.ok !== true || !res.entries) return
-    entriesByDir[rel] = res.entries
-    for (const e of res.entries) {
-      if (e.isDirectory && e.name !== 'node_modules' && e.name !== '.git') {
+    if (depth > 4 || rows.length > 400) return
+    const entries = await listDir(files, folderId, rel)
+    if (!entries) return
+    for (const e of entries) {
+      if (e.isDirectory) {
+        if (SKIP_DIRS.has(e.name)) continue
         await walk(rel ? `${rel}/${e.name}` : e.name, depth + 1)
+      } else {
+        if (/\.html?$/i.test(e.name) && e.name.toLowerCase() !== 'tasteroll.html') {
+          rows.push({ rel: rel ? `${rel}/${e.name}` : e.name, isCss: false })
+        } else if (/\.css$/i.test(e.name)) {
+          rows.push({ rel: rel ? `${rel}/${e.name}` : e.name, isCss: true })
+        }
       }
     }
   }
-  await walk('', 0)
-  return pickHtml(entriesByDir, cwd, grantPath)
+  await walk(rootRel, 0)
+  return rows
+}
+
+async function statMs(files, folderId, rel) {
+  try {
+    const st = await files.stat(folderId, rel)
+    if (!st || st.ok !== true || !st.exists) return -1
+    return typeof st.mtimeMs === 'number' ? st.mtimeMs : 0
+  } catch {
+    return -1
+  }
+}
+
+function nearestHtml(toRel, htmls) {
+  /* Nearest HTML by shared-directory depth, same directory first; ties broken
+   * by newest mtime, then shallower, then name — deterministic. */
+  const dirOf = (p) => { const i = p.lastIndexOf('/'); return i < 0 ? '' : p.slice(0, i) }
+  const segs = (d) => (d ? d.split('/') : [])
+  const cssDir = segs(dirOf(toRel))
+  let best = null
+  for (const row of htmls) {
+    const htmlDir = segs(dirOf(row.rel))
+    let shared = 0
+    while (shared < cssDir.length && shared < htmlDir.length && cssDir[shared] === htmlDir[shared]) shared++
+    const hops = (cssDir.length - shared) + (htmlDir.length - shared)
+    const depth = row.rel.split('/').length
+    const mtime = typeof row.mtime === 'number' ? row.mtime : -1
+    if (!best
+      || hops < best.hops
+      || (hops === best.hops && mtime > best.mtime)
+      || (hops === best.hops && mtime === best.mtime && depth < best.depth)) {
+      best = { rel: row.rel, hops, depth, mtime }
+    }
+  }
+  return best ? best.rel : null
+}
+
+async function resolveSurface(files, folderId, cwd, grantPath) {
+  /* cwd relative to the grant; when the grant IS the cwd the root is ''. A cwd
+   * outside the grant cannot happen (grantFor only returns covering grants). */
+  const base = String(grantPath || '').replace(/\/+$/, '')
+  const cwdAbs = String(cwd || '').replace(/\/+$/, '')
+  if (!cwdAbs.startsWith(base)) return null
+  const rootRel = cwdAbs.slice(base.length).replace(/^\/+/, '')
+  const rows = await collectFrontend(files, folderId, rootRel)
+  if (!rows.length) return null
+  const capped = rows.slice(0, 120)
+  const stats = await Promise.all(capped.map(async (r) => ({ ...r, mtime: await statMs(files, folderId, r.rel) })))
+  const mtimeByRel = new Map(stats.map((s) => [s.rel, s.mtime]))
+  const htmls = rows.filter((r) => !r.isCss).map((r) => ({ rel: r.rel, mtime: mtimeByRel.has(r.rel) ? mtimeByRel.get(r.rel) : -1 }))
+  stats.sort((a, b) => b.mtime - a.mtime)
+  const newest = stats.find((s) => s.mtime >= 0)
+  if (!newest) {
+    if (!htmls.length) return null
+    htmls.sort((a, b) => b.mtime - a.mtime || a.rel.split('/').length - b.rel.split('/').length || (a.rel < b.rel ? -1 : 1))
+    return { rel: htmls[0].rel, why: 'newest HTML in this workspace' }
+  }
+  if (!newest.isCss) {
+    return { rel: newest.rel, why: `your latest edit (${newest.rel})` }
+  }
+  if (!htmls.length) return null
+  const rel = nearestHtml(newest.rel, htmls)
+  return { rel, why: `latest edit was ${newest.rel} → rolling its nearest HTML` }
 }
 
 async function grantFor(cwd) {
@@ -280,8 +398,58 @@ async function grantFor(cwd) {
   return asked.folder
 }
 
+/* ---- per-column gate (R2) --------------------------------------------------
+ * The column's exact srcdoc goes to this plugin's own backend namespace; the
+ * verdict comes back bound to evidence. Fail closed: missing REST, busy gate,
+ * transport error or a malformed response all stamp a visible HOLD. */
+async function auditColumn(col, fileLabel) {
+  col.verdict = null
+  col.reasons = []
+  col.error = null
+  openPane() /* show the pending state immediately */
+  const rest = pluginCtx && typeof pluginCtx.rest === 'function' ? pluginCtx.rest.bind(pluginCtx) : null
+  if (!rest) {
+    col.verdict = 'HOLD'
+    col.reasons = ['gate unavailable: plugin REST missing (install/enable the tastecheck-hermes agent half)']
+    openPane()
+    return
+  }
+  try {
+    const res = await rest('/roll-audit', {
+      method: 'POST',
+      body: { html: col.srcdoc, label: `s${col.seed} ${col.roll.ref}/${col.roll.vibe}/${col.roll.mode}/${col.roll.sig} — ${fileLabel}` },
+      timeoutMs: 300000
+    })
+    const verdict = res && typeof res === 'object' ? String(res.verdict || '') : ''
+    if (verdict === 'SHIP' && res.ok === true) {
+      col.verdict = 'SHIP'
+      col.reasons = Array.isArray(res.hold_reasons) ? res.hold_reasons : []
+      col.evidenceDir = res.evidence_dir || null
+    } else if (verdict === 'HOLD') {
+      col.verdict = 'HOLD'
+      col.reasons = Array.isArray(res.hold_reasons) && res.hold_reasons.length
+        ? res.hold_reasons
+        : [String((res && res.error) || 'audit did not produce evidence')]
+      col.evidenceDir = (res && res.evidence_dir) || null
+    } else {
+      col.verdict = 'HOLD'
+      col.reasons = ['gate returned no valid verdict (fail closed)']
+    }
+  } catch (err) {
+    col.verdict = 'HOLD'
+    col.reasons = [`gate unreachable: ${(err && err.message) || err}`]
+  }
+  openPane() /* re-render with the stamp; the column stays visible either way */
+}
+
 async function runRoll() {
   if (inFlight || !pluginCtx) return
+  /* R5: feature-detect the host capability BEFORE any side effect — no file
+   * read, no roll, no persisted state when the host cannot show the pane. */
+  if (typeof host.openWorkspace !== 'function') {
+    host.notifyError('This Hermes Desktop build has no plugin workspace panes (host.openWorkspace). Taste Roll needs it to show the comparison beside your work.')
+    return
+  }
   inFlight = true
   try {
     const cwd = (host.state.cwd && host.state.cwd.get ? host.state.cwd.get() : '') || ''
@@ -291,16 +459,23 @@ async function runRoll() {
       return
     }
     let current = comparison && comparison.cwd === cwd ? comparison : loadComparison(cwd)
-    let target
+    /* Sticky target: an existing comparison keeps its named file while it still
+     * exists, so consecutive rolls iterate the same surface. */
+    let target = null
     if (current && current.file) {
       const stat = await pluginCtx.files.stat(folder.id, current.file)
-      target = stat && stat.ok === true ? { rel: current.file, abs: `${folder.path}/${current.file}` } : null
+      if (stat && stat.ok === true && stat.exists) {
+        target = { rel: current.file, why: current.why || 'same surface as your previous rolls' }
+      }
     }
     if (!target) {
-      target = await collectHtml(pluginCtx.files, folder.id, cwd, folder.path)
+      target = await resolveSurface(pluginCtx.files, folder.id, cwd, folder.path)
     }
     if (!target) {
-      host.notifyError(`Taste Roll found no HTML in ${folder.path} (tasteroll.html is never used).`)
+      /* R5: no HTML in the workspace — say so IN the strip, not only a toast. */
+      comparison = { cwd, noHtml: { message: `No HTML in ${cwd || 'this workspace'} — Taste Roll restyles HTML surfaces. (tasteroll.html is never used.)` }, columns: [] }
+      openPane()
+      host.notify(comparison.noHtml.message)
       return
     }
     const read = await pluginCtx.files.readText(folder.id, target.rel)
@@ -309,23 +484,32 @@ async function runRoll() {
       return
     }
     const html = read.text
-    const seed = ((Date.now() / 1000) >>> 0) ^ ((current ? current.columns.length : 0) + 1) * 2654435761
-    const roll = tasteroll(seed >>> 0).roll(FACES)
+    const seed = (((Date.now() / 1000) >>> 0) ^ ((current ? current.columns.length : 0) + 1) * 2654435761) >>> 0
+    const roll = tasteroll(seed).roll(FACES)
     if (!current) {
-      current = { cwd, file: target.rel, filePath: target.abs, columns: [] }
+      current = { cwd, file: target.rel, filePath: `${folder.path}/${target.rel}`, why: target.why, columns: [] }
     } else {
+      current.noHtml = undefined
       current.file = target.rel
-      current.filePath = target.abs
+      current.filePath = `${folder.path}/${target.rel}`
+      current.why = target.why
     }
-    /* Left column and future rolls preview the CURRENT file; columns already
-     * built keep their srcdoc (previous columns stay as they were rolled). */
     current.originalHtml = html
-    current.columns.push({ seed: seed >>> 0, roll })
+    const col = { seed, roll, srcdoc: buildRolledHtml(html, roll, seed), verdict: null, reasons: [], error: null }
+    current.columns.push(col)
     comparison = current
-    materialize(current)
+    try {
+      openPane() /* the pane opens with the new column in PENDING state */
+    } catch (openErr) {
+      /* R5: the host refused — roll the column back; nothing persists. */
+      current.columns.pop()
+      comparison = current.columns.length || current.noHtml ? current : null
+      host.notifyError(`Taste Roll could not open the comparison pane: ${(openErr && openErr.message) || openErr}`)
+      return
+    }
     persistComparison()
-    openPane()
-    host.notify(`Taste Roll ${roll.ref} / ${roll.vibe} / ${roll.mode} / ${roll.sig} — column ${current.columns.length}.`)
+    host.notify(`Taste Roll ${roll.ref} / ${roll.vibe} / ${roll.mode} / ${roll.sig} (s${seed}) — column ${current.columns.length}, gate running…`)
+    void auditColumn(col, target.rel)
   } catch (err) {
     host.notifyError(`Taste Roll failed: ${(err && err.message) || err}`)
   } finally {
@@ -350,9 +534,48 @@ function ColumnFrame(props) {
   })
 }
 
+const STAMP_STYLE = {
+  SHIP: { background: '#0c6b52', color: '#fff', padding: '.1rem .45rem', borderRadius: '.35rem', fontWeight: 700, fontSize: '.72rem', letterSpacing: '.04em' },
+  HOLD: { background: '#bd3d10', color: '#fff', padding: '.1rem .45rem', borderRadius: '.35rem', fontWeight: 700, fontSize: '.72rem', letterSpacing: '.04em' },
+  PENDING: { background: '#555', color: '#fff', padding: '.1rem .45rem', borderRadius: '.35rem', fontWeight: 600, fontSize: '.72rem', letterSpacing: '.04em' }
+}
+
+function ColumnHeader(props) {
+  const { col, index } = props
+  const kids = [
+    h('div', { key: 'title', style: { display: 'flex', gap: '.45rem', alignItems: 'baseline', flexWrap: 'wrap' } },
+      h('span', null, `Roll ${index + 1} · s${col.seed}`),
+      h('span', { style: { opacity: .8 } }, `${col.roll.ref} · ${col.roll.vibe} · ${col.roll.mode} · ${col.roll.sig}`))
+  ]
+  if (col.verdict === 'SHIP') {
+    kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
+      h('span', { style: STAMP_STYLE.SHIP }, 'SHIP'),
+      h('span', { style: { opacity: .7, fontSize: '.7rem' } }, 'gate passed')))
+  } else if (col.verdict === 'HOLD') {
+    kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'baseline', marginTop: '.15rem', flexWrap: 'wrap' } },
+      h('span', { style: STAMP_STYLE.HOLD }, 'HOLD'),
+      h('span', { style: { opacity: .8, fontSize: '.7rem' } }, (col.reasons || []).slice(0, 2).join(' · ') || 'held')))
+  } else {
+    kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
+      h('span', { style: STAMP_STYLE.PENDING }, col.restored ? 'GATE —' : 'GATE…'),
+      h('span', { style: { opacity: .7, fontSize: '.7rem' } }, col.restored ? 'not audited this session (click Taste Roll to re-roll + gate)' : 'auditing this column')))
+  }
+  return h('div', { style: { padding: '.45rem .7rem', fontSize: '.78rem', fontWeight: 600, borderBottom: '1px solid var(--line, #ddd)' } }, kids)
+}
+
 function renderPane() {
   const cur = comparison
-  if (!cur || !cur.columns.length) {
+  if (!cur) {
+    return h('div', { style: { padding: '1rem', opacity: .75 } },
+      'Taste Roll — click “Taste Roll” above the composer to restyle your own page.')
+  }
+  if (cur.noHtml) {
+    return h('div', { style: { display: 'flex', flexDirection: 'column', height: '100%' } },
+      h('div', { style: { padding: '.5rem .8rem', fontSize: '.8rem', borderBottom: '1px solid var(--line, #ddd)', display: 'flex', gap: '1rem', alignItems: 'baseline' } },
+        h('strong', null, 'Taste Roll')),
+      h('div', { style: { padding: '1rem', opacity: .85, fontSize: '.85rem' } }, cur.noHtml.message))
+  }
+  if (!cur.columns.length) {
     return h('div', { style: { padding: '1rem', opacity: .75 } },
       'Taste Roll — click “Taste Roll” above the composer to restyle your own page.')
   }
@@ -369,14 +592,13 @@ function renderPane() {
       key: `col-${col.seed}-${i}`,
       style: { display: 'flex', flexDirection: 'column', minWidth: '24rem', width: '24rem', borderRight: '1px solid var(--line, #ddd)' }
     },
-      h('div', { style: { padding: '.45rem .7rem', fontSize: '.78rem', fontWeight: 600, borderBottom: '1px solid var(--line, #ddd)' } },
-        `Roll ${i + 1}: ${col.roll.ref} · ${col.roll.vibe} · ${col.roll.mode} · ${col.roll.sig} (seed ${col.seed})`),
+      h(ColumnHeader, { col, index: i }),
       h(ColumnFrame, { label: `Roll ${i + 1}`, srcdoc: col.srcdoc })))
   })
   return h('div', { style: { display: 'flex', flexDirection: 'column', height: '100%' } },
     h('div', { style: { padding: '.5rem .8rem', fontSize: '.8rem', borderBottom: '1px solid var(--line, #ddd)', display: 'flex', gap: '1rem', alignItems: 'baseline' } },
       h('strong', null, 'Taste Roll'),
-      h('span', { style: { opacity: .75 } }, cur.filePath || cur.file),
+      h('span', { style: { opacity: .75 } }, `${cur.file} — ${cur.why || 'your surface'}`),
       h('span', { style: { opacity: .75, marginLeft: 'auto' } }, 'Each click adds a column; previous columns stay.')),
     h('div', { style: { display: 'flex', flex: '1 1 auto', overflowX: 'auto', height: '100%' } }, kids))
 }
@@ -387,7 +609,12 @@ function materialize(cur) {
   if (!cur) return
   cur.originalHtml = cur.originalHtml || cur.sourceText || ''
   cur.columns.forEach((col) => {
-    if (!col.srcdoc) col.srcdoc = buildRolledHtml(cur.originalHtml, col.roll, col.seed)
+    if (!col.srcdoc) {
+      col.srcdoc = buildRolledHtml(cur.originalHtml, col.roll, col.seed)
+      /* Restored from persistence without this-session verdicts: show an
+       * honest "not audited this session" state, not a fake pending/SHIP. */
+      if (!col.verdict) col.restored = true
+    }
   })
 }
 
@@ -404,12 +631,15 @@ function openPane() {
   })
 }
 
-/* ---- registration ---- */
+/* ---- registration --------------------------------------------------------- */
 
 export default {
-  id: 'tastecheck',
+  /* MUST equal the package folder name (`plugins/tastecheck-hermes/`): the
+   * desktop host namespaces contributions AND ctx.rest by the DECLARED id, and
+   * the backend router mounts at /api/plugins/tastecheck-hermes/. */
+  id: 'tastecheck-hermes',
   name: 'Tastecheck',
-  description: 'Taste Roll: restyle your own page in comparison columns; the frontend ship gate lives in the Hermes-side tastecheck plugin.',
+  description: 'Taste Roll: restyle your own page in gated comparison columns; the frontend ship gate lives in the Hermes-side tastecheck plugin.',
   register(ctx) {
     pluginCtx = ctx
     ctx.register({
@@ -420,9 +650,24 @@ export default {
         type: 'button',
         className: GHOST_ICON_BTN,
         onClick: (e) => { e.preventDefault(); void runRoll() },
-        title: 'Taste Roll — restyle your own page, add a comparison column'
+        title: 'Taste Roll — restyle your own page, add a gated comparison column'
       }, '\u{1F3B2} Taste Roll')
     })
+    /* R5: the same behavior from the command palette (⌘K), not only the button. */
+    if (PALETTE_AREA) {
+      ctx.register({
+        id: 'taste-roll',
+        area: PALETTE_AREA,
+        data: {
+          id: 'taste-roll',
+          label: 'Taste Roll: restyle my page',
+          keywords: ['taste', 'roll', 'restyle', 'theme', 'design', 'ship gate'],
+          detail: () => (comparison && comparison.file ? comparison.file : 'adds a gated restyle column'),
+          detailVariant: 'state',
+          run: () => { void runRoll() }
+        }
+      })
+    }
     /* Restore the current workspace's roll history lazily: the next click
      * re-reads the file and rebuilds srcdocs (we never read user files
      * without an action). */
