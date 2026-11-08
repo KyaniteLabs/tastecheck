@@ -16,9 +16,25 @@ RUNTIME_DIR = Path(__file__).resolve().parent / "hermes_runtime"
 class FakeCtx:
     def __init__(self, config=None):
         self.config = dict(config or {})
+        self.hooks = []
+        self.commands = []
+        self.tools = []
+        self.skills = []
 
     def get_config(self, key, default=None):
         return self.config.get(key, default)
+
+    def register_hook(self, name, callback):
+        self.hooks.append((name, callback))
+
+    def register_command(self, name, handler=None, **_):
+        self.commands.append(name)
+
+    def register_tool(self, name=None, **_):
+        self.tools.append(name)
+
+    def register_skill(self, name, path):
+        self.skills.append(name)
 
 
 @pytest.fixture
