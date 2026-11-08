@@ -18,8 +18,15 @@
 
 ```bash
 hermes plugins install KyaniteLabs/tastecheck --subdir plugins/tastecheck-hermes
-hermes plugins enable tastecheck
+hermes plugins enable tastecheck-hermes
 ```
+
+The plugin has **one identity everywhere** — folder, `plugin.yaml` name, dashboard
+manifest and desktop id are all `tastecheck-hermes`. That is load-bearing: the
+gateway mounts (and consent-gates) backend routes under the dashboard manifest
+name, so a plugin whose agent-half name differs from its dashboard/desktop id
+would install "enabled" but 404 every `/api/plugins/<id>/` call. One name, one
+`plugins.enabled` entry, both halves live.
 
 Requires **Node ≥ 22** and a local **Chrome / Chromium** (set `CHROME_PATH` or `TASTECHECK_CHROME` to pick one explicitly; both pass the scrubbed child env). The desktop half loads from the same install (`<hermes home>/plugins/tastecheck-hermes/desktop/plugin.js`) and appears in Desktop ▸ Capabilities ▸ Plugins, off until you enable it.
 
