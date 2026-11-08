@@ -2,28 +2,37 @@
 
 Surfaces:
   pre_llm_call   -> when a message claims UI/frontend work is done, inject a ship-gate brief
+  pre_tool_call  -> hard completion gate: vetoes completion-class tool calls that claim
+                    frontend/UI work until a fresh SHIP verdict exists in the ledger
   post_tool_call -> record tastecheck_audit verdicts in a profile-local ledger
   /tastecheck    -> audit | profile [show|export] | version | status | help
   tools          -> tastecheck_audit / tastecheck_profile / tastecheck_version
   skill          -> skills/tastecheck/SKILL.md
 
-Child processes get a scrubbed env; audit evidence, the verdict ledger and the taste
-profile live under <HERMES_HOME>/plugin-data/tastecheck/. Only public ctx.* APIs.
+The CLI itself runs from a commit-pinned source checkout vendored under plugin-data
+(no npm machinery, no install lifecycle scripts); child processes get a scrubbed env;
+audit evidence, the verdict ledger and the taste profile live under
+<HERMES_HOME>/plugin-data/tastecheck/. Only public ctx.* APIs.
 install / uninstall / calibrate and profile writes are intentionally NOT exposed.
 """
 
 from __future__ import annotations
 
+import hashlib
+import io
 import json
 import logging
 import os
 import re
 import shlex
+import shutil
 import signal
 import subprocess
+import tarfile
 import tempfile
 import threading
 import time
+import urllib.request
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -31,12 +40,20 @@ from typing import Any, Dict, List, Optional
 logger = logging.getLogger(__name__)
 
 PLUGIN_NAME = "tastecheck"
-PINNED_SRC = "github:KyaniteLabs/tastecheck#5168f89bdd2759b99b81545896c47638727cda14"
+PINNED_REPO = "KyaniteLabs/tastecheck"
+PINNED_SHA = "5168f89bdd2759b99b81545896c47638727cda14"
+PINNED_TARBALL = f"https://codeload.github.com/{PINNED_REPO}/tar.gz/{PINNED_SHA}"
+_TARBALL_MAX_BYTES = 150 * 1024 * 1024  # hard cap; the pinned source tarball is ~1 MB
 DEFAULTS: Dict[str, Any] = {
-    "tastecheck_command": f"npx -y {PINNED_SRC}",
+    # Empty -> vendored pinned CLI (recommended). Set e.g. "tastecheck" for a global
+    # install. The old default `npx -y github:...` is broken on npm 10.9.9
+    # ("GitFetcher requires an Arborist constructor") and ran npm lifecycle scripts.
+    "tastecheck_command": "",
     "inject_on_ship": True,
     "allow_audit_slash_on_gateway": False,
     "timeout_seconds": 240,
+    "gate_completions": True,
+    "gate_ship_ttl_seconds": 21600,
 }
 LEDGER_MAX = 200
 AUDITS_KEEP = 20
@@ -184,6 +201,7 @@ _ENV_ALLOW = (
     "NODE_OPTIONS", "npm_config_cache", "NPM_CONFIG_CACHE", "XDG_CACHE_HOME",
     "PLAYWRIGHT_BROWSERS_PATH", "LOCALAPPDATA", "PROGRAMFILES", "TASTECHECK_TIMEOUT_MS",
     "HTTP_PROXY", "HTTPS_PROXY", "NO_PROXY", "http_proxy", "https_proxy", "no_proxy",
+    "CHROME_PATH", "TASTECHECK_CHROME",
 )
 
 
@@ -191,6 +209,13 @@ def _scrubbed_env() -> Dict[str, str]:
     """Minimal env for the Tastecheck child — never hand it full os.environ."""
     env = {k: os.environ[k] for k in _ENV_ALLOW if os.environ.get(k)}
     env["NO_COLOR"] = "1"
+    # Chrome's process-singleton socket path (user-data-dir + SingletonSocket) is
+    # capped at ~104 chars by the kernel; a long TMPDIR makes the CLI's profile
+    # dir blow the limit and Chrome dies before writing DevToolsActivePort.
+    # Pin the child to a short tmpdir unless the operator set a short one.
+    tmp = env.get("TMPDIR") or ""
+    if len(tmp) > 60:
+        env["TMPDIR"] = "/tmp"
     # Keep the taste profile per Hermes profile instead of ~/.tastecheck.
     env["TASTECHECK_PROFILE"] = str(_data_dir() / "profile.json")
     return env
@@ -237,8 +262,109 @@ def _kill_tree(proc: "subprocess.Popen[str]") -> None:
             pass
 
 
+# --- pinned CLI source (vendored; no npm machinery, no lifecycle scripts) ----
+
+def _vendor_bin() -> Path:
+    return _data_dir() / "vendor" / PINNED_SHA / "bin" / "tastecheck.mjs"
+
+
+def _fetch_pinned_tarball() -> bytes:
+    """Download the commit-addressed source tarball (codeload serves the exact tree
+    of PINNED_SHA). Only network call in the plugin, and only at first CLI use."""
+    req = urllib.request.Request(PINNED_TARBALL, headers={"User-Agent": "hermes-plugin-tastecheck"})
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        blob = resp.read(_TARBALL_MAX_BYTES + 1)
+    if len(blob) > _TARBALL_MAX_BYTES or not blob[:2] == b"\x1f\x8b":
+        raise RuntimeError("pinned tarball download failed or is not gzip")
+    return blob
+
+
+def _safe_extract(tar: "tarfile.TarFile", dest: Path) -> List[str]:
+    """Extract only regular files/dirs whose paths stay inside *dest*; the archive's
+    single top-level directory component is stripped. Symlinks, hardlinks, device
+    nodes and any member escaping *dest* raise before anything is written."""
+    dest = dest.resolve()
+    members = tar.getmembers()
+    if not members:
+        raise RuntimeError("empty tarball")
+    # codeload names the top dir with or without a trailing slash; split it off.
+    top = members[0].name.split("/", 1)[0]
+    if not top:
+        raise RuntimeError("unexpected tarball layout: no top-level directory")
+    rels: List[str] = []
+    for m in members:
+        if not (m.name == top or m.name.startswith(top + "/")):
+            raise RuntimeError(f"unexpected member outside top dir: {m.name!r}")
+        rel = m.name[len(top):].lstrip("/").rstrip("/")
+        if not rel:
+            continue
+        if not (m.isreg() or m.isdir()):
+            raise RuntimeError(f"unsafe archive member type: {m.name!r}")
+        target = (dest / rel).resolve()
+        if dest != target and dest not in target.parents:
+            raise RuntimeError(f"unsafe archive path: {m.name!r}")
+        rels.append(rel)
+    out: List[str] = []
+    for m in members:
+        rel = m.name[len(top):].lstrip("/").rstrip("/")
+        if not rel:
+            continue
+        p = dest / rel
+        if m.isreg():
+            p.parent.mkdir(parents=True, exist_ok=True)
+            src = tar.extractfile(m)
+            if src is None:
+                raise RuntimeError(f"cannot extract member: {m.name!r}")
+            with src, open(p, "wb") as fh:
+                shutil.copyfileobj(src, fh)
+            os.chmod(p, 0o644)
+        else:
+            p.mkdir(parents=True, exist_ok=True)
+        out.append(rel)
+    return out
+
+
+def _ensure_pinned_cli() -> List[str]:
+    """Materialize the pinned Tastecheck CLI under plugin-data/vendor/<sha> and return
+    the node command. The CLI is dependency-free Node source, so no install step and
+    no package lifecycle scripts ever run. Concurrent callers race safely: the winner
+    renames its staging dir into place, losers reuse it."""
+    bin_path = _vendor_bin()
+    if bin_path.is_file():
+        return ["node", str(bin_path)]
+    vendor_root = _data_dir() / "vendor"
+    vendor_root.mkdir(parents=True, exist_ok=True)
+    stage = Path(tempfile.mkdtemp(prefix=".stage-", dir=str(vendor_root)))
+    try:
+        blob = _fetch_pinned_tarball()
+        inner = stage / "inner"
+        inner.mkdir()
+        with tarfile.open(fileobj=io.BytesIO(blob), mode="r:gz") as tar:
+            _safe_extract(tar, inner)
+        final = vendor_root / PINNED_SHA
+        if not (inner / "bin" / "tastecheck.mjs").is_file():
+            raise RuntimeError("pinned tarball does not contain bin/tastecheck.mjs")
+        try:
+            os.rename(inner, final)
+        except OSError:
+            if not (final / "bin" / "tastecheck.mjs").is_file():
+                raise
+        _save_json(final / "vendor-stamp.json", {
+            "url": PINNED_TARBALL, "sha256": hashlib.sha256(blob).hexdigest(),
+            "bytes": len(blob), "fetched_at": int(time.time()),
+        })
+        return ["node", str(_vendor_bin())]
+    finally:
+        shutil.rmtree(stage, ignore_errors=True)
+
+
 def run_tastecheck(args: List[str]) -> Dict[str, Any]:
-    cmd = shlex.split(str(_cfg("tastecheck_command"))) + args
+    override = str(_cfg("tastecheck_command") or "").strip()
+    try:
+        cmd = (shlex.split(override) if override else _ensure_pinned_cli()) + args
+    except Exception as exc:
+        logger.debug("tastecheck: CLI setup failed", exc_info=True)
+        return {"ok": False, "error": f"tastecheck CLI unavailable: {exc}"}
     popen_kw: Dict[str, Any] = {}
     if os.name == "nt":
         popen_kw["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
@@ -307,11 +433,25 @@ def _resolve_target(target: str) -> str:
     return str(p)
 
 
-def _prune_audits(root: Path) -> None:
+def _retention_grace() -> float:
+    """Prune grace window: longer than twice the CLI timeout (min 10 min). An audit in
+    flight (or a result just written) is always younger than this, so concurrent runs'
+    retention sweeps can never delete it (external review P2)."""
     try:
-        dirs = sorted([d for d in root.iterdir() if d.is_dir()], key=lambda d: d.name)
-        import shutil
+        return max(2.0 * float(_cfg("timeout_seconds")), 600.0)
+    except Exception:
+        return 600.0
 
+
+def _prune_audits(root: Path) -> None:
+    """Delete the oldest audit dirs beyond AUDITS_KEEP — but only among dirs older than
+    the retention grace, so in-progress audits and freshly returned evidence survive."""
+    try:
+        cutoff = time.time() - _retention_grace()
+        dirs = sorted(
+            [d for d in root.iterdir() if d.is_dir() and not d.name.startswith(".") and d.stat().st_mtime < cutoff],
+            key=lambda d: d.name,
+        )
         for d in dirs[:-AUDITS_KEEP]:
             shutil.rmtree(d, ignore_errors=True)
     except Exception:
@@ -327,14 +467,28 @@ def _hold(res: Dict[str, Any], reason: str) -> Dict[str, Any]:
 
 def audit(target: str) -> Dict[str, Any]:
     """Run one audit in its own exclusive evidence dir. Fail closed: SHIP only when the CLI
-    exited 0 and evidence for *this* target says SHIP; every other outcome is HOLD."""
+    exited 0 and evidence for *this* target says SHIP; every other outcome is HOLD.
+    A cold-start Chrome can miss the CLI's 20s DevToolsActivePort probe; that one
+    transient is retried once before it becomes a HOLD."""
     tgt = _resolve_target(target)
     root = _data_dir() / "audits"
     root.mkdir(parents=True, exist_ok=True)
-    out_dir = Path(tempfile.mkdtemp(prefix=time.strftime("%Y%m%d-%H%M%S") + "-", dir=str(root)))
-    res = run_tastecheck(["audit", tgt, str(out_dir), "--json"])
-    res["evidence_dir"] = str(out_dir)
-    exit_code = res.get("exit")
+    for attempt in (0, 1):
+        out_dir = Path(tempfile.mkdtemp(prefix=time.strftime("%Y%m%d-%H%M%S") + "-", dir=str(root)))
+        res = run_tastecheck(["audit", tgt, str(out_dir), "--json"])
+        res["evidence_dir"] = str(out_dir)
+        exit_code = res.get("exit")
+        cold_start = "DevToolsActivePort" in str(res.get("error") or "") + str(res.get("stderr") or "")
+        if exit_code not in (0, 1) and cold_start and attempt == 0:
+            logger.debug("tastecheck: cold-start DevToolsActivePort miss; retrying once")
+            continue
+        return _finish_audit(res, tgt, out_dir, root, exit_code)
+    raise RuntimeError("unreachable")
+
+
+def _finish_audit(res: Dict[str, Any], tgt: str, out_dir: Path, root: Path,
+                  exit_code: Optional[int]) -> Dict[str, Any]:
+    """Apply the fail-closed verdict boundary to one completed CLI run."""
     if exit_code not in (0, 1):
         res.pop("data", None)  # tool/process failure: never trust any evidence
         _prune_audits(root)
@@ -345,8 +499,13 @@ def audit(target: str) -> Dict[str, Any]:
             res["data"] = ev
     data = res.get("data")
     if not isinstance(data, dict):
-        res["verdict"] = "SHIP" if exit_code == 0 else "HOLD"
-    elif data.get("target") not in (None, tgt):
+        # Fail closed (external review P1): no valid evidence for THIS run is HOLD, even
+        # when the CLI exited 0. Evidence-free SHIP is never returned.
+        res.pop("data", None)
+        _hold(res, "no valid audit evidence for this run; fail closed")
+    elif data.get("target") != tgt:
+        # Evidence must carry THIS run's target identity; a missing (None) or foreign
+        # target is HOLD, not a pass (external review P1).
         res.pop("data", None)
         _hold(res, f"evidence target {str(data.get('target'))[:200]!r} does not match {tgt!r}")
     elif data.get("verdict") == "SHIP" and exit_code == 0:
@@ -421,6 +580,64 @@ def _on_post_tool(tool_name: str = "", args: Optional[Dict[str, Any]] = None, re
     except Exception:
         logger.debug("tastecheck: post_tool_call failed", exc_info=True)
     return None
+
+
+# --- pre-completion gate -----------------------------------------------------
+
+_COMPLETION_TOOLS = frozenset({"kanban_complete", "kanban_request_review"})
+
+_GATE_MESSAGE = (
+    "Tastecheck ship gate: this completion claims frontend/UI work, but the tastecheck "
+    "ledger has no fresh SHIP verdict for a real rendered page. Run the tastecheck_audit "
+    "tool (or /tastecheck audit) against the actual rendered artifact — dev-server URL or "
+    "built HTML — read the verdict and its evidence, and complete only on SHIP. A missing, "
+    "unreadable or stale ledger counts as HOLD: fail closed."
+)
+
+
+def _fresh_ship(ttl_seconds: float) -> bool:
+    """True when the ledger holds a SHIP verdict newer than *ttl_seconds*."""
+    ledger = _load_json(_ledger_path(), [])
+    if not isinstance(ledger, list):
+        return False  # corrupt ledger -> no provable SHIP -> gate holds (fail closed)
+    cutoff = time.time() - float(ttl_seconds)
+    return any(
+        isinstance(e, dict) and e.get("verdict") == "SHIP"
+        and isinstance(e.get("ts"), (int, float)) and e["ts"] >= cutoff
+        for e in ledger
+    )
+
+
+def _on_pre_tool(tool_name: str = "", args: Optional[Dict[str, Any]] = None,
+                 **_: Any) -> Optional[Dict[str, str]]:
+    """Hard pre-completion gate (Hermes ``pre_tool_call``; veto contract
+    ``{"action": "block", "message"}`` — the message becomes the tool result).
+
+    A completion-class tool call whose own payload claims frontend/UI work is blocked
+    until a fresh SHIP verdict exists in the ledger. Fail closed: once the payload is
+    identified as a frontend ship claim, any gate error also blocks."""
+    matched = False
+    try:
+        if not _cfg("gate_completions") or tool_name not in _COMPLETION_TOOLS:
+            return None
+        if not isinstance(args, dict):
+            return None
+        try:
+            text = json.dumps(args, ensure_ascii=False, default=str)
+        except Exception:
+            return None  # cannot inspect: do not veto uninspected calls
+        matched = bool(_UI_RE.search(text))
+        if not matched:
+            return None
+        if _fresh_ship(_cfg("gate_ship_ttl_seconds")):
+            return None
+        return {"action": "block", "message": _GATE_MESSAGE}
+    except Exception:
+        logger.debug("tastecheck: pre_tool_call gate failed", exc_info=True)
+        if matched:
+            # The call claims UI work and no SHIP could be proven: fail closed.
+            return {"action": "block", "message": _GATE_MESSAGE + " (gate internal error)"}
+        return None
 
 
 # --- tools ------------------------------------------------------------------
@@ -509,8 +726,15 @@ def _bounded_json(res: Any, limit: int = TOOL_RESULT_MAX) -> str:
 
 
 def _prune_files(root: Path) -> None:
+    """Delete the oldest full-result files beyond AUDITS_KEEP — only among files older
+    than the retention grace, so a just-written result (whose path is about to be
+    returned to the caller) always survives (external review P2)."""
     try:
-        files = sorted([f for f in root.iterdir() if f.is_file()], key=lambda f: f.name)
+        cutoff = time.time() - _retention_grace()
+        files = sorted(
+            [f for f in root.iterdir() if f.is_file() and not f.name.startswith(".") and f.stat().st_mtime < cutoff],
+            key=lambda f: f.name,
+        )
         for f in files[:-AUDITS_KEEP]:
             f.unlink(missing_ok=True)
     except Exception:
@@ -603,6 +827,7 @@ def register(ctx) -> None:
     global _ctx
     _ctx = ctx
     ctx.register_hook("pre_llm_call", _on_pre_llm)
+    ctx.register_hook("pre_tool_call", _on_pre_tool)
     ctx.register_hook("post_tool_call", _on_post_tool)
     ctx.register_command(
         "tastecheck",

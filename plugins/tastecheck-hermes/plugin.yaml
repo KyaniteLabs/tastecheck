@@ -1,7 +1,7 @@
 name: tastecheck
 version: "0.1.0"
 manifest_version: 2
-description: "Tastecheck for Hermes: frontend ship gate — before UI work is called done, run the TasteCheck browser audit against the real rendered page and get a fail-closed SHIP / HOLD verdict with evidence. Adds pre_llm_call ship-gate brief, post_tool_call verdict ledger, /tastecheck (audit/profile/version/status/help), tastecheck_audit / tastecheck_profile / tastecheck_version tools, and a bundled tastecheck skill. Disclosure — shells out to `npx -y github:KyaniteLabs/tastecheck#5168f89bdd2759b99b81545896c47638727cda14` (downloads the pinned commit from GitHub on first run; needs Node >=22 and a local Chrome/Chromium); audit loads the URL or local file you name in headless Chrome (that page may make its own network requests); no telemetry; evidence.json, screenshots, the verdict ledger and the taste profile live under <HERMES_HOME>/plugin-data/tastecheck/; child env is scrubbed (parent environment is never passed through); /tastecheck audit is refused on gateway platforms unless opted in; profile is read-only (show/export) and install/uninstall/calibrate are NOT exposed in v0.1.0."
+description: "Tastecheck for Hermes: frontend ship gate — before UI work is called done, run the TasteCheck browser audit against the real rendered page and get a fail-closed SHIP / HOLD verdict with evidence. Adds a hard pre-completion veto (frontend-claiming kanban_complete/kanban_request_review calls are blocked until a fresh SHIP verdict exists), pre_llm_call ship-gate brief, post_tool_call verdict ledger, /tastecheck (audit/profile/version/status/help), tastecheck_audit / tastecheck_profile / tastecheck_version tools, and a bundled tastecheck skill. Disclosure — the CLI runs from a commit-pinned source checkout vendored under plugin-data on first use (downloads the exact tarball of github.com/KyaniteLabs/tastecheck at 5168f89bdd2759b99b81545896c47638727cda14 from codeload.github.com; source only, no binaries, no npm, no install lifecycle scripts; needs Node >=22 and a local Chrome/Chromium); audit loads the URL or local file you name in headless Chrome (that page may make its own network requests); no telemetry; evidence.json, screenshots, the verdict ledger and the taste profile live under <HERMES_HOME>/plugin-data/tastecheck/; child env is scrubbed (parent environment is never passed through; CHROME_PATH/TASTECHECK_CHROME are passed when set); /tastecheck audit is refused on gateway platforms unless opted in; profile is read-only (show/export) and install/uninstall/calibrate are NOT exposed in v0.1.0."
 author: "Kyanite Labs"
 license: MIT
 homepage: https://github.com/KyaniteLabs/tastecheck/tree/main/plugins/tastecheck-hermes
@@ -14,15 +14,17 @@ provides_tools:
   - tastecheck_version
 provides_hooks:
   - pre_llm_call
+  - pre_tool_call
   - post_tool_call
 hooks:
   - pre_llm_call
+  - pre_tool_call
   - post_tool_call
 config_schema:
   tastecheck_command:
     type: str
-    default: "npx -y github:KyaniteLabs/tastecheck#5168f89bdd2759b99b81545896c47638727cda14"
-    description: "Command prefix for the Tastecheck CLI (e.g. 'tastecheck' if installed globally)."
+    default: ""
+    description: "CLI prefix override (e.g. 'tastecheck' if installed globally). Empty (default) = vendored pinned source checkout under plugin-data (recommended; no npm)."
   inject_on_ship:
     type: bool
     default: true
@@ -34,4 +36,12 @@ config_schema:
   timeout_seconds:
     type: int
     default: 240
-    description: "Per CLI call timeout."
+    description: "Per CLI call timeout. Also sets the retention grace window (2x this, min 600s) that protects in-flight audits from pruning."
+  gate_completions:
+    type: bool
+    default: true
+    description: "When true, pre_tool_call vetoes completion-class tool calls (kanban_complete / kanban_request_review) whose payload claims frontend/UI work unless a fresh SHIP verdict exists in the ledger. Fail closed."
+  gate_ship_ttl_seconds:
+    type: int
+    default: 21600
+    description: "How recent a ledger SHIP verdict must be to satisfy the completion gate (default 6h)."
