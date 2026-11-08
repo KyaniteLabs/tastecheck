@@ -13,8 +13,15 @@ The audit implementation is loaded BY PATH from the package's agent half
 (``plugins/tastecheck-hermes/__init__.py``) so there is exactly one audit
 implementation and the two surfaces cannot drift. No network of its own (the
 vendored tarball fetch at first CLI use is the agent half's, disclosed there),
-no secrets, no page content persisted — verdicts, reasons and evidence identity
-only.
+no secrets. PERSISTENCE DISCLOSURE (run967): each audited column IS persisted
+— the exact srcdoc is written as ``column.html`` under
+``<HERMES_HOME>/plugin-data/tastecheck/roll-audits/<timestamp>/`` (latest 40
+kept, then pruned) alongside the ordinary audit evidence; only verdicts,
+reasons and evidence identity go into the ledger. Those copies are plain
+local files inside your Hermes profile, readable by anything that already
+reads that profile — the sandboxed opaque-origin iframe posture applies to
+in-app RENDERING, not to these retained evidence files. Delete the
+``roll-audits`` directory to drop them.
 """
 
 from __future__ import annotations

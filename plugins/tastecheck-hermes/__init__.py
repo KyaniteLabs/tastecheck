@@ -587,12 +587,21 @@ def record_verdict(target: str, payload: Dict[str, Any], source: str = "tool") -
     Entry: target + verdict + hold reasons + evidence identity, plus the binding
     fields the completion gate matches on: ``workspace`` (the agent cwd at audit
     time) and, for local-file targets, ``target_sha256`` (content hash of the
-    audited bytes). No page content is ever stored."""
+    audited bytes). The LEDGER stores no page content — but the roll-audit path
+    DOES persist each audited column as ``column.html`` under plugin-data (kept
+    to the latest 40) for evidence; see ``dashboard/plugin_api.py``.
+
+    Target identity is normalized HERE and at consumption with the same rule
+    (``_norm_target``): http(s) URLs keep their URL identity (trailing slashes
+    dropped); relative paths resolve against the AGENT cwd, so a relative audit
+    target and an absolute completion target for the same file compare equal."""
     data = payload.get("data") if isinstance(payload.get("data"), dict) else {}
-    tgt = str(target)[:300]
+    tgt_raw = str(target)[:300]
+    tgt = _norm_target(tgt_raw)
     entry: Dict[str, Any] = {
         "ts": int(time.time()),
         "target": tgt,
+        "target_raw": tgt_raw,
         "verdict": payload.get("verdict"),
         "hold_reasons": [str(r)[:200] for r in (data.get("holdReasons") or [])][:10],
         "evidence_dir": payload.get("evidence_dir"),
@@ -633,25 +642,68 @@ _GATE_MESSAGE = (
 )
 
 
+_KANBAN_TASK_ID_RE = re.compile(r"^t_[a-z0-9]+$")
+
+
+def _resolve_kanban_task_id(args: Optional[Dict[str, Any]], hook_kw: Optional[Dict[str, Any]]) -> str:
+    """The CARD identity this completion closes — mirroring the completion
+    tool's own resolution order: explicit ``args.task_id`` first, then the
+    hook's ``task_id``, then the dispatched-worker default (``HERMES_KANBAN_TASK``
+    env, injected by kanban_db_dispatch into every kanban worker).
+
+    A runtime turn id (``agent/turn_facade.py``: ``task_id or uuid4()``, forwarded
+    by ``inline_tool_executors.tool_hook_ids``) is NOT a card id: it never
+    overrides an explicit Kanban id and is simply skipped. Returns "" when no
+    card identity can be resolved."""
+    candidates: List[str] = []
+    if isinstance(args, dict):
+        a = args.get("task_id")
+        if isinstance(a, str):
+            candidates.append(a.strip())
+    if isinstance(hook_kw, dict):
+        h = hook_kw.get("task_id")
+        if isinstance(h, str):
+            candidates.append(h.strip())
+    env = os.environ.get("HERMES_KANBAN_TASK")
+    if env:
+        candidates.append(env.strip())
+    for c in candidates:
+        if c and _KANBAN_TASK_ID_RE.match(c):
+            return c
+    return ""
+
+
 def _norm_target(t: Any) -> str:
     """Normalize a ledger target / payload path for matching: http(s) URLs keep
     their identity (trailing slashes dropped); everything else resolves to an
-    absolute path (strict=False, so a since-deleted file still compares equal)."""
+    absolute path against the AGENT cwd (strict=False, so a since-deleted file
+    still compares equal). Record and consumption sides share this rule, so a
+    relative audit target binds its absolute completion twin."""
     s = str(t or "").strip()
     if not s:
         return ""
     if re.match(r"^https?://", s, re.IGNORECASE):
         return re.sub(r"/+$", "", s)
     try:
-        return str(Path(s).expanduser().resolve())
+        p = Path(s).expanduser()
+        if not p.is_absolute():
+            p = _agent_cwd() / p
+        return str(p.resolve())
     except Exception:
         return s
 
 
 def _completion_frontend_targets(args: Dict[str, Any]) -> List[str]:
-    """Frontend artifact identities named by the completion payload itself —
-    strings from metadata/artifacts/result/target fields whose tail looks like a
-    frontend file. These bind gate eligibility to the artifact being completed."""
+    """Frontend artifact identities named by the completion payload itself.
+
+    TWO binding sources, both normalized via ``_norm_target``:
+    (a) EXPLICIT targets — a non-empty string under ``target`` or
+        ``metadata.target`` binds by IDENTITY, regardless of any file suffix:
+        a dev-server URL like ``http://127.0.0.1:5173/project-b`` is a binding
+        identity even without an ``.html`` tail, and no workspace fallback may
+        substitute for it;
+    (b) frontend-suffix paths/URLs extracted from metadata/artifacts/result/
+        target/paths strings."""
     found: List[str] = []
 
     def visit(node: Any) -> None:
@@ -665,12 +717,20 @@ def _completion_frontend_targets(args: Dict[str, Any]) -> List[str]:
             for v in node:
                 visit(v)
 
+    explicit: List[str] = []
+    md = args.get("metadata") if isinstance(args.get("metadata"), dict) else {}
+    for holder in (args, md):
+        if isinstance(holder, dict):
+            v = holder.get("target")
+            if isinstance(v, str) and v.strip():
+                explicit.append(v.strip())
+
     for key in ("metadata", "artifacts", "result", "target", "paths"):
         if key in args:
             visit(args[key])
     cwd = _agent_cwd()
     out: List[str] = []
-    for raw in found:
+    for raw in explicit + found:
         if re.match(r"^https?://", raw, re.IGNORECASE):
             out.append(_norm_target(raw))
         else:
@@ -706,11 +766,16 @@ def _task_frontend_claim(task_id: str) -> Optional[str]:
     return None
 
 
-def _frontend_claim_reason(args: Dict[str, Any], task_id: str) -> Optional[str]:
+def _frontend_claim_reason(args: Dict[str, Any], hook_kw: Optional[Dict[str, Any]] = None) -> Optional[str]:
     """Why this completion counts as a frontend ship claim, or None. Payload
     vocabulary, payload-named frontend artifacts, and the task's own body all
     count; a completion none of these flag is left alone (non-frontend behavior
-    is unchanged)."""
+    is unchanged).
+
+    Task identity is resolved the way the completion tool itself resolves it
+    (``_resolve_kanban_task_id``): args.task_id, then the hook's task_id, then
+    the HERMES_KANBAN_TASK default — a runtime turn UUID never overrides a
+    Kanban card id (review run967 R4)."""
     try:
         text = json.dumps(args, ensure_ascii=False, default=str)
     except Exception:
@@ -719,17 +784,58 @@ def _frontend_claim_reason(args: Dict[str, Any], task_id: str) -> Optional[str]:
         return "the completion payload claims frontend/UI work"
     if _completion_frontend_targets(args):
         return "the completion names frontend artifact files"
-    return _task_frontend_claim(task_id or str(args.get("task_id") or ""))
+    tid = _resolve_kanban_task_id(args, hook_kw)
+    if tid:
+        return _task_frontend_claim(tid)
+    return None
+
+
+def _target_label(t: str) -> str:
+    return t if len(t) <= 60 else "…" + t[-59:]
+
+
+def _entry_for_target(entries: List[Dict[str, Any]], target: str, cutoff: float) -> "tuple[bool, str]":
+    """Latest-wins eligibility of ONE required target identity. Fail closed:
+    missing, stale, superseded by a newer HOLD, or unvalidatable evidence
+    (missing digest, deleted/unreadable audited file, changed bytes) holds."""
+    matching = [e for e in entries if _norm_target(e.get("target")) == target]
+    matching.sort(key=lambda e: float(e["ts"]))
+    fresh = [e for e in matching if float(e["ts"]) >= cutoff]
+    if not fresh:
+        if matching:
+            return False, "the only matching verdict(s) are stale (older than the gate TTL)"
+        return False, "no ledger verdict is bound to this artifact"
+    latest = fresh[-1]
+    if latest.get("verdict") != "SHIP":
+        reasons = ", ".join(str(r) for r in (latest.get("hold_reasons") or [])[:3])
+        return False, "the latest matching verdict is HOLD" + (f" — {reasons}" if reasons else "")
+    tgt = latest.get("target")
+    if isinstance(tgt, str) and re.match(r"^https?://", tgt, re.IGNORECASE):
+        # Genuinely remote rendered target: its URL identity IS the binding —
+        # no local digest is invented for it.
+        return True, ""
+    # Local-file evidence: identity must be provable RIGHT NOW, fail closed.
+    audited = latest.get("target_sha256")
+    if not isinstance(audited, str) or not audited:
+        return False, "the SHIP evidence lacks a content digest for its audited file (fail closed)"
+    p = Path(_norm_target(tgt))
+    if not p.is_file():
+        return False, f"the audited artifact {p.name} is missing or unreadable (fail closed)"
+    current = _file_sha256(p)
+    if current is None:
+        return False, f"the audited artifact {p.name} is missing or unreadable (fail closed)"
+    if current != audited:
+        return False, f"the audited artifact changed after its SHIP ({p.name})"
+    return True, ""
 
 
 def _eligible_ship(args: Dict[str, Any], ttl_seconds: float) -> "tuple[bool, str]":
-    """Latest-wins binding: a completion is released only by a SHIP that is
-    (a) fresh (within ttl), (b) bound to THIS completion's frontend artifact —
-    the payload's named frontend paths, else the current workspace — and
-    (c) not superseded: the LATEST matching verdict wins, so a newer HOLD for
-    the same artifact revokes an older SHIP; a changed local file (sha256)
-    revokes its own audit. Anything else — missing, corrupt, stale, unrelated —
-    holds. Fail closed."""
+    """Latest-wins binding, PER REQUIRED SURFACE: a completion is released only
+    when EVERY frontend artifact it names has its own fresh, superseded-free,
+    identity-valid SHIP. With no named artifacts, the latest verdict recorded
+    IN this workspace releases it (identity-validated the same way). Anything
+    else — missing, corrupt, stale, unrelated, partially covered — holds.
+    Fail closed."""
     ledger = _load_json(_ledger_path(), [])
     if not isinstance(ledger, list):
         return False, "the verdict ledger is unreadable (fail closed)"
@@ -738,33 +844,31 @@ def _eligible_ship(args: Dict[str, Any], ttl_seconds: float) -> "tuple[bool, str
 
     targets = _completion_frontend_targets(args)
     if targets:
-        tset = set(targets)
-        matching = [e for e in entries if _norm_target(e.get("target")) in tset]
-    else:
-        workspace = _norm_target(_agent_cwd())
-        # workspace fallback: only entries recorded IN this workspace (new
-        # schema) — never "any SHIP anywhere in the profile" (review R4).
-        matching = [e for e in entries if _norm_target(e.get("workspace")) == workspace]
+        for t in targets:
+            ok, why = _entry_for_target(entries, t, cutoff)
+            if not ok:
+                return False, f"{_target_label(t)}: {why}"
+        return True, ""
 
+    workspace = _norm_target(_agent_cwd())
+    # workspace fallback: only entries recorded IN this workspace (new
+    # schema) — never "any SHIP anywhere in the profile" (review R4).
+    matching = [e for e in entries if _norm_target(e.get("workspace")) == workspace]
+    if not matching:
+        return False, "no ledger verdict is bound to this workspace"
     matching.sort(key=lambda e: float(e["ts"]))
     fresh = [e for e in matching if float(e["ts"]) >= cutoff]
     if not fresh:
-        if matching:
-            return False, "the only matching verdict(s) are stale (older than the gate TTL)"
-        scope = "the frontend artifact(s) this completion names" if targets else "this workspace"
-        return False, f"no ledger verdict is bound to {scope}"
+        return False, "the only matching verdict(s) are stale (older than the gate TTL)"
     latest = fresh[-1]
     if latest.get("verdict") != "SHIP":
         reasons = ", ".join(str(r) for r in (latest.get("hold_reasons") or [])[:3])
         return False, "the latest matching verdict is HOLD" + (f" — {reasons}" if reasons else "")
     tgt = latest.get("target")
     if isinstance(tgt, str) and not re.match(r"^https?://", tgt, re.IGNORECASE):
-        audited = latest.get("target_sha256")
-        p = Path(tgt)
-        if audited and p.is_file():
-            current = _file_sha256(p)
-            if current and current != audited:
-                return False, f"the audited artifact changed after its SHIP ({p.name})"
+        ok, why = _entry_for_target(entries, _norm_target(tgt), cutoff)
+        if not ok:
+            return False, why
     return True, ""
 
 
@@ -775,16 +879,16 @@ def _on_pre_tool(tool_name: str = "", args: Optional[Dict[str, Any]] = None,
 
     A completion-class call that claims frontend/UI work (payload vocabulary,
     payload-named frontend artifacts, or the task's own body) is blocked unless
-    the ledger's LATEST verdict bound to this completion's artifact/workspace is
-    a fresh SHIP. Fail closed: once the call is identified as a frontend claim,
-    any gate error also blocks."""
+    EVERY frontend surface it names has a fresh, superseded-free, identity-valid
+    SHIP in the ledger. Fail closed: once the call is identified as a frontend
+    claim, any gate error also blocks."""
     claim: Optional[str] = None
     try:
         if not _cfg("gate_completions") or tool_name not in _COMPLETION_TOOLS:
             return None
         if not isinstance(args, dict):
             return None
-        claim = _frontend_claim_reason(args, str(hook_kw.get("task_id") or ""))
+        claim = _frontend_claim_reason(args, hook_kw)
         if claim is None:
             return None
         eligible, why = _eligible_ship(args, _cfg("gate_ship_ttl_seconds"))
