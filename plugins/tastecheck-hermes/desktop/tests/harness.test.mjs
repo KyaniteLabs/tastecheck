@@ -2,16 +2,23 @@
  * Clean-room harness for desktop/plugin.js — runs the REAL plugin module in
  * node with stubbed '@hermes/plugin-sdk' and 'react' (the same two specifiers
  * the Desktop loader allowlists and rewrites). This exercises the plugin's
- * own logic end to end: registration, folder grant flow, deterministic HTML
- * discovery (never tasteroll.html), roll column accumulation, the workspace
- * pane contract (stable id), and the preview-frame sandbox attributes.
+ * own logic end to end: registration (composer button AND palette entry),
+ * folder grant flow, workspace-scoped surface resolution (newest-edit HTML,
+ * CSS→nearest-HTML, never a sibling project, never tasteroll.html), valid
+ * roll-attribute surgery on the real <html> element (parsed-tag controls, not
+ * substring checks), roll column accumulation, per-column SHIP/HOLD gate
+ * stamps (fail closed through ctx.rest), the workspace pane contract (stable
+ * id, feature-detected BEFORE side effects, no phantom persist on host
+ * failure) and the preview-frame sandbox attributes.
  *
  * It is NOT a live Desktop integration claim: the real renderer, registry and
- * pane host are stubbed. In-app click-through remains a desktop-side step.
+ * pane host are stubbed. In-app click-through is the desktop-side step
+ * (demo evidence), and rendered computed-style proof comes from the real
+ * browser audit (agent half), not from here.
  */
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtempSync, writeFileSync, mkdirSync, readFileSync, readdirSync } from 'node:fs'
+import { mkdtempSync, writeFileSync, mkdirSync, readFileSync, readdirSync, utimesSync, statSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
@@ -23,6 +30,7 @@ function freshGlobals(overrides = {}) {
     notifies: [],
     errors: [],
     workspaces: [],
+    openWorkspaceBroken: false,
     ...overrides
   }
 }
@@ -43,8 +51,8 @@ function makeFiles(root, extra = {}) {
     list,
     stat: async (folderId, rel) => {
       try {
-        readFileSync(join(root, rel))
-        return { ok: true, exists: true, isDirectory: false }
+        const st = statSync(join(root, rel))
+        return { ok: true, exists: true, isDirectory: st.isDirectory(), mtimeMs: st.mtimeMs, size: st.size }
       } catch {
         return { ok: true, exists: false }
       }
@@ -73,10 +81,11 @@ function listing(dir, rel) {
   }
 }
 
-function makeCtx(files, storageInit = {}) {
+function makeCtx(files, storageInit = {}, rest = null) {
   const store = { ...storageInit }
   return {
     files,
+    rest,
     storage: {
       get: (k, fb) => (k in store ? JSON.parse(JSON.stringify(store[k])) : fb),
       set: (k, v) => { store[k] = JSON.parse(JSON.stringify(v)) },
@@ -88,26 +97,50 @@ function makeCtx(files, storageInit = {}) {
   }
 }
 
+/* A ctx.rest stand-in for the plugin's own backend namespace: queue verdicts. */
+const okShip = { ok: true, verdict: 'SHIP', hold_reasons: [], evidence_dir: '/ev/1', target: '/t/column.html' }
+const okHold = { ok: false, verdict: 'HOLD', hold_reasons: ['contrast 2.9:1 on body text', 'h1 clips at 320px'], evidence_dir: '/ev/2', target: '/t/column.html' }
+function restQueue(...responses) {
+  const queue = [...responses]
+  const calls = []
+  const fn = async (path, opts) => {
+    calls.push({ path, opts })
+    const r = queue.shift()
+    if (r instanceof Error) throw r
+    return r
+  }
+  fn.calls = calls
+  return fn
+}
+
 async function importFresh() {
   const url = `file://${PLUGIN}?t=${Date.now()}-${Math.random().toString(36).slice(2)}`
   return import(url)
 }
 
-/* The real React onClick is fire-and-forget; the plugin's runRoll is async.
- * Drain the queue so every stubbed await settles before we assert. */
+/* The real React onClick is fire-and-forget; the plugin's runRoll + audit are
+ * async. Drain the queue so every stubbed await settles before we assert. */
 const click = async (btn) => {
   btn.props.onClick({ preventDefault: () => {} })
-  for (let i = 0; i < 40; i++) await new Promise((r) => setImmediate(r))
+  for (let i = 0; i < 80; i++) await new Promise((r) => setImmediate(r))
 }
+
+/* Pin mtimes explicitly — surface resolution is newest-edit-wins. */
+const T0 = 1770000000
+const age = (root, rel, t) => utimesSync(join(root, rel), t, t)
 
 function fixtureProject() {
   const root = mkdtempSync(join(tmpdir(), 'tasteroll-'))
   writeFileSync(join(root, 'tasteroll.html'), '<html><body>canned demo — never this</body></html>')
   writeFileSync(join(root, 'notes.md'), '# notes')
   writeFileSync(join(root, 'app.html'),
-    '<html lang="en"><head><title>My App</title></head><body><main><h1>My own work</h1><p>Real project content.</p></main></body></html>')
+    '<!doctype html><html lang="en"><head><title>My App</title></head><body><main><h1>My own work</h1><p>Real project content.</p></main></body></html>')
   mkdirSync(join(root, 'docs'))
   writeFileSync(join(root, 'docs', 'deep.html'), '<html><body>deeper page</body></html>')
+  age(root, 'docs/deep.html', T0)
+  age(root, 'tasteroll.html', T0 + 5)
+  age(root, 'notes.md', T0 + 5)
+  age(root, 'app.html', T0 + 30) /* newest HTML = the user's actual surface */
   return root
 }
 
@@ -117,7 +150,69 @@ function paneColumns(rendered) {
   return strip.children
 }
 
-test('register contributes a Taste Roll composer action', async () => {
+/* Materialize one column's iframe props (function components invoked). */
+function frameProps(col) {
+  const cf = col.children[1]
+  const rendered = typeof cf.type === 'function' ? cf.type(cf.props) : cf
+  return rendered.props
+}
+
+/* All text under a React-ish tree (strings, children recursed, function
+ * components invoked to their rendered element). */
+function allText(node, out = []) {
+  if (typeof node === 'string') out.push(node)
+  else if (node && typeof node === 'object') {
+    if (typeof node.type === 'function') {
+      allText(node.type(node.props), out)
+    } else if (typeof node.children !== 'undefined') {
+      [].concat(node.children).forEach((c) => allText(c, out))
+    }
+  }
+  return out
+}
+
+/* ---- R1 control: parse the REAL <html> open tag (quote-aware), not substrings ---- */
+function parseHtmlOpenTag(doc) {
+  const m = /<html[\s>]/i.exec(doc)
+  assert.ok(m, 'doc has an <html> open tag')
+  let quote = null
+  let end = -1
+  for (let i = m.index + 5; i < doc.length; i++) {
+    const c = doc[i]
+    if (quote) { if (c === quote) quote = null; continue }
+    if (c === '"' || c === "'") { quote = c; continue }
+    if (c === '>') { end = i; break }
+  }
+  assert.ok(end >= 0, '<html> tag closes')
+  const attrText = doc.slice(m.index + 5, end)
+  const attrs = {}
+  const re = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g
+  let am
+  while ((am = re.exec(attrText))) attrs[am[1].toLowerCase()] = am[2] ?? am[3] ?? am[4]
+  return { attrText, attrs, tag: doc.slice(m.index, end + 1) }
+}
+
+function assertValidRolledDoc(srcDoc, original) {
+  const opens = srcDoc.match(/<html[\s>]/gi) || []
+  assert.equal(opens.length, 1, 'exactly one <html> open tag')
+  const { attrs, tag } = parseHtmlOpenTag(srcDoc)
+  assert.equal(attrs['data-taste-roll'], '1')
+  assert.match(attrs['data-roll'] || '', /^s\d+$/)
+  assert.ok(attrs['data-ref'] && attrs['data-vibe'] && attrs['data-mode'] && attrs['data-sig'])
+  assert.ok(!tag.includes('>>'), 'no doubled >')
+  assert.ok(!/>\s+data-/.test(tag), 'no attributes emitted after the tag close (R1 defect shape)')
+  assert.equal((srcDoc.match(/data-taste-roll="1"/g) || []).length, 1, 'roll marker exactly once')
+  assert.ok(srcDoc.includes('tastecheck-roll'), 'roll stylesheet injected')
+  if (original) {
+    for (const keep of ['My own work', 'Real project content.']) assert.ok(srcDoc.includes(keep), `user content preserved: ${keep}`)
+    assert.ok(!srcDoc.includes('canned demo'), 'never the canned page')
+  }
+  return attrs
+}
+
+/* ------------------------------------------------------------------ tests */
+
+test('register contributes composer action AND palette entry; id matches backend namespace', async () => {
   freshGlobals({ cwd: '/x' })
   const mod = await importFresh()
   const ctx = makeCtx(makeFiles('/x'))
@@ -128,17 +223,37 @@ test('register contributes a Taste Roll composer action', async () => {
   assert.equal(btn.type, 'button')
   assert.match(btn.children.join(' '), /Taste Roll/)
   assert.equal(typeof btn.props.onClick, 'function')
-  assert.equal(mod.default.id, 'tastecheck')
+  const palette = ctx.registered.find((c) => c.area === 'palette')
+  assert.ok(palette, 'palette contribution registered (R5)')
+  assert.equal(palette.id, 'taste-roll')
+  assert.equal(palette.data.label, 'Taste Roll: restyle my page')
+  assert.equal(typeof palette.data.run, 'function')
+  assert.equal(mod.default.id, 'tastecheck-hermes', 'id aligns with the package folder (ctx.rest namespace)')
 })
 
-test('clicks accumulate restyled columns of the user page; tasteroll.html never used', async () => {
+test('palette run behaves like the button click (same lane)', async () => {
+  const root = fixtureProject()
+  freshGlobals({ cwd: root })
+  const mod = await importFresh()
+  const rest = restQueue(okShip)
+  const ctx = makeCtx(makeFiles(root), {}, rest)
+  mod.default.register(ctx)
+  const palette = ctx.registered.find((c) => c.area === 'palette')
+  palette.data.run()
+  for (let i = 0; i < 80; i++) await new Promise((r) => setImmediate(r))
+  assert.ok(globalThis.__tc.workspaces.length >= 1, 'pane opened from palette run')
+  assert.equal(rest.calls.length, 1, 'gate ran')
+})
+
+test('clicks accumulate GATED restyled columns of the user page; original stays unchanged', async () => {
   const root = fixtureProject()
   freshGlobals({ cwd: root })
   const realNow = Date.now
   Date.now = () => 1770000000000
   try {
     const mod = await importFresh()
-    const ctx = makeCtx(makeFiles(root))
+    const rest = restQueue(okShip, okHold, okShip)
+    const ctx = makeCtx(makeFiles(root), {}, rest)
     mod.default.register(ctx)
     const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
 
@@ -147,39 +262,43 @@ test('clicks accumulate restyled columns of the user page; tasteroll.html never 
     await click(btn)
 
     const ws = globalThis.__tc.workspaces
-    assert.ok(ws.length === 3, 'one openWorkspace per click')
+    assert.ok(ws.length >= 3, 'openWorkspace called (per click, plus gate re-renders)')
     assert.ok(ws.every((w) => w.id === 'tastecheck:tasteroll'), 'stable pane id')
 
     const pane = ws[ws.length - 1].options.render()
     const cols = paneColumns(pane)
-    assert.equal(cols.length, 4, 'original + three rolls')
+    assert.equal(cols.length, 4, 'original + three rolls — no column discarded')
 
-    /* each column div: [header, ColumnFrame]; function components must be
-     * invoked to materialize the iframe element (React does this at render). */
-    const frameProps = (c) => {
-      const cf = c.children[1]
-      const rendered = typeof cf.type === 'function' ? cf.type(cf.props) : cf
-      return rendered.props
-    }
     const [original, ...rolls] = cols.map(frameProps)
     assert.equal(original.srcDoc, readFileSync(join(root, 'app.html'), 'utf8'), 'left column is the user page UNCHANGED')
     assert.ok(!original.srcDoc.includes('data-taste-roll'))
 
-    for (const colProps of rolls) {
+    rolls.forEach((colProps) => {
       assert.equal(colProps.sandbox, 'allow-forms allow-scripts', 'preview-frame sandbox')
       assert.equal(colProps.allow, 'fullscreen')
       assert.equal(colProps.referrerPolicy, 'no-referrer')
-      assert.ok(colProps.srcDoc.includes('data-taste-roll="1"'), 'roll attrs applied')
-      assert.match(colProps.srcDoc, /data-ref="[a-zA-Z]+"/)
-      assert.match(colProps.srcDoc, /data-vibe="[a-z]+"/)
-      assert.match(colProps.srcDoc, /data-mode="(light|dark|dual)"/)
-      assert.match(colProps.srcDoc, /data-sig="[a-z-]+"/)
-      assert.ok(colProps.srcDoc.includes('tastecheck-roll'), 'roll stylesheet injected')
-      assert.ok(colProps.srcDoc.includes('My own work'), 'user content preserved')
-      assert.ok(!colProps.srcDoc.includes('canned demo'), 'never the canned page')
-    }
+      assertValidRolledDoc(colProps.srcDoc, readFileSync(join(root, 'app.html'), 'utf8'))
+    })
 
-    const header = pane.children[0].children.map((c) => typeof c === 'string' ? c : (c.children || []).join('')).join(' ')
+    /* R2: per-column gate stamps — SHIP, HOLD and the hold reasons show, and
+     * the HOLD column is still here (visible). */
+    const texts = cols.map((c) => allText(c.children[0]).join(' '))
+    assert.match(texts[1], /SHIP/)
+    assert.match(texts[2], /HOLD/)
+    assert.match(texts[2], /contrast/)
+    assert.match(texts[3], /SHIP/)
+    assert.ok(texts.slice(1).every((t) => /s\d+/.test(t)), 'roll id labeled per column')
+
+    /* the gate audited the EXACT generated column srcdocs */
+    assert.equal(rest.calls.length, 3)
+    rest.calls.forEach((call, i) => {
+      assert.equal(call.path, '/roll-audit')
+      assert.equal(call.opts.method, 'POST')
+      assert.equal(call.opts.body.html, rolls[i].srcDoc, 'gate input is that column\'s exact srcdoc')
+      assert.match(call.opts.body.label, /s\d+ /, 'label carries the roll id')
+    })
+
+    const header = allText(pane.children[0]).join(' ')
     assert.ok(header.includes('app.html'), 'chosen file is named in the pane header')
 
     const saved = ctx._store.comparisons[`roll:${root}`]
@@ -190,6 +309,217 @@ test('clicks accumulate restyled columns of the user page; tasteroll.html never 
   }
 })
 
+test('R1: pre-rolled and oddly-quoted <html> attributes are replaced, not duplicated', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'tasteroll-quirks-'))
+  /* existing roll attrs + single quotes + a quoted '>' inside an attr value */
+  writeFileSync(join(root, 'index.html'),
+    `<!doctype html><html lang='en' data-taste-roll="9" data-roll="s999" data-ref="old" data-x="a>b"><head><title>Q</title></head><body><h1>My own work</h1><p>Real project content.</p></body></html>`)
+  age(root, 'index.html', T0 + 9)
+  freshGlobals({ cwd: root })
+  const mod = await importFresh()
+  const rest = restQueue(okShip)
+  const ctx = makeCtx(makeFiles(root), {}, rest)
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  const srcDoc = frameProps(paneColumns(globalThis.__tc.workspaces.at(-1).options.render())[1]).srcDoc
+  const { attrs } = parseHtmlOpenTag(srcDoc)
+  assert.equal(attrs['lang'], 'en', 'user attribute preserved')
+  assert.equal(attrs['data-x'], 'a>b', 'quoted > inside an attribute survives')
+  assert.equal(attrs['data-taste-roll'], '1', 'old marker replaced')
+  assert.notEqual(attrs['data-ref'], 'old', 'stale roll attr replaced')
+  assert.equal((srcDoc.match(/data-taste-roll=/g) || []).length, 1, 'marker exactly once')
+  assert.equal((srcDoc.match(/data-roll=/g) || []).length, 1)
+})
+
+test('R1: fragment and body-only documents become valid rolled documents', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'tasteroll-frag-'))
+  writeFileSync(join(root, 'frag.html'), '<h1>My own work</h1><p>Real project content.</p>')
+  writeFileSync(join(root, 'body.html'), '<body><h1>My own work</h1><p>Real project content.</p></body>')
+  age(root, 'frag.html', T0)
+  age(root, 'body.html', T0 + 1)
+  freshGlobals({ cwd: root })
+  const mod = await importFresh()
+  const rest = restQueue(okShip, okShip)
+  const ctx = makeCtx(makeFiles(root), {}, rest)
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  await click(btn)
+  const cols = paneColumns(globalThis.__tc.workspaces.at(-1).options.render())
+  assert.equal(cols.length, 3)
+  assertValidRolledDoc(frameProps(cols[1]).srcDoc) /* frag.html was newer → first surface */
+  assertValidRolledDoc(frameProps(cols[2]).srcDoc)
+})
+
+test('R2: gate unreachable → visible fail-closed HOLD on every column', async () => {
+  const root = fixtureProject()
+  freshGlobals({ cwd: root })
+  const mod = await importFresh()
+  const rest = restQueue(new Error('gateway down'), { ok: true, verdict: 'WEIRD' })
+  const ctx = makeCtx(makeFiles(root), {}, rest)
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  await click(btn)
+  const cols = paneColumns(globalThis.__tc.workspaces.at(-1).options.render())
+  assert.equal(cols.length, 3, 'both columns stay visible despite gate failures')
+  const texts = cols.slice(1).map((c) => allText(c.children[0]).join(' '))
+  assert.ok(texts.every((t) => /HOLD/.test(t)), 'fail-closed HOLD stamps')
+  assert.match(texts[0], /gateway down/)
+  assert.match(texts[1], /no valid verdict/)
+})
+
+test('R2: no ctx.rest at all → honest unavailable HOLD, column still shown', async () => {
+  const root = fixtureProject()
+  freshGlobals({ cwd: root })
+  const mod = await importFresh()
+  const ctx = makeCtx(makeFiles(root), {}, null)
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  const cols = paneColumns(globalThis.__tc.workspaces.at(-1).options.render())
+  assert.equal(cols.length, 2)
+  const text = allText(cols[1].children[0]).join(' ')
+  assert.match(text, /HOLD/)
+  assert.match(text, /gate unavailable/)
+})
+
+test('R3: newest-edited HTML wins over shallower/older files', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'tasteroll-newest-'))
+  writeFileSync(join(root, 'index.html'), '<html><body>shallow old</body></html>')
+  mkdirSync(join(root, 'deep'))
+  writeFileSync(join(root, 'deep', 'page.html'), '<html><body><h1>My own work</h1><p>Real project content.</p></body></html>')
+  age(root, 'index.html', T0)
+  age(root, 'deep/page.html', T0 + 50) /* newest — this is the surface they're on */
+  freshGlobals({ cwd: root })
+  const mod = await importFresh()
+  const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip))
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  const pane = globalThis.__tc.workspaces.at(-1).options.render()
+  const header = allText(pane.children[0]).join(' ')
+  assert.ok(header.includes('deep/page.html'), 'the newest HTML is chosen and NAMED')
+  assert.ok(frameProps(paneColumns(pane)[0]).srcDoc.includes('My own work'))
+})
+
+test('R3: newest edit is CSS → nearest HTML in the same workspace is rolled and named', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'tasteroll-css-'))
+  mkdirSync(join(root, 'styles'))
+  writeFileSync(join(root, 'about.html'), '<html><body><h1>My own work</h1><p>Real project content.</p></body></html>')
+  writeFileSync(join(root, 'index.html'), '<html><body><h1>My own work</h1><p>Real project content.</p></body></html>')
+  writeFileSync(join(root, 'styles', 'main.css'), 'body{margin:0}')
+  age(root, 'about.html', T0)
+  age(root, 'index.html', T0 + 1)
+  age(root, 'styles/main.css', T0 + 60) /* newest edit is CSS */
+  freshGlobals({ cwd: root })
+  const mod = await importFresh()
+  const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip))
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  const pane = globalThis.__tc.workspaces.at(-1).options.render()
+  const header = allText(pane.children[0]).join(' ')
+  assert.ok(header.includes('index.html'), 'nearest HTML chosen and named')
+  assert.match(header, /main\.css/, 'the CSS edit that drove the choice is named')
+})
+
+test('R3: a sibling project under a wider grant is NEVER substituted', async () => {
+  const wsRoot = mkdtempSync(join(tmpdir(), 'tasteroll-sib-'))
+  mkdirSync(join(wsRoot, 'project'))
+  writeFileSync(join(wsRoot, 'sibling.html'), '<html><body>sibling project — never this</body></html>')
+  writeFileSync(join(wsRoot, 'project', 'notes.md'), 'no html here')
+  const files = makeFiles(wsRoot) /* grant root = wsRoot (an ANCESTOR of cwd) */
+  freshGlobals({ cwd: join(wsRoot, 'project') })
+  const mod = await importFresh()
+  const ctx = makeCtx(files, {}, restQueue(okShip))
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  const pane = globalThis.__tc.workspaces.at(-1).options.render()
+  const text = allText(pane).join(' ')
+  assert.match(text, /No HTML/, 'no-HTML state shown in the strip (R5), not a sibling substitution')
+  assert.ok(!text.includes('sibling project'), 'sibling never read or shown')
+})
+
+test('R5: no HTML in workspace → strip says so in the pane (not only a toast)', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'tasteroll-empty-'))
+  writeFileSync(join(root, 'tasteroll.html'), '<html><body>demo</body></html>')
+  writeFileSync(join(root, 'main.py'), 'print(1)')
+  freshGlobals({ cwd: root })
+  const mod = await importFresh()
+  const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip))
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  assert.ok(globalThis.__tc.workspaces.length >= 1, 'pane opened with the no-HTML state')
+  const text = allText(globalThis.__tc.workspaces.at(-1).options.render()).join(' ')
+  assert.match(text, /No HTML/)
+  assert.match(text, /tasteroll\.html is never used/)
+  assert.ok(globalThis.__tc.notifies.some((n) => /No HTML/.test(n)), 'plus a toast')
+  assert.ok(!ctx._store.comparisons, 'nothing persisted for the no-HTML state')
+})
+
+test('R5: host without openWorkspace → honest compatibility error, NO reads, NO persist', async () => {
+  const root = fixtureProject()
+  freshGlobals({ cwd: root })
+  const mod = await importFresh()
+  const sdk = await import('./stubs/plugin-sdk.mjs')
+  const files = makeFiles(root)
+  const reads = []
+  const origRead = files.readText
+  files.readText = async (...a) => { reads.push(a[1]); return origRead(...a) }
+  const ctx = makeCtx(files, {}, restQueue(okShip))
+  const prev = sdk.host.openWorkspace
+  sdk.host.openWorkspace = undefined
+  try {
+    mod.default.register(ctx)
+    const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+    await click(btn)
+    assert.equal(reads.length, 0, 'no user file read before the capability check')
+    assert.equal(globalThis.__tc.workspaces.length, 0)
+    assert.ok(!ctx._store.comparisons, 'no phantom rolled column persisted')
+    assert.equal(globalThis.__tc.errors.length, 1, 'one honest compatibility error')
+    assert.match(globalThis.__tc.errors[0], /openWorkspace/)
+  } finally {
+    sdk.host.openWorkspace = prev
+  }
+})
+
+test('R5: openWorkspace throws mid-click → column rolled back, nothing persisted', async () => {
+  const root = fixtureProject()
+  freshGlobals({ cwd: root, openWorkspaceBroken: true })
+  const mod = await importFresh()
+  const rest = restQueue(okShip)
+  const ctx = makeCtx(makeFiles(root), {}, rest)
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  assert.ok(!ctx._store.comparisons, 'failed host open persists nothing')
+  assert.equal(globalThis.__tc.errors.filter((e) => /comparison pane/.test(e)).length, 1, 'honest error about the pane')
+  assert.equal(rest.calls.length, 0, 'gate never ran for a column the host refused')
+})
+
+test('sticky surface: later clicks keep rolling the same named file', async () => {
+  const root = fixtureProject()
+  freshGlobals({ cwd: root })
+  const mod = await importFresh()
+  const rest = restQueue(okShip, okShip)
+  const ctx = makeCtx(makeFiles(root), {}, rest)
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  /* a NEWER html appears after the first roll — the comparison stays on its surface */
+  writeFileSync(join(root, 'other.html'), '<html><body><h1>My own work</h1><p>Real project content.</p></body></html>')
+  age(root, 'other.html', T0 + 90)
+  await click(btn)
+  const pane = globalThis.__tc.workspaces.at(-1).options.render()
+  const header = allText(pane.children[0]).join(' ')
+  assert.ok(header.includes('app.html'), 'same surface kept while it exists')
+  assert.ok(frameProps(paneColumns(pane)[0]).srcDoc.includes('My own work'))
+})
+
 test('same frozen clock → same roll sequence (seeded engine determinism)', async () => {
   const root = fixtureProject()
   const realNow = Date.now
@@ -198,15 +528,14 @@ test('same frozen clock → same roll sequence (seeded engine determinism)', asy
     const rollLabels = async () => {
       freshGlobals({ cwd: root })
       const mod = await importFresh()
-      const ctx = makeCtx(makeFiles(root))
+      const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip, okShip))
       mod.default.register(ctx)
       const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
       await click(btn)
       await click(btn)
-      const pane = globalThis.__tc.workspaces.at(-1).options.render()
-      return paneColumns(pane).slice(1).map((c) => {
-        const cf = c.children[1]
-        const srcDoc = (typeof cf.type === 'function' ? cf.type(cf.props) : cf).props.srcDoc
+      const cols = paneColumns(globalThis.__tc.workspaces.at(-1).options.render())
+      return cols.slice(1).map((c) => {
+        const srcDoc = frameProps(c).srcDoc
         const m = srcDoc.match(/data-ref="(\w+)" data-vibe="(\w+)" data-mode="(\w+)" data-sig="([\w-]+)"/)
         return m && `${m[1]}/${m[2]}/${m[3]}/${m[4]}`
       })
@@ -215,22 +544,6 @@ test('same frozen clock → same roll sequence (seeded engine determinism)', asy
   } finally {
     Date.now = realNow
   }
-})
-
-test('no HTML besides tasteroll.html → honest error, no pane', async () => {
-  const root = mkdtempSync(join(tmpdir(), 'tasteroll-empty-'))
-  writeFileSync(join(root, 'tasteroll.html'), '<html><body>demo</body></html>')
-  writeFileSync(join(root, 'main.py'), 'print(1)')
-  freshGlobals({ cwd: root })
-  const mod = await importFresh()
-  const ctx = makeCtx(makeFiles(root))
-  mod.default.register(ctx)
-  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
-  await click(btn)
-  assert.equal(globalThis.__tc.workspaces.length, 0, 'no pane opened')
-  assert.ok(globalThis.__tc.errors.length === 1, 'exactly one error toast')
-  assert.match(globalThis.__tc.errors[0], /no HTML/i)
-  assert.match(globalThis.__tc.errors[0], /tasteroll\.html is never used/)
 })
 
 test('folder grant is requested when cwd is not covered', async () => {
@@ -242,12 +555,12 @@ test('folder grant is requested when cwd is not covered', async () => {
     folders: [],
     requestFolder: async () => { asked += 1; return { ok: true, folder: { id: 'f1', name: 'proj', path: root } } }
   })
-  const ctx = makeCtx(files)
+  const ctx = makeCtx(files, {}, restQueue(okShip))
   mod.default.register(ctx)
   const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
   await click(btn)
   assert.equal(asked, 1, 'picker shown once')
-  assert.equal(globalThis.__tc.workspaces.length, 1)
+  assert.ok(globalThis.__tc.workspaces.length >= 1)
 })
 
 test('cancelled grant → polite notify, no pane, no read', async () => {
@@ -255,10 +568,15 @@ test('cancelled grant → polite notify, no pane, no read', async () => {
   freshGlobals({ cwd: root })
   const mod = await importFresh()
   const files = makeFiles(root, { folders: [], requestFolder: async () => ({ ok: true, folder: null }) })
-  const ctx = makeCtx(files)
+  const reads = []
+  const orig = files.readText
+  files.readText = async (...a) => { reads.push(a[1]); return orig(...a) }
+  const ctx = makeCtx(files, {}, restQueue(okShip))
   mod.default.register(ctx)
   const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
   await click(btn)
   assert.equal(globalThis.__tc.workspaces.length, 0)
+  assert.equal(reads.length, 0)
   assert.ok(globalThis.__tc.notifies.some((n) => /grant/i.test(n)))
+  assert.ok(!ctx._store.comparisons)
 })

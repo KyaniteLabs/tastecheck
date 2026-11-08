@@ -136,25 +136,35 @@ def test_gate_ignores_other_tools_even_with_ui_words(plugin):
     assert plugin._on_pre_tool("write_file", {"path": "ui/dashboard.py"}) is None
 
 
+def _ship_entry(plugin, target="http://127.0.0.1:5173", verdict="SHIP", age=0, **extra):
+    """A ledger entry written through the real recorder (carries workspace binding)."""
+    plugin._save_json(plugin._ledger_path(), [])
+    plugin.record_verdict(target, {"verdict": verdict, "data": {"holdReasons": extra.pop("holdReasons", [])}}, )
+    ledger = plugin._load_json(plugin._ledger_path(), [])
+    ledger[-1].update(extra)
+    if age:
+        ledger[-1]["ts"] = int(time.time()) - age
+    plugin._save_json(plugin._ledger_path(), ledger)
+    return ledger[-1]
+
+
 def test_gate_allows_after_fresh_ship(plugin):
-    plugin._save_json(plugin._ledger_path(), [{"ts": int(time.time()), "verdict": "SHIP",
-                                               "target": "http://127.0.0.1:5173"}])
+    _ship_entry(plugin)
     assert plugin._on_pre_tool("kanban_complete", _ui_completion("Frontend hero done, shipping")) is None
 
 
 def test_gate_blocks_on_stale_ship(plugin):
-    plugin._save_json(plugin._ledger_path(), [
-        {"ts": int(time.time()) - int(plugin.DEFAULTS["gate_ship_ttl_seconds"]) - 60,
-         "verdict": "SHIP", "target": "http://127.0.0.1:5173"}])
+    _ship_entry(plugin, age=int(plugin.DEFAULTS["gate_ship_ttl_seconds"]) + 60)
     blocked = plugin._on_pre_tool("kanban_complete", _ui_completion("Frontend hero done, shipping"))
     assert blocked and blocked["action"] == "block"
+    assert "stale" in blocked["message"]
 
 
 def test_gate_blocks_on_hold_only_ledger(plugin):
-    plugin._save_json(plugin._ledger_path(), [{"ts": int(time.time()), "verdict": "HOLD",
-                                               "target": "http://127.0.0.1:5173"}])
+    _ship_entry(plugin, verdict="HOLD", holdReasons=["contrast 2.9:1 on body text"])
     blocked = plugin._on_pre_tool("kanban_complete", _ui_completion("Frontend hero done, shipping"))
     assert blocked and blocked["action"] == "block"
+    assert "HOLD" in blocked["message"] and "contrast" in blocked["message"]
 
 
 def test_gate_blocks_on_corrupt_ledger(plugin):

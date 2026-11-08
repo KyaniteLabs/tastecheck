@@ -550,7 +550,7 @@ def _on_pre_llm(user_message: str = "", **_: Any) -> Optional[Dict[str, str]]:
 
 def _on_post_tool(tool_name: str = "", args: Optional[Dict[str, Any]] = None, result: Any = None,
                   **_: Any) -> None:
-    """Verdict ledger: target + verdict + hold reasons only (no page content)."""
+    """Verdict ledger via the shared recorder (see ``record_verdict``)."""
     try:
         if tool_name != "tastecheck_audit":
             return None
@@ -562,79 +562,238 @@ def _on_post_tool(tool_name: str = "", args: Optional[Dict[str, Any]] = None, re
                 payload = {}
         if not isinstance(payload, dict):
             return None
-        data = payload.get("data") if isinstance(payload.get("data"), dict) else {}
-        entry = {
-            "ts": int(time.time()),
-            "target": str((args or {}).get("target", ""))[:300],
-            "verdict": payload.get("verdict"),
-            "hold_reasons": [str(r)[:200] for r in (data.get("holdReasons") or [])][:10],
-            "evidence_dir": payload.get("evidence_dir"),
-        }
-        path = _ledger_path()
-        with _locked(path):
-            ledger = _load_json(path, [])
-            if not isinstance(ledger, list):
-                ledger = []
-            ledger.append(entry)
-            _save_json(path, ledger[-LEDGER_MAX:])
+        record_verdict(str((args or {}).get("target", "")), payload, source="tool")
     except Exception:
         logger.debug("tastecheck: post_tool_call failed", exc_info=True)
     return None
+
+
+def _file_sha256(path: Path) -> Optional[str]:
+    try:
+        h = hashlib.sha256()
+        with open(path, "rb") as fh:
+            for chunk in iter(lambda: fh.read(1 << 16), b""):
+                h.update(chunk)
+        return h.hexdigest()
+    except Exception:
+        return None
+
+
+def record_verdict(target: str, payload: Dict[str, Any], source: str = "tool") -> None:
+    """Append one verdict entry to the ledger — the ONE writer shape, shared by the
+    agent-half ``post_tool_call`` hook and the desktop roll-audit router
+    (``dashboard/plugin_api.py``), so the two surfaces cannot drift.
+
+    Entry: target + verdict + hold reasons + evidence identity, plus the binding
+    fields the completion gate matches on: ``workspace`` (the agent cwd at audit
+    time) and, for local-file targets, ``target_sha256`` (content hash of the
+    audited bytes). No page content is ever stored."""
+    data = payload.get("data") if isinstance(payload.get("data"), dict) else {}
+    tgt = str(target)[:300]
+    entry: Dict[str, Any] = {
+        "ts": int(time.time()),
+        "target": tgt,
+        "verdict": payload.get("verdict"),
+        "hold_reasons": [str(r)[:200] for r in (data.get("holdReasons") or [])][:10],
+        "evidence_dir": payload.get("evidence_dir"),
+        "source": source,
+        "workspace": str(_agent_cwd()),
+    }
+    if tgt and not re.match(r"^https?://", tgt, re.IGNORECASE):
+        p = Path(tgt)
+        if p.is_file():
+            digest = _file_sha256(p)
+            if digest:
+                entry["target_sha256"] = digest
+    path = _ledger_path()
+    with _locked(path):
+        ledger = _load_json(path, [])
+        if not isinstance(ledger, list):
+            ledger = []
+        ledger.append(entry)
+        _save_json(path, ledger[-LEDGER_MAX:])
 
 
 # --- pre-completion gate -----------------------------------------------------
 
 _COMPLETION_TOOLS = frozenset({"kanban_complete", "kanban_request_review"})
 
+_FRONTEND_PATH_RE = re.compile(
+    r"(?:^|[/\\\s'\"(=])([^\s'\"()]*?\.(?:html?|xhtml|css|tsx|jsx|vue|svelte|astro))\b",
+    re.IGNORECASE,
+)
+
 _GATE_MESSAGE = (
     "Tastecheck ship gate: this completion claims frontend/UI work, but the tastecheck "
-    "ledger has no fresh SHIP verdict for a real rendered page. Run the tastecheck_audit "
-    "tool (or /tastecheck audit) against the actual rendered artifact — dev-server URL or "
-    "built HTML — read the verdict and its evidence, and complete only on SHIP. A missing, "
-    "unreadable or stale ledger counts as HOLD: fail closed."
+    "ledger holds no fresh SHIP verdict bound to THIS task's frontend artifact/workspace. "
+    "Run the tastecheck_audit tool (or /tastecheck audit) against the actual rendered "
+    "artifact you are completing — dev-server URL or built HTML — read the verdict and its "
+    "evidence, and complete only on that SHIP. An unrelated, superseded (newer HOLD), "
+    "stale, changed-artifact, missing or unreadable verdict counts as HOLD: fail closed."
 )
 
 
-def _fresh_ship(ttl_seconds: float) -> bool:
-    """True when the ledger holds a SHIP verdict newer than *ttl_seconds*."""
+def _norm_target(t: Any) -> str:
+    """Normalize a ledger target / payload path for matching: http(s) URLs keep
+    their identity (trailing slashes dropped); everything else resolves to an
+    absolute path (strict=False, so a since-deleted file still compares equal)."""
+    s = str(t or "").strip()
+    if not s:
+        return ""
+    if re.match(r"^https?://", s, re.IGNORECASE):
+        return re.sub(r"/+$", "", s)
+    try:
+        return str(Path(s).expanduser().resolve())
+    except Exception:
+        return s
+
+
+def _completion_frontend_targets(args: Dict[str, Any]) -> List[str]:
+    """Frontend artifact identities named by the completion payload itself —
+    strings from metadata/artifacts/result/target fields whose tail looks like a
+    frontend file. These bind gate eligibility to the artifact being completed."""
+    found: List[str] = []
+
+    def visit(node: Any) -> None:
+        if isinstance(node, str):
+            for m in _FRONTEND_PATH_RE.finditer(node):
+                found.append(m.group(1))
+        elif isinstance(node, dict):
+            for v in node.values():
+                visit(v)
+        elif isinstance(node, list):
+            for v in node:
+                visit(v)
+
+    for key in ("metadata", "artifacts", "result", "target", "paths"):
+        if key in args:
+            visit(args[key])
+    cwd = _agent_cwd()
+    out: List[str] = []
+    for raw in found:
+        if re.match(r"^https?://", raw, re.IGNORECASE):
+            out.append(_norm_target(raw))
+        else:
+            out.append(_norm_target(cwd / raw if not Path(raw).is_absolute() else raw))
+    # de-duplicate, keep order
+    return list(dict.fromkeys(out))
+
+
+def _task_frontend_claim(task_id: str) -> Optional[str]:
+    """Frontend claim from the TASK being completed (supported context: the kanban
+    board DB — title + body of the card this completion closes), so a plainly
+    worded summary on a frontend task is still gated."""
+    tid = str(task_id or "").strip()
+    if not re.match(r"^t_[a-z0-9]+$", tid):
+        return None
+    try:
+        import sqlite3
+
+        from hermes_cli import kanban_db
+        conn = sqlite3.connect(str(kanban_db.kanban_db_path()), timeout=5)
+        try:
+            conn.row_factory = sqlite3.Row
+            task = kanban_db.get_task(conn, tid)
+        finally:
+            conn.close()
+    except Exception:
+        return None
+    if task is None:
+        return None
+    text = f"{task.title or ''}\n{task.body or ''}"
+    if _UI_RE.search(text):
+        return f"task {tid} is frontend/UI work"
+    return None
+
+
+def _frontend_claim_reason(args: Dict[str, Any], task_id: str) -> Optional[str]:
+    """Why this completion counts as a frontend ship claim, or None. Payload
+    vocabulary, payload-named frontend artifacts, and the task's own body all
+    count; a completion none of these flag is left alone (non-frontend behavior
+    is unchanged)."""
+    try:
+        text = json.dumps(args, ensure_ascii=False, default=str)
+    except Exception:
+        return None  # cannot inspect: do not veto uninspected calls
+    if _UI_RE.search(text):
+        return "the completion payload claims frontend/UI work"
+    if _completion_frontend_targets(args):
+        return "the completion names frontend artifact files"
+    return _task_frontend_claim(task_id or str(args.get("task_id") or ""))
+
+
+def _eligible_ship(args: Dict[str, Any], ttl_seconds: float) -> "tuple[bool, str]":
+    """Latest-wins binding: a completion is released only by a SHIP that is
+    (a) fresh (within ttl), (b) bound to THIS completion's frontend artifact —
+    the payload's named frontend paths, else the current workspace — and
+    (c) not superseded: the LATEST matching verdict wins, so a newer HOLD for
+    the same artifact revokes an older SHIP; a changed local file (sha256)
+    revokes its own audit. Anything else — missing, corrupt, stale, unrelated —
+    holds. Fail closed."""
     ledger = _load_json(_ledger_path(), [])
     if not isinstance(ledger, list):
-        return False  # corrupt ledger -> no provable SHIP -> gate holds (fail closed)
+        return False, "the verdict ledger is unreadable (fail closed)"
+    entries = [e for e in ledger if isinstance(e, dict) and isinstance(e.get("ts"), (int, float))]
     cutoff = time.time() - float(ttl_seconds)
-    return any(
-        isinstance(e, dict) and e.get("verdict") == "SHIP"
-        and isinstance(e.get("ts"), (int, float)) and e["ts"] >= cutoff
-        for e in ledger
-    )
+
+    targets = _completion_frontend_targets(args)
+    if targets:
+        tset = set(targets)
+        matching = [e for e in entries if _norm_target(e.get("target")) in tset]
+    else:
+        workspace = _norm_target(_agent_cwd())
+        # workspace fallback: only entries recorded IN this workspace (new
+        # schema) — never "any SHIP anywhere in the profile" (review R4).
+        matching = [e for e in entries if _norm_target(e.get("workspace")) == workspace]
+
+    matching.sort(key=lambda e: float(e["ts"]))
+    fresh = [e for e in matching if float(e["ts"]) >= cutoff]
+    if not fresh:
+        if matching:
+            return False, "the only matching verdict(s) are stale (older than the gate TTL)"
+        scope = "the frontend artifact(s) this completion names" if targets else "this workspace"
+        return False, f"no ledger verdict is bound to {scope}"
+    latest = fresh[-1]
+    if latest.get("verdict") != "SHIP":
+        reasons = ", ".join(str(r) for r in (latest.get("hold_reasons") or [])[:3])
+        return False, "the latest matching verdict is HOLD" + (f" — {reasons}" if reasons else "")
+    tgt = latest.get("target")
+    if isinstance(tgt, str) and not re.match(r"^https?://", tgt, re.IGNORECASE):
+        audited = latest.get("target_sha256")
+        p = Path(tgt)
+        if audited and p.is_file():
+            current = _file_sha256(p)
+            if current and current != audited:
+                return False, f"the audited artifact changed after its SHIP ({p.name})"
+    return True, ""
 
 
 def _on_pre_tool(tool_name: str = "", args: Optional[Dict[str, Any]] = None,
-                 **_: Any) -> Optional[Dict[str, str]]:
+                 **hook_kw: Any) -> Optional[Dict[str, str]]:
     """Hard pre-completion gate (Hermes ``pre_tool_call``; veto contract
     ``{"action": "block", "message"}`` — the message becomes the tool result).
 
-    A completion-class tool call whose own payload claims frontend/UI work is blocked
-    until a fresh SHIP verdict exists in the ledger. Fail closed: once the payload is
-    identified as a frontend ship claim, any gate error also blocks."""
-    matched = False
+    A completion-class call that claims frontend/UI work (payload vocabulary,
+    payload-named frontend artifacts, or the task's own body) is blocked unless
+    the ledger's LATEST verdict bound to this completion's artifact/workspace is
+    a fresh SHIP. Fail closed: once the call is identified as a frontend claim,
+    any gate error also blocks."""
+    claim: Optional[str] = None
     try:
         if not _cfg("gate_completions") or tool_name not in _COMPLETION_TOOLS:
             return None
         if not isinstance(args, dict):
             return None
-        try:
-            text = json.dumps(args, ensure_ascii=False, default=str)
-        except Exception:
-            return None  # cannot inspect: do not veto uninspected calls
-        matched = bool(_UI_RE.search(text))
-        if not matched:
+        claim = _frontend_claim_reason(args, str(hook_kw.get("task_id") or ""))
+        if claim is None:
             return None
-        if _fresh_ship(_cfg("gate_ship_ttl_seconds")):
+        eligible, why = _eligible_ship(args, _cfg("gate_ship_ttl_seconds"))
+        if eligible:
             return None
-        return {"action": "block", "message": _GATE_MESSAGE}
+        return {"action": "block", "message": f"{_GATE_MESSAGE} Gate reason: {why} (matched because {claim})."}
     except Exception:
         logger.debug("tastecheck: pre_tool_call gate failed", exc_info=True)
-        if matched:
+        if claim:
             # The call claims UI work and no SHIP could be proven: fail closed.
             return {"action": "block", "message": _GATE_MESSAGE + " (gate internal error)"}
         return None
