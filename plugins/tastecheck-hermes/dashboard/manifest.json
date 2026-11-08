@@ -1,0 +1,9 @@
+{
+  "name": "tastecheck-hermes",
+  "label": "Tastecheck",
+  "description": "Frontend ship gate + Taste Roll. No dashboard tab of its own; exposes POST /roll-audit (per-column gate for the Desktop Taste Roll pane) under /api/plugins/tastecheck-hermes/.",
+  "icon": "ShieldCheck",
+  "version": "0.1.0",
+  "tab": { "hidden": true },
+  "api": "plugin_api.py"
+}
