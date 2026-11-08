@@ -222,8 +222,9 @@ def test_overlapping_ledger_appends_keep_both(plugin, monkeypatch):
         t.start()
     for t in threads:
         t.join()
+    # review round B R4: record normalizes local targets agent-cwd-relative → absolute
     targets = sorted(e["target"] for e in json.loads(plugin._ledger_path().read_text()))
-    assert targets == ["a", "b"]
+    assert targets == sorted(str(Path.cwd() / n) for n in ("a", "b"))
     assert errors == []
 
 

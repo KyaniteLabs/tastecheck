@@ -145,7 +145,7 @@ function fixtureProject() {
 }
 
 function paneColumns(rendered) {
-  const strip = rendered.children.find((c) => c.type === 'div' && c.props.style && c.props.style.overflowX === 'auto')
+  const strip = rendered.children.find((c) => c && c.type === 'div' && c.props.style && c.props.style.overflowX === 'auto')
   assert.ok(strip, 'pane has a horizontal column strip')
   return strip.children
 }
@@ -171,36 +171,83 @@ function allText(node, out = []) {
   return out
 }
 
-/* ---- R1 control: parse the REAL <html> open tag (quote-aware), not substrings ---- */
-function parseHtmlOpenTag(doc) {
-  const m = /<html[\s>]/i.exec(doc)
-  assert.ok(m, 'doc has an <html> open tag')
-  let quote = null
-  let end = -1
-  for (let i = m.index + 5; i < doc.length; i++) {
-    const c = doc[i]
-    if (quote) { if (c === quote) quote = null; continue }
-    if (c === '"' || c === "'") { quote = c; continue }
-    if (c === '>') { end = i; break }
+/* ---- R1 control: an INDEPENDENT lexical oracle (review round B repair) ----------------
+ * The old parseHtmlOpenTag regex shared the implementation's blind spot (it
+ * matched `<html` inside comments). This oracle walks tokens — comments,
+ * doctypes, raw-text elements — and reads attributes ONLY off the first REAL
+ * open tag, so roll attributes landing inside a comment fail loudly. */
+const ORACLE_RAW_TEXT = ['script', 'style', 'textarea', 'title', 'xmp']
+
+function lexRealOpenTags(doc, want = 'html') {
+  /* All REAL open tags named `want` (comment/raw-text aware): [{ attrs, tag }].
+   * Also returns every comment's verbatim text for preservation asserts. */
+  const out = []
+  const comments = []
+  let i = 0
+  while (i < doc.length) {
+    const lt = doc.indexOf('<', i)
+    if (lt < 0) break
+    if (doc.startsWith('<!--', lt)) {
+      const e = doc.indexOf('-->', lt + 4)
+      comments.push(doc.slice(lt, e < 0 ? doc.length : e + 3))
+      i = e < 0 ? doc.length : e + 3
+      continue
+    }
+    if (doc.startsWith('<!', lt) || doc.startsWith('</', lt)) {
+      const gt = doc.indexOf('>', lt)
+      i = gt < 0 ? doc.length : gt + 1
+      continue
+    }
+    const nameM = /^<([a-zA-Z][a-zA-Z0-9:_-]*)/.exec(doc.slice(lt, lt + 40))
+    if (!nameM) { i = lt + 1; continue }
+    const name = nameM[1].toLowerCase()
+    let q = null
+    let j = lt + 1 + nameM[1].length
+    for (; j < doc.length; j++) {
+      const c = doc[j]
+      if (q) { if (c === q) q = null } else if (c === '"' || c === "'") q = c
+      else if (c === '>') break
+    }
+    if (j >= doc.length) { i = lt + 1; continue }
+    if (name === want) {
+      const attrText = doc.slice(lt + 1 + nameM[1].length, j)
+      const attrs = {}
+      const re = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g
+      let m
+      while ((m = re.exec(attrText))) attrs[m[1].toLowerCase()] = m[2] ?? m[3] ?? m[4]
+      out.push({ attrs, tag: doc.slice(lt, j + 1) })
+    }
+    if (ORACLE_RAW_TEXT.includes(name)) {
+      const closeRe = new RegExp('</\\s*' + name + '\\s*>', 'i')
+      const cm = closeRe.exec(doc.slice(j + 1))
+      i = cm ? j + 1 + cm.index + cm[0].length : doc.length
+      continue
+    }
+    i = j + 1
   }
-  assert.ok(end >= 0, '<html> tag closes')
-  const attrText = doc.slice(m.index + 5, end)
-  const attrs = {}
-  const re = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g
-  let am
-  while ((am = re.exec(attrText))) attrs[am[1].toLowerCase()] = am[2] ?? am[3] ?? am[4]
-  return { attrText, attrs, tag: doc.slice(m.index, end + 1) }
+  return { tags: out, comments }
+}
+
+function parseHtmlOpenTag(doc) {
+  const { tags } = lexRealOpenTags(doc, 'html')
+  assert.ok(tags.length >= 1, 'doc has a real <html> open tag (not one inside a comment)')
+  return { attrs: tags[0].attrs, tag: tags[0].tag, attrText: tags[0].tag, realOpens: tags.length }
 }
 
 function assertValidRolledDoc(srcDoc, original) {
-  const opens = srcDoc.match(/<html[\s>]/gi) || []
-  assert.equal(opens.length, 1, 'exactly one <html> open tag')
-  const { attrs, tag } = parseHtmlOpenTag(srcDoc)
+  const { tags, comments } = lexRealOpenTags(srcDoc, 'html')
+  assert.equal(tags.length, 1, 'exactly one REAL <html> open tag (comments do not count)')
+  const { attrs, tag } = tags[0]
   assert.equal(attrs['data-taste-roll'], '1')
   assert.match(attrs['data-roll'] || '', /^s\d+$/)
   assert.ok(attrs['data-ref'] && attrs['data-vibe'] && attrs['data-mode'] && attrs['data-sig'])
   assert.ok(!tag.includes('>>'), 'no doubled >')
   assert.ok(!/>\s+data-/.test(tag), 'no attributes emitted after the tag close (R1 defect shape)')
+  /* roll attributes must NEVER appear inside a comment (review round B R1 defect) */
+  for (const c of comments) {
+    assert.ok(!/data-taste-roll|data-roll=|data-ref=|data-vibe=|data-sig=/.test(c),
+      `roll attributes leaked into a comment: ${c}`)
+  }
   assert.equal((srcDoc.match(/data-taste-roll="1"/g) || []).length, 1, 'roll marker exactly once')
   assert.ok(srcDoc.includes('tastecheck-roll'), 'roll stylesheet injected')
   if (original) {
@@ -333,23 +380,198 @@ test('R1: pre-rolled and oddly-quoted <html> attributes are replaced, not duplic
 })
 
 test('R1: fragment and body-only documents become valid rolled documents', async () => {
-  const root = mkdtempSync(join(tmpdir(), 'tasteroll-frag-'))
-  writeFileSync(join(root, 'frag.html'), '<h1>My own work</h1><p>Real project content.</p>')
-  writeFileSync(join(root, 'body.html'), '<body><h1>My own work</h1><p>Real project content.</p></body>')
-  age(root, 'frag.html', T0)
-  age(root, 'body.html', T0 + 1)
+  /* review round B: the old version clicked the sticky newer body.html twice and never
+   * covered frag.html. Two FRESH plugin instances/workspaces — one fixture each. */
+  for (const [name, file, content] of [
+    ['frag', 'frag.html', '<h1>My own work</h1><p>Real project content.</p>'],
+    ['body', 'body.html', '<body><h1>My own work</h1><p>Real project content.</p></body>']
+  ]) {
+    const root = mkdtempSync(join(tmpdir(), `tasteroll-${name}-`))
+    writeFileSync(join(root, file), content)
+    age(root, file, T0)
+    freshGlobals({ cwd: root })
+    const mod = await importFresh()
+    const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip))
+    mod.default.register(ctx)
+    const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+    await click(btn)
+    const cols = paneColumns(globalThis.__tc.workspaces.at(-1).options.render())
+    assert.equal(cols.length, 2, `${name}: original + one roll`)
+    assertValidRolledDoc(frameProps(cols[1]).srcDoc)
+  }
+})
+
+test('R1 (review round B): roll attributes land on the REAL html element, never inside a comment', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'tasteroll-comment-'))
+  const original = '<!doctype html><!-- example: <html lang="demo"> --><html lang="en"><head></head><body><main><h1>My own work</h1><p>Real project content.</p></main></body></html>'
+  writeFileSync(join(root, 'index.html'), original)
+  age(root, 'index.html', T0 + 9)
   freshGlobals({ cwd: root })
   const mod = await importFresh()
-  const rest = restQueue(okShip, okShip)
-  const ctx = makeCtx(makeFiles(root), {}, rest)
+  const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip))
   mod.default.register(ctx)
   const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
   await click(btn)
+  const srcDoc = frameProps(paneColumns(globalThis.__tc.workspaces.at(-1).options.render())[1]).srcDoc
+  const attrs = assertValidRolledDoc(srcDoc, original)
+  assert.equal(attrs.lang, 'en', 'real element keeps its own attributes')
+  /* the illustrative comment survives byte-for-byte and takes NO attributes */
+  assert.ok(srcDoc.includes('<!-- example: <html lang="demo"> -->'),
+    'comment preserved verbatim (roll attrs must not land inside it)')
+  assert.equal((srcDoc.match(/lang="demo"/g) || []).length, 1, 'the commented html is untouched')
+  /* raw regex counting sees two <html spellings; only one is real — the point
+   * of the review round B finding. */
+  assert.equal((srcDoc.match(/<html[\s>]/gi) || []).length, 2, 'comment spelling still present as text')
+})
+
+test('R1 (review round B): roll-like text inside a quoted attribute value survives verbatim', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'tasteroll-quoted-'))
+  const original = `<!doctype html><html lang="en" title="literal data-ref='keep' text"><head><title>Q</title></head><body><h1>My own work</h1><p>Real project content.</p></body></html>`
+  writeFileSync(join(root, 'index.html'), original)
+  age(root, 'index.html', T0 + 9)
+  freshGlobals({ cwd: root })
+  const mod = await importFresh()
+  const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip))
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
   await click(btn)
-  const cols = paneColumns(globalThis.__tc.workspaces.at(-1).options.render())
-  assert.equal(cols.length, 3)
-  assertValidRolledDoc(frameProps(cols[1]).srcDoc) /* frag.html was newer → first surface */
-  assertValidRolledDoc(frameProps(cols[2]).srcDoc)
+  const srcDoc = frameProps(paneColumns(globalThis.__tc.workspaces.at(-1).options.render())[1]).srcDoc
+  const attrs = assertValidRolledDoc(srcDoc, original)
+  assert.equal(attrs.title, "literal data-ref='keep' text",
+    'unrelated attribute value with roll-like words preserved EXACTLY (review round B: was corrupted)')
+  assert.equal(attrs.lang, 'en')
+  assert.ok(srcDoc.includes('title="literal data-ref=\'keep\' text"'), 'verbatim bytes kept')
+})
+
+test('R1 (review round B): </head> inside a comment never takes the roll stylesheet', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'tasteroll-headcomment-'))
+  const original = '<!doctype html><!-- </head> sketch --><html lang="en"><head><title>H</title></head><body><h1>My own work</h1><p>Real project content.</p></body></html>'
+  writeFileSync(join(root, 'index.html'), original)
+  age(root, 'index.html', T0 + 9)
+  freshGlobals({ cwd: root })
+  const mod = await importFresh()
+  const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip))
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  const srcDoc = frameProps(paneColumns(globalThis.__tc.workspaces.at(-1).options.render())[1]).srcDoc
+  assertValidRolledDoc(srcDoc, original)
+  /* the style lands after the REAL </head>, not inside the comment */
+  const commentEnd = srcDoc.indexOf('<!-- </head> sketch -->') + '<!-- </head> sketch -->'.length
+  const styleAt = srcDoc.indexOf('tastecheck-roll')
+  assert.ok(styleAt > commentEnd, 'roll stylesheet injected after the real </head>, not in the comment')
+  assert.ok(srcDoc.includes('<!-- </head> sketch -->'), 'comment preserved')
+})
+
+/* ---- R3 (review round B): a supported active-file seam binds the surface --------------- */
+
+test('R3 (review round B): active non-frontend file → nearest HTML in ITS directory, not the newest anywhere', async () => {
+  /* Reviewer boundary fixture: docs/notes.md is newest and "current",
+   * docs/page.html is nearest, root index.html is a NEWER html elsewhere. */
+  const root = mkdtempSync(join(tmpdir(), 'tasteroll-seam-notes-'))
+  mkdirSync(join(root, 'docs'))
+  writeFileSync(join(root, 'index.html'), '<html><body><h1>My own work</h1><p>Real project content.</p></body></html>')
+  writeFileSync(join(root, 'docs', 'page.html'), '<html><body><h1>My own work</h1><p>Real project content.</p></body></html>')
+  writeFileSync(join(root, 'docs', 'notes.md'), '# notes')
+  age(root, 'index.html', T0 + 20)
+  age(root, 'docs/page.html', T0)
+  age(root, 'docs/notes.md', T0 + 50) /* the file they are actually on */
+  freshGlobals({ cwd: root, activeFile: join(root, 'docs', 'notes.md') })
+  const mod = await importFresh()
+  const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip))
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  const pane = globalThis.__tc.workspaces.at(-1).options.render()
+  const header = allText(pane.children[0]).join(' ')
+  assert.ok(header.includes('docs/page.html'), 'nearest HTML to the ACTIVE file is chosen')
+  assert.match(header, /notes\.md/, 'the active non-frontend file is named')
+  assert.match(header, /active file/, 'the strip says the choice came from the active surface')
+  assert.ok(!header.includes('no active-file API'), 'seam present — no fallback label')
+})
+
+test('R3 (review round B): an OLDER active HTML beats a newer edit elsewhere', async () => {
+  const root = fixtureProject() /* app.html newest… */
+  writeFileSync(join(root, 'other.html'), '<html><body><h1>My own work</h1><p>Real project content.</p></body></html>')
+  age(root, 'other.html', T0 + 90) /* newer than app.html */
+  freshGlobals({ cwd: root, activeFile: join(root, 'app.html') }) /* but they are ON app.html */
+  const mod = await importFresh()
+  const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip))
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  const pane = globalThis.__tc.workspaces.at(-1).options.render()
+  const header = allText(pane.children[0]).join(' ')
+  assert.ok(header.includes('app.html'), 'the ACTIVE html wins over a newer edit')
+  assert.match(header, /your active file/)
+})
+
+test('R3 (review round B): active CSS → nearest HTML to THAT CSS', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'tasteroll-seam-css-'))
+  mkdirSync(join(root, 'styles'))
+  writeFileSync(join(root, 'index.html'), '<html><body><h1>My own work</h1><p>Real project content.</p></body></html>')
+  writeFileSync(join(root, 'styles', 'deep.html'), '<html><body><h1>My own work</h1><p>Real project content.</p></body></html>')
+  writeFileSync(join(root, 'styles', 'main.css'), 'body{margin:0}')
+  /* index.html is NEWER, but styles/deep.html is in the SAME directory as the
+   * active CSS (hops 0 vs 1): the seam binds, mtime does not. */
+  age(root, 'index.html', T0 + 30)
+  age(root, 'styles/deep.html', T0)
+  freshGlobals({ cwd: root, activeFile: join(root, 'styles', 'main.css') })
+  const mod = await importFresh()
+  const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip))
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  const pane = globalThis.__tc.workspaces.at(-1).options.render()
+  const header = allText(pane.children[0]).join(' ')
+  assert.match(header, /styles\/deep\.html/, 'nearest HTML to the active CSS (same dir), not the newer root page')
+  assert.match(header, /main\.css/, 'the active CSS is named')
+})
+
+test('R3 (review round B): active file OUTSIDE the workspace cwd is ignored (fallback, honestly labeled)', async () => {
+  const root = fixtureProject()
+  freshGlobals({ cwd: root, activeFile: '/somewhere/else/entirely/notes.md' })
+  const mod = await importFresh()
+  const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip))
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  const pane = globalThis.__tc.workspaces.at(-1).options.render()
+  const header = allText(pane.children[0]).join(' ')
+  assert.ok(header.includes('app.html'), 'fallback still rolls the newest HTML in the workspace')
+  assert.match(header, /no active-file API/, 'the strip says the host gave no usable active file')
+})
+
+test('R3 (review round B): no seam at all → honest label + explicit tap-a-file handoff in the strip', async () => {
+  const root = fixtureProject()
+  freshGlobals({ cwd: root }) /* no activeFile at all */
+  const mod = await importFresh()
+  const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip, okShip))
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  const pane = globalThis.__tc.workspaces.at(-1).options.render()
+  const header = allText(pane.children[0]).join(' ')
+  assert.match(header, /no active-file API/, 'honest fallback label (mtime is never claimed as the active surface)')
+  /* the picker row exists with the workspace's HTML files */
+  const picker = pane.children.find((c) => c && typeof c.type === 'function')
+  assert.ok(picker, 'surface picker row present')
+  const pickerEl = picker.type(picker.props)
+  const pickerText = allText(pickerEl).join(' ')
+  assert.ok(pickerText.includes('app.html') && pickerText.includes('docs/deep.html'),
+    'both workspace HTML files offered')
+  /* explicit handoff: tapping docs/deep.html rebinds the surface and rolls IT */
+  const deepBtn = pickerEl.children.find((c) => c && c.type === 'button' && c.children[0] === 'docs/deep.html')
+  assert.ok(deepBtn, 'deep.html offered as a button')
+  await click(deepBtn)
+  const pane2 = globalThis.__tc.workspaces.at(-1).options.render()
+  const header2 = allText(pane2.children[0]).join(' ')
+  assert.ok(header2.includes('docs/deep.html'), 'surface switched to the named file')
+  assert.match(header2, /you picked this file/, 'the strip credits the explicit handoff')
+  assert.ok(!header2.includes('no active-file API'), 'no fallback label once the user named the surface')
+  const cols = paneColumns(pane2)
+  assert.equal(cols.length, 2, 'fresh comparison: original + first roll of the picked surface')
+  assert.ok(frameProps(cols[0]).srcDoc.includes('deeper page'), 'left column is the PICKED page')
 })
 
 test('R2: gate unreachable → visible fail-closed HOLD on every column', async () => {

@@ -23,11 +23,20 @@
  * data-mode / data-sig token system from tasteroll.html, applied to the user's
  * own markup through valid attributes on their real <html> element.
  *
- * Surface resolution (no active-file SDK seam exists): the newest-edited HTML
- * in the session workspace is "the surface they are actually on"; if the
- * newest edit is CSS, the nearest HTML to that CSS is used and named. Nothing
- * outside the session workspace is ever read, tasteroll.html is never eligible,
- * and a workspace with no HTML gets an honest strip that says so.
+ * Surface resolution (R3): the first choice is a SUPPORTED active-surface
+ * seam when the host exposes one (host.state.activeFile atom or an async
+ * host.activeFile()). Audited 2026-11-08 against the Desktop SDK: NO build
+ * exposes either yet — host.state carries cwd/sessions/model/viewport only,
+ * PluginContext offers files/storage/rest/os/preview/runAction, and no
+ * contribution area hands a file identity. That missing seam is recorded as
+ * an unmet host prerequisite on the plugin's card. Without it the first click
+ * still opens automatically and rolls the newest-edited HTML/CSS→nearest-HTML
+ * in the session workspace, NAMES the pick honestly in the strip ("no
+ * active-file API in this Desktop build"), and offers an explicit handoff:
+ * tap any workspace HTML file in the strip to roll THAT surface instead.
+ * mtime is a fallback pick, never a claim about the file you are on. Nothing
+ * outside the session workspace is ever read, tasteroll.html is never
+ * eligible, and a workspace with no HTML gets an honest strip that says so.
  *
  * No network, no telemetry, no raw bridge. Sensitive doors used: the folder
  * grant (ctx.files), host.openWorkspace (feature-detected BEFORE any side
@@ -187,31 +196,140 @@ html[data-taste-roll][data-sig="sixling"] body{column-count:2;column-gap:calc(va
 html[data-taste-roll][data-sig="sixling"] h1{column-span:all}
 `
 
-/* ---- roll attribute surgery (R1) ------------------------------------------
- * Valid attributes ON the actual <html> element, preserving the user's
- * document: quote-aware tag scan, stale roll attributes stripped, one — and
- * only one — '>' emitted. No regex munging of the tag body. */
+/* ---- roll attribute surgery (R1, review round B repair) ----------------------------
+ * A real lexical scan, not regexes: find the FIRST REAL open tag by name —
+ * skipping HTML comments (a `<!-- … <html …> … -->` illustration is not an
+ * element), doctype/bogus declarations, and raw-text element bodies
+ * (script/style/…) — honoring quoted attribute values when locating the tag
+ * end. Attributes are parsed with name/quote awareness so ONLY actual roll
+ * attributes are replaced; unrelated attribute values (even ones containing
+ * roll-like words or `>`/`<html` text) survive verbatim. One — and only one —
+ * `>` is emitted. */
 const ROLL_ATTR_NAMES = ['data-taste-roll', 'data-roll', 'data-ref', 'data-vibe', 'data-mode', 'data-sig']
+const RAW_TEXT_TAGS = new Set(['script', 'style', 'textarea', 'title', 'xmp', 'iframe', 'noembed', 'noframes', 'plaintext'])
 
-function findTagEnd(html, from) {
-  /* Index of the '>' closing the tag whose attributes start at `from`
-   * (right after '<html'), honoring quoted attribute values. -1 = none. */
-  let quote = null
-  for (let i = from; i < html.length; i++) {
-    const c = html[i]
-    if (quote) { if (c === quote) quote = null; continue }
-    if (c === '"' || c === "'") { quote = c; continue }
-    if (c === '>') return i
+function scanOpenTag(html, wanted) {
+  /* First real `<wanted …>` open tag: { start, nameEnd, end } (end = index of
+   * the closing '>'), or null. Comment/doctype/raw-text aware. */
+  const want = String(wanted || '').toLowerCase()
+  const n = html.length
+  let i = 0
+  while (i < n) {
+    const lt = html.indexOf('<', i)
+    if (lt < 0) return null
+    if (html.startsWith('<!--', lt)) {
+      const ce = html.indexOf('-->', lt + 4)
+      i = ce < 0 ? n : ce + 3
+      continue
+    }
+    if (html.startsWith('<!', lt) || html.startsWith('</', lt)) {
+      const gt = html.indexOf('>', lt)
+      i = gt < 0 ? n : gt + 1
+      continue
+    }
+    const m = /^<([a-zA-Z][a-zA-Z0-9:_-]*)/.exec(html.slice(lt, lt + 32))
+    if (!m) { i = lt + 1; continue }
+    const name = m[1].toLowerCase()
+    const nameEnd = lt + 1 + m[1].length
+    let quote = null
+    let j = nameEnd
+    while (j < n) {
+      const c = html[j]
+      if (quote) { if (c === quote) quote = null; j++; continue }
+      if (c === '"' || c === "'") { quote = c; j++; continue }
+      if (c === '>') break
+      j++
+    }
+    if (j >= n) return null /* unterminated tag: no real tag end anywhere */
+    if (name === want) return { start: lt, nameEnd, end: j }
+    if (RAW_TEXT_TAGS.has(name)) {
+      const close = new RegExp('</\\s*' + name + '\\s*>', 'i').exec(html.slice(j + 1))
+      i = close ? j + 1 + close.index + close[0].length : n
+      continue
+    }
+    i = j + 1
+  }
+  return null
+}
+
+function scanCloseTag(html, wanted) {
+  /* First real `</wanted …>` close tag (same comment/raw-text discipline);
+   * returns its closing '>' index or -1. */
+  const want = String(wanted || '').toLowerCase()
+  const n = html.length
+  let i = 0
+  const probe = '</' + want
+  while (i < n) {
+    const lt = html.indexOf('<', i)
+    if (lt < 0) return -1
+    if (html.startsWith('<!--', lt)) {
+      const ce = html.indexOf('-->', lt + 4)
+      i = ce < 0 ? n : ce + 3
+      continue
+    }
+    if (html.startsWith('<!', lt)) {
+      const gt = html.indexOf('>', lt)
+      i = gt < 0 ? n : gt + 1
+      continue
+    }
+    if (html.slice(lt, lt + probe.length).toLowerCase() === probe) {
+      const gt = html.indexOf('>', lt)
+      return gt < 0 ? -1 : gt
+    }
+    const m = /^<([a-zA-Z][a-zA-Z0-9:_-]*)/.exec(html.slice(lt, lt + 32))
+    if (!m) { i = lt + 1; continue }
+    const name = m[1].toLowerCase()
+    let quote = null
+    let j = lt + 1 + m[1].length
+    while (j < n) {
+      const c = html[j]
+      if (quote) { if (c === quote) quote = null; j++; continue }
+      if (c === '"' || c === "'") { quote = c; j++; continue }
+      if (c === '>') break
+      j++
+    }
+    if (j >= n) return -1
+    if (RAW_TEXT_TAGS.has(name)) {
+      const close = new RegExp('</\\s*' + name + '\\s*>', 'i').exec(html.slice(j + 1))
+      i = close ? j + 1 + close.index + close[0].length : n
+      continue
+    }
+    i = j + 1
   }
   return -1
 }
 
-function stripRollAttrs(attrText) {
-  let out = String(attrText || '')
-  for (const name of ROLL_ATTR_NAMES) {
-    out = out.replace(new RegExp(`\\s+${name}\\s*=\\s*(?:"[^"]*"|'[^']*'|[^\\s>]+)`, 'gi'), '')
+function parseAttrs(html, s, e) {
+  /* Parse the attribute region [s, e) of a real open tag into ordered attrs
+   * with verbatim source slices: [{ name, start, end }]. A quoted value keeps
+   * whatever bytes it contains (including '>' or roll-like words). */
+  const attrs = []
+  let i = s
+  while (i < e) {
+    while (i < e && /[\s/]/.test(html[i])) i++
+    if (i >= e) break
+    const nameStart = i
+    while (i < e && !/[\s=/>]/.test(html[i])) i++
+    if (i === nameStart) { i++; continue }
+    const name = html.slice(nameStart, i).toLowerCase()
+    let k = i
+    while (k < e && /\s/.test(html[k])) k++
+    if (k < e && html[k] === '=') {
+      k++
+      while (k < e && /\s/.test(html[k])) k++
+      if (k < e && (html[k] === '"' || html[k] === "'")) {
+        const q = html[k]
+        let ve = html.indexOf(q, k + 1)
+        if (ve < 0 || ve >= e) ve = e - 1 /* unterminated: value runs to tag end */
+        i = ve + 1
+      } else {
+        while (k < e && !/[\s>]/.test(html[k])) k++
+        i = k
+      }
+    }
+    attrs.push({ name, start: nameStart, end: Math.min(i, e) })
   }
-  return out
+  return attrs
 }
 
 function rollAttrString(roll, seed) {
@@ -222,31 +340,31 @@ function buildRolledHtml(html, roll, seed) {
   const attrs = rollAttrString(roll, seed)
   const style = `<style id="tastecheck-roll">${ROLL_CSS}</style>`
   let out = String(html || '')
-  const open = /<html[\s>]/i.exec(out)
+  const open = scanOpenTag(out, 'html')
   if (open) {
-    const tagEnd = findTagEnd(out, open.index + 5)
-    if (tagEnd >= 0) {
-      const before = out.slice(0, open.index)
-      const attrText = stripRollAttrs(out.slice(open.index + 5, tagEnd))
-      const rest = out.slice(tagEnd + 1)
-      out = `${before}<html${attrText}${attrs}>${rest}`
-    } else {
-      /* '<html' with no closing '>' anywhere: treat as text, wrap defensively. */
-      out = `<html${attrs}><head><meta charset="utf-8"></head><body>${out}</body></html>`
-    }
-  } else if (/<body(\s[^>]*)?>/i.test(out)) {
-    /* body without an html element: open one just before <body>, close at EOF. */
-    out = out.replace(/<body(\s[^>]*)?>/i, (m) => `<html${attrs}>${m}`)
-    if (!/<\/html\s*>/i.test(out)) out += '</html>'
+    const keep = parseAttrs(out, open.nameEnd, open.end)
+      .filter((a) => !ROLL_ATTR_NAMES.includes(a.name))
+      .map((a) => out.slice(a.start, a.end))
+    out = `${out.slice(0, open.start)}<html${keep.length ? ' ' + keep.join(' ') : ''}${attrs}>${out.slice(open.end + 1)}`
+  } else if (scanOpenTag(out, 'body')) {
+    /* body without an html element: open one just before the REAL <body>,
+     * close at EOF. (Comment-embedded `<body` spellings never match.) */
+    const b = scanOpenTag(out, 'body')
+    out = `${out.slice(0, b.start)}<html${attrs}>${out.slice(b.start)}`
+    if (scanCloseTag(out, 'html') < 0) out += '</html>'
   } else {
     out = `<html${attrs}><head><meta charset="utf-8"></head><body>${out}</body></html>`
   }
-  if (/<\/head\s*>/i.test(out)) {
-    out = out.replace(/<\/head\s*>/i, style + '</head>')
-  } else if (/<body(\s[^>]*)?>/i.test(out)) {
-    out = out.replace(/<body(\s[^>]*)?>/i, (m) => m + style)
+  const headClose = scanCloseTag(out, 'head')
+  if (headClose >= 0) {
+    out = `${out.slice(0, headClose + 1)}${style}${out.slice(headClose + 1)}`
   } else {
-    out = style + out
+    const b = scanOpenTag(out, 'body')
+    if (b) {
+      out = `${out.slice(0, b.end + 1)}${style}${out.slice(b.end + 1)}`
+    } else {
+      out = style + out
+    }
   }
   return out
 }
@@ -280,6 +398,9 @@ function persistComparison() {
     file: comparison.file,
     filePath: comparison.filePath,
     why: comparison.why,
+    pinned: comparison.pinned === true,
+    seamAbsent: comparison.seamAbsent === true,
+    candidates: Array.isArray(comparison.candidates) ? comparison.candidates.slice(0, 10) : undefined,
     columns: (comparison.columns || []).map((c) => ({ seed: c.seed, roll: c.roll }))
   }
   const all = pluginCtx.storage.get('comparisons', {})
@@ -287,12 +408,45 @@ function persistComparison() {
   pluginCtx.storage.set('comparisons', all)
 }
 
-/* ---- surface resolution (R3) ----------------------------------------------
+/* ---- surface resolution (R3, review round B repair) --------------------------------
  * The session workspace (host cwd) IS the boundary: candidates come from the
  * cwd subtree only — a folder grant wider than the cwd never leaks a sibling
- * project in. Newest mtime wins ("the surface they are actually on"); a CSS
- * newest edit maps to the nearest HTML, which is named in the strip header. */
+ * project in. When the host exposes a supported active-surface seam, the
+ * ACTIVE file binds the first click (HTML → itself; CSS/non-frontend → the
+ * nearest HTML to it, named). Without a seam (every build today), the newest-
+ * edited HTML/CSS→nearest-HTML is an honest FALLBACK pick, labeled as such in
+ * the strip, with an explicit tap-a-file handoff. mtime never claims to be
+ * the file you are on. */
 const SKIP_DIRS = new Set(['node_modules', '.git', '.hermes', '__pycache__', 'dist', 'build', '.next'])
+
+function activeSurfaceFromHost() {
+  /* Supported active-surface seams, in preference order. Feature-detected:
+   * neither exists in any Hermes Desktop build today (SDK audit 2026-11-08).
+   * Returns { path, via } | null | a Promise of the same. */
+  try {
+    const st = host.state || {}
+    if (st.activeFile && typeof st.activeFile.get === 'function') {
+      const v = st.activeFile.get()
+      if (typeof v === 'string' && v) return { path: v, via: 'host.state.activeFile' }
+      if (v && typeof v.path === 'string' && v.path) return { path: v.path, via: 'host.state.activeFile' }
+    }
+  } catch { /* next seam */ }
+  if (typeof host.activeFile === 'function') {
+    try {
+      const v = host.activeFile()
+      if (v && typeof v.then === 'function') {
+        return v.then((r) => {
+          if (typeof r === 'string' && r) return { path: r, via: 'host.activeFile()' }
+          if (r && typeof r.path === 'string' && r.path) return { path: r.path, via: 'host.activeFile()' }
+          return null
+        }).catch(() => null)
+      }
+      if (typeof v === 'string' && v) return { path: v, via: 'host.activeFile()' }
+      if (v && typeof v.path === 'string' && v.path) return { path: v.path, via: 'host.activeFile()' }
+    } catch { /* no seam */ }
+  }
+  return null
+}
 
 async function listDir(files, folderId, rel) {
   try {
@@ -361,7 +515,7 @@ function nearestHtml(toRel, htmls) {
   return best ? best.rel : null
 }
 
-async function resolveSurface(files, folderId, cwd, grantPath) {
+async function resolveSurface(files, folderId, cwd, grantPath, activeRel) {
   /* cwd relative to the grant; when the grant IS the cwd the root is ''. A cwd
    * outside the grant cannot happen (grantFor only returns covering grants). */
   const base = String(grantPath || '').replace(/\/+$/, '')
@@ -374,19 +528,38 @@ async function resolveSurface(files, folderId, cwd, grantPath) {
   const stats = await Promise.all(capped.map(async (r) => ({ ...r, mtime: await statMs(files, folderId, r.rel) })))
   const mtimeByRel = new Map(stats.map((s) => [s.rel, s.mtime]))
   const htmls = rows.filter((r) => !r.isCss).map((r) => ({ rel: r.rel, mtime: mtimeByRel.has(r.rel) ? mtimeByRel.get(r.rel) : -1 }))
+  /* A supported active-file seam binds the surface — this is the CEO
+   * requirement; the fallback below never claims to be it. */
+  if (activeRel) {
+    const rel = String(activeRel)
+    const inScope = !rootRel || rel === rootRel || rel.startsWith(rootRel + '/')
+    if (inScope && !rel.split('/').includes('..')) {
+      if (/\.html?$/i.test(rel) && rel.split('/').pop().toLowerCase() !== 'tasteroll.html') {
+        return { rel, why: `your active file (${rel})`, viaSeam: true }
+      }
+      if (htmls.length) {
+        const near = nearestHtml(rel, htmls)
+        if (near) return { rel: near, why: `active file ${rel} isn't HTML — nearest HTML in this workspace`, viaSeam: true }
+      }
+      return null /* active surface known, no HTML in its workspace */
+    }
+  }
+  /* NO seam in this build: honest fallback — newest edit, labeled as a pick,
+   * plus the explicit tap-a-file handoff (candidates ride on the target). */
   stats.sort((a, b) => b.mtime - a.mtime)
   const newest = stats.find((s) => s.mtime >= 0)
+  const candidates = htmls.slice().sort((a, b) => b.mtime - a.mtime || (a.rel < b.rel ? -1 : 1)).map((r) => r.rel)
+  const seamNote = 'no active-file API in this Desktop build — picked newest edit'
   if (!newest) {
     if (!htmls.length) return null
-    htmls.sort((a, b) => b.mtime - a.mtime || a.rel.split('/').length - b.rel.split('/').length || (a.rel < b.rel ? -1 : 1))
-    return { rel: htmls[0].rel, why: 'newest HTML in this workspace' }
+    return { rel: candidates[0], why: `${seamNote}; tap a file below if this isn't yours`, viaSeam: false, candidates }
   }
   if (!newest.isCss) {
-    return { rel: newest.rel, why: `your latest edit (${newest.rel})` }
+    return { rel: newest.rel, why: `${seamNote} (${newest.rel}); tap a file below if this isn't yours`, viaSeam: false, candidates }
   }
   if (!htmls.length) return null
   const rel = nearestHtml(newest.rel, htmls)
-  return { rel, why: `latest edit was ${newest.rel} → rolling its nearest HTML` }
+  return { rel, why: `${seamNote} ${newest.rel} (CSS) → its nearest HTML; tap a file below if this isn't yours`, viaSeam: false, candidates }
 }
 
 async function grantFor(cwd) {
@@ -469,7 +642,19 @@ async function runRoll() {
       }
     }
     if (!target) {
-      target = await resolveSurface(pluginCtx.files, folder.id, cwd, folder.path)
+      /* R3: a supported active-surface seam binds the FIRST click; the
+       * newest-edit fallback (and its honest label) lives in resolveSurface. */
+      const activeRaw = await activeSurfaceFromHost()
+      let activeRel = null
+      if (activeRaw && activeRaw.path) {
+        const abs = String(activeRaw.path).replace(/\/+$/, '')
+        const baseAbs = String(folder.path || '').replace(/\/+$/, '')
+        const cwdAbs = String(cwd || '').replace(/\/+$/, '')
+        if (cwdAbs && abs.startsWith(cwdAbs + '/') && (cwdAbs + '/').startsWith(baseAbs + '/')) {
+          activeRel = abs.slice(baseAbs.length ? baseAbs.length + 1 : 0).replace(/^\/+/, '')
+        }
+      }
+      target = await resolveSurface(pluginCtx.files, folder.id, cwd, folder.path, activeRel)
     }
     if (!target) {
       /* R5: no HTML in the workspace — say so IN the strip, not only a toast. */
@@ -494,6 +679,13 @@ async function runRoll() {
       current.filePath = `${folder.path}/${target.rel}`
       current.why = target.why
     }
+    if (target.viaSeam === false) {
+      current.seamAbsent = true
+      current.candidates = Array.isArray(target.candidates) ? target.candidates.slice(0, 10) : []
+    } else if (target.viaSeam === true) {
+      current.seamAbsent = false
+      current.candidates = undefined
+    }
     current.originalHtml = html
     const col = { seed, roll, srcdoc: buildRolledHtml(html, roll, seed), verdict: null, reasons: [], error: null }
     current.columns.push(col)
@@ -514,6 +706,44 @@ async function runRoll() {
     host.notifyError(`Taste Roll failed: ${(err && err.message) || err}`)
   } finally {
     inFlight = false
+  }
+}
+
+/* Explicit supported surface handoff (R3): the strip offers the workspace's
+ * HTML files; tapping one makes THAT the surface — the user names it, no
+ * mtime guess. The comparison restarts on the named file with a fresh roll. */
+async function switchSurface(rel) {
+  if (inFlight || !pluginCtx || !comparison) return
+  inFlight = true
+  try {
+    const cwd = (host.state.cwd && host.state.cwd.get ? host.state.cwd.get() : '') || ''
+    const folder = await grantFor(cwd)
+    if (!folder) {
+      host.notifyError('Taste Roll needs your project folder to switch surface.')
+      return
+    }
+    const stat = await pluginCtx.files.stat(folder.id, rel)
+    if (!stat || stat.ok !== true || !stat.exists) {
+      host.notifyError(`Taste Roll could not find ${rel}.`)
+      return
+    }
+    comparison = {
+      cwd,
+      file: rel,
+      filePath: `${folder.path}/${rel}`,
+      why: 'you picked this file',
+      columns: [],
+      pinned: true,
+      seamAbsent: false,
+      candidates: undefined
+    }
+    persistComparison()
+    openPane()
+  } catch (err) {
+    host.notifyError(`Taste Roll could not switch surface: ${(err && err.message) || err}`)
+  } finally {
+    inFlight = false
+    void runRoll() /* first roll on the named surface (sticky target) */
   }
 }
 
@@ -563,6 +793,37 @@ function ColumnHeader(props) {
   return h('div', { style: { padding: '.45rem .7rem', fontSize: '.78rem', fontWeight: 600, borderBottom: '1px solid var(--line, #ddd)' } }, kids)
 }
 
+function SurfacePicker(props) {
+  /* R3 explicit handoff: shown only when the host has NO active-file seam and
+   * the user hasn't named a surface — tap a file to roll THAT page. */
+  const { files, current } = props
+  const kids = [h('span', { key: 'lbl', style: { opacity: .7 } }, 'Not your page? Roll a specific file instead:')]
+  files.slice(0, 10).forEach((rel) => {
+    kids.push(h('button', {
+      key: rel,
+      type: 'button',
+      onClick: (e) => { e.preventDefault(); void switchSurface(rel) },
+      style: {
+        border: '1px solid var(--line, #ddd)',
+        background: rel === current ? 'var(--s2, #eee)' : 'transparent',
+        color: 'inherit',
+        borderRadius: '.35rem',
+        padding: '.05rem .4rem',
+        font: 'inherit',
+        fontSize: '.72rem',
+        cursor: 'pointer'
+      }
+    }, rel))
+  })
+  return h('div', {
+    style: {
+      display: 'flex', gap: '.4rem', flexWrap: 'wrap', alignItems: 'center',
+      padding: '.25rem .8rem .35rem', fontSize: '.72rem',
+      borderBottom: '1px solid var(--line, #ddd)'
+    }
+  }, kids)
+}
+
 function renderPane() {
   const cur = comparison
   if (!cur) {
@@ -600,6 +861,9 @@ function renderPane() {
       h('strong', null, 'Taste Roll'),
       h('span', { style: { opacity: .75 } }, `${cur.file} — ${cur.why || 'your surface'}`),
       h('span', { style: { opacity: .75, marginLeft: 'auto' } }, 'Each click adds a column; previous columns stay.')),
+    cur.seamAbsent === true && cur.pinned !== true && Array.isArray(cur.candidates) && cur.candidates.length > 1
+      ? h(SurfacePicker, { key: 'surface-picker', files: cur.candidates, current: cur.file })
+      : null,
     h('div', { style: { display: 'flex', flex: '1 1 auto', overflowX: 'auto', height: '100%' } }, kids))
 }
 

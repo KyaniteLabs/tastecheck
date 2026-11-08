@@ -20,7 +20,9 @@ Recording surface: Hermes Desktop. Scrub tokens/private paths. Banner 2:1 uses
   Desktop. Click **🎲 Taste Roll** in the composer (or ⌘K → "Taste Roll").
   Grant the project folder when asked (one picker, once). The `Taste Roll`
   pane opens BESIDE the chat, no navigation: left column = your unchanged page
-  (file named in the header, e.g. "app.html — your latest edit"); column 2 =
+  (file named in the header with how it was picked — on a host with no
+  active-file API: "no active-file API in this Desktop build — picked newest
+  edit (app.html); tap a file below if this isn't yours"); column 2 =
   your same DOM restyled by a seeded roll (ref · vibe · mode · sig + seed id).
   The column header shows **GATE… → SHIP/HOLD** — the real audit ran on that
   exact column.
