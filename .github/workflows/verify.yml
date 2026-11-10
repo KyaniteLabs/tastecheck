@@ -14,9 +14,17 @@ jobs:
           node-version: 22
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - run: python -m pip install pytest
-      - run: python -m pytest plugins/tastecheck-hermes/tests -q
+          python-version: |
+            3.11
+            3.14
+      - name: Vendored CLI matches the repository sources
+        run: node tools/hermes/sync-plugin-vendor.mjs --check
+      - name: Plugin tests (Python 3.11 and 3.14)
+        run: |
+          for py in python3.11 python3.14; do
+            $py -m pip install --quiet pytest fastapi pydantic
+            $py -m pytest plugins/tastecheck-hermes/tests -q
+          done
       - name: Desktop half clean-room harness (stubbed SDK/react)
         run: node --import ./tests/register.mjs --test tests/harness.test.mjs
         working-directory: plugins/tastecheck-hermes/desktop
@@ -33,6 +41,8 @@ jobs:
       - run: npm run test:tasteroll
       - run: npm run test:structural
       - run: npm run calibrate:check
+      - name: Validate landing HTML (rules in .htmlvalidate.json; samples are scored design artifacts)
+        run: npx --yes html-validate@9.7.1 index.html tasteroll.html
   oracle:
     runs-on: ubuntu-latest
     steps:

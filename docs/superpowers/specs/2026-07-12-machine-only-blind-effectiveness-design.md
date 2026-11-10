@@ -197,7 +197,7 @@ this evaluation’s evidence.
   a completed judge.
 - One shared attempted-call wrapper governs all 160 generation, production-judge, and
   anchor invocations. It first reserves the ordinal, then immediately before invocation
-  persists a dispatch-routing attestation matching the frozen executor and invokes
+  persists a provider-routing attestation matching the frozen executor and invokes
   once. Missing or mismatched routing, transport failure, zero turns, zero tokens, or no
   artifact consumes the ordinal and terminates `production_incomplete` without retry or
   substitution for every call class.

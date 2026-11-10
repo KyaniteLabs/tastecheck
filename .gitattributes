@@ -1,0 +1,3 @@
+# Hash-bound evidence receipts (screenshots) stay in the repository but are left out of
+# source archives (git archive / release tarballs); clone the repo to audit them.
+evals/receipts/v1/artifacts export-ignore

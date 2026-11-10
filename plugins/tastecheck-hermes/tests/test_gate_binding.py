@@ -1,330 +1,344 @@
-"""R4 gate-binding regressions (review review round A): the completion gate must bind
-eligibility to THIS completion's frontend artifact / workspace — latest-wins,
-fail closed — and must catch plainly-worded summaries on frontend tasks via the
-task's own body. All controls go through the registered hook callback
+"""Completion-gate binding: the gate releases a completion only when every frontend
+surface it DECLARES has a fresh, signed, identity-valid SHIP — latest-wins per
+artifact, fail closed. All controls go through the registered hook callback
 ``_on_pre_tool`` (the pre_tool_call entry), not private helpers."""
 
 from __future__ import annotations
 
+import hashlib
+import os
+import sqlite3
 import sys
 import time
 import types
-from pathlib import Path
+
+from conftest import page, put_entry
 
 
-def _completion(summary, **kw):
-    base = {"task_id": "t_gatectl", "summary": summary}
+def _done(**kw):
+    base = {"task_id": "t_gatectl", "summary": "Finished and verified all acceptance criteria"}
     base.update(kw)
     return base
 
 
-def _ui(**kw):
-    return _completion("Landing page redesign done, ready to ship", **kw)
+def _gate(plugin, args, hook_task="t_gatectl", tool="kanban_complete"):
+    return plugin._on_pre_tool(tool, args, task_id=hook_task)
 
 
-def _write_ledger(plugin, entries):
-    plugin._save_json(plugin._ledger_path(), entries)
+def _blocked(res, *needles):
+    assert res and res["action"] == "block", res
+    for n in needles:
+        assert n in res["message"], (n, res["message"])
+    return res
 
 
-def _entry(plugin, target, verdict="SHIP", age=0, source="tool", **extra):
-    """Entry via the REAL recorder (workspace + sha256 binding), then patch ts/extras."""
-    plugin.record_verdict(target, {"verdict": verdict}, source=source)
-    ledger = plugin._load_json(plugin._ledger_path(), [])
-    if not isinstance(ledger, list):
-        ledger = []
-    if not ledger:
-        ledger.append({})
-    ledger[-1].update(extra)
-    if age:
-        ledger[-1]["ts"] = int(time.time()) - age
-    plugin._save_json(plugin._ledger_path(), ledger)
-    return ledger[-1]
+# --- what counts as a frontend claim ------------------------------------------
+
+def test_ui_vocabulary_alone_never_vetoes(plugin):
+    """P1-1: words in the summary are advisory only. 'Updated the dashboard design
+    docs' on a backend card must not be blocked (it was, via _UI_RE)."""
+    for summary in ("Landing page redesign done, ready to ship",
+                    "Updated the dashboard design docs", "Fixed the page cache"):
+        assert _gate(plugin, _done(summary=summary)) is None
 
 
-def _fresh_ledger(plugin):
-    _write_ledger(plugin, [])
+def test_json_keys_never_trigger_the_gate(plugin):
+    """P1-1: the old check scanned json.dumps(args) — including KEYS such as
+    'layout' or 'component'. Keys are never inspected now."""
+    args = _done(metadata={"layout": "n/a", "component": "billing", "design_doc": "ADR-12"})
+    assert _gate(plugin, args) is None
 
 
-# --- unrelated / superseded / changed evidence must NOT release the gate -----
-
-def test_gate_blocks_ship_for_a_different_artifact(plugin, tmp_path):
-    """SHIP for project-a + completion targeting project-b: BLOCK (was allowed at 9a2abbf)."""
-    _fresh_ledger(plugin)
-    a = tmp_path / "project-a" / "index.html"
-    a.parent.mkdir()
-    a.write_text("<html><body>A</body></html>", encoding="utf-8")
-    b = tmp_path / "project-b" / "index.html"
-    b.parent.mkdir()
-    b.write_text("<html><body>B</body></html>", encoding="utf-8")
-    _entry(plugin, str(a))  # SHIP for A
-    blocked = plugin._on_pre_tool(
-        "kanban_complete", _ui(metadata={"target": str(b)}), task_id="t_gatectl")
-    assert blocked and blocked["action"] == "block"
-    assert "no ledger verdict is bound" in blocked["message"]
+def test_non_frontend_artifacts_are_ignored(plugin, ws):
+    args = _done(metadata={"changed_files": [str(ws / "server.py"), "README.md", "docs/page.md"]})
+    assert _gate(plugin, args) is None
 
 
-def test_gate_blocks_when_newer_hold_supersedes_ship(plugin, tmp_path):
-    """SHIP then newer HOLD for the SAME artifact: BLOCK (was allowed at 9a2abbf)."""
-    _fresh_ledger(plugin)
-    b = tmp_path / "project-b" / "index.html"
-    b.parent.mkdir()
-    b.write_text("<html><body>B</body></html>", encoding="utf-8")
-    ledger = []
-    _write_ledger(plugin, ledger)
-    _entry(plugin, str(b), verdict="SHIP", age=100)
-    _entry(plugin, str(b), verdict="HOLD", age=0, hold_reasons=["focus ring invisible on buttons"])
-    blocked = plugin._on_pre_tool(
-        "kanban_complete", _ui(metadata={"target": str(b)}), task_id="t_gatectl")
-    assert blocked and blocked["action"] == "block"
-    assert "latest matching verdict is HOLD" in blocked["message"]
+def test_declared_html_artifact_triggers_gate(plugin, ws):
+    p = page(ws)
+    _blocked(_gate(plugin, _done(metadata={"changed_files": [str(p)]})), "no ledger verdict is bound")
 
 
-def test_gate_allows_matching_fresh_ship(plugin, tmp_path):
-    _fresh_ledger(plugin)
-    b = tmp_path / "project-b" / "index.html"
-    b.parent.mkdir()
-    b.write_text("<html><body>B</body></html>", encoding="utf-8")
-    _entry(plugin, str(b))
-    assert plugin._on_pre_tool(
-        "kanban_complete", _ui(metadata={"target": str(b)}), task_id="t_gatectl") is None
+def test_explicit_flag_triggers_gate(plugin):
+    _blocked(_gate(plugin, _done(metadata={"tastecheck": True})), "metadata.tastecheck")
+    _blocked(_gate(plugin, _done(metadata={"frontend": True})))
+    assert _gate(plugin, _done(metadata={"tastecheck": False})) is None
 
 
-def test_gate_blocks_when_artifact_changed_after_ship(plugin, tmp_path):
-    """A SHIP for bytes the file no longer has is superseded: BLOCK."""
-    _fresh_ledger(plugin)
-    b = tmp_path / "project-b" / "index.html"
-    b.parent.mkdir()
-    b.write_text("<html><body>v1</body></html>", encoding="utf-8")
-    _entry(plugin, str(b))  # recorder hashes v1
-    b.write_text("<html><body>v2 — edited after the audit</body></html>", encoding="utf-8")
-    blocked = plugin._on_pre_tool(
-        "kanban_complete", _ui(metadata={"target": str(b)}), task_id="t_gatectl")
-    assert blocked and blocked["action"] == "block"
-    assert "changed after its SHIP" in blocked["message"]
+def test_request_review_is_gated_too(plugin):
+    _blocked(_gate(plugin, _done(metadata={"tastecheck": True}), tool="kanban_request_review"))
 
 
-def test_gate_workspace_fallback_never_accepts_foreign_workspace(plugin, tmp_path, monkeypatch):
-    """UI-worded completion with no named artifact: only a SHIP recorded in THIS
-    workspace releases it — never 'any SHIP anywhere in the profile' (R4)."""
-    _fresh_ledger(plugin)
-    _entry(plugin, "http://127.0.0.1:9999/other-project")
-    ledger = plugin._load_json(plugin._ledger_path(), [])
-    ledger[-1]["workspace"] = str(tmp_path / "somewhere-else")  # different workspace
-    _write_ledger(plugin, ledger)
-    blocked = plugin._on_pre_tool("kanban_complete", _ui(), task_id="t_gatectl")
-    assert blocked and blocked["action"] == "block"
-    # …and the same-shape entry recorded in the CURRENT workspace releases it:
-    _entry(plugin, "http://127.0.0.1:5173")
-    assert plugin._on_pre_tool("kanban_complete", _ui(), task_id="t_gatectl") is None
+def test_other_tools_are_never_gated(plugin, ws):
+    p = page(ws)
+    assert plugin._on_pre_tool("terminal", {"command": "open the landing page", "target": str(p)}) is None
+    assert plugin._on_pre_tool("write_file", {"path": str(p)}) is None
 
 
-def test_gate_no_evidence_frontend_claim_blocks(plugin):
-    _fresh_ledger(plugin)
-    blocked = plugin._on_pre_tool("kanban_complete", _ui(), task_id="t_gatectl")
-    assert blocked and blocked["action"] == "block"
-    assert "no ledger verdict is bound" in blocked["message"]
+# --- card marker (read-only kanban lookup) -------------------------------------
 
-
-# --- plain summaries on frontend tasks are caught via the task body ----------
-
-def _fake_hermes_cli(monkeypatch, tmp_path, *, title="", body=""):
+def _fake_board(monkeypatch, tmp_path, tasks, seen=None):
+    """A REAL sqlite board file per board name; get_task is faked but receives the
+    actual connection so the test can check it is read-only."""
     db_mod = types.ModuleType("hermes_cli.kanban_db")
-    db_file = tmp_path / "kanban.db"
-    db_file.write_bytes(b"")  # empty sqlite file: connect succeeds, get_task is faked
 
-    class _Task:
-        pass
+    def path_for(board=None):
+        p = tmp_path / f"kanban-{board or 'default'}.db"
+        if not p.exists():
+            sqlite3.connect(p).close()
+        return p
 
-    task = _Task()
-    task.title = title
-    task.body = body
-    db_mod.kanban_db_path = lambda board=None: db_file
-    db_mod.get_task = lambda conn, task_id: task
+    def get_task(conn, task_id):
+        if seen is not None:
+            try:
+                conn.execute("CREATE TABLE probe (x)")
+                seen.append("writable")
+            except sqlite3.OperationalError:
+                seen.append("read-only")
+            seen.append(conn.execute("PRAGMA database_list").fetchone()[2])
+        return tasks.get(task_id)
+
+    db_mod.kanban_db_path = path_for
+    db_mod.get_task = get_task
     pkg = types.ModuleType("hermes_cli")
     pkg.kanban_db = db_mod
     monkeypatch.setitem(sys.modules, "hermes_cli", pkg)
     monkeypatch.setitem(sys.modules, "hermes_cli.kanban_db", db_mod)
 
 
-def test_gate_blocks_plain_summary_on_frontend_task(plugin, tmp_path, monkeypatch):
-    """'Finished and verified all acceptance criteria' on a frontend task card:
-    BLOCK via the task's own body (was allowed at 9a2abbf)."""
-    _fresh_ledger(plugin)
-    _fake_hermes_cli(monkeypatch, tmp_path,
-                     title="Redesign the marketing landing page",
-                     body="Ship the new hero section and pricing table.")
-    plain = _completion("Finished and verified all acceptance criteria")
-    blocked = plugin._on_pre_tool("kanban_complete", plain, task_id="t_gatectl")
-    assert blocked and blocked["action"] == "block"
-    assert "frontend/UI work" in blocked["message"]
+def _task(title="", body="", skills=None):
+    return types.SimpleNamespace(title=title, body=body, skills=skills)
 
 
-def test_gate_allows_plain_summary_on_non_frontend_task(plugin, tmp_path, monkeypatch):
-    _fresh_ledger(plugin)
-    _fake_hermes_cli(monkeypatch, tmp_path, title="Fix billing rounding", body="ledger cents")
-    plain = _completion("Finished and verified all acceptance criteria")
-    assert plugin._on_pre_tool("kanban_complete", plain, task_id="t_gatectl") is None
+def test_card_marker_body_line_gates(plugin, tmp_path, monkeypatch):
+    _fake_board(monkeypatch, tmp_path, {"t_gatectl": _task(body="Build it.\ntastecheck: required\n")})
+    _blocked(_gate(plugin, _done()), "tastecheck: required")
 
 
-def test_gate_ignores_unknown_task_and_non_frontend_payload(plugin):
-    """No UI words, no frontend paths, task not found: non-frontend behavior unchanged."""
-    _fresh_ledger(plugin)
-    plain = _completion("Finished and verified all acceptance criteria", task_id="t_nope1234")
-    assert plugin._on_pre_tool("kanban_complete", plain, task_id="t_nope1234") is None
+def test_card_skill_marker_gates(plugin, tmp_path, monkeypatch):
+    _fake_board(monkeypatch, tmp_path, {"t_gatectl": _task(skills=["tastecheck-pass"])})
+    _blocked(_gate(plugin, _done()), "carries the tastecheck skill")
 
 
-# --- recorder binding fields --------------------------------------------------
-
-def test_record_verdict_binds_workspace_and_sha256(plugin, tmp_path):
-    f = tmp_path / "page.html"
-    f.write_text("<html><body>stable bytes</body></html>", encoding="utf-8")
-    plugin.record_verdict(str(f), {"verdict": "SHIP"}, source="roll-audit")
-    (entry,) = plugin._load_json(plugin._ledger_path(), [])
-    assert entry["workspace"] and entry["target_sha256"]
-    import hashlib
-    assert entry["target_sha256"] == hashlib.sha256(f.read_bytes()).hexdigest()
-    assert entry["source"] == "roll-audit"
+def test_frontend_words_on_card_without_marker_do_not_gate(plugin, tmp_path, monkeypatch):
+    """P1-1: a card titled 'Redesign the marketing landing page' is not a declaration."""
+    _fake_board(monkeypatch, tmp_path,
+                {"t_gatectl": _task(title="Redesign the marketing landing page", body="Ship the hero.")})
+    assert _gate(plugin, _done()) is None
 
 
-def test_record_verdict_http_target_skips_sha(plugin):
-    plugin.record_verdict("http://127.0.0.1:5173/", {"verdict": "HOLD"})
-    (entry,) = plugin._load_json(plugin._ledger_path(), [])
-    # review round B R4: URL identity is normalized (trailing slash dropped) at record
-    # AND consumption time, so both boundaries compare equal.
-    assert entry["target"] == "http://127.0.0.1:5173"
-    assert entry["target_raw"] == "http://127.0.0.1:5173/"
-    assert "target_sha256" not in entry
-
-
-# --- review round B R4: identity resolution, per-artifact evidence, fail-closed identity -
-
-_UUID_HOOK = "123e4567-e89b-12d3-a456-426614174000"  # agent/turn_facade.py runtime turn id
+def test_card_lookup_is_read_only_and_uses_args_board(plugin, tmp_path, monkeypatch):
+    """P3-13: the lookup opens the DB mode=ro and on the board the call targets."""
+    seen = []
+    _fake_board(monkeypatch, tmp_path, {"t_gatectl": _task(body="tastecheck: required")}, seen)
+    _blocked(_gate(plugin, _done(board="design")))
+    assert seen[0] == "read-only"
+    assert seen[1].endswith("kanban-design.db")
 
 
 def test_uuid_hook_id_never_overrides_explicit_card_id(plugin, tmp_path, monkeypatch):
-    """Plain summary on a frontend card; args carry the card id, the hook carries
-    a runtime UUID (the real tool_hook_ids shape): BLOCK via the task body
-    (the UUID overriding args.task_id allowed this through at aa5d489)."""
-    _fresh_ledger(plugin)
-    _fake_hermes_cli(monkeypatch, tmp_path,
-                     title="Redesign the marketing landing page",
-                     body="Ship the new hero section and pricing table.")
-    plain = {"task_id": "t_gatectl", "summary": "Finished and verified all acceptance criteria"}
-    blocked = plugin._on_pre_tool("kanban_complete", plain, task_id=_UUID_HOOK)
-    assert blocked and blocked["action"] == "block"
-    assert "frontend/UI work" in blocked["message"]
+    _fake_board(monkeypatch, tmp_path, {"t_gatectl": _task(body="tastecheck: required")})
+    _blocked(_gate(plugin, _done(), hook_task="123e4567-e89b-12d3-a456-426614174000"))
 
 
 def test_env_default_resolves_card_when_args_omit_task_id(plugin, tmp_path, monkeypatch):
-    """task_id omitted (the kanban worker default: HERMES_KANBAN_TASK env) + UUID
-    hook id: the card still binds and the plain summary is gated."""
-    _fresh_ledger(plugin)
-    _fake_hermes_cli(monkeypatch, tmp_path,
-                     title="Redesign the marketing landing page",
-                     body="Ship the hero.")
+    _fake_board(monkeypatch, tmp_path, {"t_gatectl": _task(body="tastecheck: required")})
     monkeypatch.setenv("HERMES_KANBAN_TASK", "t_gatectl")
-    plain = {"summary": "Finished and verified all acceptance criteria"}
-    blocked = plugin._on_pre_tool("kanban_complete", plain, task_id=_UUID_HOOK)
-    assert blocked and blocked["action"] == "block"
-    assert "frontend/UI work" in blocked["message"]
+    args = {"summary": "Finished"}
+    _blocked(plugin._on_pre_tool("kanban_complete", args, task_id="123e4567-e89b-12d3-a456-426614174000"))
 
 
-def test_unresolvable_identity_ui_summary_still_gated_by_payload(plugin, monkeypatch):
-    """No card id anywhere (no args id, UUID hook, no env) + UI-worded summary:
-    the payload vocabulary claim gates on its own."""
-    _fresh_ledger(plugin)
-    monkeypatch.delenv("HERMES_KANBAN_TASK", raising=False)
-    blocked = plugin._on_pre_tool(
-        "kanban_complete", {"summary": "Landing page done, ready to ship"}, task_id=_UUID_HOOK)
-    assert blocked and blocked["action"] == "block"
+def test_unknown_task_is_not_gated(plugin, tmp_path, monkeypatch):
+    _fake_board(monkeypatch, tmp_path, {})
+    assert _gate(plugin, _done(task_id="t_nope1234"), hook_task="t_nope1234") is None
 
 
-def test_every_named_artifact_needs_its_own_ship(plugin, tmp_path):
-    """Two artifacts named, only A has SHIP: BLOCK — one unrelated file cannot
-    clear another (was allowed at aa5d489)."""
-    _fresh_ledger(plugin)
-    a = tmp_path / "a.html"
-    a.write_text("<html><body>A</body></html>", encoding="utf-8")
-    b = tmp_path / "b.html"
-    b.write_text("<html><body>B</body></html>", encoding="utf-8")
-    _entry(plugin, str(a))
-    blocked = plugin._on_pre_tool(
-        "kanban_complete", {"summary": "Frontend done", "artifacts": [str(a), str(b)]},
-        task_id="t_gatectl")
-    assert blocked and blocked["action"] == "block"
-    assert "b.html" in blocked["message"]
+# --- per-artifact binding --------------------------------------------------------
+
+def test_gate_blocks_ship_for_a_different_artifact(plugin, ws):
+    a = page(ws, "project-a/index.html", "<html><body>A</body></html>")
+    b = page(ws, "project-b/index.html", "<html><body>B</body></html>")
+    put_entry(plugin, a)
+    _blocked(_gate(plugin, _done(metadata={"target": str(b)})), "no ledger verdict is bound")
 
 
-def test_newer_ship_for_other_artifact_does_not_clear_older_hold(plugin, tmp_path):
-    """A has HOLD, B has a newer SHIP, completion names both: BLOCK — per-artifact
-    latest-wins, not one global latest (was allowed at aa5d489)."""
-    _fresh_ledger(plugin)
-    a = tmp_path / "a.html"
-    a.write_text("<html><body>A</body></html>", encoding="utf-8")
-    b = tmp_path / "b.html"
-    b.write_text("<html><body>B</body></html>", encoding="utf-8")
-    _entry(plugin, str(a), verdict="HOLD", age=100, hold_reasons=["contrast 2.9:1 on body text"])
-    _entry(plugin, str(b), age=0)
-    blocked = plugin._on_pre_tool(
-        "kanban_complete", {"summary": "Frontend done", "artifacts": [str(a), str(b)]},
-        task_id="t_gatectl")
-    assert blocked and blocked["action"] == "block"
-    assert "latest matching verdict is HOLD" in blocked["message"]
+def test_directory_target_binds_its_index_html(plugin, ws):
+    """P1-4: a directory artifact means its index.html and gets the digest check."""
+    a = page(ws, "site/index.html")
+    put_entry(plugin, a)
+    assert _gate(plugin, _done(metadata={"target": str(ws / "site")})) is None
+    a.write_text("<html><body>edited</body></html>", encoding="utf-8")
+    _blocked(_gate(plugin, _done(metadata={"target": str(ws / "site")})), "changed after its SHIP")
 
 
-def test_deleted_audited_artifact_fails_closed(plugin, tmp_path):
-    """SHIP then the audited file is deleted: the evidence cannot be validated,
-    so BLOCK (was allowed at aa5d489 — hash check was conditional on is_file)."""
-    _fresh_ledger(plugin)
-    a = tmp_path / "a.html"
-    a.write_text("<html><body>A</body></html>", encoding="utf-8")
-    _entry(plugin, str(a))
+def test_gate_blocks_when_newer_hold_supersedes_ship(plugin, ws):
+    b = page(ws)
+    put_entry(plugin, b, "SHIP", age=100)
+    put_entry(plugin, b, "HOLD", hold_reasons=["focus ring invisible on buttons"])
+    _blocked(_gate(plugin, _done(metadata={"target": str(b)})), "latest matching verdict is HOLD", "focus ring")
+
+
+def test_gate_allows_matching_fresh_ship(plugin, ws):
+    b = page(ws)
+    put_entry(plugin, b)
+    assert _gate(plugin, _done(metadata={"target": str(b)})) is None
+
+
+def test_gate_blocks_when_artifact_changed_after_ship(plugin, ws):
+    b = page(ws, body="<html><body>v1</body></html>")
+    put_entry(plugin, b)
+    b.write_text("<html><body>v2</body></html>", encoding="utf-8")
+    _blocked(_gate(plugin, _done(metadata={"target": str(b)})), "changed after its SHIP")
+
+
+def test_served_subresource_change_revokes_ship(plugin, ws):
+    """P1-4: CSS served during the SHIP audit is bound by hash."""
+    b = page(ws)
+    css = page(ws, "app.css", "body{color:#111}")
+    put_entry(plugin, b, served={str(b): hashlib.sha256(b.read_bytes()).hexdigest(),
+                                 str(css): hashlib.sha256(css.read_bytes()).hexdigest()})
+    assert _gate(plugin, _done(metadata={"target": str(b)})) is None
+    css.write_text("body{color:red}", encoding="utf-8")
+    _blocked(_gate(plugin, _done(metadata={"target": str(b)})), "app.css")
+
+
+def test_every_named_artifact_needs_its_own_ship(plugin, ws):
+    a = page(ws, "a.html")
+    b = page(ws, "b.html")
+    put_entry(plugin, a)
+    _blocked(_gate(plugin, _done(artifacts=[str(a), str(b)])), "b.html")
+
+
+def test_newer_ship_for_other_artifact_does_not_clear_older_hold(plugin, ws):
+    a = page(ws, "a.html")
+    b = page(ws, "b.html")
+    put_entry(plugin, a, "HOLD", age=100, hold_reasons=["contrast 2.9:1"])
+    put_entry(plugin, b)
+    _blocked(_gate(plugin, _done(artifacts=[str(a), str(b)])), "latest matching verdict is HOLD")
+
+
+def test_deleted_audited_artifact_fails_closed(plugin, ws):
+    a = page(ws, "a.html")
+    put_entry(plugin, a)
     a.unlink()
-    blocked = plugin._on_pre_tool(
-        "kanban_complete", _ui(metadata={"target": str(a)}), task_id="t_gatectl")
-    assert blocked and blocked["action"] == "block"
-    assert "missing or unreadable" in blocked["message"]
+    _blocked(_gate(plugin, _done(metadata={"target": str(a)})), "missing or unreadable")
 
 
-def test_missing_digest_fails_closed(plugin, tmp_path):
-    """SHIP evidence without a content digest for a local file: BLOCK (was
-    allowed at aa5d489)."""
-    _fresh_ledger(plugin)
-    a = tmp_path / "a.html"
-    a.write_text("<html><body>A</body></html>", encoding="utf-8")
-    _entry(plugin, str(a))
-    ledger = plugin._load_json(plugin._ledger_path(), [])
-    ledger[-1].pop("target_sha256", None)
+def test_missing_digest_fails_closed(plugin, ws):
+    a = page(ws, "a.html")
+    put_entry(plugin, a)
+    import json
+    ledger = json.loads(plugin._ledger_path().read_text())
+    ledger[-1].pop("target_sha256")
+    ledger[-1].pop("sig")
+    plugin._sign_entry(ledger[-1])
     plugin._save_json(plugin._ledger_path(), ledger)
-    blocked = plugin._on_pre_tool(
-        "kanban_complete", _ui(metadata={"target": str(a)}), task_id="t_gatectl")
-    assert blocked and blocked["action"] == "block"
-    assert "lacks a content digest" in blocked["message"]
+    _blocked(_gate(plugin, _done(metadata={"target": str(a)})), "lacks a content digest")
 
 
-def test_explicit_url_target_never_falls_back_to_workspace(plugin, tmp_path):
-    """Completion explicitly binds http://…/project-b; only project-a has a SHIP
-    recorded in this workspace: BLOCK — an explicit URL target binds by identity,
-    with no suffix extraction and no workspace substitution (was allowed)."""
-    _fresh_ledger(plugin)
-    _entry(plugin, "http://127.0.0.1:5173/project-a")
-    blocked = plugin._on_pre_tool(
-        "kanban_complete", _ui(metadata={"target": "http://127.0.0.1:5173/project-b"}),
-        task_id="t_gatectl")
-    assert blocked and blocked["action"] == "block"
-    assert "no ledger verdict is bound" in blocked["message"]
+def test_relative_artifact_binds_absolute_twin(plugin, ws):
+    f = page(ws, "page.html")
+    plugin.record_verdict("page.html", {"outcome": "SHIP"})
+    import json
+    (entry,) = json.loads(plugin._ledger_path().read_text())
+    assert entry["target"] == str(f)
+    assert _gate(plugin, _done(metadata={"target": str(f)})) is None
+    assert _gate(plugin, _done(metadata={"target": "page.html"})) is None
 
 
-def test_relative_audit_binds_its_absolute_completion_twin(plugin, tmp_path, monkeypatch):
-    """record_verdict('page.html') resolves against the AGENT cwd at record time;
-    the completion names the same file absolutely — one identity (was a HOLD-only
-    misbind at aa5d489)."""
-    monkeypatch.setenv("TERMINAL_CWD", str(tmp_path))
-    _fresh_ledger(plugin)
-    f = tmp_path / "page.html"
-    f.write_text("<html><body>P</body></html>", encoding="utf-8")
-    plugin.record_verdict("page.html", {"verdict": "SHIP"})
-    (entry,) = plugin._load_json(plugin._ledger_path(), [])
-    assert entry["target"] == str(f), "relative target normalized to the agent-cwd absolute"
-    assert plugin._on_pre_tool(
-        "kanban_complete", _ui(metadata={"target": str(f)}), task_id="t_gatectl") is None
+# --- frontend sources ------------------------------------------------------------
+
+def test_one_page_ship_covers_its_served_sources(plugin, ws):
+    """P1-4: three CSS files loaded by one audited page need ONE SHIP, not three."""
+    b = page(ws)
+    css = [page(ws, f"c{i}.css", f".c{i}{{}}") for i in range(3)]
+    served = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in [b, *css]}
+    put_entry(plugin, b, served=served)
+    assert _gate(plugin, _done(metadata={"changed_files": [str(p) for p in css]})) is None
+    css[1].write_text(".changed{}", encoding="utf-8")
+    _blocked(_gate(plugin, _done(metadata={"changed_files": [str(p) for p in css]})), "c1.css")
+
+
+def test_unserved_source_needs_mtime_before_audit(plugin, ws):
+    """Compiled sources (.tsx) are never served; they are covered when last edited
+    before the newest SHIP audit started."""
+    b = page(ws)
+    tsx = page(ws, "src/App.tsx", "export default 1")
+    old = time.time() - 600
+    os.utime(tsx, (old, old))
+    put_entry(plugin, b)
+    assert _gate(plugin, _done(metadata={"changed_files": [str(tsx)]})) is None
+    tsx.write_text("export default 2", encoding="utf-8")
+    future = time.time() + 60
+    os.utime(tsx, (future, future))
+    _blocked(_gate(plugin, _done(metadata={"changed_files": [str(tsx)]})), "edited after the latest SHIP")
+
+
+def test_source_without_any_ship_blocks(plugin, ws):
+    tsx = page(ws, "src/App.tsx", "export default 1")
+    _blocked(_gate(plugin, _done(metadata={"changed_files": [str(tsx)]})))
+
+
+# --- URL targets --------------------------------------------------------------------
+
+def test_explicit_url_target_binds_by_identity(plugin):
+    put_entry(plugin, "http://127.0.0.1:5173/project-a")
+    _blocked(_gate(plugin, _done(metadata={"target": "http://127.0.0.1:5173/project-b"})),
+             "no ledger verdict is bound")
+    assert _gate(plugin, _done(metadata={"target": "http://127.0.0.1:5173/project-a/"})) is None
+
+
+def test_url_ship_has_short_ttl(plugin):
+    """P2-12: a URL's content cannot be hashed, so its SHIP expires after 30 min."""
+    put_entry(plugin, "http://127.0.0.1:5173", age=31 * 60)
+    _blocked(_gate(plugin, _done(metadata={"target": "http://127.0.0.1:5173"})), "stale")
+
+
+def test_url_ship_bound_to_its_workspace(plugin, tmp_path):
+    put_entry(plugin, "http://127.0.0.1:5173", workspace=str(tmp_path / "elsewhere"))
+    _blocked(_gate(plugin, _done(metadata={"target": "http://127.0.0.1:5173"})), "no ledger verdict is bound")
+
+
+# --- flag/marker-only workspace fallback ---------------------------------------------
+
+def test_flag_only_needs_a_ship_in_this_workspace(plugin, tmp_path):
+    put_entry(plugin, "http://127.0.0.1:9999/other", workspace=str(tmp_path / "somewhere-else"))
+    _blocked(_gate(plugin, _done(metadata={"tastecheck": True})))
+    put_entry(plugin, "http://127.0.0.1:5173")
+    assert _gate(plugin, _done(metadata={"tastecheck": True})) is None
+
+
+def test_flag_only_blocks_on_any_latest_hold_in_workspace(plugin, ws):
+    a = page(ws, "a.html")
+    b = page(ws, "b.html")
+    put_entry(plugin, a)
+    put_entry(plugin, b, "HOLD", hold_reasons=["contrast"])
+    _blocked(_gate(plugin, _done(metadata={"tastecheck": True})), "b.html", "HOLD")
+
+
+def test_flag_only_ignores_remote_urls_for_fallback(plugin):
+    """A SHIP of some public URL is not evidence about this workspace's frontend."""
+    put_entry(plugin, "https://example.com/")
+    _blocked(_gate(plugin, _done(metadata={"tastecheck": True})))
+
+
+def test_stale_ship_blocks(plugin, ws):
+    a = page(ws)
+    put_entry(plugin, a, age=int(plugin.DEFAULTS["gate_ship_ttl_seconds"]) + 60)
+    _blocked(_gate(plugin, _done(metadata={"target": str(a)})), "stale")
+
+
+def test_gate_disabled_by_config(plugin):
+    plugin._ctx.config["gate_completions"] = False
+    assert _gate(plugin, _done(metadata={"tastecheck": True})) is None
+
+
+def test_gate_ignores_non_dict_args(plugin):
+    assert plugin._on_pre_tool("kanban_complete", None) is None
+    assert plugin._on_pre_tool("kanban_complete", "summary=done") is None
+
+
+def test_gate_directive_matches_hermes_veto_contract(plugin):
+    blocked = _gate(plugin, _done(metadata={"tastecheck": True}))
+    assert set(blocked) == {"action", "message"}
+    assert isinstance(blocked["message"], str) and blocked["message"]
