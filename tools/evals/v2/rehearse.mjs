@@ -1,7 +1,8 @@
 #!/usr/bin/env node
+import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { closeSync, fsyncSync, mkdirSync, mkdtempSync, openSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { closeSync, fsyncSync, mkdirSync, mkdtempSync, openSync, readFileSync, rmSync, writeFileSync, realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 
@@ -441,6 +442,6 @@ export function rehearse({
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   process.stdout.write(`${JSON.stringify(rehearse())}\n`);
 }

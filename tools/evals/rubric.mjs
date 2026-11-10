@@ -19,7 +19,7 @@
  * Or import rubric definitions directly:
  *   import { RUBRIC, validateCalibration, antiSlopChecks } from "./rubric.mjs";
  */
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 // Anchored 1-5 rubric dimensions
@@ -261,7 +261,7 @@ export function antiSlopChecks(outputs) {
 }
 
 // CLI — only runs when this file is the entry point, not when imported
-const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+const isMain = process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
 if (!isMain) { /* imported as library — skip CLI */ }
 else {
 const [,, cmd, filePath] = process.argv;

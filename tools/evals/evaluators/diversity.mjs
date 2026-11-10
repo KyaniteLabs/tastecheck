@@ -6,7 +6,7 @@
  * cannot release-gate a replay. A release decision requires a scenario
  * contract plus evidence-bound semantic variation declared by each attempt.
  */
-import { readFileSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 
@@ -234,7 +234,7 @@ export function evaluateDiversity(attempts, scenario = null) {
   };
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))) {
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   const paths = process.argv.slice(2);
   if (paths.length !== 3) {
     console.error("Usage: node tools/evals/evaluators/diversity.mjs <seed101.json> <seed202.json> <seed303.json>");

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { realpathSync } from "node:fs";
 
 import fs from "node:fs";
 import path from "node:path";
@@ -475,7 +476,7 @@ async function main() {
   console.log(`${canonicalJson(receipt)}\n`);
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   main().catch((error) => {
     if (error.code === "EVIDENCE_COMMITTED_DURABILITY_UNCERTAIN") {
       console.error(canonicalJson({ error: error.code, ...error.publication }));

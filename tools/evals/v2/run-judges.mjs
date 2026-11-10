@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import { lstatSync, readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { lstatSync, readFileSync, realpathSync } from "node:fs";
 
 import { executeAttempt } from "./lib/admission.mjs";
 import { sha256 } from "./lib/canonical-json.mjs";
@@ -123,6 +124,6 @@ export function runJudgments({ schedule, scheduleInput, state, instantiatedJudgm
   return { run_status: state.run_status, receipts, results };
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   throw new Error("run-judges.mjs requires a sealed injected executor and frozen run state");
 }

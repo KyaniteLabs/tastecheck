@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** Validate, unmask, and aggregate the single final remediation7 v5 spacing replay. */
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, realpathSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -490,7 +490,7 @@ export function formatCliResult(result) {
   };
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   const result = process.argv.includes("--synthesize") ? synthesizeV5() : validateCorrection();
   if (result.errors?.length) { console.error(result.errors.join("\n")); process.exitCode = 1; }
   else console.log(JSON.stringify(formatCliResult(result), null, 2));

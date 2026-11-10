@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { fileURLToPath } from "node:url";
 /**
  * conflict-blind-gate — blind SHIP/HOLD adjudication of verdict-corpus rows
  * by an independent judge that never sees the org's recorded verdict,
@@ -23,7 +24,7 @@
  *     [--judge-cmd "cat"] [--limit N]
  */
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync, realpathSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 
 const ASK =
@@ -179,4 +180,4 @@ export function main() {
   process.stdout.write(JSON.stringify(report, null, 2) + "\n");
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) main();
+if (realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) main();
