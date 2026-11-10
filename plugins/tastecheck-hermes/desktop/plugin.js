@@ -196,7 +196,7 @@ html[data-taste-roll][data-sig="sixling"] body{column-count:2;column-gap:calc(va
 html[data-taste-roll][data-sig="sixling"] h1{column-span:all}
 `
 
-/* ---- roll attribute surgery (R1, run967 repair) ----------------------------
+/* ---- roll attribute surgery (R1) ----------------------------
  * A real lexical scan, not regexes: find the FIRST REAL open tag by name —
  * skipping HTML comments (a `<!-- … <html …> … -->` illustration is not an
  * element), doctype/bogus declarations, and raw-text element bodies
@@ -408,7 +408,7 @@ function persistComparison() {
   pluginCtx.storage.set('comparisons', all)
 }
 
-/* ---- surface resolution (R3, run967 repair) --------------------------------
+/* ---- surface resolution (R3) --------------------------------
  * The session workspace (host cwd) IS the boundary: candidates come from the
  * cwd subtree only — a folder grant wider than the cwd never leaks a sibling
  * project in. When the host exposes a supported active-surface seam, the
@@ -528,7 +528,7 @@ async function resolveSurface(files, folderId, cwd, grantPath, activeRel) {
   const stats = await Promise.all(capped.map(async (r) => ({ ...r, mtime: await statMs(files, folderId, r.rel) })))
   const mtimeByRel = new Map(stats.map((s) => [s.rel, s.mtime]))
   const htmls = rows.filter((r) => !r.isCss).map((r) => ({ rel: r.rel, mtime: mtimeByRel.has(r.rel) ? mtimeByRel.get(r.rel) : -1 }))
-  /* A supported active-file seam binds the surface — this is the CEO
+  /* A supported active-file seam binds the surface — this is the product
    * requirement; the fallback below never claims to be it. */
   if (activeRel) {
     const rel = String(activeRel)

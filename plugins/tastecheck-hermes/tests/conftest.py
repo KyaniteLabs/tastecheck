@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import os
 import sys
+import time
 from pathlib import Path
 
 import pytest
@@ -62,7 +64,17 @@ def runtime(monkeypatch):
 
 
 @pytest.fixture
-def plugin(hermes_home, runtime):
+def ws(tmp_path):
+    """The session workspace (agent cwd) every plugin test runs in."""
+    d = tmp_path / "ws"
+    d.mkdir(exist_ok=True)
+    return d
+
+
+@pytest.fixture
+def plugin(hermes_home, runtime, ws, monkeypatch):
+    monkeypatch.setenv("TERMINAL_CWD", str(ws))
+    monkeypatch.delenv("HERMES_KANBAN_TASK", raising=False)
     name = "tastecheck_hermes_plugin"
     sys.modules.pop(name, None)
     spec = importlib.util.spec_from_file_location(name, PLUGIN_DIR / "__init__.py")
@@ -86,3 +98,50 @@ def fake_cli(plugin, tmp_path):
         return script
 
     return make
+
+
+# A stand-in CLI that behaves like the real one over HTTP: fetches the target (and the
+# href/src references in it) from the loopback server, then prints evidence for it.
+FETCHING_CLI = """
+import re, urllib.parse, urllib.request
+tgt, out = sys.argv[2], sys.argv[3]
+VERDICT = os.environ.get("FAKE_VERDICT", "{verdict}")
+op = urllib.request.build_opener(urllib.request.ProxyHandler({{}}))
+if tgt.startswith("http://127.0.0.1"):
+    html = op.open(tgt, timeout=10).read().decode("utf-8", "replace")
+    for ref in re.findall(r'(?:href|src)="([^"]+)"', html):
+        try:
+            op.open(urllib.parse.urljoin(tgt, ref), timeout=10).read()
+        except Exception:
+            pass
+{extra}
+print(json.dumps({{"verdict": VERDICT, "holdReasons": [] if VERDICT == "SHIP" else ["x"], "target": tgt}}))
+sys.exit(0 if VERDICT == "SHIP" else 1)
+"""
+
+
+def fetching_cli(verdict="SHIP", extra=""):
+    return FETCHING_CLI.format(verdict=verdict, extra=extra)
+
+
+def put_entry(plugin, target, verdict="SHIP", age=0, source="tool", **extra):
+    """A ledger entry written by the REAL recorder (signed, workspace + sha256 binding),
+    then patched and RE-SIGNED the way only the plugin itself can."""
+    plugin.record_verdict(str(target), {"outcome": verdict}, source=source)
+    ledger = json.loads(plugin._ledger_path().read_text(encoding="utf-8"))
+    e = ledger[-1]
+    e.pop("sig", None)
+    e.update(extra)
+    if age:
+        e["ts"] = int(time.time()) - age
+        e["started_at"] = e["ts"]
+    plugin._sign_entry(e)
+    plugin._save_json(plugin._ledger_path(), ledger)
+    return e
+
+
+def page(ws, rel="index.html", body="<html><body>hi</body></html>"):
+    p = ws / rel
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(body, encoding="utf-8")
+    return p

@@ -1,18 +1,36 @@
 # Tastecheck for Hermes (native plugin)
 
-**Frontend ship gate** — before UI work is called done, audit the real rendered page in headless Chrome and get a fail-closed **SHIP / HOLD** verdict with evidence. Wraps the Tastecheck CLI (`v1.7.0`, vendored from commit `5168f89bdd2759b99b81545896c47638727cda14`).
+**Frontend ship gate** — before UI work is called done, audit the real rendered page in headless Chrome and get a fail-closed **SHIP / HOLD** verdict with evidence. Runs the Tastecheck CLI (`v1.7.0`) from files vendored inside this plugin and verified against `vendor/MANIFEST.json` before every run.
 
 | Surface | What it does |
 |---|---|
-| `pre_tool_call` | **Hard completion gate**: vetoes `kanban_complete` / `kanban_request_review` calls that claim frontend/UI work — by payload vocabulary, by frontend artifact paths the payload names (explicit `target`/`metadata.target` binds by identity, even without a file suffix), or by the task's own body (read-only kanban lookup, identity resolved exactly the way the completion tool does: args id → hook id → `HERMES_KANBAN_TASK` default; a runtime turn UUID never overrides a card id) — unless EVERY frontend surface the completion names has its own fresh, latest-wins SHIP with valid identity. Per-artifact latest-wins (a newer HOLD revokes an older SHIP; one file's SHIP never clears another's HOLD), fail-closed sha256 identity (missing digest, deleted/unreadable audited file or changed bytes all HOLD), relative targets normalized against the agent cwd at record AND consumption, workspace-scoped fallback only when nothing is named. Fail closed. |
-| `pre_llm_call` | When a message claims frontend/UI work is done, injects a ship-gate brief |
-| `post_tool_call` | Appends `tastecheck_audit` verdicts (normalized target identity, verdict, hold reasons — the LEDGER stores no page content) to a ledger |
-| `/tastecheck audit\|profile\|version\|status\|help` | Gateway-safe by default: `audit` refused on gateway unless `allow_audit_slash_on_gateway: true` |
-| `tastecheck_audit` | SHIP/HOLD browser audit of a URL or local HTML; evidence.json + screenshots under plugin-data |
+| `pre_tool_call` | **Hard completion gate.** Vetoes `kanban_complete` / `kanban_request_review` calls that *declare* frontend work until a fresh, signed SHIP covers it. See [Completion gate](#completion-gate). |
+| `pre_llm_call` | Advisory only: when a message claims frontend/UI work is done, injects a ship-gate brief. Words never block anything. |
+| `/tastecheck audit\|profile\|version\|status\|help` | Gateway-safe by default: `audit` refused on messaging surfaces unless `allow_audit_slash_on_gateway: true`; `status` shows file names, not absolute paths, there. |
+| `tastecheck_audit` | SHIP/HOLD browser audit of an http(s) URL or an HTML page/dir inside the session workspace; evidence.json + screenshots under plugin-data. Records the verdict in the signed ledger. |
 | `tastecheck_profile` / `tastecheck_version` | Read-only taste profile (`show`/`export`) / CLI version |
 | Skill `tastecheck:tastecheck` | Claim → audit → verdict-first report workflow |
-| Desktop half (`desktop/plugin.js`, id `tastecheck-hermes`) | **Taste Roll**: a composer button AND a command-palette entry (⌘K) that restyles YOUR own page — the ACTIVE file when the host exposes a supported active-file seam (no Hermes Desktop build does today, SDK-audited 2026-11-08; the missing seam is a recorded host prerequisite), else the newest-edited HTML of the session workspace honestly labeled as a fallback pick with an explicit tap-a-file handoff in the strip (never `tasteroll.html`, never a sibling project) — into accumulating comparison columns in a stable workspace pane (`tastecheck:tasteroll`, `host.openWorkspace` feature-detected before any side effect). Each column is sandboxed exactly like the built-in preview frame, carries its roll id, and is **gated live**: its exact srcdoc goes to `POST /api/plugins/tastecheck-hermes/roll-audit` (`dashboard/plugin_api.py` — the same vendored CLI on your installed browser) and the column header is stamped **SHIP/HOLD** with reasons. Fail closed: no backend, busy gate or error = visible HOLD; a HOLD column stays. Opt-in via Capabilities ▸ Plugins. |
-| Dashboard API (`dashboard/plugin_api.py`) | `POST /roll-audit` (audit one rolled column; fail-closed HOLD) + `GET /health`. Mounted at `/api/plugins/tastecheck-hermes/` by the plugin-API loader; loads the agent half **by path** so there is one audit implementation, and writes verdicts into the same ledger (`source: roll-audit`) the completion gate matches on. |
+| Desktop half (`desktop/plugin.js`, id `tastecheck-hermes`) | **Taste Roll**: a composer button AND a command-palette entry (⌘K) that restyles YOUR own page — the ACTIVE file when the host exposes a supported active-file seam (no Hermes Desktop build does today, SDK-audited 2026-11-08; the missing seam is a recorded host prerequisite), else the newest-edited HTML of the session workspace honestly labeled as a fallback pick with an explicit tap-a-file handoff in the strip (never `tasteroll.html`, never a sibling project) — into accumulating comparison columns in a stable workspace pane (`tastecheck:tasteroll`, `host.openWorkspace` feature-detected before any side effect). Each column is sandboxed exactly like the built-in preview frame, carries its roll id, and is **gated live**: its exact srcdoc goes to `POST /api/plugins/tastecheck-hermes/roll-audit` and the column header is stamped **SHIP/HOLD** with reasons. Fail closed: no backend, busy gate or error = visible HOLD; a HOLD column stays. Column verdicts never satisfy the completion gate. Opt-in via Capabilities ▸ Plugins. |
+| Dashboard API (`dashboard/plugin_api.py`) | `POST /roll-audit` (audit one rolled column; fail-closed HOLD) + `GET /health`. Mounted at `/api/plugins/tastecheck-hermes/`; loads the agent half **by path** so there is one audit implementation and one settings source. |
+
+## Completion gate
+
+A completion is gated only when it **declares** frontend work, in one of three ways:
+
+1. **Structured artifacts** — string values in `args.target|targets|artifacts|paths` or `metadata.target|targets|artifacts|paths|changed_files|files` that are renderable (`.html`/`.htm`/`.xhtml`, a directory with `index.html`, an http(s) URL) or frontend sources (`.css .scss .sass .less .tsx .jsx .vue .svelte .astro`). Other files (`README.md`, `server.py`) are ignored.
+2. **Explicit flag** — `metadata.tastecheck: true` (or `metadata.frontend: true`).
+3. **Card marker** — the kanban card carries the `tastecheck` / `tastecheck-pass` skill, or a body line `tastecheck: required`. Read with a read-only (`mode=ro`) connection to the board the call names (`args.board`), card identity resolved like the completion tool: args id → hook id → `HERMES_KANBAN_TASK`.
+
+Summaries, card titles and JSON keys are never scanned for vocabulary.
+
+Release rules (fail closed):
+
+- **Each declared page/URL** needs its own latest-wins fresh SHIP (a newer HOLD revokes it). Local pages: the page bytes AND every file the loopback server sent during that audit must be unchanged. URLs: the SHIP must be recorded in the same workspace and be younger than `gate_url_ship_ttl_seconds` (default 30 min), since a URL's content cannot be hashed.
+- **Each declared source file** must be covered by a valid SHIP: either it was served during that audit with the same bytes, or (compiled sources) it was last modified before the newest SHIP audit started.
+- **Flag or marker only:** every page/loopback URL audited in this workspace is considered; any latest HOLD blocks, and at least one valid SHIP is required.
+- Only signed entries written by `audit()` count. ERROR outcomes (tool failure, identity mismatch, page changed mid-audit) neither release nor revoke; a mistyped path records nothing. Taste Roll column verdicts never count. An unreadable ledger blocks.
+
+**Ledger integrity, honestly:** entries are HMAC-SHA256 signed with a per-profile key (`plugin-data/tastecheck-hermes/ledger.key`, mode 0600). That defeats an agent hand-editing `verdict_ledger.json` with a file tool. It does not stop code running as your OS user that deliberately reads the key — nothing inside a same-user plugin can.
 
 ## Install
 
@@ -32,38 +50,48 @@ Requires **Node ≥ 22** and a local **Chrome / Chromium** (set `CHROME_PATH` or
 
 ## Disclosure
 
-- **Downloads code (audit surface):** first CLI use fetches the commit-addressed source tarball `https://codeload.github.com/KyaniteLabs/tastecheck/tar.gz/5168f89bdd2759b99b81545896c47638727cda14` (source only — no binaries, no npm, no install lifecycle scripts; extraction is sanitized and refuses symlinks/traversal; a `vendor-stamp.json` records url/sha256/bytes). The old `npx -y github:…` default is broken on npm 10.9.9 and ran package lifecycle scripts — it is gone. Override with `tastecheck_command` (e.g. `tastecheck` after a global install).
-- **Network:** `audit` opens the URL or local file you name in headless Chrome (that page may make its own network requests). Tastecheck itself sends no telemetry. The desktop half makes no network calls.
-- **Filesystem:** nothing is written into your project. Audit evidence (last 20 runs), the verdict ledger, the vendored CLI and the taste profile (`TASTECHECK_PROFILE`) live under `<HERMES_HOME>/plugin-data/tastecheck/` (per profile). Each audit gets its own exclusive evidence dir; retention keeps the newest 20 **older than a grace window (2× the CLI timeout, min 10 min)** so in-flight audits and just-returned results can never be deleted by a concurrent prune. Tool results over 20k chars are returned as bounded JSON (`truncated: true`) with the full result saved under `results/`. Ledger appends are file-locked.
+- **Code it runs:** `vendor/tastecheck/` holds the exact CLI files it needs (`bin/tastecheck.mjs`, `bin/profile.mjs`, `tools/lib/main-entry.mjs`, `package.json`, the CDP audit runner and its in-page probe — about 150 KB, plain JavaScript, no dependencies). Every file is checked against the sha256 in `vendor/MANIFEST.json` before each run; a missing or modified file refuses to run. Nothing is downloaded, no npm, no lifecycle scripts. `node tools/hermes/sync-plugin-vendor.mjs --check` (CI) keeps the copy identical to the repository source. Override with `tastecheck_command` (e.g. `tastecheck` after a global install).
+- **Network:** `audit` opens the page in headless Chrome. A local page is served read-only from the session workspace over `http://127.0.0.1:<random port>` for the length of that one audit (hidden paths, traversal, symlinks out of the workspace, non-web file types and foreign Host headers are refused); the browser never gets `file://` access. The page may make its own network requests. Tastecheck sends no telemetry. The desktop half makes no network calls of its own.
+- **Filesystem:** nothing is written into your project. Audit evidence (last 20 runs), the signed verdict ledger and its key, and the taste profile (`TASTECHECK_PROFILE`) live under `<HERMES_HOME>/plugin-data/tastecheck-hermes/` (per profile). A profile from the pre-0.2.0 `plugin-data/tastecheck/` dir is copied over once; the old directory is left alone. Retention keeps the newest 20 audits **older than a grace window (2× the CLI timeout, min 10 min)**. Tool results over 20k chars are returned as bounded JSON (`truncated: true`) with the full result under `results/`. Ledger writes are file-locked; an unreadable ledger is moved aside to `verdict_ledger.json.corrupt-<ts>` with a warning, never silently replaced.
 - **Desktop folder grant:** Taste Roll reads your project only through the SDK folder grant (`ctx.files`): no grant, no read. Surface resolution is workspace-scoped and seam-first: a supported active-file seam (feature-detected; none exists in current Hermes Desktop builds — recorded as an unmet host prerequisite) binds the first click to the file you are on, with CSS/non-frontend active files mapping to the nearest HTML in the same workspace (named); with no seam, the newest-edit pick is a FALLBACK, labeled as such in the strip ("no active-file API in this Desktop build") with an explicit tap-a-file handoff — mtime is never claimed to be your active surface. Files outside the session workspace are never read and `tasteroll.html` is never eligible. Column iframes are `sandbox="allow-forms allow-scripts"`, `allow="fullscreen"`, `referrerpolicy="no-referrer"` — opaque origin, exactly the built-in preview frame's posture. Roll history (seeds + file path only) persists in plugin storage.
-- **Per-column gate traffic and retention:** each rolled column's srcdoc is POSTed to this plugin's own backend namespace (`/api/plugins/tastecheck-hermes/roll-audit`) and audited with the same vendored CLI + installed browser; the response is a verdict. The roll-audit path DOES persist each audited column as `column.html` under `<HERMES_HOME>/plugin-data/tastecheck/roll-audits/<timestamp>/` (latest 40 kept) as evidence — plain local files inside your Hermes profile, covered by everything that already reads that profile; the in-app sandboxed opaque-origin iframe posture applies to RENDERING, not these files. Only verdicts/reasons/evidence-identity go into the ledger. Delete the `roll-audits` directory to drop them. `dashboard/plugin_api.py` is imported by the gateway's plugin-API loader only when this plugin is enabled (user-plugin trust gate).
-- **Known validator warning (disclosed):** two private imports — `gateway.session_context.session_is_messaging_surface` (platform detection) and `hermes_cli.kanban_db` (read-only `get_task` for the completion gate's task-body claim) — catalog rule 9 flags them; both are read-only, wrapped in try/except, and can break on Hermes releases.
-- **Local paths:** relative audit targets resolve against the active Hermes session workspace (`resolve_agent_cwd`), not the service's launch dir.
-- **Timeouts / browser:** the CLI runs in its own process group; on timeout or cancellation the whole tree (CLI → CDP runner → Chrome) is killed. Chrome's singleton socket path is capped at ~104 chars, so the child gets `/tmp` as TMPDIR when the ambient TMPDIR is long; a cold-start Chrome can miss the CLI's 20 s port probe — that one transient is retried once.
-- **Secrets:** child env is scrubbed (PATH/HOME/locale/display/proxy/browser-path vars only). No API keys are required or copied from Hermes secret scope.
-- **Gateway:** `/tastecheck audit` is refused on messaging surfaces (Hermes `session_is_messaging_surface()`, task-local) unless `allow_audit_slash_on_gateway: true`. Agent tools still work.
-- **Not in v0.1.0:** CLI `install` / `uninstall` / `calibrate`, and profile writes (`accept/reject/forget/import/reset`) — use the Tastecheck CLI directly.
+- **Per-column gate traffic and retention:** each rolled column's srcdoc is POSTed to this plugin's own backend namespace (`/api/plugins/tastecheck-hermes/roll-audit`) and audited with the same vendored CLI + installed browser. The column IS persisted as `column.html` under `<HERMES_HOME>/plugin-data/tastecheck-hermes/roll-audits/<timestamp>/page/` (latest 40 kept) as evidence — plain local files inside your Hermes profile; the sandboxed iframe posture applies to RENDERING, not these files. Delete the `roll-audits` directory to drop them. `dashboard/plugin_api.py` is imported by the gateway's plugin-API loader only when this plugin is enabled.
+- **Hermes imports:** public plugin API — `plugins.plugin_storage`, `agent.runtime_cwd.resolve_agent_cwd`, `gateway.session_context.get_session_env`, `hermes_cli.config.load_config_readonly`. One private import, disclosed and flagged by the validator: `hermes_cli.kanban_db` (`kanban_db_path` + `get_task`, read-only, only for the card-marker check; wrapped in try/except, so a Hermes change disables the marker rather than breaking the gate's other triggers).
+- **Local paths:** relative audit targets resolve against the active Hermes session workspace (`resolve_agent_cwd`), not the service's launch dir. Local targets outside that workspace are refused — serve them yourself and audit the URL.
+- **Timeouts / browser:** `timeout_seconds` is the overall deadline for one call. The CLI runs in its own process group; on timeout or cancellation the whole tree (CLI → CDP runner → Chrome) is killed. A cold-start Chrome can miss the CLI's 20 s port probe — that one transient is retried once, inside the same deadline, only if at least 20 s remain.
+- **Child environment:** exactly these variables are passed when set — `PATH HOME USER LANG LC_ALL TMPDIR TMP TEMP DISPLAY XDG_CACHE_HOME PLAYWRIGHT_BROWSERS_PATH LOCALAPPDATA PROGRAMFILES TASTECHECK_TIMEOUT_MS HTTP_PROXY HTTPS_PROXY NO_PROXY` (and lowercase proxy forms) `CHROME_PATH TASTECHECK_CHROME` — plus `NO_COLOR=1` and `TASTECHECK_PROFILE`. Nothing else, so no API keys or Hermes secrets; `NODE_OPTIONS` is deliberately excluded. A `TMPDIR` longer than 60 chars is replaced with `/tmp` (Chrome's singleton socket path limit).
+- **Gateway:** `/tastecheck audit` is refused on messaging surfaces (session platform/source checked via `get_session_env`, default-deny for unknown surfaces) unless `allow_audit_slash_on_gateway: true`. Agent tools still work.
+- **Not exposed:** CLI `install` / `uninstall` / `calibrate`, and profile writes (`accept/reject/forget/import/reset`) — use the Tastecheck CLI directly.
 - **No background jobs;** nothing runs unless a hook matches or you call a tool/slash/click.
 
-## Settings (`plugins.entries.tastecheck.settings`)
+## Settings (`plugins.entries.tastecheck-hermes.settings`)
+
+```yaml
+plugins:
+  entries:
+    tastecheck-hermes:
+      settings:
+        timeout_seconds: 300
+```
 
 | Key | Default | Notes |
 |---|---|---|
-| `tastecheck_command` | `""` | Empty = vendored pinned source (recommended). Set e.g. `tastecheck` for a global install. |
+| `tastecheck_command` | `""` | Empty = vendored, hash-verified CLI (recommended). Set e.g. `tastecheck` for a global install. |
 | `inject_on_ship` | `true` | pre_llm_call ship-gate brief |
 | `allow_audit_slash_on_gateway` | `false` | gateway safety |
-| `timeout_seconds` | `240` | per CLI call; also sets the retention grace (2×, min 600 s) |
+| `timeout_seconds` | `240` | overall deadline per CLI call; also sets the retention grace (2×, min 600 s) |
 | `gate_completions` | `true` | pre_tool_call completion veto (fail closed) |
-| `gate_ship_ttl_seconds` | `21600` | how recent a ledger SHIP satisfies the gate |
+| `gate_ship_ttl_seconds` | `21600` | how recent a SHIP of a local page must be |
+| `gate_url_ship_ttl_seconds` | `1800` | how recent a SHIP of an http(s) URL must be |
 
 ## Verdict boundary (fail closed)
 
-`SHIP` is returned **only** when the CLI exited 0 AND evidence for *this run's exact target* says SHIP. No parseable evidence, a missing target identity, a foreign target, a tool/process error, or a timeout are all **HOLD**. Evidence-free SHIP is never returned.
+`SHIP` is returned **only** when the CLI exited 0 AND evidence for *this run's exact target* says SHIP AND (local pages) the page bytes did not change while the audit ran. No parseable evidence, a missing target identity, a foreign target, a tool/process error, or a timeout are all **HOLD** to the caller and recorded as ERROR in the ledger. Evidence-free SHIP is never returned.
 
 ## Tests
 
 ```bash
-python3 -m pytest plugins/tastecheck-hermes/tests -q          # gate, retention, vendor, verdicts
+python3 -m pytest plugins/tastecheck-hermes/tests -q          # gate, ledger, server, vendor, verdicts
+node tools/hermes/sync-plugin-vendor.mjs --check              # vendored CLI == repository source
 node --import ./tests/register.mjs --test tests/harness.test.mjs   # from plugins/tastecheck-hermes/desktop
 ```
 
@@ -71,6 +99,6 @@ Python tests run against the Hermes v0.21.6 `gateway/session_context.py` and `ag
 
 ## Demo (< 90 s)
 
-See `demo/90-seconds.md` — gate-first, opens on your own project via Taste Roll, ends on the audit verdict. Icon: `assets/tastecheck-r21.png` (approved master).
+See `demo/90-seconds.md` — gate-first, opens on your own project via Taste Roll, ends on the audit verdict. Icon master: `docs/hero/tastecheck-hermes-r21.png` in the repository (kept out of the plugin install).
 
 License: MIT (same as Tastecheck).

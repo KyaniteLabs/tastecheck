@@ -188,7 +188,7 @@ async function findBrowser() {
 function launch(browserPath, profileDir) {
   const args = [
     "--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
-    "--disable-dev-shm-usage", "--allow-file-access-from-files", "--disable-background-networking", "--mute-audio",
+    "--disable-dev-shm-usage", "--disable-background-networking", "--mute-audio",
     "--remote-debugging-port=0", `--user-data-dir=${profileDir}`, "--window-size=1440,900",
   ];
   if ((process.getuid && process.getuid() === 0) || process.env.CI) args.push("--no-sandbox");

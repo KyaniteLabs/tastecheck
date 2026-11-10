@@ -21,7 +21,7 @@
 - No human-calibration field or human-preference claim is permitted in the effectiveness-v2 namespace.
 - Both families must independently clear the frozen rule; pooled votes cannot rescue disagreement.
 - Historical failure, production failure, and inconclusive output remain publishable evidence and are never rerun for a preferred result.
-- Forgejo is canonical; GitHub is mirror-only. After each coherent task checkpoint passes its focused tests, independent task review, and public leak audit, push that checkpoint to the named Forgejo feature branch. No PR-ready declaration, merge, tag, release, GitHub mirror publication, production-evidence publication, or effectiveness claim occurs until all implementation, clean-clone reconstruction, independent whole-branch review, adversarial QA, and leak-audit gates are clean. Any later mirror operation is Forgejo-first.
+- After each coherent task checkpoint passes its focused tests, independent task review, and public leak audit, push that checkpoint to the feature branch. No PR-ready declaration, merge, tag, release, production-evidence publication, or effectiveness claim occurs until all implementation, clean-clone reconstruction, independent whole-branch review, adversarial QA, and leak-audit gates are clean.
 
 ---
 
@@ -216,7 +216,7 @@ Commit: `feat: preregister effectiveness v2 corpus`
 **Interfaces:**
 - `executeAttempt({ state, request, invoke, route })` is the only execution seam for all 160
   generation, production-judge, and anchor calls. It reserves/fsyncs the ordinal, persists
-  a just-in-time Pushing Dispatch routing attestation matching the frozen executor, invokes
+  a just-in-time provider-routing attestation matching the frozen executor, invokes
   once, applies `classifyExecution`, and closes the receipt. Missing or mismatched
   routing and every failed/false-success result consume the ordinal and terminate
   `production_incomplete` without retry or substitution.
@@ -558,7 +558,7 @@ must produce the same suite digest and case set. Any missing or non-clean receip
 
 - [ ] **Step 2: Run non-consuming production preflight**
 
-Run: `pushing-dispatch route --mode breakout --task "TasteCheck v2 machine-only blind evaluation: select two already-provisioned independent provider families for isolated judging"`
+Select two already-provisioned independent provider families for isolated judging with your provider router, and record its routing attestation.
 
 Run: `npm run eval:v2:preflight`
 

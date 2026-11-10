@@ -1,7 +1,6 @@
-"""Regressions for Kai's CHANGES REQUIRED on KyaniteLabs/tastecheck#40 (review 5791756515).
-
-Each test reproduces the case Kai described against the 271f510 plugin.
-"""
+"""Regressions from earlier plugin reviews: gateway identity, fail-closed evidence,
+session-relative targets, bounded tool results, atomic ledger appends, process-tree
+timeouts."""
 
 from __future__ import annotations
 
@@ -24,7 +23,7 @@ def test_telegram_contextvar_session_refuses_slash_audit(plugin, runtime, monkey
     assert "HERMES_PLATFORM" not in os.environ
     assert "HERMES_SESSION_PLATFORM" not in os.environ
     called = []
-    monkeypatch.setattr(plugin, "audit", lambda t: called.append(t) or {"verdict": "SHIP"})
+    monkeypatch.setattr(plugin, "audit", lambda t, **k: called.append(t) or {"verdict": "SHIP"})
     runtime.set_session_vars(platform="telegram", source="telegram")
     assert runtime.session_is_messaging_surface() is True
 
@@ -36,7 +35,7 @@ def test_telegram_contextvar_session_refuses_slash_audit(plugin, runtime, monkey
 
 def test_local_contextvar_session_allows_slash_audit(plugin, runtime, monkeypatch):
     called = []
-    monkeypatch.setattr(plugin, "audit", lambda t: called.append(t) or {"verdict": "SHIP", "evidence_dir": "x"})
+    monkeypatch.setattr(plugin, "audit", lambda t, **k: called.append(t) or {"verdict": "SHIP", "evidence_dir": "x"})
     runtime.set_session_vars(platform="", source="desktop")
     plugin._slash("audit http://127.0.0.1:5173")
     assert called == ["http://127.0.0.1:5173"]
@@ -47,7 +46,7 @@ def test_telegram_opt_in_allows_slash_audit(plugin, runtime, monkeypatch):
 
     plugin._ctx = FakeCtx({"allow_audit_slash_on_gateway": True})
     called = []
-    monkeypatch.setattr(plugin, "audit", lambda t: called.append(t) or {"verdict": "SHIP", "evidence_dir": "x"})
+    monkeypatch.setattr(plugin, "audit", lambda t, **k: called.append(t) or {"verdict": "SHIP", "evidence_dir": "x"})
     runtime.set_session_vars(platform="telegram", source="telegram")
     plugin._slash("audit http://127.0.0.1:5173")
     assert called == ["http://127.0.0.1:5173"]
@@ -181,7 +180,7 @@ def test_large_audit_keeps_verdict_reasons_and_evidence(plugin, fake_cli):
     assert res["data"]["holdReasons"] == ["contrast 2.1:1 on .cta", "console error: boom"]
     assert res["evidence_dir"]
 
-    plugin._on_post_tool("tastecheck_audit", {"target": "http://big.test"}, out)
+    # audit() itself recorded the verdict (no post-hoc hook)
     entry = json.loads(plugin._ledger_path().read_text())[-1]
     assert entry["verdict"] == "HOLD"
     assert entry["hold_reasons"] == ["contrast 2.1:1 on .cta", "console error: boom"]
@@ -195,7 +194,7 @@ def test_small_result_untouched(plugin):
 
 # --- P2 (5): ledger append is atomic across concurrent callers ----------------
 
-def test_overlapping_ledger_appends_keep_both(plugin, monkeypatch):
+def test_overlapping_ledger_appends_keep_both(plugin, ws, monkeypatch):
     barrier = threading.Barrier(2, timeout=1.0)
     real_load = plugin._load_json
 
@@ -213,8 +212,8 @@ def test_overlapping_ledger_appends_keep_both(plugin, monkeypatch):
 
     def complete(target):
         try:
-            plugin._on_post_tool("tastecheck_audit", {"target": target}, {"verdict": "HOLD", "evidence_dir": target})
-        except Exception as exc:  # pragma: no cover - observer swallows, but be explicit
+            plugin.record_verdict(target, {"verdict": "HOLD", "evidence_dir": target})
+        except Exception as exc:  # pragma: no cover
             errors.append(exc)
 
     threads = [threading.Thread(target=complete, args=(t,)) for t in ("a", "b")]
@@ -222,9 +221,9 @@ def test_overlapping_ledger_appends_keep_both(plugin, monkeypatch):
         t.start()
     for t in threads:
         t.join()
-    # run967 R4: record normalizes local targets agent-cwd-relative → absolute
+    # local targets are normalized against the session workspace
     targets = sorted(e["target"] for e in json.loads(plugin._ledger_path().read_text()))
-    assert targets == sorted(str(Path.cwd() / n) for n in ("a", "b"))
+    assert targets == sorted(str(ws.resolve() / n) for n in ("a", "b"))
     assert errors == []
 
 
@@ -238,7 +237,7 @@ def test_cross_process_ledger_appends_are_not_lost(plugin, hermes_home, tmp_path
         spec = importlib.util.spec_from_file_location("tc", {str(PLUGIN_DIR / "__init__.py")!r})
         mod = importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
         for i in range(25):
-            mod._on_post_tool("tastecheck_audit", {{"target": sys.argv[1] + str(i)}}, {{"verdict": "HOLD"}})
+            mod.record_verdict(sys.argv[1] + str(i), {{"verdict": "HOLD"}})
         """
     ))
     env = {**os.environ, "HERMES_HOME": str(hermes_home)}

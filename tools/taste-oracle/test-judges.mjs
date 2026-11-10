@@ -143,7 +143,7 @@ reject("non-opaque human participant", ({ results }) => {
     claimed: true,
     observation_records: [{
       observation_id: "observation-001",
-      participant_id: "Simon",
+      participant_id: "Alice",
       observed_at: "2026-07-11T20:00:00.000Z",
       consent_recorded: true,
       provenance: "human_observed",
@@ -196,7 +196,7 @@ assert.equal(validateSchema(syntheticHuman), true, JSON.stringify(validateSchema
 assert.deepEqual(validatePanelStructure({ packet, unmaskMap, manifest, results: [syntheticHuman, result("judge-b", "family-b")] }), [], "synthetic human fixture must preserve schema/runtime parity");
 
 const genericParticipant = clone(syntheticHuman);
-genericParticipant.human_calibration.observation_records[0].participant_id = "Simon";
+genericParticipant.human_calibration.observation_records[0].participant_id = "Alice";
 assert.equal(validateSchema(genericParticipant), false, "schema must require opaque participant IDs");
 assert.ok(validatePanelStructure({ packet, unmaskMap, manifest, results: [genericParticipant, result("judge-b", "family-b")] }).some((entry) => entry.code === "opaque_identifier"));
 

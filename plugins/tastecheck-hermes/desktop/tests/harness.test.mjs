@@ -171,7 +171,7 @@ function allText(node, out = []) {
   return out
 }
 
-/* ---- R1 control: an INDEPENDENT lexical oracle (run967 repair) ----------------
+/* ---- R1 control: an INDEPENDENT lexical oracle ----------------
  * The old parseHtmlOpenTag regex shared the implementation's blind spot (it
  * matched `<html` inside comments). This oracle walks tokens — comments,
  * doctypes, raw-text elements — and reads attributes ONLY off the first REAL
@@ -243,7 +243,7 @@ function assertValidRolledDoc(srcDoc, original) {
   assert.ok(attrs['data-ref'] && attrs['data-vibe'] && attrs['data-mode'] && attrs['data-sig'])
   assert.ok(!tag.includes('>>'), 'no doubled >')
   assert.ok(!/>\s+data-/.test(tag), 'no attributes emitted after the tag close (R1 defect shape)')
-  /* roll attributes must NEVER appear inside a comment (run967 R1 defect) */
+  /* roll attributes must NEVER appear inside a comment (R1 defect) */
   for (const c of comments) {
     assert.ok(!/data-taste-roll|data-roll=|data-ref=|data-vibe=|data-sig=/.test(c),
       `roll attributes leaked into a comment: ${c}`)
@@ -380,7 +380,7 @@ test('R1: pre-rolled and oddly-quoted <html> attributes are replaced, not duplic
 })
 
 test('R1: fragment and body-only documents become valid rolled documents', async () => {
-  /* run967: the old version clicked the sticky newer body.html twice and never
+  /* An earlier version clicked the sticky newer body.html twice and never
    * covered frag.html. Two FRESH plugin instances/workspaces — one fixture each. */
   for (const [name, file, content] of [
     ['frag', 'frag.html', '<h1>My own work</h1><p>Real project content.</p>'],
@@ -401,7 +401,7 @@ test('R1: fragment and body-only documents become valid rolled documents', async
   }
 })
 
-test('R1 (run967): roll attributes land on the REAL html element, never inside a comment', async () => {
+test('R1: roll attributes land on the REAL html element, never inside a comment', async () => {
   const root = mkdtempSync(join(tmpdir(), 'tasteroll-comment-'))
   const original = '<!doctype html><!-- example: <html lang="demo"> --><html lang="en"><head></head><body><main><h1>My own work</h1><p>Real project content.</p></main></body></html>'
   writeFileSync(join(root, 'index.html'), original)
@@ -420,11 +420,11 @@ test('R1 (run967): roll attributes land on the REAL html element, never inside a
     'comment preserved verbatim (roll attrs must not land inside it)')
   assert.equal((srcDoc.match(/lang="demo"/g) || []).length, 1, 'the commented html is untouched')
   /* raw regex counting sees two <html spellings; only one is real — the point
-   * of the run967 finding. */
+   * of the R1 finding. */
   assert.equal((srcDoc.match(/<html[\s>]/gi) || []).length, 2, 'comment spelling still present as text')
 })
 
-test('R1 (run967): roll-like text inside a quoted attribute value survives verbatim', async () => {
+test('R1: roll-like text inside a quoted attribute value survives verbatim', async () => {
   const root = mkdtempSync(join(tmpdir(), 'tasteroll-quoted-'))
   const original = `<!doctype html><html lang="en" title="literal data-ref='keep' text"><head><title>Q</title></head><body><h1>My own work</h1><p>Real project content.</p></body></html>`
   writeFileSync(join(root, 'index.html'), original)
@@ -438,12 +438,12 @@ test('R1 (run967): roll-like text inside a quoted attribute value survives verba
   const srcDoc = frameProps(paneColumns(globalThis.__tc.workspaces.at(-1).options.render())[1]).srcDoc
   const attrs = assertValidRolledDoc(srcDoc, original)
   assert.equal(attrs.title, "literal data-ref='keep' text",
-    'unrelated attribute value with roll-like words preserved EXACTLY (run967: was corrupted)')
+    'unrelated attribute value with roll-like words preserved EXACTLY (was corrupted before)')
   assert.equal(attrs.lang, 'en')
   assert.ok(srcDoc.includes('title="literal data-ref=\'keep\' text"'), 'verbatim bytes kept')
 })
 
-test('R1 (run967): </head> inside a comment never takes the roll stylesheet', async () => {
+test('R1: </head> inside a comment never takes the roll stylesheet', async () => {
   const root = mkdtempSync(join(tmpdir(), 'tasteroll-headcomment-'))
   const original = '<!doctype html><!-- </head> sketch --><html lang="en"><head><title>H</title></head><body><h1>My own work</h1><p>Real project content.</p></body></html>'
   writeFileSync(join(root, 'index.html'), original)
@@ -463,9 +463,9 @@ test('R1 (run967): </head> inside a comment never takes the roll stylesheet', as
   assert.ok(srcDoc.includes('<!-- </head> sketch -->'), 'comment preserved')
 })
 
-/* ---- R3 (run967): a supported active-file seam binds the surface --------------- */
+/* ---- R3: a supported active-file seam binds the surface --------------- */
 
-test('R3 (run967): active non-frontend file → nearest HTML in ITS directory, not the newest anywhere', async () => {
+test('R3: active non-frontend file → nearest HTML in ITS directory, not the newest anywhere', async () => {
   /* Reviewer boundary fixture: docs/notes.md is newest and "current",
    * docs/page.html is nearest, root index.html is a NEWER html elsewhere. */
   const root = mkdtempSync(join(tmpdir(), 'tasteroll-seam-notes-'))
@@ -490,7 +490,7 @@ test('R3 (run967): active non-frontend file → nearest HTML in ITS directory, n
   assert.ok(!header.includes('no active-file API'), 'seam present — no fallback label')
 })
 
-test('R3 (run967): an OLDER active HTML beats a newer edit elsewhere', async () => {
+test('R3: an OLDER active HTML beats a newer edit elsewhere', async () => {
   const root = fixtureProject() /* app.html newest… */
   writeFileSync(join(root, 'other.html'), '<html><body><h1>My own work</h1><p>Real project content.</p></body></html>')
   age(root, 'other.html', T0 + 90) /* newer than app.html */
@@ -506,7 +506,7 @@ test('R3 (run967): an OLDER active HTML beats a newer edit elsewhere', async () 
   assert.match(header, /your active file/)
 })
 
-test('R3 (run967): active CSS → nearest HTML to THAT CSS', async () => {
+test('R3: active CSS → nearest HTML to THAT CSS', async () => {
   const root = mkdtempSync(join(tmpdir(), 'tasteroll-seam-css-'))
   mkdirSync(join(root, 'styles'))
   writeFileSync(join(root, 'index.html'), '<html><body><h1>My own work</h1><p>Real project content.</p></body></html>')
@@ -528,7 +528,7 @@ test('R3 (run967): active CSS → nearest HTML to THAT CSS', async () => {
   assert.match(header, /main\.css/, 'the active CSS is named')
 })
 
-test('R3 (run967): active file OUTSIDE the workspace cwd is ignored (fallback, honestly labeled)', async () => {
+test('R3: active file OUTSIDE the workspace cwd is ignored (fallback, honestly labeled)', async () => {
   const root = fixtureProject()
   freshGlobals({ cwd: root, activeFile: '/somewhere/else/entirely/notes.md' })
   const mod = await importFresh()
@@ -542,7 +542,7 @@ test('R3 (run967): active file OUTSIDE the workspace cwd is ignored (fallback, h
   assert.match(header, /no active-file API/, 'the strip says the host gave no usable active file')
 })
 
-test('R3 (run967): no seam at all → honest label + explicit tap-a-file handoff in the strip', async () => {
+test('R3: no seam at all → honest label + explicit tap-a-file handoff in the strip', async () => {
   const root = fixtureProject()
   freshGlobals({ cwd: root }) /* no activeFile at all */
   const mod = await importFresh()

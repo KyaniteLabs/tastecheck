@@ -6,13 +6,13 @@ stamp live; the completion gate bites at the start and lifts at the end.
 TOTAL 78 s — strictly under 90.
 
 Recording surface: Hermes Desktop. Scrub tokens/private paths. Banner 2:1 uses
-`assets/tastecheck-r21.png` (approved master, sha256
+`docs/hero/tastecheck-hermes-r21.png` in the repository (approved master, kept out of the plugin install; sha256
 `50b7be9d349ea3d341c6bb64667497cb0b78c7cc7fbbb57f7a99b80a6a5a21f4`).
 
 ## Timeline (the clicks are the demo)
 
 - **0–8 s HOOK (the gate bites first).** In a session whose task is frontend
-  work, the agent calls `kanban_complete` with a "landing page done" summary.
+  work (the card carries `tastecheck: required`), the agent calls `kanban_complete`.
   Show the tool result: the block message — "Tastecheck ship gate … no ledger
   verdict is bound to this workspace … fail closed." One line of narration:
   "Hermes refuses to call UI work done on a claim."
@@ -57,7 +57,7 @@ Recording surface: Hermes Desktop. Scrub tokens/private paths. Banner 2:1 uses
 4. Per-column SHIP **and** HOLD stamps visible in the pane (one close-up of a
    HOLD column with its reasons).
 5. `/tastecheck audit` output + one evidence screenshot opened from
-   `<HERMES_HOME>/plugin-data/tastecheck/audits/<ts>-*/`.
+   `<HERMES_HOME>/plugin-data/tastecheck-hermes/audits/<ts>-*/`.
 6. r21 icon as banner/mark overlay (bottom-right, 2:1); no other branding.
 7. FFmpeg labels via `textfile=` (colon-safe), e.g. `demo/label.txt` with
    `SURFACE: tastecheck ship gate`.
@@ -71,5 +71,8 @@ Recording surface: Hermes Desktop. Scrub tokens/private paths. Banner 2:1 uses
   per-column gate needs the agent half installed + enabled (it calls this
   plugin's own backend namespace). Without it, columns stamp an honest
   fail-closed "gate unavailable" HOLD.
+- Column SHIP stamps never lift the completion gate: a rolled column is a
+  restyled copy in plugin-data, not the artifact being shipped. Only the real
+  audit at 50–66 s does.
 - Column sandbox = the built-in preview frame (`allow-forms allow-scripts`,
   `fullscreen`, no-referrer).

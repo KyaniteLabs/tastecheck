@@ -8,7 +8,7 @@
   "known_open": false,
   "source": {
     "desk": "internal incident record (provenance sanitized 2026-09-25)",
-    "quote": "/w/light.html + /w/depth.html titled \"GLSL Shader\", /w/soundbed.html \"Tone.js Audio Synthesizer\" ... the scrub pass redacted BODY strings but never titles"
+    "quote": "pages titled with internal technique names (\"GLSL Shader\", \"Tone.js Audio Synthesizer\") ... the scrub pass redacted BODY strings but never titles"
   },
   "case": {
     "html": "<!doctype html><html><head><title>Tone.js Audio Synthesizer</title><meta name=\"description\" content=\"untitled work\"></head><body><main><h1>untitled work</h1><p>quiet surface copy</p></main></body></html>",

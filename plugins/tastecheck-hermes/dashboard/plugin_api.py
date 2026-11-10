@@ -2,23 +2,24 @@
 
 One real endpoint: ``POST /roll-audit``. The Desktop Taste Roll pane sends the
 exact srcdoc of one rolled column; this router materializes it as a file and
-runs the SAME audit path the agent tool uses (the commit-pinned vendored CLI on
-an already-installed browser — no download, sandboxed child env), records the
-verdict in the shared ledger (``source="roll-audit"``, with workspace + sha256
-binding so the completion gate can match it), and returns the verdict for the
-column stamp. Fail closed: every error path returns HOLD, never SHIP — a column
-can only show SHIP behind real rendered evidence.
+runs the SAME audit path the agent tool uses (the vendored, manifest-verified
+CLI on an already-installed browser; no download, allowlisted child env), served
+read-only over loopback from the column's own directory. ``audit()`` records the
+verdict in the shared ledger with ``source="roll-audit"``; the completion gate
+never counts roll-audit verdicts (a rolled column in plugin-data is not the
+workspace artifact being shipped). Fail closed: every error path returns HOLD.
 
 The audit implementation is loaded BY PATH from the package's agent half
 (``plugins/tastecheck-hermes/__init__.py``) so there is exactly one audit
-implementation and the two surfaces cannot drift. No network of its own (the
-vendored tarball fetch at first CLI use is the agent half's, disclosed there),
-no secrets. PERSISTENCE DISCLOSURE (run967): each audited column IS persisted
-— the exact srcdoc is written as ``column.html`` under
-``<HERMES_HOME>/plugin-data/tastecheck/roll-audits/<timestamp>/`` (latest 40
-kept, then pruned) alongside the ordinary audit evidence; only verdicts,
-reasons and evidence identity go into the ledger. Those copies are plain
-local files inside your Hermes profile, readable by anything that already
+implementation and the two surfaces cannot drift. Settings come from
+``plugins.entries.tastecheck-hermes.settings`` in the Hermes config (the agent
+half reads them itself when no PluginContext is bound). No network of its own,
+no secrets. PERSISTENCE DISCLOSURE: each audited column IS persisted — the exact
+srcdoc is written as ``column.html`` under
+``<HERMES_HOME>/plugin-data/tastecheck-hermes/roll-audits/<timestamp>/page/``
+(latest 40 kept, then pruned) alongside the ordinary audit evidence; only
+verdicts, reasons and evidence identity go into the ledger. Those copies are
+plain local files inside your Hermes profile, readable by anything that already
 reads that profile — the sandboxed opaque-origin iframe posture applies to
 in-app RENDERING, not to these retained evidence files. Delete the
 ``roll-audits`` directory to drop them.
@@ -101,7 +102,7 @@ def health() -> Dict[str, Any]:
     return {
         "ok": True,
         "plugin": "tastecheck-hermes",
-        "pinned_sha": getattr(mod, "PINNED_SHA", None),
+        "vendor_manifest_sha256": mod._file_sha256(mod.VENDOR_MANIFEST),  # noqa: SLF001
     }
 
 
@@ -116,16 +117,20 @@ def roll_audit(req: RollAuditRequest) -> RollAuditResponse:
         root.mkdir(parents=True, exist_ok=True)
         out_dir = root / (time.strftime("%Y%m%d-%H%M%S") + f"-{int(time.time()*1000)%10000:04d}")
         out_dir.mkdir(parents=True, exist_ok=False)
-        column = out_dir / "column.html"
+        page_dir = out_dir / "page"
+        page_dir.mkdir()
+        column = page_dir / "column.html"
         column.write_text(req.html, encoding="utf-8")
         target = str(column)
         _prune_roll_files(root)
 
-        timeout = float(mod.DEFAULTS.get("timeout_seconds", 240))
+        timeout = float(mod._cfg("timeout_seconds"))  # noqa: SLF001
         if not _audit_lock.acquire(timeout=timeout):
             return _hold("gate busy: another roll audit is running; click again to re-audit", target)
         try:
-            res = mod.audit(target)
+            # audit() is the single ledger writer (source="roll-audit"); the column is
+            # served from its own directory, never from the session workspace.
+            res = mod.audit(target, source="roll-audit", serve_root=page_dir)
         finally:
             _audit_lock.release()
 
@@ -139,8 +144,6 @@ def roll_audit(req: RollAuditRequest) -> RollAuditResponse:
             ok = False
             if not reasons:
                 reasons = [str(res.get("error") or "audit did not produce evidence")[:200]]
-        # Shared ledger writer — same shape as the agent tool path (R2/R4 binding).
-        mod.record_verdict(target, {**res, "verdict": verdict}, source="roll-audit")
         return RollAuditResponse(
             ok=ok, verdict=verdict, hold_reasons=reasons,
             evidence_dir=res.get("evidence_dir"), target=target,

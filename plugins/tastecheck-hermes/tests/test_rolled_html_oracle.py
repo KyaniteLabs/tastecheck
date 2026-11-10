@@ -1,9 +1,8 @@
-"""run967 R1 cross-language oracle: node builds rolled columns through the REAL
-plugin module (stubbed SDK/react loader, exactly like the desktop harness);
-Python's stdlib ``html.parser.HTMLParser`` — a parser from a different language
-and codebase than the plugin's scanner, the same oracle the reviewer used
-(review967/html-parsed.json) — then verifies where the roll attributes actually
-landed and that comments/unrelated attribute values survive byte-for-byte.
+"""Cross-language oracle: node builds rolled columns through the REAL plugin module
+(stubbed SDK/react loader, exactly like the desktop harness); Python's stdlib
+``html.parser.HTMLParser`` — a parser from a different language and codebase than
+the plugin's scanner — then verifies where the roll attributes actually landed and
+that comments/unrelated attribute values survive byte-for-byte.
 
 Skipped without node (CI's plugin job installs node 22, so this runs there).
 """
@@ -52,12 +51,24 @@ ctx.register = (c) => { contributed.push(c); return () => {} }
 mod.default.register(ctx)
 const action = contributed.find((c) => c.area === 'composer.actions')
 action.render().props.onClick({ preventDefault: () => {} })
-for (let i = 0; i < 80; i++) await new Promise((r) => setImmediate(r))
-const pane = globalThis.__tc.workspaces.at(-1).options.render()
-const strip = pane.children.find((c) => c && c.type === 'div' && c.props.style && c.props.style.overflowX === 'auto')
-const col = strip.children[1]
-const header = col.children[0]
-const frame = typeof col.children[1].type === 'function' ? col.children[1].type(col.children[1].props) : col.children[1]
+// poll until the pane has rendered a column with its srcDoc (10 s budget) instead
+// of spinning a fixed number of event-loop turns
+function column() {
+  const ws = globalThis.__tc.workspaces.at(-1)
+  if (!ws) return null
+  const pane = ws.options.render()
+  const strip = pane && pane.children && pane.children.find((c) => c && c.type === 'div' && c.props.style && c.props.style.overflowX === 'auto')
+  const col = strip && strip.children && strip.children[1]
+  if (!col || !col.children || !col.children[1]) return null
+  const frame = typeof col.children[1].type === 'function' ? col.children[1].type(col.children[1].props) : col.children[1]
+  return frame && frame.props && frame.props.srcDoc ? frame : null
+}
+const deadline = Date.now() + 10000
+let frame = null
+while (!(frame = column())) {
+  if (Date.now() > deadline) throw new Error('rolled column never rendered')
+  await new Promise((r) => setTimeout(r, 5))
+}
 process.stdout.write(JSON.stringify({ srcDoc: frame.props.srcDoc }))
 """
 

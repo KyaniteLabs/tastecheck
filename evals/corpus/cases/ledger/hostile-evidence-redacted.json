@@ -8,7 +8,7 @@
   "known_open": false,
   "source": {
     "desk": "internal incident record (provenance sanitized 2026-09-25)",
-    "quote": "the scrub pass redacted BODY strings but never titles, while the public taxonomy exists precisely to keep glsl/tone/strudel/hydra/ascii off the public surface"
+    "quote": "the scrub pass redacted BODY strings but never titles, while the public taxonomy exists precisely to keep internal technique names off the public surface"
   },
   "case": { "mutation": "hostile-evidence", "target": "verification:deslop-ui" },
   "expectation": {
