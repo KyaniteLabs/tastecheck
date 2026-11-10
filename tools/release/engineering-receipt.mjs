@@ -5,6 +5,7 @@ import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "nod
 import { tmpdir } from "node:os";
 import { delimiter, dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isMainEntry } from "../lib/main-entry.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const defaultRoot = resolve(here, "../..");
@@ -223,4 +224,4 @@ function main() {
   if (receipt.status !== "pass") process.exitCode = 1;
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) main();
+if (isMainEntry(import.meta.url)) main();

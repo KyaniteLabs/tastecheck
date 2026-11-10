@@ -6,6 +6,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { computeSourceTreeSha256 } from "./engineering-receipt.mjs";
+import { isMainEntry } from "../lib/main-entry.mjs";
 
 const DEFAULT_ROOT = resolve(fileURLToPath(new URL("../..", import.meta.url)));
 export const PUBLIC_STATUS_PATH = "evals/receipts/v1/public-release-status.json";
@@ -358,4 +359,4 @@ function main() {
   console.log(`public release status projection passed: ${derivePublicStatus(root).overall_status.toUpperCase()}`);
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) main();
+if (isMainEntry(import.meta.url)) main();

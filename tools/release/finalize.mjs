@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import { buildContextBudgetReport } from "../evals/context-budget.mjs";
 import { computeSourceTreeSha256 } from "./engineering-receipt.mjs";
 import { ENGINEERING_PRODUCERS } from "./final-source-receipt-gate.mjs";
+import { isMainEntry } from "../lib/main-entry.mjs";
 import { projectPublicStatus } from "./project-public-status.mjs";
 
 const DEFAULT_ROOT = resolve(fileURLToPath(new URL("../..", import.meta.url)));
@@ -90,7 +91,7 @@ function main() {
   console.log(`finalize: complete (${sourceTreeSha256})`);
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (isMainEntry(import.meta.url)) {
   try {
     main();
   } catch (error) {
