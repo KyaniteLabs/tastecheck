@@ -43,6 +43,12 @@ and tastecheck's own suite fixtures.
   ledger through `evaluateReleaseGate` (the deterministic verdict engine).
   Mutations are named for the defect class they reproduce
   (`tools/calibrate/run-calibration.mjs` is the registry of mutations).
+  A ledger case may set `"invocation": "installed-symlink"` to run the gate
+  CLI through the installed symlink shapes (`install.sh` skill link,
+  profile-tree directory chain, symlinked entry file) instead of calling the
+  engine in-process. That shape is how agents actually invoke the gate, and a
+  fail-closed gate must HOLD there too — an exit-0 run that prints nothing and
+  writes no report counts as the case being missed.
 - `probe: surface` cases run the offline static surface probes
   (`tools/calibrate/surface-probes.mjs`): markup-visible leak classes and
   tells. `vocabulary` scopes the internal-vocabulary probe (what counts as

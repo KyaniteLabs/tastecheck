@@ -2,7 +2,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { isMainEntry } from "../lib/main-entry.mjs";
 
 const root = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 export const SOURCE_PATHS = Object.freeze({
@@ -90,4 +90,4 @@ function main() {
   console.log("effectiveness projections match committed immutable sources");
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) main();
+if (isMainEntry(import.meta.url)) main();

@@ -205,7 +205,7 @@ export function runProfile(argv, { home, stdout = process.stdout, stderr = proce
 }
 
 /* run directly: node bin/profile.mjs <command> */
-import { fileURLToPath } from "node:url";
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+import { isMainEntry } from "../tools/lib/main-entry.mjs";
+if (isMainEntry(import.meta.url)) {
   process.exit(runProfile(process.argv.slice(2), {}));
 }

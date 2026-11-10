@@ -11,6 +11,7 @@ import Ajv from "ajv";
 import { chromium } from "playwright";
 import { computeSourceTreeSha256 } from "./engineering-receipt.mjs";
 import { scoreNima, aestheticStatus, NIMA_WARN_THRESHOLD } from "../lib/nima.mjs";
+import { isMainEntry } from "../lib/main-entry.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const PRODUCER = Object.freeze({ id: "tastecheck-live-execution", version: 1 });
@@ -385,6 +386,6 @@ async function main() {
   console.log(canonical({ path: options.out, sha256: hash(canonical(receipt)), status: receipt.status }));
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (isMainEntry(import.meta.url)) {
   main().catch((error) => { console.error(`live execution failed: ${error.message}`); process.exitCode = 1; });
 }

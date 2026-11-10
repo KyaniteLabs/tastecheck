@@ -21,6 +21,7 @@ import { fileURLToPath } from "node:url";
 import { evaluateReleaseGate, hashReview, hashSubjectInventory } from "../../skills/tastecheck-pass/assets/release-gate.mjs";
 import { buildValidLedger, makeArtifactRoot, disposeArtifactRoot, rehashRowEvidence } from "./ledger-fixture.mjs";
 import { runSurfaceProbes } from "./surface-probes.mjs";
+import { runInstalledInvocation } from "../lib/release-gate-invocation.mjs";
 
 const ROOT = fileURLToPath(new URL("../..", import.meta.url));
 const CASES_DIR = join(ROOT, "evals/corpus/cases");
@@ -67,6 +68,11 @@ function selectCheck(catalog, target) {
 }
 
 function applyLedgerMutation(spec) {
+  if (spec.mutation === "empty-ledger") {
+    // Reproduce a fail-closed probe: no rows at all, so the only correct
+    // behavior is a HOLD report plus a non-zero exit from the installed CLI.
+    return { ledger: {}, gateOptions: {}, cleanup: () => {} };
+  }
   if (spec.mutation === "stale-linked-artifact") {
     // Reproduce the HA swatch-dot class: the ledger is cut against a linked
     // artifact, then the stylesheet changes on disk before the gate runs.
@@ -155,6 +161,23 @@ function applyLedgerMutation(spec) {
 function runLedgerCase(corpusCase) {
   const { ledger, gateOptions, cleanup } = applyLedgerMutation(corpusCase.case);
   try {
+    if (corpusCase.case.invocation === "installed-symlink") {
+      const invocation = runInstalledInvocation({
+        repoRoot: ROOT,
+        ledger,
+        expectedVerdict: corpusCase.expectation.verdict === "SHIP" ? "SHIP" : "HOLD",
+      });
+      const behaviorChanges = invocation.verdict !== corpusCase.expectation.verdict
+        ? [`engine verdict ${invocation.verdict ?? "none"} != documented ${corpusCase.expectation.verdict} (behavior change: cure or regression — update the case + baseline deliberately)`]
+        : [];
+      return {
+        verdict: invocation.verdict,
+        leaks: [],
+        behaviorChanges,
+        invocation,
+        ...(invocation.ok ? {} : { blockers: invocation.failures }),
+      };
+    }
     const report = evaluateReleaseGate(ledger, gateOptions);
     const leaks = (corpusCase.expectation.report_must_not_contain || [])
       .filter((needle) => JSON.stringify(report).includes(needle));
@@ -213,6 +236,7 @@ export function runCalibration({ write = true } = {}) {
       ...(notes.length ? { notes } : {}),
       ...(outcome.findings ? { findings: outcome.findings } : {}),
       ...(outcome.blockers ? { blockers: outcome.blockers } : {}),
+      ...(outcome.invocation ? { invocation: outcome.invocation } : {}),
     };
   });
   const counts = { TP: 0, FN: 0, TN: 0, FP: 0 };

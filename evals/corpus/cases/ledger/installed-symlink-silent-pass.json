@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "kind": "calibration-case",
+  "id": "ledger/installed-symlink-silent-pass",
+  "probe": "ledger",
+  "label": "bad",
+  "class": "silent-invocation-false-pass",
+  "known_open": false,
+  "source": {
+    "desk": "2026-11-07 retro QA audit ledger row 53",
+    "quote": "The tastecheck deep-lane deterministic release gate **silently passes** when it is invoked through the installed skill symlink — which is exactly how the product installs, and exactly how an agent is documented to run it."
+  },
+  "case": { "mutation": "empty-ledger", "invocation": "installed-symlink" },
+  "expectation": { "verdict": "HOLD" }
+}

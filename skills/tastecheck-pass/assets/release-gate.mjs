@@ -1096,7 +1096,7 @@ function cli() {
   if (!inputPath || inputPath.startsWith("--")) {
     console.error("Usage: node skills/tastecheck-pass/assets/release-gate.mjs --input <verifier-relative-ledger.json> [--out <verifier-relative-report.json>] [--verifier-root <tastecheck-root>] [--artifact-root <consumer-root>] [--browser-manifest <verifier-relative-manifest.json>] [--required-viewports <width,...>]");
     process.exitCode = 2;
-    return;
+    return false;
   }
   let result;
   try { result = evaluateReleaseGate(readInput(verifierRoot, inputPath), { verifierRoot, artifactRoot, browserManifestPath, requiredViewports }); }
@@ -1111,6 +1111,7 @@ function cli() {
     printDecisionCard(result.decision_card);
   } else process.stdout.write(output);
   if (result.verdict !== "SHIP") process.exitCode = 1;
+  return true;
 }
 
 /** Compact decision view for terminal consumers: the one-word verdict leads. */
@@ -1125,4 +1126,46 @@ function printDecisionCard(card) {
   console.error(lines.join("\n"));
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) cli();
+/**
+ * True when this module is the process entry point. `import.meta.url` holds
+ * the real path Node resolved for the module, while `process.argv[1]` keeps
+ * the path the caller typed. install.sh links every skill into agent homes as
+ * a symlink (and profile trees chain more symlinked directories), so a lexical
+ * comparison never matches for the installed layout — and the CLI then exits
+ * 0 without running. Compare realpaths on both sides, with a literal-path
+ * fallback when either side cannot be resolved.
+ */
+function isDirectInvocation() {
+  if (!process.argv[1]) return false;
+  const selfPath = fileURLToPath(import.meta.url);
+  const entryLiteral = resolve(process.argv[1]);
+  let entryPath = entryLiteral;
+  let selfReal = selfPath;
+  try { entryPath = realpathSync(entryLiteral); } catch { /* keep the literal path */ }
+  try { selfReal = realpathSync(selfPath); } catch { /* keep the literal path */ }
+  return entryPath === selfReal || entryLiteral === selfPath;
+}
+
+/**
+ * Run the CLI and refuse to leave the process with a zero exit and no verdict.
+ * A consumer that gates on the exit code cannot tell "SHIP" from "never ran",
+ * so an invocation that produced nothing must fail closed and say why.
+ */
+function runCli() {
+  let verdictProduced = false;
+  try {
+    verdictProduced = cli();
+  } catch (error) {
+    console.error("DECISION: HOLD");
+    console.error(`- the release gate failed before producing a verdict: ${error?.message ?? error}`);
+    process.exitCode = 1;
+    return;
+  }
+  if (verdictProduced !== true && !process.exitCode) {
+    console.error("DECISION: HOLD");
+    console.error("- the release gate produced no verdict; the invocation is treated as failed (fail closed)");
+    process.exitCode = 1;
+  }
+}
+
+if (isDirectInvocation()) runCli();
