@@ -5,6 +5,15 @@ All notable changes to the tastecheck skill pack. Format follows
 
 ## [Unreleased]
 
+### Fixed — Hermes plugin 0.2.0: the completion gate binds evidence, not vocabulary
+
+- **Gate triggers on declared frontend work only** (named `.html` artifacts or frontend sources, `metadata.tastecheck`, or a `tastecheck: required` card marker), never on summary words; every declared artifact needs its own fresh SHIP, bound to its content digest and to every file the audit served.
+- **Signed ledger.** Entries are HMAC-signed with a local key; unsigned or edited entries, Taste Roll column verdicts and tool errors never release the gate. A corrupt ledger blocks and is moved aside loudly.
+- **No runtime download.** The CLI ships vendored inside the plugin and is verified against `vendor/MANIFEST.json` before every run (`tools/hermes/sync-plugin-vendor.mjs --check` in CI). The child environment no longer passes `NODE_OPTIONS`.
+- **Local audits are confined** to the session workspace and served read-only over a loopback server; `cdp-qa` no longer passes `--allow-file-access-from-files`.
+- Settings live under `plugins.entries.tastecheck-hermes.settings` (the dashboard half now reads them too); data moved to `plugin-data/tastecheck-hermes/` (profile copied over).
+- Removed internal operations files and internal names from the public tree; unreferenced `site/img` PNGs removed; landing HTML validated in CI without `|| true`.
+
 ### Changed — public install is git clone (no new npm scope)
 
 - **Install from git:** `git clone https://github.com/KyaniteLabs/tastecheck && ./tastecheck/install.sh`. That is the verified public path. A KyaniteLabs-scoped npm name is not in the registry. The last published package remains `@puenteworks/tastecheck@1.7.0` (an `install.sh` trampoline; not deprecated). Publishing a new npm scope stays gated.

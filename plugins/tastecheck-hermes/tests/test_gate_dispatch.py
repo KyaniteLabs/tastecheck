@@ -1,10 +1,10 @@
-"""review round B R4 dispatch-level regressions: through the INSTALLED Hermes
+"""Dispatch-level regressions: through the INSTALLED Hermes
 ``hermes_cli.plugins._dispatch_pre_tool_call_hooks`` — the real pre-tool hook
-dispatch that tool calls go through — with a reviewer-style isolated manager,
-isolated HERMES_HOME/ledger/workspace and a faked kanban card lookup.
+dispatch that tool calls go through — with an isolated manager, the hook
+registered through the public ``PluginContext.register_hook``, isolated
+HERMES_HOME/ledger/workspace and a faked kanban card lookup.
 
-This is the lane the reviewer's ``gate-probe.py`` used (workspace
-``review-b/``): nothing here calls ``_on_pre_tool`` directly. It requires an
+Nothing here calls ``_on_pre_tool`` directly. It requires an
 installed Hermes runtime, so it SKIPS on hosts without one (CI has no Hermes
 install — the hook-shape regressions in ``test_gate_binding.py`` run there;
 this file runs on every hermes-equipped host and in review). No completion
@@ -69,9 +69,13 @@ def _setup_disp(tmp_path, monkeypatch):
     mod._data_dir = lambda: data
     mod._agent_cwd = lambda: tmp_path
 
+    from hermes_cli.plugins_context import PluginContext
+    from hermes_cli.plugins_manifest import PluginManifest
+
     manager = runtime.PluginManager(scope_key=str(home))
     manager._discovered = True
-    manager._hooks["pre_tool_call"] = [mod._on_pre_tool]
+    ctx = PluginContext(PluginManifest(name="tastecheck-hermes", source="user"), manager)
+    ctx.register_hook("pre_tool_call", mod._on_pre_tool)  # public registration path
     monkeypatch.setattr(runtime, "_delivery_manager", lambda: manager)
 
     def dispatch(args, hook_task=""):
@@ -112,7 +116,8 @@ def _fake_frontend_card(monkeypatch, tmp_path, tid="t_disp001"):
 
     task = _Task()
     task.title = "Redesign the marketing landing page"
-    task.body = "Ship the new hero section and pricing table."
+    task.body = "Ship the new hero section and pricing table.\ntastecheck: required"
+    task.skills = None
     db_mod.kanban_db_path = lambda board=None: db_file
     db_mod.get_task = lambda conn, task_id: task if task_id == tid else None
     real_pkg = sys.modules.get("hermes_cli")
@@ -123,10 +128,12 @@ def _fake_frontend_card(monkeypatch, tmp_path, tid="t_disp001"):
 
 
 def _entry(mod, target, verdict="SHIP", **kw):
-    """Entry via the REAL recorder (workspace + sha256 binding)."""
-    mod.record_verdict(str(target), {"verdict": verdict}, source="tool")
+    """Entry via the REAL recorder (signed, workspace + sha256 binding), patched and re-signed."""
+    mod.record_verdict(str(target), {"outcome": verdict}, source="tool")
     ledger = mod._load_json(mod._ledger_path(), [])
+    ledger[-1].pop("sig", None)
     ledger[-1].update(kw)
+    mod._sign_entry(ledger[-1])
     mod._save_json(mod._ledger_path(), ledger)
     return ledger[-1]
 
@@ -140,7 +147,7 @@ def _allowed(block):
 def test_dispatch_blocks_no_evidence_frontend_claim(disp):
     mod, dispatch = disp
     mod._save_json(mod._ledger_path(), [])
-    args = {"summary": "Frontend page finished", "task_id": "t_disp001"}
+    args = {"summary": "Frontend page finished", "task_id": "t_disp001", "metadata": {"tastecheck": True}}
     block = dispatch(args, hook_task="t_disp001")
     assert not _allowed(block)
 
@@ -160,11 +167,28 @@ def test_dispatch_allows_non_frontend_control(disp):
     assert _allowed(dispatch({"summary": "Fixed billing rounding"}, hook_task="t_disp001"))
 
 
-# --- review round B reproduced bypasses, now fixed through real dispatch ---------------
+def test_dispatch_vocabulary_alone_is_not_vetoed(disp):
+    mod, dispatch = disp
+    mod._save_json(mod._ledger_path(), [])
+    assert _allowed(dispatch({"summary": "Landing page redesign done, ready to ship"}, hook_task="t_disp001"))
+
+
+def test_dispatch_forged_unsigned_ship_is_ignored(disp, tmp_path):
+    mod, dispatch = disp
+    a = tmp_path / "a.html"
+    a.write_text("<html><body>A</body></html>", encoding="utf-8")
+    forged = {"ts": int(time.time()), "target": str(a), "verdict": "SHIP", "source": "tool",
+              "workspace": str(tmp_path), "target_sha256": hashlib.sha256(a.read_bytes()).hexdigest()}
+    mod._save_json(mod._ledger_path(), [forged])
+    block = dispatch({"summary": "done", "metadata": {"target": str(a)}}, hook_task="t_disp001")
+    assert not _allowed(block)
+
+
+# --- identity and binding bypasses, through real dispatch ----------------------
 
 def test_dispatch_uuid_hook_cannot_override_card_identity(disp, tmp_path, monkeypatch):
     """Plain frontend-card summary; args carry the card id, hook carries the
-    runtime UUID: BLOCK via the task body (allowed with an empty ledger at aa5d489)."""
+    runtime UUID: BLOCK via the task body ."""
     mod, dispatch = disp
     mod._save_json(mod._ledger_path(), [])
     tid = _fake_frontend_card(monkeypatch, tmp_path)
@@ -174,7 +198,7 @@ def test_dispatch_uuid_hook_cannot_override_card_identity(disp, tmp_path, monkey
 
 def test_dispatch_env_default_binds_card_when_args_omit_task_id(disp, tmp_path, monkeypatch):
     """task_id omitted (kanban worker default = HERMES_KANBAN_TASK env) + UUID
-    hook: BLOCK (allowed with an empty ledger at aa5d489)."""
+    hook: BLOCK ."""
     mod, dispatch = disp
     mod._save_json(mod._ledger_path(), [])
     tid = _fake_frontend_card(monkeypatch, tmp_path)
@@ -202,6 +226,8 @@ def test_dispatch_missing_identity_hash_fails_closed(disp, tmp_path):
     _entry(mod, a)
     ledger = mod._load_json(mod._ledger_path(), [])
     ledger[-1].pop("target_sha256", None)
+    ledger[-1].pop("sig", None)
+    mod._sign_entry(ledger[-1])
     mod._save_json(mod._ledger_path(), ledger)
     args = {"summary": "Frontend page finished", "metadata": {"target": str(a)}}
     block = dispatch(args, hook_task="t_disp001")
@@ -238,11 +264,11 @@ def test_dispatch_explicit_url_identity_no_workspace_substitution(disp, tmp_path
 
 def test_dispatch_relative_audit_binds_absolute_completion(disp, tmp_path):
     """record_verdict('a.html') with agent cwd = tmp_path; completion names the
-    absolute twin: allowed (misbound HOLD at aa5d489)."""
+    absolute twin: allowed ."""
     mod, dispatch = disp
     a = tmp_path / "a.html"
     a.write_text("<html><body>A</body></html>", encoding="utf-8")
-    mod.record_verdict("a.html", {"verdict": "SHIP"}, source="tool")
+    mod.record_verdict("a.html", {"outcome": "SHIP"}, source="tool")
     (entry,) = mod._load_json(mod._ledger_path(), [])
     assert entry["target"] == str(a)
     assert entry["target_sha256"] == hashlib.sha256(a.read_bytes()).hexdigest()

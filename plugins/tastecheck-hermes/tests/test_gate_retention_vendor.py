@@ -1,13 +1,13 @@
-"""Regressions for the second external review round (fail-closed verdicts, retention grace,
-the pre_tool_call completion gate, the vendored pinned CLI runner and env passthrough)."""
+"""Fail-closed verdicts, retention grace, registration, the vendored hash-verified CLI,
+the child env allowlist and the cold-start retry deadline."""
 
 from __future__ import annotations
 
-import io
+import hashlib
 import json
 import os
 import shutil
-import tarfile
+import subprocess
 import textwrap
 import time
 from pathlib import Path
@@ -109,86 +109,6 @@ def test_retention_grace_scales_with_timeout(plugin):
     assert plugin._retention_grace() == 1200.0
 
 
-# --- pre_tool_call completion gate --------------------------------------------
-
-def _ui_completion(summary: str) -> dict:
-    return {"task_id": "t_x", "summary": summary}
-
-
-def test_gate_blocks_frontend_completion_without_ship(plugin):
-    blocked = plugin._on_pre_tool("kanban_complete", _ui_completion("Landing page redesign is done and ready to ship"))
-    assert isinstance(blocked, dict)
-    assert blocked["action"] == "block"
-    assert "SHIP" in blocked["message"] and "tastecheck" in blocked["message"]
-
-
-def test_gate_blocks_request_review_too(plugin):
-    blocked = plugin._on_pre_tool("kanban_request_review", _ui_completion("UI polish finished, review please"))
-    assert blocked and blocked["action"] == "block"
-
-
-def test_gate_allows_non_frontend_completion(plugin):
-    assert plugin._on_pre_tool("kanban_complete", _ui_completion("Fixed the billing rounding bug")) is None
-
-
-def test_gate_ignores_other_tools_even_with_ui_words(plugin):
-    assert plugin._on_pre_tool("terminal", {"command": "open the landing page"}) is None
-    assert plugin._on_pre_tool("write_file", {"path": "ui/dashboard.py"}) is None
-
-
-def _ship_entry(plugin, target="http://127.0.0.1:5173", verdict="SHIP", age=0, **extra):
-    """A ledger entry written through the real recorder (carries workspace binding)."""
-    plugin._save_json(plugin._ledger_path(), [])
-    plugin.record_verdict(target, {"verdict": verdict, "data": {"holdReasons": extra.pop("holdReasons", [])}}, )
-    ledger = plugin._load_json(plugin._ledger_path(), [])
-    ledger[-1].update(extra)
-    if age:
-        ledger[-1]["ts"] = int(time.time()) - age
-    plugin._save_json(plugin._ledger_path(), ledger)
-    return ledger[-1]
-
-
-def test_gate_allows_after_fresh_ship(plugin):
-    _ship_entry(plugin)
-    assert plugin._on_pre_tool("kanban_complete", _ui_completion("Frontend hero done, shipping")) is None
-
-
-def test_gate_blocks_on_stale_ship(plugin):
-    _ship_entry(plugin, age=int(plugin.DEFAULTS["gate_ship_ttl_seconds"]) + 60)
-    blocked = plugin._on_pre_tool("kanban_complete", _ui_completion("Frontend hero done, shipping"))
-    assert blocked and blocked["action"] == "block"
-    assert "stale" in blocked["message"]
-
-
-def test_gate_blocks_on_hold_only_ledger(plugin):
-    _ship_entry(plugin, verdict="HOLD", holdReasons=["contrast 2.9:1 on body text"])
-    blocked = plugin._on_pre_tool("kanban_complete", _ui_completion("Frontend hero done, shipping"))
-    assert blocked and blocked["action"] == "block"
-    assert "HOLD" in blocked["message"] and "contrast" in blocked["message"]
-
-
-def test_gate_blocks_on_corrupt_ledger(plugin):
-    plugin._ledger_path().write_text("{not json", encoding="utf-8")
-    blocked = plugin._on_pre_tool("kanban_complete", _ui_completion("Frontend hero done, shipping"))
-    assert blocked and blocked["action"] == "block"
-
-
-def test_gate_disabled_by_config(plugin):
-    plugin._ctx.config["gate_completions"] = False
-    assert plugin._on_pre_tool("kanban_complete", _ui_completion("Landing page done")) is None
-
-
-def test_gate_ignores_non_dict_args(plugin):
-    assert plugin._on_pre_tool("kanban_complete", None) is None
-    assert plugin._on_pre_tool("kanban_complete", "summary=done") is None
-
-
-def test_gate_directive_matches_hermes_veto_contract(plugin):
-    blocked = plugin._on_pre_tool("kanban_complete", _ui_completion("Site redesign done"))
-    assert set(blocked) == {"action", "message"}
-    assert isinstance(blocked["message"], str) and blocked["message"]
-
-
 # --- registration + manifest consistency --------------------------------------
 
 def test_register_registers_gate_hook_and_manifest_matches(plugin):
@@ -197,14 +117,16 @@ def test_register_registers_gate_hook_and_manifest_matches(plugin):
     ctx = FakeCtx()
     plugin.register(ctx)
     hook_names = {name for name, _cb in ctx.hooks}
-    assert {"pre_llm_call", "pre_tool_call", "post_tool_call"} <= hook_names
+    assert hook_names == {"pre_llm_call", "pre_tool_call"}
     assert "tastecheck" in ctx.commands
     assert sorted(ctx.tools) == ["tastecheck_audit", "tastecheck_profile", "tastecheck_version"]
 
     manifest = (Path(plugin.__file__).parent / "plugin.yaml").read_text(encoding="utf-8")
     hooks_section = manifest.split("provides_hooks:", 1)[1].split("config_schema:", 1)[0]
-    for hook in sorted(hook_names):
-        assert f"- {hook}" in hooks_section
+    declared = {line.strip()[2:] for line in hooks_section.splitlines() if line.strip().startswith("- ")}
+    assert declared == hook_names
+    for key in plugin.DEFAULTS:
+        assert f"\n  {key}:" in manifest, f"config_schema lacks {key}"
 
 
 # --- scrubbed env passthrough --------------------------------------------------
@@ -221,98 +143,88 @@ def test_scrubbed_env_passes_browser_paths_and_drops_secrets(plugin, monkeypatch
     assert env["NO_COLOR"] == "1"
 
 
-# --- vendored pinned CLI -------------------------------------------------------
-
-_TOP = "tastecheck-5168f89bdd2759b99b81545896c47638727cda14"
-
-
-def _tar_bytes(files: dict, raw_members=()):
-    buf = io.BytesIO()
-    with tarfile.open(fileobj=buf, mode="w:gz") as tar:
-        for name, data in files.items():
-            ti = tarfile.TarInfo(f"{_TOP}/{name}")
-            ti.size = len(data)
-            tar.addfile(ti, io.BytesIO(data))
-        for ti in raw_members:
-            tar.addfile(ti)
-    return buf.getvalue()
+def test_scrubbed_env_never_passes_node_options(plugin, monkeypatch):
+    """P2-10: NODE_OPTIONS can preload arbitrary code into the CLI."""
+    monkeypatch.setenv("NODE_OPTIONS", "--require /tmp/evil.js")
+    assert "NODE_OPTIONS" not in plugin._scrubbed_env()
 
 
-_GOOD_CLI = (
-    "#!/usr/bin/env node\n"
-    "console.log(JSON.stringify({verdict:'SHIP',holdReasons:[],target:process.argv[3]}));\n"
-)
+# --- vendored, hash-verified CLI -------------------------------------------------
+
+REPO = Path(__file__).resolve().parents[3]
 
 
-def test_vendored_cli_materializes_and_caches(plugin, monkeypatch):
-    blob = _tar_bytes({"bin/tastecheck.mjs": _GOOD_CLI.encode(),
-                       "package.json": b'{"name":"tastecheck","version":"1.7.0"}'})
-    fetches = []
-    monkeypatch.setattr(plugin, "_fetch_pinned_tarball", lambda: fetches.append(1) or blob)
+def test_vendored_cli_matches_repository_source(plugin):
+    """P1-6: the plugin ships the CLI; CI keeps it identical to the repo files."""
+    manifest = json.loads(plugin.VENDOR_MANIFEST.read_text(encoding="utf-8"))
+    assert "bin/tastecheck.mjs" in manifest["files"]
+    for rel, sha in manifest["files"].items():
+        assert hashlib.sha256((plugin.VENDOR_DIR / rel).read_bytes()).hexdigest() == sha, rel
+        src = REPO / rel
+        if src.exists():  # repository checkout (not an installed plugin)
+            assert src.read_bytes() == (plugin.VENDOR_DIR / rel).read_bytes(), f"vendor drift: {rel}"
 
-    res = plugin.run_tastecheck(["audit", "http://vend.test", "/tmp/unused", "--json"])
+
+def test_no_network_fetch_code_left(plugin):
+    src = Path(plugin.__file__).read_text(encoding="utf-8")
+    for needle in ("codeload", "urlopen", "tarfile", "PINNED_SHA"):
+        assert needle not in src
+
+
+def _copy_vendor(plugin, tmp_path, monkeypatch):
+    vroot = tmp_path / "vendor-copy"
+    shutil.copytree(plugin.VENDOR_DIR.parent, vroot)
+    monkeypatch.setattr(plugin, "VENDOR_DIR", vroot / "tastecheck")
+    monkeypatch.setattr(plugin, "VENDOR_MANIFEST", vroot / "MANIFEST.json")
+    return vroot
+
+
+def test_verified_cli_accepts_pristine_vendor(plugin, tmp_path, monkeypatch):
+    vroot = _copy_vendor(plugin, tmp_path, monkeypatch)
+    cmd = plugin._verified_cli()
+    assert cmd == ["node", str((vroot / "tastecheck" / "bin" / "tastecheck.mjs").resolve())]
+
+
+def test_tampered_vendor_file_refuses_to_run(plugin, tmp_path, monkeypatch):
+    vroot = _copy_vendor(plugin, tmp_path, monkeypatch)
+    cdp = vroot / "tastecheck" / "skills" / "tastecheck-pass" / "assets" / "cdp-qa.mjs"
+    cdp.write_text(cdp.read_text(encoding="utf-8") + "\n// injected\n", encoding="utf-8")
+    res = plugin.run_tastecheck(["--version"])
+    assert res["ok"] is False
+    assert "does not match MANIFEST.json" in res["error"]
+
+
+def test_missing_vendor_file_refuses_to_run(plugin, tmp_path, monkeypatch):
+    vroot = _copy_vendor(plugin, tmp_path, monkeypatch)
+    (vroot / "tastecheck" / "package.json").unlink()
+    res = plugin.run_tastecheck(["--version"])
+    assert res["ok"] is False and "missing" in res["error"]
+
+
+def test_manifest_path_escape_refused(plugin, tmp_path, monkeypatch):
+    vroot = _copy_vendor(plugin, tmp_path, monkeypatch)
+    m = json.loads((vroot / "MANIFEST.json").read_text())
+    m["files"]["../outside.mjs"] = "0" * 64
+    (vroot / "MANIFEST.json").write_text(json.dumps(m))
+    res = plugin.run_tastecheck(["--version"])
+    assert res["ok"] is False and "escapes" in res["error"]
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node required")
+def test_vendored_cli_runs_version(plugin):
+    """The real vendored entry point runs (no browser needed for --version)."""
+    res = plugin.version()
     assert res["ok"] is True, res
-    assert res["data"]["target"] == "http://vend.test"
-    assert res["data"]["verdict"] == "SHIP"
-
-    # second call is served from the vendor cache: no second fetch
-    res2 = plugin.run_tastecheck(["audit", "http://vend2.test", "/tmp/unused", "--json"])
-    assert res2["ok"] is True
-    assert len(fetches) == 1
-
-    stamp = json.loads((plugin._data_dir() / "vendor" / plugin.PINNED_SHA / "vendor-stamp.json")
-                       .read_text(encoding="utf-8"))
-    assert stamp["url"] == plugin.PINNED_TARBALL
-    assert stamp["bytes"] == len(blob) and len(stamp["sha256"]) == 64
+    pkg = json.loads((plugin.VENDOR_DIR / "package.json").read_text())
+    assert str(res.get("data", res.get("text"))).strip() == pkg["version"]
 
 
-def test_vendor_tarball_missing_bin_refused(plugin, monkeypatch):
-    blob = _tar_bytes({"package.json": b'{}'})
-    monkeypatch.setattr(plugin, "_fetch_pinned_tarball", lambda: blob)
-    res = plugin.run_tastecheck(["audit", "http://x.test", "/tmp/unused", "--json"])
-    assert res["ok"] is False
-    assert "bin/tastecheck.mjs" in res["error"]
-    assert not plugin._vendor_bin().exists()
-
-
-def test_vendor_tarball_traversal_refused(plugin, monkeypatch):
-    evil = tarfile.TarInfo(f"{_TOP}/../evil.txt")
-    evil.size = 4
-    blob = _tar_bytes({"bin/tastecheck.mjs": _GOOD_CLI.encode()},
-                      raw_members=[(evil, b"pwn\n")][0:1] and [evil] or [])
-    # add the payload via a second pass (tarfile needs data bound at addfile time)
-    buf = io.BytesIO()
-    with tarfile.open(fileobj=buf, mode="w:gz") as tar:
-        ti = tarfile.TarInfo(f"{_TOP}/bin/tastecheck.mjs")
-        ti.size = len(_GOOD_CLI)
-        tar.addfile(ti, io.BytesIO(_GOOD_CLI.encode()))
-        evil2 = tarfile.TarInfo(f"{_TOP}/../evil.txt")
-        evil2.size = 4
-        tar.addfile(evil2, io.BytesIO(b"pwn\n"))
-    monkeypatch.setattr(plugin, "_fetch_pinned_tarball", lambda: buf.getvalue())
-
-    res = plugin.run_tastecheck(["audit", "http://x.test", "/tmp/unused", "--json"])
-    assert res["ok"] is False
-    assert "unsafe archive" in res["error"]
-    vendor_root = plugin._data_dir() / "vendor"
-    assert not (vendor_root.parent / "evil.txt").exists()
-    assert not (vendor_root / "evil.txt").exists()
-    assert not plugin._vendor_bin().exists()
-
-
-def test_vendor_tarball_symlink_refused(plugin, monkeypatch):
-    buf = io.BytesIO()
-    with tarfile.open(fileobj=buf, mode="w:gz") as tar:
-        link = tarfile.TarInfo(f"{_TOP}/bin/tastecheck.mjs")
-        link.type = tarfile.SYMTYPE
-        link.linkname = "/etc/passwd"
-        tar.addfile(link)
-    monkeypatch.setattr(plugin, "_fetch_pinned_tarball", lambda: buf.getvalue())
-
-    res = plugin.run_tastecheck(["audit", "http://x.test", "/tmp/unused", "--json"])
-    assert res["ok"] is False
-    assert "unsafe archive" in res["error"]
-    assert not plugin._vendor_bin().exists()
+def test_non_audit_commands_fail_on_exit_1(plugin, fake_cli):
+    """P3-13: exit 1 is HOLD only for audit; for profile/version it is a failure."""
+    fake_cli("print('{}'); sys.exit(1)")
+    assert plugin.run_tastecheck(["profile", "show"])["ok"] is False
+    assert plugin.run_tastecheck(["--version"])["ok"] is False
+    assert plugin.run_tastecheck(["audit", "http://x.test", "/tmp/x", "--json"])["ok"] is True
 
 
 def test_command_override_still_wins(plugin, fake_cli):
@@ -361,11 +273,31 @@ def test_persistent_tool_error_is_hold_no_retry(plugin, fake_cli, tmp_path):
 
 def test_scrubbed_env_pins_long_tmpdir_short(plugin, monkeypatch):
     # Chrome's SingletonSocket path caps at ~104 chars; a long TMPDIR kills the
-    # browser before DevToolsActivePort appears (found live on lab-host 2026-11-08).
-    monkeypatch.setenv("TMPDIR", "/home/user/.hermes-home/profiles/security/cache/scratch/tc-audit/tmp")
+    # browser before DevToolsActivePort appears.
+    monkeypatch.setenv("TMPDIR", "/home/example/.hermes/profiles/sample/cache/scratch/tastecheck-audit/tmp")
     env = plugin._scrubbed_env()
     assert env["TMPDIR"] == "/tmp"
     monkeypatch.setenv("TMPDIR", "/tmp")
     assert plugin._scrubbed_env()["TMPDIR"] == "/tmp"
     monkeypatch.delenv("TMPDIR", raising=False)
     assert plugin._scrubbed_env().get("TMPDIR") in (None, "/tmp")
+
+
+def test_cold_start_retry_shares_one_deadline(plugin, fake_cli, tmp_path):
+    """P1-6: the retry runs inside the same overall timeout, and only if >= 20 s remain."""
+    counter = tmp_path / "calls"
+    counter.write_text("0", encoding="utf-8")
+    body = textwrap.dedent(f"""
+        import sys, time
+        c = int(open({str(counter)!r}).read()) + 1
+        open({str(counter)!r}, 'w').write(str(c))
+        time.sleep(1.5)
+        sys.stderr.write("DevToolsActivePort never appeared\\n")
+        sys.exit(2)
+    """)
+    fake_cli(body, timeout_seconds=21)
+    t0 = time.monotonic()
+    res = plugin.audit("http://deadline.test")
+    assert res["verdict"] == "HOLD"
+    assert counter.read_text() == "1", "no retry once fewer than 20 s of the deadline remain"
+    assert time.monotonic() - t0 < 21
