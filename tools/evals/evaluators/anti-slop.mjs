@@ -6,7 +6,7 @@
  * Unjustified placeholders still fail closed, and the legacy generic-filler
  * patterns remain active for the generated portion of the response.
  */
-import { readFileSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 
@@ -145,7 +145,7 @@ export function evaluateAntiSlop(attempt, context = {}) {
   };
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))) {
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   const [,, attemptPath] = process.argv;
   if (!attemptPath) {
     console.error("Usage: node tools/evals/evaluators/anti-slop.mjs <attempt.json>");

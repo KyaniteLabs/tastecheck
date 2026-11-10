@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** Validate the static remediation7 v3 correction evidence; it never generates model output. */
 import { createHash } from "node:crypto";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, realpathSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { evaluateDiversity } from "./evaluators/diversity.mjs";
@@ -409,7 +409,7 @@ export function validateCorrection(root = ROOT, { namespace = DEFAULT_NAMESPACE 
   if (manifest.paired_lane.threshold.min_upgraded_mean_delta !== MIN_UPGRADED_MEAN_DELTA || manifest.synthesis_contract.corrected_evaluator_reclassification.policy !== "current-contract-recompute-only") errors.push("synthesis threshold or reclassification contract drifted");
   return { errors, counts: { fresh_terra_results: fresh, historical_baseline_inputs: manifest.paired_lane.historical_input_count, blind_packets: packets.length, pending_luna_judgments: judgeManifest?.expected_judgment_count ?? 0, v2_files_changed: v2Changed }, manifest };
 }
-if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))) {
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   const result = process.argv.includes("--synthesize") ? synthesizeV3() : process.argv.includes("--aggregate") ? aggregateV3() : validateV3Judgments();
   if ((result.errors ?? []).length) { console.error(result.errors.join("\n")); process.exitCode = 1; }
   else console.log(JSON.stringify(result.counts, null, 2));

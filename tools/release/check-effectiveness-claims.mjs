@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /** Fail closed on unsupported public claims of demonstrated effectiveness. */
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync, realpathSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -63,4 +63,4 @@ function main() {
   console.log("effectiveness claim scan passed");
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) main();
+if (realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) main();

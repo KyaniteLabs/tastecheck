@@ -473,7 +473,7 @@ export function packageScaffold(root = ROOT) {
 }
 
 function usage() { console.error("Usage: node tools/evals/full19-replay.mjs package | validate <76-json-paths> | collect <76-json-paths>"); }
-if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))) {
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   const [, , command, ...args] = process.argv;
   if (command === "package") {
     try { const manifest = packageScaffold(ROOT); console.log(`package valid: ${NAMESPACE} (${manifest.jobs.length} pending jobs, ${manifest.dispatch_matrix.length} Terra groups)`); }

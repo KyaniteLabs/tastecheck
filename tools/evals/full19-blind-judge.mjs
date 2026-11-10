@@ -7,9 +7,7 @@
  * role mapping is read only by synthesis after all 171 valid judgments exist.
  */
 import { createHash } from "node:crypto";
-import {
-  existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync,
-} from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, realpathSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validateResultSet } from "./full19-replay.mjs";
@@ -551,7 +549,7 @@ export function aggregateBlindCorpus(root = ROOT) {
 }
 
 function usage() { console.error("Usage: node tools/evals/full19-blind-judge.mjs build | validate | synthesize | aggregate"); }
-if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))) {
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   const command = process.argv[2];
   try {
     if (command === "build") { const result = buildBlindCorpus(ROOT); console.log(`built ${result.packet_paths.length} packets and ${result.result_paths.length} pending judge slots`); }

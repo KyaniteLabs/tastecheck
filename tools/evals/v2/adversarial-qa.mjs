@@ -243,7 +243,7 @@ function cliOutputPath(argv, root) {
   return assertSafeOutput(realpathSync(root), resolve(root, argv[index + 1]));
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   try {
     runAdversarialQa({ receiptPath: cliOutputPath(process.argv.slice(2), DEFAULT_REPO_ROOT) });
     console.log("effectiveness-v2 adversarial QA passed; external calls 0");

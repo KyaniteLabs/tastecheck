@@ -1,10 +1,7 @@
 #!/usr/bin/env node
 // tastecheck installer (Node port of install.sh). Dependency-free; works on macOS, Linux
 // and Windows. Links skills into ~/.agents/skills and mirrors into existing agent homes.
-import {
-  lstatSync, mkdirSync, readdirSync, readFileSync, readlinkSync, renameSync, rmSync,
-  symlinkSync, copyFileSync, writeFileSync, statSync, existsSync,
-} from "node:fs";
+import { lstatSync, mkdirSync, readdirSync, readFileSync, readlinkSync, renameSync, rmSync, symlinkSync, copyFileSync, writeFileSync, statSync, existsSync, realpathSync } from "node:fs";
 import { homedir } from "node:os";
 import { basename, dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -283,6 +280,6 @@ export async function runInstall(argv = [], opts = {}) {
   return 0;
 }
 
-if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   runInstall(process.argv.slice(2)).then((code) => { process.exitCode = code; });
 }

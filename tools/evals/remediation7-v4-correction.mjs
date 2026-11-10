@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** Validate, unmask, and aggregate the completed remediation7 v4 blind corpus. */
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, realpathSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -312,7 +312,7 @@ export function synthesizeV4(root = ROOT, { namespace = DEFAULT_NAMESPACE } = {}
   return synthesis;
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   const result = process.argv.includes("--synthesize") ? synthesizeV4() : validateCorrection();
   if (result.errors?.length) { console.error(result.errors.join("\n")); process.exitCode = 1; }
   else console.log(JSON.stringify({ status: result.status ?? "validated", release_eligible: result.release_eligible ?? true, verdict: result.verdict ?? "validated" }, null, 2));
