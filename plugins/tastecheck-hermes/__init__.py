@@ -36,6 +36,7 @@ import tempfile
 import threading
 import time
 from contextlib import contextmanager
+from enum import Enum
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -679,15 +680,96 @@ def _prune_audits(root: Path) -> None:
         logger.debug("tastecheck: prune failed", exc_info=True)
 
 
-def _hold(res: Dict[str, Any], reason: str, outcome: str = "ERROR") -> Dict[str, Any]:
-    """Fail-closed result. The caller always sees HOLD; ``outcome`` tells the ledger
-    whether this was a real HOLD verdict or a tool/identity ERROR (which never
-    supersedes or releases anything)."""
-    res["ok"] = False
-    res["verdict"] = "HOLD"
-    res["outcome"] = outcome
-    res.setdefault("error", reason)
+class AuditOutcome(str, Enum):
+    """The lifecycle of ONE audit result (the dict ``audit()`` returns) and the ``verdict``
+    value persisted in each ledger entry. The ONLY place these states are named.
+
+        (unset) ──ship──▶ SHIP ──artifact changed──▶ ERROR
+        (unset) ──hold──▶ HOLD
+        (unset) ──error─▶ ERROR
+
+    SHIP, HOLD and ERROR are terminal except SHIP → ERROR (the audited bytes changed
+    while the audit ran). Nothing ever moves back to SHIP. Callers always see verdict
+    HOLD unless the outcome is SHIP; ERROR (tool failure, identity mismatch, changed
+    artifact) never supersedes or releases anything in the completion gate."""
+
+    SHIP = "SHIP"
+    HOLD = "HOLD"
+    ERROR = "ERROR"
+
+
+# outcome -> (ok, caller-facing verdict). Every outcome writes all three keys together.
+_OUTCOME_FIELDS: Dict[AuditOutcome, Tuple[bool, str]] = {
+    AuditOutcome.SHIP: (True, "SHIP"),
+    AuditOutcome.HOLD: (True, "HOLD"),
+    AuditOutcome.ERROR: (False, "HOLD"),
+}
+# from-state (None = no outcome yet) -> legal to-states.
+_OUTCOME_MOVES: Dict[Optional[AuditOutcome], frozenset] = {
+    None: frozenset(AuditOutcome),
+    AuditOutcome.SHIP: frozenset({AuditOutcome.ERROR}),
+    AuditOutcome.HOLD: frozenset(),
+    AuditOutcome.ERROR: frozenset(),
+}
+# Ledger verdicts the completion gate reads; ERROR (and anything unknown) never counts.
+GATE_VERDICTS = frozenset({AuditOutcome.SHIP.value, AuditOutcome.HOLD.value})
+
+
+class IllegalOutcomeTransition(RuntimeError):
+    pass
+
+
+def parse_outcome(value: Any) -> Optional[AuditOutcome]:
+    """Tolerant reader: a known outcome string (as stored on disk) or None."""
+    try:
+        return AuditOutcome(value)
+    except ValueError:
+        return None
+
+
+def next_outcome(current: Optional[AuditOutcome], to: AuditOutcome) -> AuditOutcome:
+    """The single transition rule. Raises on an illegal move (e.g. HOLD → SHIP)."""
+    if to not in _OUTCOME_MOVES[current]:
+        frm = current.value if current else "(unset)"
+        raise IllegalOutcomeTransition(f"audit outcome cannot move {frm} -> {to.value}")
+    return to
+
+
+def audit_outcome(res: Dict[str, Any]) -> Optional[AuditOutcome]:
+    """Current outcome of an audit result; None while no outcome was decided. A
+    present-but-unknown value is an illegal state and raises."""
+    raw = res.get("outcome")
+    if raw is None:
+        return None
+    parsed = parse_outcome(raw)
+    if parsed is None:
+        raise IllegalOutcomeTransition(f"unknown audit outcome {raw!r}")
+    return parsed
+
+
+def _set_outcome(res: Dict[str, Any], to: AuditOutcome, reason: Optional[str] = None) -> Dict[str, Any]:
+    """Move one audit result to ``to``: writes ``ok``, ``verdict`` and ``outcome`` together
+    (and the error reason for ERROR). The only writer of those three keys."""
+    to = next_outcome(audit_outcome(res), to)
+    res["ok"], res["verdict"] = _OUTCOME_FIELDS[to]
+    res["outcome"] = to.value
+    if to is AuditOutcome.ERROR and reason is not None:
+        res.setdefault("error", reason)
     return res
+
+
+def _ship(res: Dict[str, Any]) -> Dict[str, Any]:
+    return _set_outcome(res, AuditOutcome.SHIP)
+
+
+def _held(res: Dict[str, Any]) -> Dict[str, Any]:
+    return _set_outcome(res, AuditOutcome.HOLD)
+
+
+def _error(res: Dict[str, Any], reason: str) -> Dict[str, Any]:
+    """Fail-closed tool/identity ERROR: the caller sees HOLD; the ledger records ERROR,
+    which never supersedes or releases anything."""
+    return _set_outcome(res, AuditOutcome.ERROR, reason)
 
 
 def audit(target: str, source: str = "tool", serve_root: Optional[Path] = None) -> Dict[str, Any]:
@@ -728,11 +810,11 @@ def audit(target: str, source: str = "tool", serve_root: Optional[Path] = None) 
             continue
         break
     res = _finish_audit(res, cli_target, out_dir, root, res.get("exit"))
-    if page is not None and res.get("outcome") == "SHIP":
+    if page is not None and audit_outcome(res) is AuditOutcome.SHIP:
         after = _file_sha256(page)
         if before is None or after != before or served.get(str(page)) != before:
             res.pop("data", None)
-            _hold(res, f"{page.name} changed while it was being audited (or was not the page served); re-run the audit")
+            _error(res, f"{page.name} changed while it was being audited (or was not the page served); re-run the audit")
     try:
         record_verdict(tgt, res, source=source, served=served if page else None,
                        expected_sha=before, started_at=started_at)
@@ -748,7 +830,7 @@ def _finish_audit(res: Dict[str, Any], tgt: str, out_dir: Path, root: Path,
     if exit_code not in (0, 1):
         res.pop("data", None)  # tool/process failure: never trust any evidence
         _prune_audits(root)
-        return _hold(res, res.get("error") or res.get("stderr") or f"tastecheck exit {exit_code}")
+        return _error(res, res.get("error") or res.get("stderr") or f"tastecheck exit {exit_code}")
     if not isinstance(res.get("data"), dict):
         ev = _load_json(out_dir / "evidence.json", None)  # dir is exclusive to this run
         if isinstance(ev, dict):
@@ -757,18 +839,15 @@ def _finish_audit(res: Dict[str, Any], tgt: str, out_dir: Path, root: Path,
     if not isinstance(data, dict):
         # No valid evidence for THIS run is HOLD, even when the CLI exited 0.
         res.pop("data", None)
-        _hold(res, "no valid audit evidence for this run; fail closed")
+        _error(res, "no valid audit evidence for this run; fail closed")
     elif data.get("target") != tgt:
         # Evidence must carry THIS run's target identity; missing or foreign is HOLD.
         res.pop("data", None)
-        _hold(res, f"evidence target {str(data.get('target'))[:200]!r} does not match {tgt!r}")
+        _error(res, f"evidence target {str(data.get('target'))[:200]!r} does not match {tgt!r}")
     elif data.get("verdict") == "SHIP" and exit_code == 0:
-        res["verdict"] = "SHIP"
-        res["outcome"] = "SHIP"
+        _ship(res)
     else:
-        res["ok"] = exit_code in (0, 1)
-        res["verdict"] = "HOLD"
-        res["outcome"] = "HOLD"
+        _held(res)
     _prune_audits(root)
     return res
 
@@ -836,6 +915,13 @@ def _read_ledger() -> List[Any]:
     return data
 
 
+def _payload_verdict(payload: Dict[str, Any]) -> AuditOutcome:
+    """Ledger verdict for one audit result: its ``outcome`` (legacy payloads: its
+    ``verdict``); anything that is not SHIP/HOLD is ERROR (fail closed)."""
+    parsed = parse_outcome(payload.get("outcome") or payload.get("verdict"))
+    return parsed if parsed is not None else AuditOutcome.ERROR
+
+
 def record_verdict(target: str, payload: Dict[str, Any], source: str = "tool", *,
                    served: Optional[Dict[str, str]] = None, expected_sha: Optional[str] = None,
                    started_at: Optional[int] = None) -> Dict[str, Any]:
@@ -848,8 +934,7 @@ def record_verdict(target: str, payload: Dict[str, Any], source: str = "tool", *
     ``target_sha256`` (pre-launch digest when known) and ``served`` (sha256 of every
     file the loopback server sent). The ledger stores no page content."""
     data = payload.get("data") if isinstance(payload.get("data"), dict) else {}
-    outcome = payload.get("outcome") or payload.get("verdict")
-    verdict = outcome if outcome in ("SHIP", "HOLD") else "ERROR"
+    verdict = _payload_verdict(payload)
     tgt_raw = str(target)[:300]
     tgt = _norm_target(tgt_raw)
     now = int(time.time())
@@ -859,21 +944,21 @@ def record_verdict(target: str, payload: Dict[str, Any], source: str = "tool", *
         "target": tgt,
         "target_raw": tgt_raw,
         "kind": "url" if _is_url(tgt) else "file",
-        "verdict": verdict,
+        "verdict": verdict.value,
         "hold_reasons": [str(r)[:200] for r in (data.get("holdReasons") or [])][:10],
         "evidence_dir": payload.get("evidence_dir"),
         "source": source,
         "workspace": str(_agent_cwd().resolve()),
     }
-    if verdict == "ERROR" and payload.get("error"):
+    if verdict is AuditOutcome.ERROR and payload.get("error"):
         entry["error"] = str(payload.get("error"))[:200]
     if entry["kind"] == "file":
         current = _file_sha256(Path(tgt))
         digest = expected_sha or current
         if digest:
             entry["target_sha256"] = digest
-        if expected_sha and current != expected_sha and verdict == "SHIP":
-            entry["verdict"] = "ERROR"
+        if expected_sha and current != expected_sha and verdict is AuditOutcome.SHIP:
+            entry["verdict"] = next_outcome(verdict, AuditOutcome.ERROR).value
             entry["error"] = "artifact changed during the audit"
         if served is not None:
             entry["served"] = dict(list(served.items())[:SERVED_MAX])
@@ -1079,7 +1164,7 @@ def _gate_entries() -> List[Dict[str, Any]]:
     for e in ledger:
         if not (isinstance(e, dict) and isinstance(e.get("ts"), (int, float))):
             continue
-        if e.get("source") == "roll-audit" or e.get("verdict") not in ("SHIP", "HOLD"):
+        if e.get("source") == "roll-audit" or e.get("verdict") not in GATE_VERDICTS:
             continue
         if not _entry_signed(e, key):
             continue
@@ -1144,7 +1229,7 @@ def _entry_for_target(entries: List[Dict[str, Any]], target: str, workspace: str
     latest, why = _latest_for(entries, target, workspace)
     if latest is None:
         return False, why, None
-    if latest.get("verdict") != "SHIP":
+    if latest.get("verdict") != AuditOutcome.SHIP.value:
         return False, _hold_text(latest), None
     ok, why = _validate_ship(latest)
     return ok, why, latest if ok else None
@@ -1177,7 +1262,7 @@ def _workspace_ships(entries: List[Dict[str, Any]], workspace: str) -> Tuple[Lis
     ships: List[Dict[str, Any]] = []
     first_invalid = ""
     for t, e in latest.items():
-        if e.get("verdict") != "SHIP":
+        if e.get("verdict") != AuditOutcome.SHIP.value:
             if _is_url(t) or Path(t).exists():
                 return [], f"{_target_label(t)}: {_hold_text(e)}"
             continue  # HOLD on a page that no longer exists is moot
