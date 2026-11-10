@@ -9,7 +9,9 @@ import { tmpdir } from "node:os";
 import { dirname, extname, isAbsolute, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadCatalog } from "./catalog.mjs";
-import { createRunState, runnerProvenance } from "./run-state.mjs";
+import {
+  Blocked, countStatuses, createRunState, exitCodeFor, pathStatusFor, runnerProvenance,
+} from "./run-state.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const PACKAGE_BIN = resolve(ROOT, "bin/tastecheck.mjs");
@@ -21,7 +23,6 @@ const MIME = new Map([
   [".ico", "image/x-icon"], [".txt", "text/plain; charset=utf-8"],
 ]);
 
-class Blocked extends Error {}
 class CheckFailed extends Error {}
 const fail = (message) => { throw new CheckFailed(message); };
 const requireThat = (condition, message) => { if (!condition) fail(message); };
@@ -276,7 +277,7 @@ async function runPath(path, runtime, outputDir) {
     cli: (args, options) => childCommand(ctx, "node bin/tastecheck.mjs", process.execPath, [PACKAGE_BIN, ...args], options),
     profile: (args, options) => childCommand(ctx, "node bin/tastecheck.mjs profile", process.execPath, [PACKAGE_BIN, "profile", ...args], options),
   };
-  let status = "PASS";
+  let failure = null;
   const started = Date.now();
   try {
     requireThat(readdirSync(home).length === 0, `${path.id}: HOME must be empty before its operator path starts`);
@@ -569,10 +570,10 @@ async function runPath(path, runtime, outputDir) {
         fail(`no implementation for catalog operation ${path.operation}`);
     }
   } catch (error) {
-    if (error instanceof Blocked) status = "BLOCKED";
-    else status = "FAIL";
-    ctx.log(`${status}: ${error.stack || error.message}`);
+    failure = error;
   }
+  const status = pathStatusFor(failure);
+  if (failure) ctx.log(`${status}: ${failure.stack || failure.message}`);
   const elapsed = Date.now() - started;
   ctx.log(`${status} ${path.id} (${elapsed} ms)`);
   writeFileSync(join(outputDir, "transcripts", `${path.id}.log`), `${lines.join("\n")}\n`);
@@ -618,17 +619,13 @@ async function main() {
     node: process.version,
     browser: chrome?.version || null,
     total: results.length,
-    passed: results.filter((result) => result.status === "PASS").length,
-    failed: results.filter((result) => result.status === "FAIL").length,
-    blocked: results.filter((result) => result.status === "BLOCKED").length,
+    ...countStatuses(results),
     results,
   };
   writeFileSync(join(outputDir, "summary.json"), `${JSON.stringify(summary, null, 2)}\n`);
   console.log(`QA result: ${summary.passed}/${summary.total} PASS, ${summary.failed} FAIL, ${summary.blocked} BLOCKED`);
   console.log(`Transcripts and summary retained in: ${outputDir}`);
-  if (summary.failed) return 1;
-  if (summary.blocked) return 2;
-  return 0;
+  return exitCodeFor(summary);
 }
 
 main().then((code) => { process.exitCode = code; }).catch((error) => {

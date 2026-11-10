@@ -22,11 +22,11 @@ jobs:
       - name: Plugin tests (Python 3.11 and 3.14)
         run: |
           for py in python3.11 python3.14; do
-            $py -m pip install --quiet pytest fastapi pydantic
+            $py -m pip install --quiet pytest fastapi pydantic hypothesis
             $py -m pytest plugins/tastecheck-hermes/tests -q
           done
       - name: Desktop half clean-room harness (stubbed SDK/react)
-        run: node --import ./tests/register.mjs --test tests/harness.test.mjs
+        run: node --import ./tests/register.mjs --test tests/harness.test.mjs tests/column-gate.test.mjs
         working-directory: plugins/tastecheck-hermes/desktop
   structural:
     runs-on: ubuntu-latest
