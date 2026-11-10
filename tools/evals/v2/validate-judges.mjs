@@ -4,9 +4,9 @@
 // Task 6 synthesis-open authority.
 
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import Ajv from "ajv";
 import { canonicalJson, sha256 } from "./lib/canonical-json.mjs";
 
@@ -401,6 +401,6 @@ function runCli(args) {
   return result.valid ? 0 : 1;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   process.exit(runCli(process.argv.slice(2)));
 }

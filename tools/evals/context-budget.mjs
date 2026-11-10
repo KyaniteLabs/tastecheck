@@ -13,7 +13,7 @@
  *
  * Token estimation: 1 token ≈ 4 bytes (rough heuristic, no tokenizer dependency)
  */
-import { readFileSync, readdirSync, statSync, mkdirSync, writeFileSync } from "node:fs";
+import { readFileSync, readdirSync, statSync, mkdirSync, writeFileSync, realpathSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { computeSourceTreeSha256 } from "../release/engineering-receipt.mjs";
@@ -104,7 +104,7 @@ export function buildContextBudgetReport(repoRoot = root) {
   return { report, findings };
 }
 
-if (fileURLToPath(import.meta.url) === process.argv[1]) {
+if (realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   const { report, findings } = buildContextBudgetReport(root);
   const receiptsDir = join(root, "evals/receipts/v1");
   mkdirSync(receiptsDir, { recursive: true });

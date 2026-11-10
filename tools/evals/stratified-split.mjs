@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { fileURLToPath } from "node:url";
 /**
  * stratified-split — deterministic train/held-out split for verdict corpora,
  * keyed on class presence (round-2 cure for the blind-gate no-win class:
@@ -22,7 +23,7 @@
  * Only id + class are read here; the gate reads the rest.
  */
 import { createHash } from "node:crypto";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, realpathSync } from "node:fs";
 
 function parseArgs(argv) {
   const args = { ratio: 0.4, seed: "round-2", out: null, corpus: null };
@@ -154,4 +155,4 @@ export function main() {
   process.stdout.write(json + "\n");
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) main();
+if (realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) main();

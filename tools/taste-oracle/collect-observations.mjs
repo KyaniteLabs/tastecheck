@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { realpathSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -84,6 +85,6 @@ function main() {
   console.log(`${canonicalJson(receipt)}\n`);
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   try { main(); } catch (error) { console.error(`taste-oracle observation collection failed: ${error.message}`); process.exitCode = 1; }
 }

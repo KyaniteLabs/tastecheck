@@ -10,7 +10,7 @@
  * status and immutable parent relationship.
  */
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync, realpathSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -459,7 +459,7 @@ export function validateModelResult(root = ROOT, result) {
 }
 
 function usage() { console.error("Usage: node tools/evals/remediation7-replay.mjs package [--revision ID] [--namespace PATH] | validate [--namespace PATH]"); }
-if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))) {
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   const command = process.argv[2];
   const revisionIndex = process.argv.indexOf("--revision");
   const namespaceIndex = process.argv.indexOf("--namespace");

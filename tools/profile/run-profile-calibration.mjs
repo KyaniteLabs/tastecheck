@@ -15,7 +15,7 @@
  */
 import { dirname, isAbsolute, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync, realpathSync } from "node:fs";
 import { loadCorpus } from "./calibration-corpus.mjs";
 import { calibrateWeights, CALIBRATION_PARAMS } from "./calibrate-profile.mjs";
 import { runBlindGate } from "./blind-gate.mjs";
@@ -95,4 +95,4 @@ function main() {
   if (receipt.outputs) console.log(`receipt: ${receipt.outputs.receipt}\nprofile: ${receipt.outputs.profile}`);
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) main();
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) main();

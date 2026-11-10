@@ -8,9 +8,7 @@
  * result corpus before any private unmasking or synthesis is allowed.
  */
 import { createHash } from "node:crypto";
-import {
-  existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync,
-} from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, realpathSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { evaluateDiversity } from "./evaluators/diversity.mjs";
@@ -478,7 +476,7 @@ function usage() {
   console.error("Usage: node tools/evals/w1r1-blind-judge.mjs build | validate | synthesize | aggregate");
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))) {
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   const command = process.argv[2];
   try {
     if (command === "build") {

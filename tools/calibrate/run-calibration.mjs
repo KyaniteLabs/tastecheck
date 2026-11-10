@@ -15,7 +15,7 @@
  *   standing misses carried in the rate on purpose — the floor is documented,
  *   not hidden — and are listed separately in every report.
  */
-import { readFileSync, readdirSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync, existsSync, realpathSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { evaluateReleaseGate, hashReview, hashSubjectInventory } from "../../skills/tastecheck-pass/assets/release-gate.mjs";
@@ -340,4 +340,4 @@ function main() {
   }
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) main();
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) main();

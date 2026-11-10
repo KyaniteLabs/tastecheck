@@ -6,13 +6,7 @@
  * a blinded paired-judge scaffold without running judges.
  */
 import { createHash } from "node:crypto";
-import {
-  existsSync,
-  mkdirSync,
-  readdirSync,
-  readFileSync,
-  writeFileSync,
-} from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, realpathSync } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -1140,7 +1134,7 @@ function usage() {
   console.error("Usage: node tools/evals/remediation7-audit.mjs audit [--namespace PATH]");
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))) {
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   const command = process.argv[2];
   const namespaceIndex = process.argv.indexOf("--namespace");
   const namespace = namespaceIndex >= 0 ? process.argv[namespaceIndex + 1] : DEFAULT_NAMESPACE;

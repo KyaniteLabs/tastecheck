@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { realpathSync } from "node:fs";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
@@ -296,4 +297,4 @@ function main() {
   if (errors.length) { console.error(JSON.stringify({ valid: false, errors }, null, 2)); process.exitCode = 1; return; }
   console.log(JSON.stringify({ valid: true, status: resultPaths.length ? "quorum_valid" : "pending", release_evidence: false }, null, 2));
 }
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) { try { main(); } catch (error) { console.error(`taste-oracle judge validation failed: ${error.message}`); process.exitCode = 1; } }
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) { try { main(); } catch (error) { console.error(`taste-oracle judge validation failed: ${error.message}`); process.exitCode = 1; } }

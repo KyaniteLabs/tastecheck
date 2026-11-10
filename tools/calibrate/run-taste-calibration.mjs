@@ -16,7 +16,7 @@
  * No browser -> prints "skipped: no browser" and exits 0 (exit 1 with --check and CI=true).
  * Effectiveness remains BLOCKED; this measures surface-tell detection only.
  */
-import { readFileSync, readdirSync, writeFileSync, existsSync, mkdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync, existsSync, mkdirSync, statSync, realpathSync } from "node:fs";
 import { createServer } from "node:http";
 import { join, extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -228,4 +228,4 @@ async function main() {
   if (report.overall.errors) process.exit(1);
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().catch((e) => { console.error(e); process.exit(1); });
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) main().catch((e) => { console.error(e); process.exit(1); });

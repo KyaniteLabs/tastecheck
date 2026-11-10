@@ -1,7 +1,8 @@
 #!/usr/bin/env node
+import { fileURLToPath } from "node:url";
 /** Deterministic release checks. Static checks never claim model/browser execution. */
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync, realpathSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
 import { join } from "node:path";
@@ -364,4 +365,4 @@ function main() {
   console.log(`release check passed (${mode})${successDetail}`);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) main();
+if (realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) main();

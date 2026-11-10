@@ -344,7 +344,7 @@ if (command === "package") {
       if (command === "collect") for (const path of checked.written) console.log(path);
     }
   }
-} else if (import.meta.url === `file://${process.argv[1]}`) {
+} else if (realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   usage();
   process.exitCode = 1;
 }
