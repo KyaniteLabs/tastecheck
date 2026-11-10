@@ -802,3 +802,31 @@ test('cancelled grant → polite notify, no pane, no read', async () => {
   assert.ok(globalThis.__tc.notifies.some((n) => /grant/i.test(n)))
   assert.ok(!ctx._store.comparisons)
 })
+
+test('restored columns show "not audited this session"; a stray stored verdict never stamps SHIP', async () => {
+  const root = fixtureProject()
+  freshGlobals({ cwd: root })
+  /* Session 1: one real, gated roll — storage keeps { seed, roll } only. */
+  const first = makeCtx(makeFiles(root), {}, restQueue(okShip))
+  ;(await importFresh()).default.register(first)
+  await click(first.registered.find((c) => c.id === 'taste-roll').render())
+  const stored = JSON.parse(JSON.stringify(first._store.comparisons))
+  const key = `roll:${root}`
+  assert.deepEqual(Object.keys(stored[key].columns[0]).sort(), ['roll', 'seed'], 'no gate is persisted')
+
+  for (const stray of [{}, { verdict: 'SHIP' }, { gate: 'SHIP', reasons: [] }, { verdict: 'SHIP', restored: false }]) {
+    freshGlobals({ cwd: root })
+    const seeded = JSON.parse(JSON.stringify(stored))
+    Object.assign(seeded[key].columns[0], stray)
+    /* Session 2: the stored column comes back; the new click is HOLD. */
+    const ctx = makeCtx(makeFiles(root), { comparisons: seeded }, restQueue(okHold))
+    ;(await importFresh()).default.register(ctx)
+    await click(ctx.registered.find((c) => c.id === 'taste-roll').render())
+    const cols = paneColumns(globalThis.__tc.workspaces.at(-1).options.render())
+    assert.equal(cols.length, 3, 'original + restored + new')
+    const restored = allText(cols[1].children[0]).join(' ')
+    assert.match(restored, /not audited this session/, `restored column with ${JSON.stringify(stray)}`)
+    assert.doesNotMatch(restored, /SHIP|gate passed/, `stored ${JSON.stringify(stray)} must not stamp SHIP`)
+    assert.match(allText(cols[2].children[0]).join(' '), /HOLD/)
+  }
+})

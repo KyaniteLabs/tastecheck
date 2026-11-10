@@ -7,7 +7,9 @@ import { join, resolve, sep } from "node:path";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadCatalog } from "./catalog.mjs";
-import { createRunState, runnerProvenance } from "./run-state.mjs";
+import {
+  Blocked, PATH_STATUS, countStatuses, createRunState, exitCodeFor, pathStatusFor, runnerProvenance,
+} from "./run-state.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const catalog = loadCatalog();
@@ -40,4 +42,21 @@ try {
   rmSync(neighbor, { recursive: true, force: true });
 }
 
-console.log("QA runner provenance and isolated-state tests passed");
+// Operator-path status machine: exhaustive over PATH_STATUS.
+assert.deepEqual(Object.keys(PATH_STATUS).sort(), ["BLOCKED", "FAIL", "PASS"], "a new status needs a row in this table");
+for (const [name, value] of Object.entries(PATH_STATUS)) assert.equal(name, value, "stored strings equal the state names");
+assert.equal(pathStatusFor(null), PATH_STATUS.PASS);
+assert.equal(pathStatusFor(undefined), PATH_STATUS.PASS);
+assert.equal(pathStatusFor(new Blocked("no chrome")), PATH_STATUS.BLOCKED);
+assert.equal(pathStatusFor(new Error("boom")), PATH_STATUS.FAIL);
+assert.equal(pathStatusFor("thrown string"), PATH_STATUS.FAIL, "a non-Error throw still fails");
+const every = Object.values(PATH_STATUS).map((status) => ({ status }));
+assert.deepEqual(countStatuses(every), { passed: 1, failed: 1, blocked: 1 }, "every status is counted exactly once");
+assert.deepEqual(Object.keys(countStatuses([])), ["passed", "failed", "blocked"], "summary.json key order is unchanged");
+assert.throws(() => countStatuses([{ status: "pass" }]), /unknown operator-path status/);
+assert.throws(() => countStatuses([{}]), /unknown operator-path status/);
+assert.equal(exitCodeFor({ passed: 3, failed: 0, blocked: 0 }), 0);
+assert.equal(exitCodeFor({ passed: 0, failed: 0, blocked: 1 }), 2);
+assert.equal(exitCodeFor({ passed: 0, failed: 1, blocked: 1 }), 1, "FAIL outranks BLOCKED");
+
+console.log("QA runner provenance, isolated-state and status-machine tests passed");

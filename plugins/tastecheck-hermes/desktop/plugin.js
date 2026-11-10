@@ -369,10 +369,59 @@ function buildRolledHtml(html, roll, seed) {
   return out
 }
 
+/* ---- column gate lifecycle -------------------------------------------------
+ * The ONLY place a column's gate states are named. Session state only: storage
+ * keeps { seed, roll } per column, never a gate, so a column read back from
+ * storage has no gate until materialize() marks it RESTORED.
+ *
+ *   newColumn ──▶ PENDING ──stampGate(SHIP)──▶ SHIP
+ *                         └─stampGate(HOLD)──▶ HOLD
+ *   (from storage, no gate) ──markRestored──▶ RESTORED
+ *
+ * SHIP, HOLD and RESTORED are terminal: a stamped column is never re-stamped
+ * and a restored column is never audited (a new click rolls a new column). */
+const GATE = Object.freeze({ PENDING: 'PENDING', SHIP: 'SHIP', HOLD: 'HOLD', RESTORED: 'RESTORED' })
+const GATE_MOVES = Object.freeze({
+  [GATE.PENDING]: Object.freeze([GATE.SHIP, GATE.HOLD]),
+  [GATE.SHIP]: Object.freeze([]),
+  [GATE.HOLD]: Object.freeze([]),
+  [GATE.RESTORED]: Object.freeze([])
+})
+
+function gateOf(col) {
+  return col && Object.prototype.hasOwnProperty.call(GATE_MOVES, col.gate) ? col.gate : null
+}
+
+function moveGate(col, to) {
+  const from = gateOf(col)
+  if (from === null || !GATE_MOVES[from].includes(to)) {
+    throw new Error(`Taste Roll column gate cannot move ${from || '(none)'} -> ${to}`)
+  }
+  col.gate = to
+}
+
+function newColumn(seed, roll, srcdoc) {
+  return { seed, roll, srcdoc, gate: GATE.PENDING, reasons: [] }
+}
+
+/** PENDING -> SHIP | HOLD, with the reasons shown under the stamp. */
+function stampGate(col, to, reasons) {
+  if (to !== GATE.SHIP && to !== GATE.HOLD) throw new Error(`not a gate stamp: ${to}`)
+  moveGate(col, to)
+  col.reasons = Array.isArray(reasons) ? reasons : []
+}
+
+/** A column read back from storage (no gate yet) -> RESTORED. */
+function markRestored(col) {
+  if (gateOf(col) !== null) throw new Error(`Taste Roll column gate cannot move ${col.gate} -> ${GATE.RESTORED}`)
+  col.gate = GATE.RESTORED
+  col.reasons = []
+}
+
 /* ---- module state --------------------------------------------------------- */
 let pluginCtx = null
 /* comparison = { cwd, file, filePath, why,
- *                columns: [{ seed, roll, srcdoc, verdict, reasons, error }],
+ *                columns: [{ seed, roll, srcdoc, gate, reasons }],
  *                noHtml: { message } | undefined } */
 let comparison = null
 let inFlight = false
@@ -384,8 +433,11 @@ function loadComparison(cwd) {
   const all = pluginCtx.storage.get('comparisons', {})
   const saved = all[storageKey(cwd)]
   if (!saved || !Array.isArray(saved.columns) || !saved.columns.length) return null
-  comparison = saved
-  return saved
+  /* Storage holds { seed, roll } per column and never a gate; read only those
+   * so nothing stored (a stray verdict/gate field) can stamp a column that was
+   * not audited this session. materialize() marks these columns RESTORED. */
+  comparison = { ...saved, columns: saved.columns.map((c) => ({ seed: c && c.seed, roll: c && c.roll })) }
+  return comparison
 }
 
 function persistComparison() {
@@ -576,43 +628,42 @@ async function grantFor(cwd) {
  * verdict comes back bound to evidence. Fail closed: missing REST, busy gate,
  * transport error or a malformed response all stamp a visible HOLD. */
 async function auditColumn(col, fileLabel) {
-  col.verdict = null
-  col.reasons = []
-  col.error = null
+  if (gateOf(col) !== GATE.PENDING) throw new Error(`auditColumn needs a PENDING column, got ${gateOf(col)}`)
   openPane() /* show the pending state immediately */
   const rest = pluginCtx && typeof pluginCtx.rest === 'function' ? pluginCtx.rest.bind(pluginCtx) : null
   if (!rest) {
-    col.verdict = 'HOLD'
-    col.reasons = ['gate unavailable: plugin REST missing (install/enable the tastecheck-hermes agent half)']
+    stampGate(col, GATE.HOLD, ['gate unavailable: plugin REST missing (install/enable the tastecheck-hermes agent half)'])
     openPane()
     return
   }
+  let stamp
   try {
     const res = await rest('/roll-audit', {
       method: 'POST',
       body: { html: col.srcdoc, label: `s${col.seed} ${col.roll.ref}/${col.roll.vibe}/${col.roll.mode}/${col.roll.sig} — ${fileLabel}` },
       timeoutMs: 300000
     })
-    const verdict = res && typeof res === 'object' ? String(res.verdict || '') : ''
-    if (verdict === 'SHIP' && res.ok === true) {
-      col.verdict = 'SHIP'
-      col.reasons = Array.isArray(res.hold_reasons) ? res.hold_reasons : []
-      col.evidenceDir = res.evidence_dir || null
-    } else if (verdict === 'HOLD') {
-      col.verdict = 'HOLD'
-      col.reasons = Array.isArray(res.hold_reasons) && res.hold_reasons.length
-        ? res.hold_reasons
-        : [String((res && res.error) || 'audit did not produce evidence')]
-      col.evidenceDir = (res && res.evidence_dir) || null
-    } else {
-      col.verdict = 'HOLD'
-      col.reasons = ['gate returned no valid verdict (fail closed)']
-    }
+    stamp = gateStampFor(res)
   } catch (err) {
-    col.verdict = 'HOLD'
-    col.reasons = [`gate unreachable: ${(err && err.message) || err}`]
+    stamp = [GATE.HOLD, [`gate unreachable: ${(err && err.message) || err}`]]
   }
+  stampGate(col, stamp[0], stamp[1])
   openPane() /* re-render with the stamp; the column stays visible either way */
+}
+
+/** Map one /roll-audit response to [stamp, reasons]. Fail closed: only an
+ *  explicit SHIP with ok === true is SHIP; anything else is a HOLD. */
+function gateStampFor(res) {
+  const verdict = res && typeof res === 'object' ? String(res.verdict || '') : ''
+  if (verdict === GATE.SHIP && res.ok === true) {
+    return [GATE.SHIP, Array.isArray(res.hold_reasons) ? res.hold_reasons : []]
+  }
+  if (verdict === GATE.HOLD) {
+    return [GATE.HOLD, Array.isArray(res.hold_reasons) && res.hold_reasons.length
+      ? res.hold_reasons
+      : [String((res && res.error) || 'audit did not produce evidence')]]
+  }
+  return [GATE.HOLD, ['gate returned no valid verdict (fail closed)']]
 }
 
 async function runRoll() {
@@ -687,7 +738,7 @@ async function runRoll() {
       current.candidates = undefined
     }
     current.originalHtml = html
-    const col = { seed, roll, srcdoc: buildRolledHtml(html, roll, seed), verdict: null, reasons: [], error: null }
+    const col = newColumn(seed, roll, buildRolledHtml(html, roll, seed))
     current.columns.push(col)
     comparison = current
     try {
@@ -777,18 +828,24 @@ function ColumnHeader(props) {
       h('span', null, `Roll ${index + 1} · s${col.seed}`),
       h('span', { style: { opacity: .8 } }, `${col.roll.ref} · ${col.roll.vibe} · ${col.roll.mode} · ${col.roll.sig}`))
   ]
-  if (col.verdict === 'SHIP') {
+  const gate = gateOf(col)
+  if (gate === GATE.SHIP) {
     kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
       h('span', { style: STAMP_STYLE.SHIP }, 'SHIP'),
       h('span', { style: { opacity: .7, fontSize: '.7rem' } }, 'gate passed')))
-  } else if (col.verdict === 'HOLD') {
+  } else if (gate === GATE.HOLD) {
     kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'baseline', marginTop: '.15rem', flexWrap: 'wrap' } },
       h('span', { style: STAMP_STYLE.HOLD }, 'HOLD'),
       h('span', { style: { opacity: .8, fontSize: '.7rem' } }, (col.reasons || []).slice(0, 2).join(' · ') || 'held')))
-  } else {
+  } else if (gate === GATE.RESTORED) {
     kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
-      h('span', { style: STAMP_STYLE.PENDING }, col.restored ? 'GATE —' : 'GATE…'),
-      h('span', { style: { opacity: .7, fontSize: '.7rem' } }, col.restored ? 'not audited this session (click Taste Roll to re-roll + gate)' : 'auditing this column')))
+      h('span', { style: STAMP_STYLE.PENDING }, 'GATE —'),
+      h('span', { style: { opacity: .7, fontSize: '.7rem' } }, 'not audited this session (click Taste Roll to re-roll + gate)')))
+  } else {
+    /* PENDING — and, fail closed, any unknown gate value: never a SHIP stamp. */
+    kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
+      h('span', { style: STAMP_STYLE.PENDING }, 'GATE…'),
+      h('span', { style: { opacity: .7, fontSize: '.7rem' } }, 'auditing this column')))
   }
   return h('div', { style: { padding: '.45rem .7rem', fontSize: '.78rem', fontWeight: 600, borderBottom: '1px solid var(--line, #ddd)' } }, kids)
 }
@@ -877,7 +934,7 @@ function materialize(cur) {
       col.srcdoc = buildRolledHtml(cur.originalHtml, col.roll, col.seed)
       /* Restored from persistence without this-session verdicts: show an
        * honest "not audited this session" state, not a fake pending/SHIP. */
-      if (!col.verdict) col.restored = true
+      if (gateOf(col) === null) markRestored(col)
     }
   })
 }
@@ -896,6 +953,9 @@ function openPane() {
 }
 
 /* ---- registration --------------------------------------------------------- */
+
+/* Test seam for the column gate machine (the host only reads the default export). */
+export const __columnGate = Object.freeze({ GATE, GATE_MOVES, gateOf, newColumn, stampGate, markRestored, gateStampFor })
 
 export default {
   /* MUST equal the package folder name (`plugins/tastecheck-hermes/`): the

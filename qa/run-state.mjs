@@ -53,3 +53,39 @@ export function createRunState(repositoryRoot) {
     },
   };
 }
+
+/* Operator-path result lifecycle — the ONLY place these states are named.
+ *
+ *   (running) ──no error──────▶ PASS
+ *             ──Blocked error──▶ BLOCKED   (a prerequisite is missing, e.g. no browser)
+ *             ──any other error▶ FAIL
+ *
+ * All three are terminal; summary.json stores these exact strings. The run's exit
+ * code is 1 if any path FAILED, else 2 if any was BLOCKED, else 0. */
+export const PATH_STATUS = Object.freeze({ PASS: "PASS", FAIL: "FAIL", BLOCKED: "BLOCKED" });
+
+export class Blocked extends Error {}
+
+/** The single transition out of "running": no error is PASS. */
+export function pathStatusFor(error) {
+  if (error === undefined || error === null) return PATH_STATUS.PASS;
+  return error instanceof Blocked ? PATH_STATUS.BLOCKED : PATH_STATUS.FAIL;
+}
+
+/** Count results per status; an unknown status is an illegal state and throws. */
+export function countStatuses(results) {
+  const counts = { passed: 0, failed: 0, blocked: 0 };
+  const key = { [PATH_STATUS.PASS]: "passed", [PATH_STATUS.FAIL]: "failed", [PATH_STATUS.BLOCKED]: "blocked" };
+  for (const result of results) {
+    const field = key[result?.status];
+    if (!field) throw new Error(`unknown operator-path status: ${JSON.stringify(result?.status)}`);
+    counts[field] += 1;
+  }
+  return counts;
+}
+
+export function exitCodeFor(counts) {
+  if (counts.failed) return 1;
+  if (counts.blocked) return 2;
+  return 0;
+}
