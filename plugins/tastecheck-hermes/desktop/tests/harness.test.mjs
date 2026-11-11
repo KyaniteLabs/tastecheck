@@ -104,6 +104,9 @@ function restQueue(...responses) {
   const queue = [...responses]
   const calls = []
   const fn = async (path, opts) => {
+    /* The gateway file seam is not part of the audit queue: this stand-in is
+     * an agent half without it, so the local grant flow runs as before. */
+    if (path.startsWith('/files/')) return { ok: false, error: 'unavailable', message: 'no gateway files' }
     calls.push({ path, opts })
     const r = queue.shift()
     if (r instanceof Error) throw r
@@ -787,6 +790,37 @@ test('folder grant is requested when cwd is not covered', async () => {
   await click(btn)
   assert.equal(asked, 1, 'picker shown once')
   assert.ok(globalThis.__tc.workspaces.length >= 1)
+})
+
+test('remote gateway: a workspace no local grant covers is read through the agent half, no picker', async () => {
+  const root = fixtureProject()
+  freshGlobals({ cwd: root })
+  const mod = await importFresh()
+  let asked = 0
+  const files = makeFiles(root, { folders: [], requestFolder: async () => { asked += 1; return { ok: true, folder: null } } })
+  const local = makeFiles(root)
+  const seen = []
+  const audits = restQueue(okShip)
+  const rest = async (path, opts) => {
+    if (!path.startsWith('/files/')) return audits(path, opts)
+    seen.push([path, opts.body.path])
+    assert.equal(opts.method, 'POST')
+    assert.equal(opts.body.cwd, root, 'every file call is scoped to the session cwd')
+    const op = path.slice('/files/'.length)
+    if (op === 'root') return { ok: true, path: root }
+    if (op === 'list') return local.list('f1', opts.body.path)
+    if (op === 'stat') return local.stat('f1', opts.body.path)
+    if (op === 'read') return local.readText('f1', opts.body.path)
+    return { ok: false, error: 'bad-op', message: op }
+  }
+  const ctx = makeCtx(files, {}, rest)
+  mod.default.register(ctx)
+  await click(ctx.registered.find((c) => c.id === 'taste-roll').render())
+  assert.equal(asked, 0, 'no local folder picker for a remote workspace')
+  assert.ok(seen.some(([p, rel]) => p === '/files/read' && rel === 'app.html'), JSON.stringify(seen))
+  assert.equal(globalThis.__tc.errors.length, 0, globalThis.__tc.errors.join(' | '))
+  assert.equal(paneColumns(globalThis.__tc.workspaces.at(-1).options.render()).length, 2, 'original + one roll')
+  assert.equal(audits.calls.length, 1, 'the rolled column still goes to the gate')
 })
 
 test('cancelled grant → polite notify, no pane, no read', async () => {
