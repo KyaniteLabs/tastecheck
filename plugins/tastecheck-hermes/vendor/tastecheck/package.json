@@ -53,6 +53,7 @@
     "test:package": "node tools/test/test-package-contents.mjs",
     "test:qa-catalog": "node qa/test-catalog.mjs && node qa/test-runner.mjs",
     "test:cdp-qa": "node tools/test/test-cdp-qa.mjs",
+    "test:request-guard": "node tools/test/test-request-guard.mjs",
     "test:profile": "node tools/test/test-profile.mjs",
     "test:dogfood": "node tools/test/test-landing-dogfood.mjs",
     "verify:skills": "node tools/verify.mjs",

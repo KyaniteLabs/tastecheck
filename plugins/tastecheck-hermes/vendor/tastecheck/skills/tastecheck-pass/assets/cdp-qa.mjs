@@ -11,6 +11,10 @@
             --no-link-fetch: do not GET same-origin <a href> targets (up to 25) to check
             them; they are counted as not fetched. Use it when following links could
             trigger side effects (logout, delete, one-time tokens) on the audited origin.
+   Network: requests from the audited page to loopback, link-local and private-network hosts
+            are FAILED (CDP Fetch), except the origin being served; they show up in the
+            resources probe as net::ERR_ACCESS_DENIED. A hostname that only DNS-resolves
+            to a private address is not caught.
    Dialogs: alert/confirm/prompt/beforeunload are DISMISSED (confirm/prompt answer cancel).
    Sandbox: Chrome's sandbox is disabled (--no-sandbox) only when running as root or with
             CI set, because Chrome refuses to start sandboxed there; evidence.json records it.
@@ -34,6 +38,7 @@ import { tmpdir, homedir } from "node:os";
 import { join, delimiter, resolve, isAbsolute } from "node:path";
 import { pathToFileURL, fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
+import { isBlockedRequest } from "./request-guard.mjs";
 
 const TOOL_VERSION = "2.0.0";
 const TIMEOUT_MS = Number(process.env.TASTECHECK_TIMEOUT_MS) || 90_000;
@@ -640,6 +645,17 @@ async function main() {
     const viewport = (w, h, dsf = 1) => send("Emulation.setDeviceMetricsOverride", { width: w, height: h, deviceScaleFactor: dsf, mobile: false });
 
     await Promise.all(["Page.enable", "Runtime.enable", "Network.enable", "Log.enable"].map((m) => send(m)));
+    /* The audited page is untrusted: fail any request to loopback, link-local or private
+       addresses, except the single origin being served (see request-guard.mjs). Redirect
+       hops are paused and judged again. Enabled before navigation so nothing slips past. */
+    const servedOrigin = /^https?:/i.test(url) ? new URL(url).origin : null;
+    on("Fetch.requestPaused", (p) => {
+      const act = isBlockedRequest(p.request.url, servedOrigin)
+        ? send("Fetch.failRequest", { requestId: p.requestId, errorReason: "AccessDenied" })
+        : send("Fetch.continueRequest", { requestId: p.requestId });
+      act.catch(() => {}); // request already gone (navigated away, aborted)
+    });
+    await send("Fetch.enable", { patterns: [{ urlPattern: "*" }] });
     await send("Emulation.setFocusEmulationEnabled", { enabled: true }).catch(() => {});
     await setMedia("light", "no-preference");
     await viewport(1440, 900);

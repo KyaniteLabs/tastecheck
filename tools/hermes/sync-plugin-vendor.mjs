@@ -26,6 +26,7 @@ export const FILES = [
   "tools/lib/main-entry.mjs",
   "package.json",
   "skills/tastecheck-pass/assets/cdp-qa.mjs",
+  "skills/tastecheck-pass/assets/request-guard.mjs",
   "skills/tastecheck-pass/assets/gate-audit.js",
   "LICENSE",
 ];

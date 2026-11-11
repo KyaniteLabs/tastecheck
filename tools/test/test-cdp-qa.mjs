@@ -102,6 +102,40 @@ check(parsed && parsed.probes && parsed.verdict, "--json prints evidence JSON to
 const missing = spawnSync(process.execPath, [script, join(root, "no-such-file.html")], { encoding: "utf8" });
 check(missing.status === 2, "missing target is a tool error (exit 2)");
 
+// F29: the audited page is untrusted. A page served from one loopback origin must not
+// be able to reach a second loopback service (here a "secret" server on another port),
+// while its own origin keeps working.
+{
+  const { createServer } = await import("node:http");
+  const { spawn } = await import("node:child_process");
+  const secretHits = [];
+  const secret = createServer((req, res) => { secretHits.push(req.url); res.writeHead(200, { "access-control-allow-origin": "*" }); res.end("secret"); });
+  await new Promise((r) => secret.listen(0, "127.0.0.1", r));
+  const secretPort = secret.address().port;
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>ssrf</title></head><body><main><h1>Hello</h1>
+<script>fetch("http://127.0.0.1:${secretPort}/steal").catch(()=>{}); new Image().src="http://localhost:${secretPort}/img.png";
+fetch("/own").then(r=>r.text()).then(t=>{document.body.dataset.own=t});</script></main></body></html>`;
+  const ownHits = [];
+  const site = createServer((req, res) => {
+    ownHits.push(req.url);
+    if (req.url === "/own") { res.writeHead(200, { "content-type": "text/plain" }); res.end("own-ok"); return; }
+    res.writeHead(200, { "content-type": "text/html" }); res.end(html);
+  });
+  await new Promise((r) => site.listen(0, "127.0.0.1", r));
+  const out = mkdtempSync(join(tmpdir(), "cdp-qa-ssrf-"));
+  outs.push(out);
+  const child = spawn(process.execPath, [script, `http://127.0.0.1:${site.address().port}/`, out, "--no-profile", "--no-link-fetch"], { stdio: ["ignore", "pipe", "pipe"] });
+  let stderr = ""; child.stderr.on("data", (d) => { stderr += d; });
+  const code = await new Promise((r) => child.on("close", r));
+  site.close(); secret.close();
+  const evPath = join(out, "evidence.json");
+  const ev = existsSync(evPath) ? JSON.parse(readFileSync(evPath, "utf8")) : null;
+  check(ev !== null, `loopback-ssrf fixture ran to evidence (exit ${code}) ${stderr.slice(0, 160)}`);
+  check(secretHits.length === 0, `page cannot reach another loopback service (secret server saw ${JSON.stringify(secretHits)})`);
+  check(ownHits.includes("/own"), "the served origin itself still works");
+  check(ev && ev.probes.resources.status === "fail" && /ERR_ACCESS_DENIED/.test(ev.probes.resources.evidence), `blocked request is reported (${ev && String(ev.probes.resources.evidence).slice(0, 120)})`);
+}
+
 for (const o of outs) rmSync(o, { recursive: true, force: true });
 if (failed) { console.error(`${failed} check(s) failed`); process.exit(1); }
 console.log("cdp-qa tests passed");
