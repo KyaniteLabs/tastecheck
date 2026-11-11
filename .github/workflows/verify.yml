@@ -103,6 +103,7 @@ jobs:
       - run: npm run preflight:browser
       - run: npm run test:oracle
       - run: npm run test:request-guard
+      - run: npm run test:egress-proxy
       - run: npm run test:cdp-qa
       - run: npm run test:profile
       - run: npm run calibrate:taste:check

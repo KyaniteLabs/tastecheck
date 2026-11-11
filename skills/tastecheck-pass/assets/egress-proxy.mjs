@@ -10,19 +10,25 @@ import { connect as netConnect } from "node:net";
 import { lookup } from "node:dns/promises";
 import { isBlockedRequest } from "./request-guard.mjs";
 
-async function refused(host, port, scheme) {
+/* Resolve once, vet every address, and return the IP to dial (null = refuse). Dialling the
+   vetted IP, never the hostname, closes DNS rebinding and a connect that would fall through
+   to a second, private A record. */
+async function vetted(host, port, scheme, resolve) {
   const bare = host.replace(/^\[|\]$/g, "");
-  if (isBlockedRequest(`${scheme}://${bare.includes(":") ? `[${bare}]` : bare}:${port}/`, null)) return true;
+  const url = (a) => `${scheme}://${a.includes(":") ? `[${a}]` : a}:${port}/`;
+  if (isBlockedRequest(url(bare), null)) return null;
   try {
-    const { address } = await lookup(bare);
-    return isBlockedRequest(`${scheme}://${address.includes(":") ? `[${address}]` : address}:${port}/`, null);
-  } catch { return true; } // cannot resolve: nothing to forward to
+    const all = await resolve(bare);
+    if (!all.length || all.some(({ address }) => isBlockedRequest(url(address), null))) return null;
+    return all[0].address;
+  } catch { return null; } // cannot resolve: nothing to forward to
 }
 
 const parseHostPort = (s, dflt) => { const m = /^(\[[^\]]+\]|[^:]+)(?::(\d+))?$/.exec(s); return m ? [m[1], Number(m[2] || dflt)] : [null, 0]; };
 
-/** Start the proxy on 127.0.0.1:<random>. Resolves { port, blocked, close }. */
-export async function startEgressProxy() {
+/** Start the proxy on 127.0.0.1:<random>. Resolves { port, blocked, close }.
+    resolve and connect are injectable for offline tests. */
+export async function startEgressProxy({ resolve = (h) => lookup(h, { all: true }), connect = netConnect } = {}) {
   const blocked = [];
   const sockets = new Set();
   const server = createServer();
@@ -33,9 +39,10 @@ export async function startEgressProxy() {
   const forward = async (req, res, isUpgrade, clientSocket, head) => {
     let u; try { u = new URL(req.url); } catch { return isUpgrade ? clientSocket.destroy() : deny(res, req.url); }
     const port = Number(u.port || 80);
-    if (await refused(u.hostname, port, "http")) { blocked.push(req.url); return isUpgrade ? clientSocket.destroy() : deny(res, req.url); }
+    const ip = await vetted(u.hostname, port, "http", resolve);
+    if (!ip) { blocked.push(req.url); return isUpgrade ? clientSocket.destroy() : deny(res, req.url); }
     const headers = { ...req.headers }; delete headers["proxy-connection"];
-    const up = httpRequest({ host: u.hostname.replace(/^\[|\]$/g, ""), port, method: req.method, path: u.pathname + u.search, headers });
+    const up = httpRequest({ host: ip, port, method: req.method, path: u.pathname + u.search, headers });
     if (isUpgrade) {
       up.on("upgrade", (ur, us, uh) => {
         clientSocket.write(`HTTP/1.1 101 Switching Protocols\r\n${Object.entries(ur.headers).map(([k, v]) => `${k}: ${v}`).join("\r\n")}\r\n\r\n`);
@@ -57,8 +64,9 @@ export async function startEgressProxy() {
   server.on("connect", async (req, clientSocket, head) => {
     const [host, port] = parseHostPort(req.url, 443);
     clientSocket.on("error", () => {});
-    if (!host || await refused(host, port, "https").catch(() => true)) { blocked.push(`CONNECT ${req.url}`); clientSocket.end("HTTP/1.1 403 Forbidden\r\n\r\n"); return; }
-    const up = netConnect(port, host.replace(/^\[|\]$/g, ""), () => { clientSocket.write("HTTP/1.1 200 Connection Established\r\n\r\n"); if (head.length) up.write(head); up.pipe(clientSocket); clientSocket.pipe(up); });
+    const ip = host ? await vetted(host, port, "https", resolve) : null;
+    if (!ip) { blocked.push(`CONNECT ${req.url}`); clientSocket.end("HTTP/1.1 403 Forbidden\r\n\r\n"); return; }
+    const up = connect(port, ip, () => { clientSocket.write("HTTP/1.1 200 Connection Established\r\n\r\n"); if (head.length) up.write(head); up.pipe(clientSocket); clientSocket.pipe(up); });
     up.on("error", () => clientSocket.destroy()); clientSocket.on("close", () => up.destroy());
   });
 

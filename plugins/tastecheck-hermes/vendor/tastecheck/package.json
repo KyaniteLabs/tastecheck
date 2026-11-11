@@ -54,6 +54,7 @@
     "test:qa-catalog": "node qa/test-catalog.mjs && node qa/test-runner.mjs",
     "test:cdp-qa": "node tools/test/test-cdp-qa.mjs",
     "test:request-guard": "node tools/test/test-request-guard.mjs",
+    "test:egress-proxy": "node tools/test/test-egress-proxy.mjs",
     "test:profile": "node tools/test/test-profile.mjs",
     "test:dogfood": "node tools/test/test-landing-dogfood.mjs",
     "verify:skills": "node tools/verify.mjs",
