@@ -45,8 +45,16 @@ jobs:
         run: |
           set -e
           # The minimum supported runtime, pinned by commit (tag v0.21.6).
-          uv run --no-project --python 3.11 --with pytest \
-            --with "hermes-agent @ git+https://github.com/NousResearch/hermes-agent@818c13be1dc4fd28987e1e881a9408224afd4535" \
+          # Hermes refuses wheel builds by design, so check out that exact
+          # commit and install it editable, as its own docs say to.
+          pin=818c13be1dc4fd28987e1e881a9408224afd4535
+          src="$RUNNER_TEMP/hermes-agent"
+          git init -q "$src"
+          git -C "$src" fetch -q --depth 1 https://github.com/NousResearch/hermes-agent "$pin"
+          git -C "$src" checkout -q FETCH_HEAD
+          test "$(git -C "$src" rev-parse HEAD)" = "$pin"
+          uv run --no-project --python 3.11 --with pytest --with ruamel.yaml \
+            --with-editable "$src" \
             python -m pytest plugins/tastecheck-hermes/tests/test_gate_dispatch.py -q
       - name: Desktop half clean-room harness (stubbed SDK/react)
         run: node --import ./tests/register.mjs --test tests/harness.test.mjs tests/column-gate.test.mjs

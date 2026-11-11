@@ -75,7 +75,10 @@ def _setup_disp(tmp_path, monkeypatch):
     mod._data_dir = lambda: data
     mod._agent_cwd = lambda: tmp_path
 
-    from hermes_cli.plugins_context import PluginContext
+    try:  # newer Hermes split PluginContext into its own module
+        from hermes_cli.plugins_context import PluginContext
+    except ImportError:  # v0.21.6 (the pinned minimum) keeps it in hermes_cli.plugins
+        PluginContext = runtime.PluginContext
     from hermes_cli.plugins_manifest import PluginManifest
 
     manager = runtime.PluginManager(scope_key=str(home))
