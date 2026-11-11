@@ -15,6 +15,42 @@ PLUGIN_DIR = Path(__file__).resolve().parents[1]
 RUNTIME_DIR = Path(__file__).resolve().parent / "hermes_runtime"
 
 
+def hermes_source_root(env=None):
+    """Where a Hermes checkout lives, or None: $HERMES_AGENT_SOURCE, then <HERMES_HOME or ~/.hermes>/hermes-agent."""
+    env = os.environ if env is None else env
+    home = Path(env.get("HERMES_HOME") or Path.home() / ".hermes")
+    for cand in (env.get("HERMES_AGENT_SOURCE"), home / "hermes-agent"):
+        if cand and (Path(cand) / "hermes_cli").is_dir():
+            return Path(cand)
+    return None
+
+
+def use_hermes_source_root(env=None, importable=None):
+    """Make `hermes_cli` importable when the interpreter is a Hermes venv that does not
+    have the checkout on its path (otherwise needs PYTHONPATH). Appends, so the vendored
+    runtime under tests/hermes_runtime still wins. Returns the path added, else None."""
+    if importable is None:
+        importable = importlib.util.find_spec("hermes_cli") is not None
+    if importable:
+        return None
+    root = hermes_source_root(env)
+    if root is None:
+        return None
+    sys.path.append(str(root))
+    return str(root)
+
+
+_ADDED_SOURCE_ROOT = use_hermes_source_root()
+
+
+def pytest_report_header(config):
+    if _ADDED_SOURCE_ROOT:
+        return f"tastecheck: Hermes source root added to sys.path: {_ADDED_SOURCE_ROOT}"
+    if importlib.util.find_spec("hermes_cli") is None:
+        return ("tastecheck: Hermes is not importable (no hermes_cli, no HERMES_AGENT_SOURCE, "
+                "no <HERMES_HOME>/hermes-agent); real-runtime dispatch tests will skip")
+
+
 class FakeCtx:
     def __init__(self, config=None):
         self.config = dict(config or {})
