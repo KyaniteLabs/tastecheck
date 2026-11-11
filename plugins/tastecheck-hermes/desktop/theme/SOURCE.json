@@ -2,7 +2,7 @@
   "note": "theme/resonant-field.js is the built desktop/plugin.js of the Resonant Field theme, vendored unchanged. build.mjs refuses to build if its sha256 drifts. To update: rebuild Resonant Field, copy desktop/plugin.js here, record the new commit and sha256, then run node build.mjs.",
   "project": "hermes-theme-resonant-field",
   "version": "0.6.0",
-  "commit": "36c40aa",
+  "commit": "8700512",
   "path": "desktop/plugin.js",
-  "sha256": "fc9a28e57c0b0ec50b5d42fa59e48f7856dab738c7c7a7d77c15986ae09e990f"
+  "sha256": "e3d4dc1055dbe195da762451d288a8298d878c1f119708b80e05f576fa587029"
 }

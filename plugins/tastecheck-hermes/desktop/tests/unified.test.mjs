@@ -15,7 +15,7 @@ const sdk = join(dir, 'sdk.mjs')
 writeFileSync(sdk, `export * from ${JSON.stringify(new URL('plugin-sdk.mjs', stubs).href)}
 export const THEMES_AREA = 'themes'
 export const APPEARANCE_AREAS = { extra: 'appearance.extra' }
-export const Button = 'Button', ListRow = 'ListRow', ToggleRow = 'ToggleRow'
+export const Button = 'Button', Tip = 'Tip', ListRow = 'ListRow', ToggleRow = 'ToggleRow'
 export const Select = 'Select', SelectContent = 'SelectContent', SelectItem = 'SelectItem', SelectTrigger = 'SelectTrigger', SelectValue = 'SelectValue'
 /* Like Desktop: a switch only lands on a theme that resolves (built-ins plus
  * whatever is registered right now), and the switched-to name is what useTheme
@@ -39,6 +39,15 @@ async function load() {
   return import(pathToFileURL(file).href)
 }
 const mock = await import(pathToFileURL(sdk).href)
+/* The same SDK with one export missing, as an older Desktop would have it. */
+async function loadWithout(name) {
+  const sdkHref = pathToFileURL(sdk).href
+  const sdkLess = join(dir, `sdk-without-${name}-${++n}.mjs`)
+  writeFileSync(sdkLess, Object.keys(mock).filter((k) => k !== name).map((k) => `export { ${k} } from ${JSON.stringify(sdkHref)}`).join('\n'))
+  const file = join(dir, `plugin-${++n}.mjs`)
+  writeFileSync(file, src.replaceAll(JSON.stringify(sdkHref), JSON.stringify(pathToFileURL(sdkLess).href)))
+  return import(pathToFileURL(file).href)
+}
 
 function fakeCtx(store = {}) {
   const live = new Map()
@@ -103,6 +112,11 @@ test('theme choices move the colour-field posterior; a Your-taste theme appears 
   assert.equal(t.taste().themeN, 1)
   assert.deepEqual(t.taste().post.field.walnut, [1.5, 1])
   assert.equal(t.themes().find((x) => x.name === 'resonant-field-taste'), undefined, 'one pick is not yet evidence')
+  /* RF 8700512: clicking the theme you are already on is no choice, so a second
+   * vote for Walnut has to come after a switch away. */
+  t.button('Walnut').props.onClick()
+  assert.equal(t.taste().themeN, 1, 're-clicking the active preset is not a vote')
+  t.button('Verdant').props.onClick()
   t.button('Walnut').props.onClick()
   const mine = t.themes().find((x) => x.name === 'resonant-field-taste')
   assert.ok(mine, 'two picks lean the taste: the theme is offered')
@@ -110,7 +124,7 @@ test('theme choices move the colour-field posterior; a Your-taste theme appears 
   assert.match(mine.description, /leaning Walnut/)
   const walnut = t.themes().find((x) => x.name === 'resonant-field-walnut')
   assert.deepEqual(mine.darkColors, walnut.darkColors, 'built by the same buildTheme, so the same floors')
-  assert.deepEqual(mock.requested, ['resonant-field-walnut', 'resonant-field-walnut'], 'only the user\'s own picks switch themes, never the learner')
+  assert.deepEqual(mock.requested, ['resonant-field-walnut', 'resonant-field-walnut', 'resonant-field-verdant', 'resonant-field-walnut'], 'only the user\'s own picks switch themes, never the learner')
 })
 
 test('a custom tune votes once for the nearest preset, not once per settle', async () => {
@@ -418,4 +432,24 @@ test('older ratings fade: decay applies to look posteriors on each rating', asyn
   taste.rateLook(B, 'random', 1)
   const [a] = taste._state().look.tint.soft
   assert.ok(Math.abs(a - (1 + 0.97)) < 1e-9, `A's tint credit decayed once: ${a}`)
+})
+
+test('the theme needs every SDK piece it uses: an SDK missing any one leaves it off and Taste Roll alone', async () => {
+  const needed = ['THEMES_AREA', 'APPEARANCE_AREAS', 'atom', 'requestTheme', 'useTheme', 'useValue', 'Tip', 'Button', 'ListRow', 'Select', 'SelectContent', 'SelectItem', 'SelectTrigger', 'SelectValue', 'ToggleRow']
+  assert.equal((await loadWithout('nothing-missing')).__theme.RF_ON, true)
+  for (const name of needed) {
+    assert.equal((await loadWithout(name)).__theme.RF_ON, false, `${name} missing turns the theme off`)
+  }
+})
+
+test('Reset and a custom tune that equals a preset are not votes', async () => {
+  const { mod } = await boot()
+  const s = {}
+  const store = { get: (k, d) => (k in s ? s[k] : d), set: (k, v) => { s[k] = JSON.parse(JSON.stringify(v)) } }
+  const taste = mod.createTaste(store, () => 0.5)
+  for (const p of mod.__theme.PRESETS) {
+    assert.equal(taste.observeTheme({ kind: 'tune', v: 1, prefs: { ...p.prefs } }), false, `${p.id} prefs as a tune`)
+  }
+  assert.equal(taste.stats().theme, 0)
+  assert.equal(taste.observeTheme({ kind: 'tune', v: 1, prefs: { ...mod.__theme.PRESETS[0].prefs, hue: 64 } }), true, 'a real custom tune still counts')
 })

@@ -54,8 +54,14 @@ import { createElement as h } from 'react'
 
 /* The Resonant Field theme is this plugin's face: its presets are the colour
  * fields Taste Roll paints columns with, and its choices teach the same learner
- * Keep/Pass does. It loads only where Desktop has the themes area. */
-const RF_ON = typeof SDK.THEMES_AREA === 'string' && typeof SDK.atom === 'function'
+ * Keep/Pass does. It needs Hermes Desktop 0.23.0 or newer (themes area, theme
+ * switching and the Appearance components); TasteCheck itself still runs from
+ * 0.21.6, so on an older Desktop every piece the theme imports is checked here
+ * and a missing one leaves Taste Roll on its own. */
+const RF_FUNCTIONS = ['atom', 'requestTheme', 'useTheme', 'useValue', 'Tip', 'Button', 'ListRow', 'Select', 'SelectContent', 'SelectItem', 'SelectTrigger', 'SelectValue', 'ToggleRow']
+const RF_ON = typeof SDK.THEMES_AREA === 'string' &&
+  !!SDK.APPEARANCE_AREAS && typeof SDK.APPEARANCE_AREAS === 'object' &&
+  RF_FUNCTIONS.every((name) => SDK[name] != null)
 const FIELD_PREFIX = 'resonant-field-'
 const fieldPreset = (v) => RF.PRESETS.find((p) => p.id === FIELD_PREFIX + v) || null
 const fieldLabel = (v) => { const p = fieldPreset(v); return p ? p.label.replace('Resonant Field · ', '') : String(v) }
@@ -72,6 +78,11 @@ function nearestField(prefs) {
     if (d < bd) { bd = d; best = v }
   }
   return best
+}
+function sameTune(a, b) {
+  if (!a || !b) return false
+  const keys = Object.keys(a)
+  return keys.length === Object.keys(b).length && keys.every((k) => a[k] === b[k])
 }
 function fieldOfTasteEvent(ev) {
   if (!ev || typeof ev !== 'object') return null
@@ -390,6 +401,9 @@ export function createTaste(store, rng = Math.random, onChange = null) {
     observeTheme(ev) {
       const v = fieldOfTasteEvent(ev)
       if (!v) return false
+      /* Reset (and a tune that lands exactly on a preset) is not the user
+       * choosing a custom look: the preset's own prefs are no new evidence. */
+      if (ev.kind === 'tune' && RF.PRESETS.some((q) => sameTune(q.prefs, ev.prefs))) return false
       if (ev.kind === 'tune' && t.lastTune === v) return false
       t.lastTune = ev.kind === 'tune' ? v : null
       t.post.field[v][0] += ev.kind === 'preset' ? 0.5 : 0.3
@@ -1806,7 +1820,7 @@ function registerLookRoll(ctx) {
 /* Test seam for the column gate machine (the host only reads the default export). */
 export const __columnGate = Object.freeze({ GATE, GATE_MOVES, gateOf, newColumn, stampGate, markRestored, gateStampFor })
 /* Test seam for the theme merge. */
-export const __theme = Object.freeze({ RF_ON, FIELDS: FACES.field, fieldCss, nearestField, fieldOfTasteEvent, buildRolledHtml, contrast: RF.contrast })
+export const __theme = Object.freeze({ RF_ON, PRESETS: RF.PRESETS, FIELDS: FACES.field, fieldCss, nearestField, fieldOfTasteEvent, buildRolledHtml, contrast: RF.contrast })
 /* Test seam for the look roll. */
 export const __look = Object.freeze({ LOOK_ON, LOOK, lookPrefs, canonLook, describeLook, cleanLook, buildTheme: RF.buildTheme, PLATES: RF.PLATES, ALT_PLATE })
 
