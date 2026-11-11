@@ -44,7 +44,7 @@ import { tmpdir, homedir } from "node:os";
 import { join, delimiter, resolve, isAbsolute } from "node:path";
 import { pathToFileURL, fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
-import { isBlockedRequest } from "./request-guard.mjs";
+import { isBlockedRequest, proxyBypassEntry } from "./request-guard.mjs";
 import { startEgressProxy } from "./egress-proxy.mjs";
 
 const TOOL_VERSION = "2.0.0";
@@ -607,7 +607,7 @@ async function main() {
 
   const profile = mkdtempSync(join(tmpdir(), "tastecheck-profile-"));
   const egress = await startEgressProxy();
-  const child = launch(found.path, profile, /^https?:/i.test(url) ? new URL(url).host : null, egress.port);
+  const child = launch(found.path, profile, /^https?:/i.test(url) ? proxyBypassEntry(url) : null, egress.port);
   let cleaned = false;
   let cdp = null;
   const cleanup = async () => {

@@ -66,3 +66,13 @@ export function isBlockedRequest(rawUrl, allowedOrigin = null) {
   }
   return hostInternal(u.hostname);
 }
+
+/** The Chrome --proxy-bypass-list entry for the served origin: host AND effective port.
+    URL.host drops a default port, and a bare host in the bypass list skips the proxy for
+    every port on that host, so the port is always spelled out (80 for http, 443 for https). */
+export function proxyBypassEntry(rawUrl) {
+  let u;
+  try { u = new URL(rawUrl); } catch { return null; }
+  if (u.protocol !== "http:" && u.protocol !== "https:") return null;
+  return `${u.hostname}:${u.port || (u.protocol === "https:" ? 443 : 80)}`;
+}

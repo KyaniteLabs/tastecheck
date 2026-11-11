@@ -1,6 +1,6 @@
 // request-guard self-check: the audited page must not reach loopback or private
 // network services, except the origin being served. Pure logic, no browser.
-import { isBlockedRequest } from "../../skills/tastecheck-pass/assets/request-guard.mjs";
+import { isBlockedRequest, proxyBypassEntry } from "../../skills/tastecheck-pass/assets/request-guard.mjs";
 
 let failed = 0;
 const check = (ok, msg) => { if (!ok) { failed++; console.error(`FAIL ${msg}`); } else console.log(`ok   ${msg}`); };
@@ -27,5 +27,18 @@ for (const u of allowed) check(isBlockedRequest(u, SERVED) === false, `allows ${
 check(isBlockedRequest("http://127.0.0.1:4173/x", null) === true, "no served origin (file target): loopback is blocked");
 check(isBlockedRequest("https://example.com/x", null) === false, "no served origin: public host allowed");
 check(isBlockedRequest("http://[bad/x", SERVED) === true, "unparseable network URL fails closed");
+// the proxy-bypass entry must always carry the effective port: a bare host would bypass
+// the proxy for EVERY port on that host (default-port URLs have no port in URL.host).
+const entries = [
+  ["http://localhost/", "localhost:80"], ["https://localhost/", "localhost:443"],
+  ["http://localhost:80/x", "localhost:80"], ["https://127.0.0.1:443/", "127.0.0.1:443"],
+  ["http://127.0.0.1:4173/", "127.0.0.1:4173"], ["http://[::1]/", "[::1]:80"],
+  ["https://[::1]:8443/", "[::1]:8443"], ["http://example.test:8080/a", "example.test:8080"],
+];
+for (const [u, want] of entries) check(proxyBypassEntry(u) === want, `bypass entry for ${u} is ${want} (got ${proxyBypassEntry(u)})`);
+check(proxyBypassEntry("file:///tmp/a.html") === null, "bypass entry: file target has none");
+import { readFileSync } from "node:fs";
+const qa = readFileSync(new URL("../../skills/tastecheck-pass/assets/cdp-qa.mjs", import.meta.url), "utf8");
+check(/proxyBypassEntry\(url\)/.test(qa) && !/new URL\(url\)\.host/.test(qa), "cdp-qa builds the bypass entry with proxyBypassEntry, never URL.host");
 if (failed) { console.error(`${failed} check(s) failed`); process.exit(1); }
 console.log("request-guard: all checks passed");
