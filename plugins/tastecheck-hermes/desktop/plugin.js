@@ -44,6 +44,10 @@
  */
 
 import { COMPOSER_AREAS, GHOST_ICON_BTN, PALETTE_AREA, host } from '@hermes/plugin-sdk'
+/* Namespace import for OPTIONAL members (Tip): the loader's shim only exports
+ * names the running build has, so a named import of a newer member would fail
+ * to link on an older Desktop. Read them off the namespace and feature-detect. */
+import * as SDK from '@hermes/plugin-sdk'
 import { createElement as h } from 'react'
 
 /* tasteroll — seeded PRNG engine with lock/reroll support (xoshiro128++)
@@ -1045,6 +1049,43 @@ const STAMP_STYLE = {
   PENDING: { background: '#555', color: '#fff', padding: '.1rem .45rem', borderRadius: '.35rem', fontWeight: 600, fontSize: '.72rem', letterSpacing: '.04em' }
 }
 
+/* ---- glyphs ---------------------------------------------------------------
+ * The composer row is all 14px single-colour line icons (codicons). The Taste
+ * Roll mark sits in that row as an equal: a fanned hand of three sheets (one
+ * roll = a new variant dealt beside your page), drawn on the codicon 16-unit
+ * grid in currentColor so it takes the row's own tertiary/hover colours. The
+ * back sheets are masked, not filled, so no background colour is assumed.
+ * A functional UI glyph, not the product mark (that goes through the eye-gate).
+ * Mask ids are fixed: every instance has identical content, so a duplicate
+ * id in the document resolves to the same shape. */
+function RollGlyph() {
+  /* A hand of three sheets fanned from one pivot; each overlaps the one on its
+   * left, so the back two are masked by everything in front of them. */
+  const card = { x: 5, y: 2, width: 6, height: 10, rx: 1.25 }
+  const turn = (deg) => `rotate(${deg} 8 14.5)`
+  const knock = (deg) => h('rect', { ...card, key: deg, transform: turn(deg), fill: '#000', stroke: '#000', strokeWidth: 2.4 })
+  const mask = (id, degs) => h('mask', { id, key: id },
+    h('rect', { width: 16, height: 16, fill: '#fff', stroke: 'none' }), ...degs.map(knock))
+  return h('svg', {
+    'aria-hidden': 'true', focusable: 'false', viewBox: '0 0 16 16', width: '0.875rem', height: '0.875rem',
+    fill: 'none', stroke: 'currentColor', strokeWidth: 1, strokeLinejoin: 'round',
+    style: { display: 'block' }
+  },
+  h('defs', { key: 'd' }, mask('tastecheck-roll-a', [0, 24]), mask('tastecheck-roll-b', [24])),
+  /* Masks sit on unrotated groups: a mask on the rotated rect itself would be
+   * applied in that rect's rotated space and knock the wrong area out. */
+  h('g', { key: 'l', mask: 'url(#tastecheck-roll-a)' }, h('rect', { ...card, transform: turn(-24) })),
+  h('g', { key: 'm', mask: 'url(#tastecheck-roll-b)' }, h('rect', { ...card, transform: turn(0) })),
+  h('rect', { ...card, key: 'r', transform: turn(24) }))
+}
+
+/* Keep/Pass use the host's own codicon font (thumbs; filled when pressed), so
+ * they read like every other Desktop control. The text label stays: the icon is
+ * decoration and the button never depends on the font loading. */
+function Glyph(props) {
+  return h('i', { 'aria-hidden': 'true', className: `codicon codicon-${props.name}`, style: { fontSize: '0.875rem', lineHeight: 1 } })
+}
+
 /* ---- feedback ------------------------------------------------------------- */
 
 function rateColumn(col, y) {
@@ -1079,6 +1120,9 @@ function latestColumn() {
 }
 
 const FEEDBACK_BTN = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '.3rem',
   border: '1px solid var(--line-strong, #999)',
   background: 'transparent',
   color: 'inherit',
@@ -1103,13 +1147,13 @@ function FeedbackRow(props) {
       'aria-label': `Keep roll ${index + 1}: more like this`,
       style: kept ? { ...FEEDBACK_BTN, ...PRESSED } : FEEDBACK_BTN,
       onClick: (e) => { e.preventDefault(); rateColumn(col, 1) }
-    }, kept ? '\u{1F44D} Kept' : '\u{1F44D} Keep'),
+    }, h(Glyph, { name: kept ? 'thumbsup-filled' : 'thumbsup' }), kept ? 'Kept' : 'Keep'),
     h('button', {
       key: 'pass', type: 'button', 'aria-pressed': passed,
       'aria-label': `Pass on roll ${index + 1}: less like this`,
       style: passed ? { ...FEEDBACK_BTN, ...PRESSED } : FEEDBACK_BTN,
       onClick: (e) => { e.preventDefault(); rateColumn(col, 0) }
-    }, passed ? '\u{1F44E} Passed' : '\u{1F44E} Pass')
+    }, h(Glyph, { name: passed ? 'thumbsdown-filled' : 'thumbsdown' }), passed ? 'Passed' : 'Pass')
   ]
   if ((kept || passed) && !col.reason) {
     kids.push(h('span', { key: 'why', style: { opacity: .75, fontSize: '.7rem' } }, kept ? 'What made it?' : 'What was off?'))
@@ -1306,12 +1350,19 @@ export default {
       area: COMPOSER_AREAS.actions,
       id: 'taste-roll',
       title: 'Taste Roll',
-      render: () => h('button', {
-        type: 'button',
-        className: GHOST_ICON_BTN,
-        onClick: (e) => { e.preventDefault(); void runRoll() },
-        title: 'Taste Roll — restyle your own page, add a gated comparison column'
-      }, '\u{1F3B2} Taste Roll')
+      render: () => {
+        const label = 'Taste Roll: restyle your page in a new comparison column'
+        const button = h('button', {
+          type: 'button',
+          className: GHOST_ICON_BTN,
+          'aria-label': label,
+          style: { display: 'inline-grid', placeItems: 'center', padding: 0 },
+          onClick: (e) => { e.preventDefault(); void runRoll() },
+          /* Native tooltip only when the host has no Tip component. */
+          title: typeof SDK.Tip === 'function' ? undefined : label
+        }, h(RollGlyph))
+        return typeof SDK.Tip === 'function' ? h(SDK.Tip, { label, placement: 'control' }, button) : button
+      }
     })
     /* R5: the same behavior from the command palette (⌘K), not only the button. */
     if (PALETTE_AREA) {
