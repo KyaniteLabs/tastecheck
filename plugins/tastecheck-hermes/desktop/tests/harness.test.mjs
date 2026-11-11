@@ -924,7 +924,7 @@ test('learner: hostile stored taste is sanitized, never trusted', async () => {
   const t = mod.createTaste(memStore({ taste: { v: 1, post: { ref: { mineral: [NaN, -1], Swiss: [1e9, 1] } }, rolls: -4, log: [{ src: 'evil', y: 7 }, 'x'], snaps: 'no' } }))
   const st = t.stats()
   assert.equal(st.ratings, 0)
-  assert.deepEqual(Object.values(st.top), [null, null, null, null])
+  assert.deepEqual(Object.values(st.top), [null, null, null, null, null])
   assert.equal(t.choose(99).seed, 99)
 })
 
@@ -986,7 +986,8 @@ test('feedback: Keep / Pass on a column, reason chips, toggle off, palette comma
 })
 
 test('feedback: Keep, Pass and reason chips are 44px touch targets with full-ink text', () => {
-  const src = readFileSync(new URL('../plugin.js', import.meta.url), 'utf8')
+  /* The pane's own source: the vendored theme below it has its own floors. */
+  const src = readFileSync(new URL('../src/pane.js', import.meta.url), 'utf8')
   const btn = src.slice(src.indexOf('const FEEDBACK_BTN'), src.indexOf('function FeedbackRow'))
   assert.match(btn, /minHeight: '2\.75rem',\n  minWidth: '2\.75rem'/, 'Keep/Pass are at least 44px')
   assert.match(btn, /const CHIP = \{[^}]*minHeight: '2\.75rem'/, 'reason chips are at least 44px')
