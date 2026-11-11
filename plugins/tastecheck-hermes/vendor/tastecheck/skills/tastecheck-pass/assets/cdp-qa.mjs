@@ -7,6 +7,13 @@
    promises, writes evidence.json + screenshots, and prints a verdict-first summary.
 
    Usage:   node cdp-qa.mjs <url | file path | file://url> [out-dir] [--json] [--profile <file> | --no-profile]
+                                [--no-link-fetch]
+            --no-link-fetch: do not GET same-origin <a href> targets (up to 25) to check
+            them; they are counted as not fetched. Use it when following links could
+            trigger side effects (logout, delete, one-time tokens) on the audited origin.
+   Dialogs: alert/confirm/prompt/beforeunload are DISMISSED (confirm/prompt answer cancel).
+   Sandbox: Chrome's sandbox is disabled (--no-sandbox) only when running as root or with
+            CI set, because Chrome refuses to start sandboxed there; evidence.json records it.
             Taste profile (optional, local): $TASTECHECK_PROFILE or ~/.tastecheck/profile.json is read
             if present; it only changes how templateSlop counts individual tells.
    Output:  <out-dir>/evidence.json, shot-light.png, shot-dark.png, shot-narrow-390.png
@@ -57,7 +64,7 @@ function parseArgs(argv) {
   }
   const flags = new Set(rest.filter((a) => a.startsWith("--")));
   const pos = rest.filter((a) => !a.startsWith("--"));
-  return { json: flags.has("--json"), help: flags.has("--help"), noProfile: flags.has("--no-profile"), profile, target: pos[0], out: pos[1] };
+  return { json: flags.has("--json"), help: flags.has("--help"), noProfile: flags.has("--no-profile"), noLinkFetch: flags.has("--no-link-fetch"), profile, target: pos[0], out: pos[1] };
 }
 
 /* ------------------------------------------------- taste profile (optional)
@@ -185,13 +192,14 @@ async function findBrowser() {
 }
 
 /* ------------------------------------------------------------ CDP session */
+const SANDBOX_OFF = Boolean((process.getuid && process.getuid() === 0) || process.env.CI);
 function launch(browserPath, profileDir) {
   const args = [
     "--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
     "--disable-dev-shm-usage", "--disable-background-networking", "--mute-audio",
     "--remote-debugging-port=0", `--user-data-dir=${profileDir}`, "--window-size=1440,900",
   ];
-  if ((process.getuid && process.getuid() === 0) || process.env.CI) args.push("--no-sandbox");
+  if (SANDBOX_OFF) args.push("--no-sandbox");
   args.push("about:blank");
   return spawn(browserPath, args, { stdio: "ignore", windowsHide: true });
 }
@@ -560,7 +568,7 @@ const page = (fn, ...args) => `(${fn})((${helpers})(), ...${JSON.stringify(args)
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help || !args.target) {
-    process.stderr.write("usage: node cdp-qa.mjs <url | file path | file://url> [out-dir] [--json] [--profile <file> | --no-profile]\n");
+    process.stderr.write("usage: node cdp-qa.mjs <url | file path | file://url> [out-dir] [--json] [--profile <file> | --no-profile] [--no-link-fetch]\n");
     return args.help ? 0 : 2;
   }
   if (typeof WebSocket === "undefined") {
@@ -626,7 +634,7 @@ async function main() {
       if (!r || /^(data|blob|chrome-extension):/.test(r.url) || p.errorText === "net::ERR_ABORTED" || p.canceled) return;
       bad.push(`${p.errorText} ${r.url}`);
     });
-    on("Page.javascriptDialogOpening", () => { send("Page.handleJavaScriptDialog", { accept: true }).catch(() => {}); });
+    on("Page.javascriptDialogOpening", () => { send("Page.handleJavaScriptDialog", { accept: false }).catch(() => {}); });
 
     const setMedia = (scheme = "light", motion = "no-preference") => send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: scheme }, { name: "prefers-reduced-motion", value: motion }] });
     const viewport = (w, h, dsf = 1) => send("Emulation.setDeviceMetricsOverride", { width: w, height: h, deviceScaleFactor: dsf, mobile: false });
@@ -824,7 +832,7 @@ async function main() {
         } else if (origin && u.origin === origin) todo.push(u.href);
         else external++;
       }
-      const slice = todo.slice(0, 25);
+      const slice = args.noLinkFetch ? [] : todo.slice(0, 25);
       for (let i = 0; i < slice.length; i += 5) {
         await Promise.all(slice.slice(i, i + 5).map(async (h) => {
           checked++;
@@ -835,7 +843,9 @@ async function main() {
           } catch (e) { brokenLinks.push(`unreachable ${trunc(h, 80)} (${e.cause?.code || e.name})`); }
         }));
       }
-      const skippedNote = todo.length > 25 ? `; ${todo.length - 25} same-origin links not fetched (cap 25)` : "";
+      const skippedNote = args.noLinkFetch
+        ? (todo.length ? `; ${todo.length} same-origin links not fetched (--no-link-fetch)` : "")
+        : todo.length > 25 ? `; ${todo.length - 25} same-origin links not fetched (cap 25)` : "";
       const summary = `${net.size} requests, ${failed.length} failed; ${checked + r.missing.length} links checked, ${external} external not fetched${skippedNote}`;
       const problems = [
         ...failed.slice(0, 4).map((f) => `request ${tail(f, 90)}`),
@@ -903,7 +913,8 @@ async function main() {
     const evidence = {
       tool: "tastecheck cdp-qa", version: TOOL_VERSION, verdict, holdReasons,
       target: args.target, url, generatedAt: new Date().toISOString(),
-      browser: { product: browserVersion, found: found.via }, node: process.version,
+      browser: { product: browserVersion, found: found.via, sandbox: !SANDBOX_OFF },
+      linkFetch: !args.noLinkFetch, node: process.version,
       outDir: OUT, screenshots: shots, probes,
       ...(profileBlock ? { profile: profileBlock } : {}),
     };
