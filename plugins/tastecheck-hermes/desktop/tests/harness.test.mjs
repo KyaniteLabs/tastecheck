@@ -984,3 +984,12 @@ test('feedback: Keep / Pass on a column, reason chips, toggle off, palette comma
   assert.equal(ctx._store.taste.log.length, 0, 'Reset taste forgets everything')
   assert.equal(byText(colButtons(), 'Pass').props['aria-pressed'], false)
 })
+
+test('feedback: Keep, Pass and reason chips are 44px touch targets with full-ink text', () => {
+  const src = readFileSync(new URL('../plugin.js', import.meta.url), 'utf8')
+  const btn = src.slice(src.indexOf('const FEEDBACK_BTN'), src.indexOf('function FeedbackRow'))
+  assert.match(btn, /minHeight: '2\.75rem',\n  minWidth: '2\.75rem'/, 'Keep/Pass are at least 44px')
+  assert.match(btn, /const CHIP = \{[^}]*minHeight: '2\.75rem'/, 'reason chips are at least 44px')
+  assert.match(btn, /PRESSED = \{[^}]*border: '2px solid currentColor'/, 'pressed state shows by shape, not tint alone')
+  assert.doesNotMatch(src, /opacity:/, 'no faded text: contrast stays the theme pair')
+})

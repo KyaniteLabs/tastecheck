@@ -1127,15 +1127,17 @@ const FEEDBACK_BTN = {
   background: 'transparent',
   color: 'inherit',
   borderRadius: '.4rem',
-  padding: '.2rem .6rem',
-  minHeight: '1.75rem',
+  padding: '.2rem .75rem',
+  minHeight: '2.75rem',
+  minWidth: '2.75rem',
   font: 'inherit',
-  fontSize: '.75rem',
+  fontSize: '.8rem',
   fontWeight: 600,
   cursor: 'pointer'
 }
-const PRESSED = { background: 'var(--s2, #e9e9e9)', borderColor: 'currentColor', boxShadow: 'inset 0 0 0 1px currentColor' }
-const CHIP = { ...FEEDBACK_BTN, fontWeight: 500, padding: '.1rem .5rem', minHeight: '1.5rem', fontSize: '.7rem', borderStyle: 'dashed' }
+/* Pressed reads by shape, not just a theme tint: a 2px current-colour border, bold label and a filled glyph. */
+const PRESSED = { background: 'var(--s2, #e9e9e9)', border: '2px solid currentColor', fontWeight: 700 }
+const CHIP = { ...FEEDBACK_BTN, fontWeight: 500, padding: '.1rem .7rem', minHeight: '2.75rem', fontSize: '.8rem', borderStyle: 'dashed' }
 
 function FeedbackRow(props) {
   const { col, index } = props
@@ -1156,7 +1158,7 @@ function FeedbackRow(props) {
     }, h(Glyph, { name: passed ? 'thumbsdown-filled' : 'thumbsdown' }), passed ? 'Passed' : 'Pass')
   ]
   if ((kept || passed) && !col.reason) {
-    kids.push(h('span', { key: 'why', style: { opacity: .75, fontSize: '.7rem' } }, kept ? 'What made it?' : 'What was off?'))
+    kids.push(h('span', { key: 'why', style: { fontSize: '.78rem' } }, kept ? 'What made it?' : 'What was off?'))
     REASONS.forEach((r) => kids.push(h('button', {
       key: `r-${r.id}`, type: 'button',
       'aria-label': `${kept ? 'Kept' : 'Passed'} mostly for the ${r.label.toLowerCase()}`,
@@ -1165,7 +1167,7 @@ function FeedbackRow(props) {
     }, r.label)))
   } else if (col.reason) {
     const r = REASONS.find((x) => x.id === col.reason)
-    kids.push(h('span', { key: 'why', role: 'status', style: { opacity: .8, fontSize: '.7rem' } },
+    kids.push(h('span', { key: 'why', role: 'status', style: { fontSize: '.78rem' } },
       `${kept ? 'Kept' : 'Passed'} for the ${r ? r.label.toLowerCase() : 'look'} — noted.`))
   }
   return h('div', { role: 'group', 'aria-label': `Feedback on roll ${index + 1}`, style: { display: 'flex', gap: '.35rem', alignItems: 'center', flexWrap: 'wrap', marginTop: '.35rem' } }, kids)
@@ -1181,7 +1183,7 @@ function LearningStrip() {
     ? `Learning from ${st.ratings} rating${st.ratings === 1 ? '' : 's'} · kept: tuned rolls ${pct(st.learned)}, random rolls ${pct(st.random)}${leaning.length ? ` · leaning ${leaning.join(' / ')}` : ''}`
     : 'Keep or pass each roll and the next ones lean your way. One roll in ten stays random to check it is working.'
   return h('div', { style: { display: 'flex', gap: '.6rem', alignItems: 'center', flexWrap: 'wrap', padding: '.3rem .8rem', fontSize: '.72rem', borderBottom: '1px solid var(--line, #ddd)' } },
-    h('span', { role: 'status', style: { opacity: .8 } }, text),
+    h('span', { role: 'status', style: {} }, text),
     st.ratings
       ? h('button', {
           type: 'button',
@@ -1203,26 +1205,26 @@ function ColumnHeader(props) {
   const kids = [
     h('div', { key: 'title', style: { display: 'flex', gap: '.45rem', alignItems: 'baseline', flexWrap: 'wrap' } },
       h('span', null, `Roll ${index + 1} · s${col.seed}`),
-      h('span', { style: { opacity: .8 } }, `${col.roll.ref} · ${col.roll.vibe} · ${col.roll.mode} · ${col.roll.sig}`))
+      h('span', { style: {} }, `${col.roll.ref} · ${col.roll.vibe} · ${col.roll.mode} · ${col.roll.sig}`))
   ]
   const gate = gateOf(col)
   if (gate === GATE.SHIP) {
     kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
       h('span', { style: STAMP_STYLE.SHIP }, 'SHIP'),
-      h('span', { style: { opacity: .7, fontSize: '.7rem' } }, 'gate passed')))
+      h('span', { style: { fontSize: '.78rem' } }, 'gate passed')))
   } else if (gate === GATE.HOLD) {
     kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'baseline', marginTop: '.15rem', flexWrap: 'wrap' } },
       h('span', { style: STAMP_STYLE.HOLD }, 'HOLD'),
-      h('span', { style: { opacity: .8, fontSize: '.7rem' } }, (col.reasons || []).slice(0, 2).join(' · ') || 'held')))
+      h('span', { style: { fontSize: '.78rem' } }, (col.reasons || []).slice(0, 2).join(' · ') || 'held')))
   } else if (gate === GATE.RESTORED) {
     kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
       h('span', { style: STAMP_STYLE.PENDING }, 'GATE —'),
-      h('span', { style: { opacity: .7, fontSize: '.7rem' } }, 'not audited this session (click Taste Roll to re-roll + gate)')))
+      h('span', { style: { fontSize: '.78rem' } }, 'not audited this session (click Taste Roll to re-roll + gate)')))
   } else {
     /* PENDING — and, fail closed, any unknown gate value: never a SHIP stamp. */
     kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
       h('span', { style: STAMP_STYLE.PENDING }, 'GATE…'),
-      h('span', { style: { opacity: .7, fontSize: '.7rem' } }, 'auditing this column')))
+      h('span', { style: { fontSize: '.78rem' } }, 'auditing this column')))
   }
   kids.push(h(FeedbackRow, { key: 'feedback', col, index }))
   return h('div', { style: { padding: '.45rem .7rem', fontSize: '.78rem', fontWeight: 600, borderBottom: '1px solid var(--line, #ddd)' } }, kids)
@@ -1232,7 +1234,7 @@ function SurfacePicker(props) {
   /* R3 explicit handoff: shown only when the host has NO active-file seam and
    * the user hasn't named a surface — tap a file to roll THAT page. */
   const { files, current } = props
-  const kids = [h('span', { key: 'lbl', style: { opacity: .7 } }, 'Not your page? Roll a specific file instead:')]
+  const kids = [h('span', { key: 'lbl', style: {} }, 'Not your page? Roll a specific file instead:')]
   files.slice(0, 10).forEach((rel) => {
     kids.push(h('button', {
       key: rel,
@@ -1262,17 +1264,17 @@ function SurfacePicker(props) {
 function renderPane() {
   const cur = comparison
   if (!cur) {
-    return h('div', { style: { padding: '1rem', opacity: .75 } },
+    return h('div', { style: { padding: '1rem' } },
       'Taste Roll — click “Taste Roll” above the composer to restyle your own page.')
   }
   if (cur.noHtml) {
     return h('div', { style: { display: 'flex', flexDirection: 'column', height: '100%' } },
       h('div', { style: { padding: '.5rem .8rem', fontSize: '.8rem', borderBottom: '1px solid var(--line, #ddd)', display: 'flex', gap: '1rem', alignItems: 'baseline' } },
         h('strong', null, 'Taste Roll')),
-      h('div', { style: { padding: '1rem', opacity: .85, fontSize: '.85rem' } }, cur.noHtml.message))
+      h('div', { style: { padding: '1rem', fontSize: '.85rem' } }, cur.noHtml.message))
   }
   if (!cur.columns.length) {
-    return h('div', { style: { padding: '1rem', opacity: .75 } },
+    return h('div', { style: { padding: '1rem' } },
       'Taste Roll — click “Taste Roll” above the composer to restyle your own page.')
   }
   const kids = []
@@ -1294,8 +1296,8 @@ function renderPane() {
   return h('div', { style: { display: 'flex', flexDirection: 'column', height: '100%' } },
     h('div', { style: { padding: '.5rem .8rem', fontSize: '.8rem', borderBottom: '1px solid var(--line, #ddd)', display: 'flex', gap: '1rem', alignItems: 'baseline' } },
       h('strong', null, 'Taste Roll'),
-      h('span', { style: { opacity: .75 } }, `${cur.file} — ${cur.why || 'your surface'}`),
-      h('span', { style: { opacity: .75, marginLeft: 'auto' } }, 'Each click adds a column; previous columns stay.')),
+      h('span', { style: {} }, `${cur.file} — ${cur.why || 'your surface'}`),
+      h('span', { style: { marginLeft: 'auto' } }, 'Each click adds a column; previous columns stay.')),
     cur.seamAbsent === true && cur.pinned !== true && Array.isArray(cur.candidates) && cur.candidates.length > 1
       ? h(SurfacePicker, { key: 'surface-picker', files: cur.candidates, current: cur.file })
       : null,

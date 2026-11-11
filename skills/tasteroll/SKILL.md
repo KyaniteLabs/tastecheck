@@ -98,6 +98,12 @@ Locked dimensions and resolved findings persist; only open dimensions vary.
 
 ## 7. Gate
 
+In Hermes Desktop, the Taste Roll pane adds one-tap **Keep** and **Pass** under each
+column, with an optional reason (Colour, Type, Layout, Mood). Later rolls lean toward what
+you kept. One roll in ten stays random so the pane can show whether the learning helps,
+and it rolls itself back if tuned rolls are kept clearly less often. Feedback picks seeds
+only; it never relaxes a gate.
+
 Tasteroll output is a personal artifact/prototype, not shipped; use a lighter gate than
 `tastecheck-pass`:
 
