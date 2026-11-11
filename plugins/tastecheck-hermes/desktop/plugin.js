@@ -2203,6 +2203,12 @@ function backendFiles(rest, cwd) {
   }
 }
 
+/** Why a session workspace can't be rolled, in words the user can act on. */
+function refusedMessage(code, cwd) {
+  if (code === 'protected') return `This session runs in ${cwd}, which is Hermes' own state — Taste Roll never reads it. Start the session in a project folder to roll a design.`
+  return `This session runs in ${cwd || 'your home folder'}, not a project — Taste Roll rolls one project's HTML. Start the session in a project folder (for example ~/workspaces/<project>) to roll a design.`
+}
+
 /** The folder to roll from: { id, path, files }. A local grant covering cwd
  *  wins; else the gateway's own view of cwd; else ask for a local folder. */
 async function grantFor(cwd) {
@@ -2218,6 +2224,9 @@ async function grantFor(cwd) {
       const rest = pluginCtx.rest.bind(pluginCtx)
       const res = await rest('/files/root', { method: 'POST', body: { cwd, path: '' }, timeoutMs: 15000 })
       if (res && res.ok === true && typeof res.path === 'string') return { id: 'gateway', path: cwd.replace(/\/+$/, ''), files: backendFiles(rest, cwd), remote: true }
+      /* The gateway saw this cwd and refused it as a workspace (home itself, or
+       * Hermes state). A local folder picker cannot fix that — say why instead. */
+      if (res && res.ok === false && (res.error === 'outside-home' || res.error === 'protected')) return { refused: res.error }
     } catch { /* older agent half or no gateway: fall through to a local grant */ }
   }
   if (!hasLocal) return null
@@ -2284,6 +2293,10 @@ async function runRoll() {
   try {
     const cwd = (host.state.cwd && host.state.cwd.get ? host.state.cwd.get() : '') || ''
     const folder = await grantFor(cwd)
+    if (folder && folder.refused) {
+      host.notify(refusedMessage(folder.refused, cwd))
+      return
+    }
     if (!folder) {
       host.notify('Taste Roll needs your project folder — grant it to roll your own page.')
       return
@@ -2384,6 +2397,10 @@ async function switchSurface(rel) {
   try {
     const cwd = (host.state.cwd && host.state.cwd.get ? host.state.cwd.get() : '') || ''
     const folder = await grantFor(cwd)
+    if (folder && folder.refused) {
+      host.notifyError(refusedMessage(folder.refused, cwd))
+      return
+    }
     if (!folder) {
       host.notifyError('Taste Roll needs your project folder to switch surface.')
       return

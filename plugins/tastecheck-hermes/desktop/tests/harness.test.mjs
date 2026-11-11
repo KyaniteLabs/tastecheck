@@ -823,6 +823,27 @@ test('remote gateway: a workspace no local grant covers is read through the agen
   assert.equal(audits.calls.length, 1, 'the rolled column still goes to the gate')
 })
 
+for (const code of ['outside-home', 'protected']) {
+  test(`remote gateway refuses the cwd (${code}) → says why, no picker, no pane`, async () => {
+    const root = fixtureProject()
+    freshGlobals({ cwd: root })
+    const mod = await importFresh()
+    let asked = 0
+    const files = makeFiles(root, { folders: [], requestFolder: async () => { asked += 1; return { ok: true, folder: null } } })
+    const audits = restQueue(okShip)
+    const rest = async (path, opts) => {
+      if (!path.startsWith('/files/')) return audits(path, opts)
+      return { ok: false, error: code, message: 'refused' }
+    }
+    const ctx = makeCtx(files, {}, rest)
+    mod.default.register(ctx)
+    await click(ctx.registered.find((c) => c.id === 'taste-roll').render())
+    assert.equal(asked, 0, 'a local picker cannot fix a refused gateway workspace')
+    assert.equal(globalThis.__tc.workspaces.length, 0)
+    assert.ok(globalThis.__tc.notifies.some((n) => /project folder/i.test(n) && n.includes(root)), JSON.stringify(globalThis.__tc.notifies))
+  })
+}
+
 test('cancelled grant → polite notify, no pane, no read', async () => {
   const root = fixtureProject()
   freshGlobals({ cwd: root })
