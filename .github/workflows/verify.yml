@@ -31,8 +31,12 @@ jobs:
         run: |
           set -e
           # The minimum supported runtime, pinned by commit (tag v0.21.6).
+          # Hermes refuses wheel builds, so install the pinned checkout editable.
+          git init -q /tmp/hermes-src
+          git -C /tmp/hermes-src fetch -q --depth 1 https://github.com/NousResearch/hermes-agent 818c13be1dc4fd28987e1e881a9408224afd4535
+          git -C /tmp/hermes-src checkout -q FETCH_HEAD
           python3.11 -m venv /tmp/hermes-rt
-          /tmp/hermes-rt/bin/pip install --quiet pytest "hermes-agent @ git+https://github.com/NousResearch/hermes-agent@818c13be1dc4fd28987e1e881a9408224afd4535"
+          /tmp/hermes-rt/bin/pip install --quiet pytest -e /tmp/hermes-src
           /tmp/hermes-rt/bin/python -m pytest plugins/tastecheck-hermes/tests/test_gate_dispatch.py -q
       - name: Desktop half clean-room harness (stubbed SDK/react)
         run: node --import ./tests/register.mjs --test tests/harness.test.mjs tests/column-gate.test.mjs
