@@ -869,6 +869,29 @@ test('restored columns show "not audited this session"; a stray stored verdict n
   }
 })
 
+test('corrupt or oversized stored comparisons never break a roll, and history stays capped', async () => {
+  const root = fixtureProject()
+  for (const bad of [null, 'junk', 7, ['x'], true]) {
+    freshGlobals({ cwd: root })
+    const ctx = makeCtx(makeFiles(root), { comparisons: bad }, restQueue(okShip))
+    ;(await importFresh()).default.register(ctx)
+    await click(ctx.registered.find((c) => c.id === 'taste-roll').render())
+    const saved = ctx._store.comparisons
+    assert.ok(saved && typeof saved === 'object' && !Array.isArray(saved), `comparisons repaired from ${JSON.stringify(bad)}`)
+    assert.ok(saved[`roll:${root}`], 'this click was saved')
+  }
+  /* One entry per workspace folder ever used: bounded, newest kept. */
+  const many = {}
+  for (let i = 0; i < 80; i++) many[`roll:/old/${i}`] = { columns: [{ seed: 1, roll: {} }] }
+  freshGlobals({ cwd: root })
+  const ctx = makeCtx(makeFiles(root), { comparisons: many }, restQueue(okShip))
+  ;(await importFresh()).default.register(ctx)
+  await click(ctx.registered.find((c) => c.id === 'taste-roll').render())
+  const keys = Object.keys(ctx._store.comparisons)
+  assert.ok(keys.length <= 40, `capped at 40 workspaces, got ${keys.length}`)
+  assert.ok(keys.includes(`roll:${root}`), 'the current workspace survives the cap')
+})
+
 test('restored history under a WIDER grant rebases to the same absolute file, never a sibling', async () => {
   const wsRoot = mkdtempSync(join(tmpdir(), 'tasteroll-rebase-'))
   const app = join(wsRoot, 'app')

@@ -1990,9 +1990,18 @@ let inFlight = false
 
 function storageKey(cwd) { return `roll:${cwd || '(detached)'}` }
 
+const MAX_STORED_WORKSPACES = 40
+
+/* Stored history is untrusted input: anything that is not a plain object is
+ * treated as empty rather than thrown on or silently dropped. */
+function storedComparisons() {
+  const all = pluginCtx.storage.get('comparisons', {})
+  return all && typeof all === 'object' && !Array.isArray(all) ? all : {}
+}
+
 function loadComparison(cwd) {
   if (!pluginCtx) return null
-  const all = pluginCtx.storage.get('comparisons', {})
+  const all = storedComparisons()
   const saved = all[storageKey(cwd)]
   if (!saved || !Array.isArray(saved.columns) || !saved.columns.length) return null
   /* Storage holds { seed, roll } per column and never a gate; read only those
@@ -2017,8 +2026,12 @@ function persistComparison() {
     candidates: Array.isArray(comparison.candidates) ? comparison.candidates.slice(0, 10) : undefined,
     columns: (comparison.columns || []).map((c) => ({ seed: c.seed, roll: c.roll, src: c.src, rating: c.rating == null ? null : c.rating, reason: c.reason || null }))
   }
-  const all = pluginCtx.storage.get('comparisons', {})
-  all[storageKey(comparison.cwd)] = slim
+  const all = storedComparisons()
+  const key = storageKey(comparison.cwd)
+  delete all[key] /* re-insert last: object key order is the recency order */
+  all[key] = slim
+  const keys = Object.keys(all)
+  for (const old of keys.slice(0, Math.max(0, keys.length - MAX_STORED_WORKSPACES))) delete all[old]
   pluginCtx.storage.set('comparisons', all)
 }
 
