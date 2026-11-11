@@ -195,3 +195,138 @@ def roll_audit(req: RollAuditRequest) -> RollAuditResponse:
     except Exception as exc:  # health: any failure is a HOLD, never a 500-SHIP ambiguity
         log.warning("tastecheck roll-audit failed: %s", exc, exc_info=True)
         return _hold(f"roll audit failed: {exc}", target)
+
+
+# ---------------------------------------------------------------------------
+# Read-only workspace files for a REMOTE Desktop.
+#
+# When Hermes Desktop drives a remote gateway, the session workspace lives on
+# the gateway host and the Desktop's own ``ctx.files`` (Electron-local) can
+# never reach it. These four endpoints give the Taste Roll pane the same
+# read-only shapes as ``ctx.files`` (``{ok: true, ...}`` or
+# ``{ok: false, error, message}``), confined hard:
+#   * the workspace root must be an existing directory under the gateway
+#     user's home, and never a Hermes data directory;
+#   * every path is relative, has no ``..`` part, and must resolve (symlinks
+#     followed) inside that root;
+#   * only ``.html`` / ``.htm`` / ``.css`` files can be stat'ed or read, at
+#     most 4 MiB; listings name files and directories only, never contents.
+# No writes, no other file types, no paths outside the workspace.
+# ---------------------------------------------------------------------------
+
+_FILE_EXTS = (".html", ".htm", ".css")
+_MAX_READ = 4 * 1024 * 1024
+_MAX_LIST = 2000
+
+
+class FilesRequest(BaseModel):
+    cwd: str = Field(..., min_length=1, max_length=4096)
+    path: str = Field(default="", max_length=4096)
+
+
+def _file_err(error: str, message: str) -> Dict[str, Any]:
+    return {"ok": False, "error": error, "message": message}
+
+
+def _workspace_root(cwd: str) -> Path:
+    """The resolved workspace root, or ValueError with a refusal code."""
+    if not cwd.startswith("/"):
+        raise ValueError("bad-path")
+    home = Path.home().resolve()
+    root = Path(cwd).resolve()
+    if root == home or home not in root.parents:
+        raise ValueError("outside-home")
+    rel_parts = root.relative_to(home).parts
+    if rel_parts and rel_parts[0].startswith(".hermes"):
+        raise ValueError("protected")
+    if not root.is_dir():
+        raise ValueError("not-found")
+    return root
+
+
+def _confined(root: Path, rel: str) -> Path:
+    """``root/rel`` resolved and proven inside ``root``; ValueError otherwise."""
+    rel = (rel or "").strip()
+    if rel.startswith("/") or "\\" in rel or "\x00" in rel:
+        raise ValueError("bad-path")
+    parts = [p for p in rel.split("/") if p not in ("", ".")]
+    if any(p == ".." for p in parts):
+        raise ValueError("bad-path")
+    target = root.joinpath(*parts).resolve() if parts else root
+    if target != root and root not in target.parents:
+        raise ValueError("outside-workspace")
+    return target
+
+
+def _files_call(req: FilesRequest, op: str) -> Dict[str, Any]:
+    try:
+        root = _workspace_root(req.cwd)
+    except ValueError as exc:
+        return _file_err(str(exc), "Taste Roll can only read the session workspace under your home folder.")
+    if op == "root":
+        return {"ok": True, "path": str(root)}
+    try:
+        target = _confined(root, req.path)
+    except ValueError as exc:
+        return _file_err(str(exc), "That path is outside the session workspace.")
+    try:
+        if op == "list":
+            if not target.is_dir():
+                return _file_err("not-found", "No such folder in the workspace.")
+            entries = []
+            truncated = False
+            for child in sorted(target.iterdir(), key=lambda c: c.name):
+                if len(entries) >= _MAX_LIST:
+                    truncated = True
+                    break
+                try:
+                    is_dir = child.is_dir()
+                except OSError:
+                    continue
+                if not is_dir and not child.name.lower().endswith(_FILE_EXTS):
+                    continue
+                entries.append({"name": child.name, "isDirectory": is_dir})
+            return {"ok": True, "entries": entries, "truncated": truncated}
+        if op == "stat":
+            if not target.exists():
+                return {"ok": True, "exists": False}
+            if target.is_dir():
+                return {"ok": True, "exists": True, "isDirectory": True}
+            if not target.name.lower().endswith(_FILE_EXTS):
+                return _file_err("refused", "Taste Roll reads only HTML and CSS files.")
+            st = target.stat()
+            return {"ok": True, "exists": True, "isDirectory": False,
+                    "mtimeMs": int(st.st_mtime * 1000), "size": st.st_size}
+        if op == "read":
+            if not target.is_file():
+                return _file_err("not-found", "No such file in the workspace.")
+            if not target.name.lower().endswith(_FILE_EXTS):
+                return _file_err("refused", "Taste Roll reads only HTML and CSS files.")
+            st = target.stat()
+            if st.st_size > _MAX_READ:
+                return _file_err("too-large", "File is larger than 4 MiB.")
+            text = target.read_text(encoding="utf-8", errors="replace")
+            return {"ok": True, "mtimeMs": int(st.st_mtime * 1000), "size": st.st_size, "text": text}
+    except OSError as exc:
+        return _file_err("io-error", f"{type(exc).__name__}")
+    return _file_err("bad-op", "unknown operation")
+
+
+@router.post("/files/root")
+def files_root(req: FilesRequest) -> Dict[str, Any]:
+    return _files_call(req, "root")
+
+
+@router.post("/files/list")
+def files_list(req: FilesRequest) -> Dict[str, Any]:
+    return _files_call(req, "list")
+
+
+@router.post("/files/stat")
+def files_stat(req: FilesRequest) -> Dict[str, Any]:
+    return _files_call(req, "stat")
+
+
+@router.post("/files/read")
+def files_read(req: FilesRequest) -> Dict[str, Any]:
+    return _files_call(req, "read")

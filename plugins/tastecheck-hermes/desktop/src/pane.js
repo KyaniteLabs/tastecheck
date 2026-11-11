@@ -997,13 +997,40 @@ function rebaseInWorkspace(absPath, grantPath, cwd) {
   return abs.slice(base.length + 1)
 }
 
+/* Remote gateway: Desktop's ctx.files is local to this machine, so when the
+ * session workspace lives on the gateway host no local grant can ever cover
+ * it. The agent half serves the same read-only shapes (HTML/CSS only,
+ * confined to the workspace) under this plugin's REST namespace. */
+function backendFiles(rest, cwd) {
+  const call = (op, path) => rest(`/files/${op}`, { method: 'POST', body: { cwd, path: path || '' }, timeoutMs: 15000 })
+  return {
+    list: (_folder, path) => call('list', path),
+    stat: (_folder, path) => call('stat', path),
+    readText: (_folder, path) => call('read', path)
+  }
+}
+
+/** The folder to roll from: { id, path, files }. A local grant covering cwd
+ *  wins; else the gateway's own view of cwd; else ask for a local folder. */
 async function grantFor(cwd) {
-  const folders = await pluginCtx.files.folders()
-  const granted = (folders || []).filter((f) => f && f.path && cwd && (cwd + '/').startsWith(f.path.replace(/\/+$/, '') + '/'))
-  if (granted.length) return granted.sort((a, b) => b.path.length - a.path.length)[0]
+  const local = (f) => (f ? { id: f.id, path: f.path, files: pluginCtx.files } : null)
+  const hasLocal = pluginCtx.files && typeof pluginCtx.files.folders === 'function'
+  if (hasLocal) {
+    const folders = await pluginCtx.files.folders()
+    const granted = (folders || []).filter((f) => f && f.path && cwd && (cwd + '/').startsWith(f.path.replace(/\/+$/, '') + '/'))
+    if (granted.length) return local(granted.sort((a, b) => b.path.length - a.path.length)[0])
+  }
+  if (cwd && typeof pluginCtx.rest === 'function') {
+    try {
+      const rest = pluginCtx.rest.bind(pluginCtx)
+      const res = await rest('/files/root', { method: 'POST', body: { cwd, path: '' }, timeoutMs: 15000 })
+      if (res && res.ok === true && typeof res.path === 'string') return { id: 'gateway', path: cwd.replace(/\/+$/, ''), files: backendFiles(rest, cwd), remote: true }
+    } catch { /* older agent half or no gateway: fall through to a local grant */ }
+  }
+  if (!hasLocal) return null
   const asked = await pluginCtx.files.requestFolder()
   if (!asked || asked.ok !== true || !asked.folder) return null
-  return asked.folder
+  return local(asked.folder)
 }
 
 /* ---- per-column gate (R2) --------------------------------------------------
@@ -1077,7 +1104,7 @@ async function runRoll() {
        * re-check it sits inside this session's workspace before any read. */
       const rel = rebaseInWorkspace(current.filePath, folder.path, cwd)
       if (rel) {
-        const stat = await pluginCtx.files.stat(folder.id, rel)
+        const stat = await folder.files.stat(folder.id, rel)
         if (stat && stat.ok === true && stat.exists) {
           target = { rel, why: current.why || 'same surface as your previous rolls' }
         }
@@ -1096,7 +1123,7 @@ async function runRoll() {
           activeRel = abs.slice(baseAbs.length ? baseAbs.length + 1 : 0).replace(/^\/+/, '')
         }
       }
-      target = await resolveSurface(pluginCtx.files, folder.id, cwd, folder.path, activeRel)
+      target = await resolveSurface(folder.files, folder.id, cwd, folder.path, activeRel)
     }
     if (!target) {
       /* R5: no HTML in the workspace — say so IN the strip, not only a toast. */
@@ -1105,7 +1132,7 @@ async function runRoll() {
       host.notify(comparison.noHtml.message)
       return
     }
-    const read = await pluginCtx.files.readText(folder.id, target.rel)
+    const read = await folder.files.readText(folder.id, target.rel)
     if (!read || read.ok !== true) {
       host.notifyError(`Taste Roll could not read ${target.rel}.`)
       return
@@ -1173,7 +1200,7 @@ async function switchSurface(rel) {
       host.notifyError(`Taste Roll only rolls files inside this session's workspace; ${rel} is not.`)
       return
     }
-    const stat = await pluginCtx.files.stat(folder.id, rel)
+    const stat = await folder.files.stat(folder.id, rel)
     if (!stat || stat.ok !== true || !stat.exists) {
       host.notifyError(`Taste Roll could not find ${rel}.`)
       return
