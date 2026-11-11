@@ -421,11 +421,22 @@ def _ok_codes(args: List[str]) -> Tuple[int, ...]:
     return (0, 1) if args and args[0] == "audit" else (0,)
 
 
+def _split_command(command: str, windows: Optional[bool] = None) -> List[str]:
+    """Split ``tastecheck_command`` into argv. POSIX shell rules, except on Windows, where
+    backslashes are path separators and must survive: ``C:\\tools\\tc.mjs`` stays whole and
+    double quotes group words (then are dropped)."""
+    if windows is None:
+        windows = os.name == "nt"
+    if not windows:
+        return shlex.split(command)
+    return [t[1:-1] if len(t) >= 2 and t[0] == t[-1] == '"' else t for t in shlex.split(command, posix=False)]
+
+
 def run_tastecheck(args: List[str], timeout: Optional[float] = None) -> Dict[str, Any]:
     run_tmp = ""
     try:
         override = str(_cfg("tastecheck_command") or "").strip()
-        cmd = (shlex.split(override) if override else _verified_cli()) + args
+        cmd = (_split_command(override) if override else _verified_cli()) + args
     except Exception as exc:
         logger.debug("tastecheck: CLI setup failed", exc_info=True)
         return {"ok": False, "error": f"tastecheck CLI unavailable: {exc}"}
