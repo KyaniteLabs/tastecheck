@@ -1,0 +1,6 @@
+tastecheck-hermes
+Copyright (c) 2026 Kyanite Labs, MIT License (see LICENSE).
+
+This folder bundles no third-party source code. The vendored CLI under vendor/tastecheck is
+this project's own code (MIT, checked against vendor/MANIFEST.json). The plugin imports Hermes
+(MIT, Nous Research) at runtime from the host install; none of it is copied here.

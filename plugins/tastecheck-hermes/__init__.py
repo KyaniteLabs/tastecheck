@@ -86,6 +86,7 @@ _ctx = None
 # --- config -----------------------------------------------------------------
 
 _SETTINGS_CACHE: Dict[str, Any] = {"at": 0.0, "value": {}}
+_CONFIG_WARNED = False
 
 
 def _settings_from_config() -> Dict[str, Any]:
@@ -105,7 +106,10 @@ def _settings_from_config() -> Dict[str, Any]:
         if isinstance(settings, dict):
             value = settings
     except Exception:
-        logger.debug("tastecheck: config read failed; using defaults", exc_info=True)
+        global _CONFIG_WARNED
+        if not _CONFIG_WARNED:
+            _CONFIG_WARNED = True
+            logger.warning("tastecheck: config read failed; using defaults", exc_info=True)
     _SETTINGS_CACHE.update(at=now, value=value)
     return value
 
