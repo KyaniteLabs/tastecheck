@@ -5,6 +5,10 @@ All notable changes to the tastecheck skill pack. Format follows
 
 ## [Unreleased]
 
+### Fixed — CI: the Python jobs run on the Forgejo runners
+
+- `verify / plugin` and `verify / entry-point-contract` failed at setup on every run, because the runners use Debian `node:22` images and `actions/setup-python` has only Ubuntu builds. Both jobs now get CPython 3.11 and 3.14 from `astral-sh/setup-uv`. The tests themselves were already passing.
+
 ### Fixed — Hermes plugin 0.2.0: the completion gate binds evidence, not vocabulary
 
 - **Gate triggers on declared frontend work only** (named `.html` artifacts or frontend sources, `metadata.tastecheck`, or a `tastecheck: required` card marker), never on summary words; every declared artifact needs its own fresh SHIP, bound to its content digest and to every file the audit served.
