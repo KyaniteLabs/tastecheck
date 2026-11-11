@@ -79,10 +79,15 @@ function nearestField(prefs) {
   }
   return best
 }
+/* Compare by content: the theme copies each event before delivering it, so nested
+   objects (world, signal, ink) are never the same references as a preset's. */
 function sameTune(a, b) {
-  if (!a || !b) return false
+  if (a === b) return true
+  if (!a || !b || typeof a !== 'object' || typeof b !== 'object') return false
+  if (Array.isArray(a) !== Array.isArray(b)) return false
   const keys = Object.keys(a)
-  return keys.length === Object.keys(b).length && keys.every((k) => a[k] === b[k])
+  return keys.length === Object.keys(b).length &&
+    keys.every((k) => Object.prototype.hasOwnProperty.call(b, k) && sameTune(a[k], b[k]))
 }
 function fieldOfTasteEvent(ev) {
   if (!ev || typeof ev !== 'object') return null

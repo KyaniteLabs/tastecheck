@@ -1,6 +1,22 @@
 tastecheck-hermes
 Copyright (c) 2026 Kyanite Labs, MIT License (see LICENSE).
 
-This folder bundles no third-party source code. The vendored CLI under vendor/tastecheck is
-this project's own code (MIT, checked against vendor/MANIFEST.json). The plugin imports Hermes
-(MIT, Nous Research) at runtime from the host install; none of it is copied here.
+The vendored CLI under vendor/tastecheck is this project's own code (MIT, checked against
+vendor/MANIFEST.json). The plugin imports Hermes (MIT, Nous Research) at runtime from the host
+install; none of it is copied here.
+
+desktop/plugin.js bundles the Resonant Field theme (desktop/theme/resonant-field.js, Kyanite
+Labs, MIT), which embeds third-party fonts as data URIs:
+
+- Hanken Grotesk (400, 600), SIL Open Font License 1.1.
+  Copyright 2021 The Hanken Grotesk Project Authors.
+  desktop/theme/licenses/OFL-hankengrotesk.txt
+- Bricolage Grotesque (700), SIL Open Font License 1.1.
+  Copyright 2022 The Bricolage Grotesque Project Authors.
+  desktop/theme/licenses/OFL-bricolagegrotesque.txt
+
+The theme's background textures are greyscale, blurred derivatives of images the author
+generated for the Resonant Field project with OpenAI's Codex image generation tool. They are
+AI-generated images, not photographs. The MIT licence covers them only to the extent the
+author holds rights in them; AI-generated images may carry no copyright at all, and no
+warranty of originality is given.

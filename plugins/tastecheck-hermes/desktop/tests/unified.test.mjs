@@ -448,7 +448,7 @@ test('Reset and a custom tune that equals a preset are not votes', async () => {
   const store = { get: (k, d) => (k in s ? s[k] : d), set: (k, v) => { s[k] = JSON.parse(JSON.stringify(v)) } }
   const taste = mod.createTaste(store, () => 0.5)
   for (const p of mod.__theme.PRESETS) {
-    assert.equal(taste.observeTheme({ kind: 'tune', v: 1, prefs: { ...p.prefs } }), false, `${p.id} prefs as a tune`)
+    assert.equal(taste.observeTheme({ kind: 'tune', v: 1, prefs: structuredClone(p.prefs) }), false, `${p.id} prefs as a tune`)
   }
   assert.equal(taste.stats().theme, 0)
   assert.equal(taste.observeTheme({ kind: 'tune', v: 1, prefs: { ...mod.__theme.PRESETS[0].prefs, hue: 64 } }), true, 'a real custom tune still counts')
