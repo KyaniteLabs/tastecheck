@@ -4,12 +4,14 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+permissions:
+  contents: read
 jobs:
   plugin:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
       # The Forgejo runners are Debian node:22 images that cannot use
@@ -36,7 +38,7 @@ jobs:
         run: |
           set -e
           for py in 3.11 3.14; do
-            uv run --no-project --python "$py" --with pytest --with fastapi --with pydantic --with hypothesis \
+            uv run --no-project --python "$py" --with pytest==9.2.0 --with fastapi --with pydantic --with hypothesis \
               python -m pytest plugins/tastecheck-hermes/tests -q
           done
       - name: Full plugin suite against real Hermes (floor v0.21.6 and current v0.23.1, no skips)
@@ -61,7 +63,7 @@ jobs:
             git -C "$src" checkout -q FETCH_HEAD
             test "$(git -C "$src" rev-parse HEAD)" = "$pin"
             echo "== Hermes $tag ($pin)"
-            uv run --no-project --python 3.11 --with pytest --with fastapi --with pydantic --with hypothesis --with ruamel.yaml \
+            uv run --no-project --python 3.11 --with pytest==9.2.0 --with fastapi --with pydantic --with hypothesis --with ruamel.yaml \
               --with-editable "$src" \
               python -m pytest plugins/tastecheck-hermes/tests -q
           done
@@ -77,8 +79,8 @@ jobs:
   structural:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: npm
@@ -92,8 +94,8 @@ jobs:
   oracle:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: npm
@@ -113,8 +115,8 @@ jobs:
   entry-point-contract:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: npm
