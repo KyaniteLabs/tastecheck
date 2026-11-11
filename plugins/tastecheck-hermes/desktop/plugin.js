@@ -614,6 +614,20 @@ async function resolveSurface(files, folderId, cwd, grantPath, activeRel) {
   return { rel, why: `${seamNote} ${newest.rel} (CSS) → its nearest HTML; tap a file below if this isn't yours`, viaSeam: false, candidates }
 }
 
+/** The grant-relative path of an absolute file, or null unless the file lies
+ *  inside BOTH the session workspace (cwd) and the folder grant. A restored
+ *  comparison saved under a narrower grant can never read a sibling project. */
+function rebaseInWorkspace(absPath, grantPath, cwd) {
+  const strip = (p) => String(p || '').replace(/\/{2,}/g, '/').replace(/\/+$/, '')
+  const abs = strip(absPath)
+  const base = strip(grantPath)
+  const ws = strip(cwd)
+  if (!abs || !base || !ws) return null
+  if (abs.split('/').some((seg) => seg === '..' || seg === '.')) return null
+  if (!abs.startsWith(ws + '/') || !abs.startsWith(base + '/')) return null
+  return abs.slice(base.length + 1)
+}
+
 async function grantFor(cwd) {
   const folders = await pluginCtx.files.folders()
   const granted = (folders || []).filter((f) => f && f.path && cwd && (cwd + '/').startsWith(f.path.replace(/\/+$/, '') + '/'))
@@ -687,9 +701,14 @@ async function runRoll() {
      * exists, so consecutive rolls iterate the same surface. */
     let target = null
     if (current && current.file) {
-      const stat = await pluginCtx.files.stat(folder.id, current.file)
-      if (stat && stat.ok === true && stat.exists) {
-        target = { rel: current.file, why: current.why || 'same surface as your previous rolls' }
+      /* Stored identity is the ABSOLUTE path; rebase it onto today's grant and
+       * re-check it sits inside this session's workspace before any read. */
+      const rel = rebaseInWorkspace(current.filePath, folder.path, cwd)
+      if (rel) {
+        const stat = await pluginCtx.files.stat(folder.id, rel)
+        if (stat && stat.ok === true && stat.exists) {
+          target = { rel, why: current.why || 'same surface as your previous rolls' }
+        }
       }
     }
     if (!target) {
@@ -766,11 +785,17 @@ async function runRoll() {
 async function switchSurface(rel) {
   if (inFlight || !pluginCtx || !comparison) return
   inFlight = true
+  let switched = false
   try {
     const cwd = (host.state.cwd && host.state.cwd.get ? host.state.cwd.get() : '') || ''
     const folder = await grantFor(cwd)
     if (!folder) {
       host.notifyError('Taste Roll needs your project folder to switch surface.')
+      return
+    }
+    const strip = (p) => String(p || '').replace(/\/+$/, '')
+    if (!rebaseInWorkspace(`${strip(folder.path)}/${rel}`, folder.path, cwd)) {
+      host.notifyError(`Taste Roll only rolls files inside this session's workspace; ${rel} is not.`)
       return
     }
     const stat = await pluginCtx.files.stat(folder.id, rel)
@@ -790,11 +815,14 @@ async function switchSurface(rel) {
     }
     persistComparison()
     openPane()
+    switched = true
   } catch (err) {
     host.notifyError(`Taste Roll could not switch surface: ${(err && err.message) || err}`)
   } finally {
     inFlight = false
-    void runRoll() /* first roll on the named surface (sticky target) */
+    /* Roll only after a successful switch: a failure must not re-open the
+     * folder picker or roll the old surface. */
+    if (switched) void runRoll()
   }
 }
 

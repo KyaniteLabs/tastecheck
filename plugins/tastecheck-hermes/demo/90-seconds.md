@@ -6,8 +6,8 @@ stamp live; the completion gate bites at the start and lifts at the end.
 TOTAL 78 s — strictly under 90.
 
 Recording surface: Hermes Desktop. Scrub tokens/private paths. Banner 2:1 uses
-`docs/hero/tastecheck-hermes-r21.png` in the repository (approved master, kept out of the plugin install; sha256
-`50b7be9d349ea3d341c6bb64667497cb0b78c7cc7fbbb57f7a99b80a6a5a21f4`).
+`docs/hero/tastecheck-hermes-a1.png` in the repository (approved master, kept out of the plugin install; sha256
+`2551cc343a2dd2dd786e44955b377532aa65339b252212f198de30b787f658c1`).
 
 ## Timeline (the clicks are the demo)
 
@@ -19,7 +19,7 @@ Recording surface: Hermes Desktop. Scrub tokens/private paths. Banner 2:1 uses
 - **8–22 s CLICK 1 — your page, restyled + gated.** Open your own project in
   Desktop. Click **🎲 Taste Roll** in the composer (or ⌘K → "Taste Roll").
   Grant the project folder when asked (one picker, once). The `Taste Roll`
-  pane opens BESIDE the chat, no navigation: left column = your unchanged page
+  workspace pane opens (where Desktop docks workspace panes; no navigation): left column = your unchanged page
   (file named in the header with how it was picked — on a host with no
   active-file API: "no active-file API in this Desktop build — picked newest
   edit (app.html); tap a file below if this isn't yours"); column 2 =
@@ -40,9 +40,11 @@ Recording surface: Hermes Desktop. Scrub tokens/private paths. Banner 2:1 uses
   (or ask the agent). Show the verdict-first output: `SHIP`/`HOLD`, hold
   reasons with selectors/measurements, evidence dir. Open one screenshot
   (`shot-light.png` / `shot-narrow-390.png`) from plugin-data.
-- **66–74 s THE GATE LIFTS.** Retry the completion; it passes now — the ledger
-  holds a fresh SHIP bound to this workspace/artifact. "Same command, evidence
-  in hand."
+- **66–74 s THE GATE LIFTS — or honestly doesn't.** If the audit said SHIP,
+  retry the completion; it passes now — the ledger holds a fresh SHIP bound to
+  this workspace/artifact. "Same command, evidence in hand." If it said HOLD,
+  show that instead: retry the completion, it is still blocked, name the top
+  hold reason. "No SHIP, no done." Never re-record to hide a HOLD.
 - **74–78 s CLOSE.** One line: "Fail-closed by default; SHIP only with
   rendered evidence." Install/docs pointer. **TOTAL 78 s.**
 
