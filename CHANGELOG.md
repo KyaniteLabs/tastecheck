@@ -12,7 +12,7 @@ All notable changes to the tastecheck skill pack. Format follows
 - **Less reach by default.** Link checks (25 same-origin GETs) are off unless `fetch_links: true`. JavaScript dialogs are dismissed. Data files (`.json .map .webmanifest .txt .xml`) are served only from the audited page's directory. Each run gets its own temp directory, removed afterwards. The evidence records the Chrome sandbox state and whether links were fetched.
 - **Messaging surfaces see no local paths.** Slash replies scrub home, workspace and other absolute paths. Slash arguments take one target: Windows paths are kept as typed, a path with spaces needs quotes, and extra words are an error.
 - **Taste Roll:** restored history is stored as an absolute path and re-checked against the workspace before any read, so a wider folder grant can't pull in a sibling project. A failed surface switch no longer re-opens the folder picker. The dashboard refuses columns with relative subresources, returns "busy" immediately instead of waiting up to 240 s, prunes under the lock without touching the active audit, and `/health` never 500s.
-- **CI runs the dispatch tests against real Hermes** (v0.21.6, pinned by commit) with `TASTECHECK_REQUIRE_RUNTIME=1`, so they can't silently skip.
+- **CI runs the full plugin suite against real Hermes** (the floor v0.21.6 and the current v0.23.1, each pinned by commit) with `TASTECHECK_REQUIRE_RUNTIME=1`, so they can't silently skip.
 - **Docs:** README discloses the defaults above, the profile-edit workflow and the test dependencies. The demo script has an honest HOLD branch and no longer promises the pane opens beside the chat.
 
 ### Changed — icon
