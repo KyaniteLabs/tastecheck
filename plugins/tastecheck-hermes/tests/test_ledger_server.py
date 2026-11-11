@@ -239,6 +239,25 @@ def test_config_is_read_from_hermes_config_without_ctx(plugin, monkeypatch):
     assert plugin._cfg("gate_completions") == plugin.DEFAULTS["gate_completions"]
 
 
+def test_unreadable_hermes_config_warns_once_and_uses_defaults(plugin, monkeypatch, caplog):
+    def boom():
+        raise RuntimeError("config is corrupt")
+    fake = types.ModuleType("hermes_cli.config")
+    fake.load_config_readonly = boom
+    pkg = types.ModuleType("hermes_cli")
+    pkg.config = fake
+    monkeypatch.setitem(sys.modules, "hermes_cli", pkg)
+    monkeypatch.setitem(sys.modules, "hermes_cli.config", fake)
+    plugin._ctx = None
+    monkeypatch.setattr(plugin, "_CONFIG_WARNED", False, raising=False)
+    caplog.set_level("DEBUG", logger=plugin.logger.name)
+    for _ in range(2):
+        plugin._SETTINGS_CACHE.update(at=0.0, value={})
+        assert plugin._cfg("timeout_seconds") == plugin.DEFAULTS["timeout_seconds"]
+    warnings = [r for r in caplog.records if r.levelname == "WARNING" and "config read failed" in r.getMessage()]
+    assert len(warnings) == 1
+
+
 def test_legacy_profile_is_copied_not_moved(plugin, hermes_home):
     old = hermes_home / "plugin-data" / "tastecheck" / "profile.json"
     old.parent.mkdir(parents=True)

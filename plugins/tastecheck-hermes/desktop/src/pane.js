@@ -54,8 +54,14 @@ import { createElement as h } from 'react'
 
 /* The Resonant Field theme is this plugin's face: its presets are the colour
  * fields Taste Roll paints columns with, and its choices teach the same learner
- * Keep/Pass does. It loads only where Desktop has the themes area. */
-const RF_ON = typeof SDK.THEMES_AREA === 'string' && typeof SDK.atom === 'function'
+ * Keep/Pass does. It needs Hermes Desktop 0.23.0 or newer (themes area, theme
+ * switching and the Appearance components); TasteCheck itself still runs from
+ * 0.21.6, so on an older Desktop every piece the theme imports is checked here
+ * and a missing one leaves Taste Roll on its own. */
+const RF_FUNCTIONS = ['atom', 'requestTheme', 'useTheme', 'useValue', 'Tip', 'Button', 'ListRow', 'Select', 'SelectContent', 'SelectItem', 'SelectTrigger', 'SelectValue', 'ToggleRow']
+const RF_ON = typeof SDK.THEMES_AREA === 'string' &&
+  !!SDK.APPEARANCE_AREAS && typeof SDK.APPEARANCE_AREAS === 'object' &&
+  RF_FUNCTIONS.every((name) => SDK[name] != null)
 const FIELD_PREFIX = 'resonant-field-'
 const fieldPreset = (v) => RF.PRESETS.find((p) => p.id === FIELD_PREFIX + v) || null
 const fieldLabel = (v) => { const p = fieldPreset(v); return p ? p.label.replace('Resonant Field · ', '') : String(v) }
@@ -72,6 +78,16 @@ function nearestField(prefs) {
     if (d < bd) { bd = d; best = v }
   }
   return best
+}
+/* Compare by content: the theme copies each event before delivering it, so nested
+   objects (world, signal, ink) are never the same references as a preset's. */
+function sameTune(a, b) {
+  if (a === b) return true
+  if (!a || !b || typeof a !== 'object' || typeof b !== 'object') return false
+  if (Array.isArray(a) !== Array.isArray(b)) return false
+  const keys = Object.keys(a)
+  return keys.length === Object.keys(b).length &&
+    keys.every((k) => Object.prototype.hasOwnProperty.call(b, k) && sameTune(a[k], b[k]))
 }
 function fieldOfTasteEvent(ev) {
   if (!ev || typeof ev !== 'object') return null
@@ -390,6 +406,9 @@ export function createTaste(store, rng = Math.random, onChange = null) {
     observeTheme(ev) {
       const v = fieldOfTasteEvent(ev)
       if (!v) return false
+      /* Reset (and a tune that lands exactly on a preset) is not the user
+       * choosing a custom look: the preset's own prefs are no new evidence. */
+      if (ev.kind === 'tune' && RF.PRESETS.some((q) => sameTune(q.prefs, ev.prefs))) return false
       if (ev.kind === 'tune' && t.lastTune === v) return false
       t.lastTune = ev.kind === 'tune' ? v : null
       t.post.field[v][0] += ev.kind === 'preset' ? 0.5 : 0.3
@@ -797,9 +816,18 @@ let inFlight = false
 
 function storageKey(cwd) { return `roll:${cwd || '(detached)'}` }
 
+const MAX_STORED_WORKSPACES = 40
+
+/* Stored history is untrusted input: anything that is not a plain object is
+ * treated as empty rather than thrown on or silently dropped. */
+function storedComparisons() {
+  const all = pluginCtx.storage.get('comparisons', {})
+  return all && typeof all === 'object' && !Array.isArray(all) ? all : {}
+}
+
 function loadComparison(cwd) {
   if (!pluginCtx) return null
-  const all = pluginCtx.storage.get('comparisons', {})
+  const all = storedComparisons()
   const saved = all[storageKey(cwd)]
   if (!saved || !Array.isArray(saved.columns) || !saved.columns.length) return null
   /* Storage holds { seed, roll } per column and never a gate; read only those
@@ -824,8 +852,12 @@ function persistComparison() {
     candidates: Array.isArray(comparison.candidates) ? comparison.candidates.slice(0, 10) : undefined,
     columns: (comparison.columns || []).map((c) => ({ seed: c.seed, roll: c.roll, src: c.src, rating: c.rating == null ? null : c.rating, reason: c.reason || null }))
   }
-  const all = pluginCtx.storage.get('comparisons', {})
-  all[storageKey(comparison.cwd)] = slim
+  const all = storedComparisons()
+  const key = storageKey(comparison.cwd)
+  delete all[key] /* re-insert last: object key order is the recency order */
+  all[key] = slim
+  const keys = Object.keys(all)
+  for (const old of keys.slice(0, Math.max(0, keys.length - MAX_STORED_WORKSPACES))) delete all[old]
   pluginCtx.storage.set('comparisons', all)
 }
 
@@ -1433,20 +1465,20 @@ function ColumnHeader(props) {
   ]
   const gate = gateOf(col)
   if (gate === GATE.SHIP) {
-    kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
+    kids.push(h('div', { key: 'stamp', role: 'status', 'aria-live': 'polite', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
       h('span', { style: STAMP_STYLE.SHIP }, 'SHIP'),
       h('span', { style: { fontSize: '.78rem' } }, 'gate passed')))
   } else if (gate === GATE.HOLD) {
-    kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'baseline', marginTop: '.15rem', flexWrap: 'wrap' } },
+    kids.push(h('div', { key: 'stamp', role: 'status', 'aria-live': 'polite', style: { display: 'flex', gap: '.45rem', alignItems: 'baseline', marginTop: '.15rem', flexWrap: 'wrap' } },
       h('span', { style: STAMP_STYLE.HOLD }, 'HOLD'),
       h('span', { style: { fontSize: '.78rem' } }, (col.reasons || []).slice(0, 2).join(' · ') || 'held')))
   } else if (gate === GATE.RESTORED) {
-    kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
+    kids.push(h('div', { key: 'stamp', role: 'status', 'aria-live': 'polite', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
       h('span', { style: STAMP_STYLE.PENDING }, 'GATE —'),
       h('span', { style: { fontSize: '.78rem' } }, 'not audited this session (click Taste Roll to re-roll + gate)')))
   } else {
     /* PENDING — and, fail closed, any unknown gate value: never a SHIP stamp. */
-    kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
+    kids.push(h('div', { key: 'stamp', role: 'status', 'aria-live': 'polite', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
       h('span', { style: STAMP_STYLE.PENDING }, 'GATE…'),
       h('span', { style: { fontSize: '.78rem' } }, 'auditing this column')))
   }
@@ -1463,6 +1495,8 @@ function SurfacePicker(props) {
     kids.push(h('button', {
       key: rel,
       type: 'button',
+      'aria-label': `Roll ${rel}`,
+      'aria-pressed': rel === current,
       onClick: (e) => { e.preventDefault(); void switchSurface(rel) },
       style: {
         border: '1px solid var(--line, #ddd)',
@@ -1808,7 +1842,7 @@ function registerLookRoll(ctx) {
 /* Test seam for the column gate machine (the host only reads the default export). */
 export const __columnGate = Object.freeze({ GATE, GATE_MOVES, gateOf, newColumn, stampGate, markRestored, gateStampFor })
 /* Test seam for the theme merge. */
-export const __theme = Object.freeze({ RF_ON, FIELDS: FACES.field, fieldCss, nearestField, fieldOfTasteEvent, buildRolledHtml, contrast: RF.contrast })
+export const __theme = Object.freeze({ RF_ON, PRESETS: RF.PRESETS, FIELDS: FACES.field, fieldCss, nearestField, fieldOfTasteEvent, buildRolledHtml, contrast: RF.contrast })
 /* Test seam for the look roll. */
 export const __look = Object.freeze({ LOOK_ON, LOOK, lookPrefs, canonLook, describeLook, cleanLook, buildTheme: RF.buildTheme, PLATES: RF.PLATES, ALT_PLATE })
 
