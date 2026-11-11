@@ -39,7 +39,7 @@ Release rules (fail closed):
 - **Flag or marker only:** every page/loopback URL audited in this workspace is considered; any latest HOLD blocks, and at least one valid SHIP is required.
 - Only signed entries written by `audit()` count. ERROR outcomes (tool failure, identity mismatch, page changed mid-audit) neither release nor revoke; a mistyped path records nothing. Taste Roll column verdicts never count. An unreadable ledger blocks. If a verdict cannot be written to the ledger, that target stays blocked until a later audit records.
 
-**Ledger integrity, honestly:** entries are HMAC-SHA256 signed with a per-profile key (`plugin-data/tastecheck-hermes/ledger.key`, mode 0600). That defeats an agent hand-editing `verdict_ledger.json` with a file tool. It does not stop code running as your OS user that deliberately reads the key — nothing inside a same-user plugin can.
+**Ledger integrity, honestly:** entries are HMAC-SHA256 signed with a per-profile key (`plugin-data/tastecheck-hermes/ledger.key`, mode 0600). That defeats an agent hand-editing `verdict_ledger.json` with a file tool. It does not stop code running as your OS user that deliberately reads the key — nothing inside a same-user plugin can. **Residual risk:** any process running as your OS user can read `ledger.key` and forge a signed SHIP entry; the 0600 mode only keeps other OS users out. Moving the key to the OS keyring is deferred (it would not change this, since the same user can ask the keyring too, and it adds a platform-specific dependency).
 
 ## Install
 
