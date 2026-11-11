@@ -6,8 +6,8 @@ stamp live; the completion gate bites at the start and lifts at the end.
 TOTAL 78 s — strictly under 90.
 
 Recording surface: Hermes Desktop. Scrub tokens/private paths. Banner 2:1 uses
-`docs/hero/tastecheck-hermes-r21.png` in the repository (approved master, kept out of the plugin install; sha256
-`50b7be9d349ea3d341c6bb64667497cb0b78c7cc7fbbb57f7a99b80a6a5a21f4`).
+`docs/hero/tastecheck-hermes-a1.png` in the repository (approved master, kept out of the plugin install; sha256
+`2551cc343a2dd2dd786e44955b377532aa65339b252212f198de30b787f658c1`).
 
 ## Timeline (the clicks are the demo)
 

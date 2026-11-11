@@ -99,6 +99,6 @@ Python tests run against the Hermes v0.21.6 `gateway/session_context.py` and `ag
 
 ## Demo (< 90 s)
 
-See `demo/90-seconds.md` — gate-first, opens on your own project via Taste Roll, ends on the audit verdict. Icon master: `docs/hero/tastecheck-hermes-r21.png` in the repository (kept out of the plugin install).
+See `demo/90-seconds.md` — gate-first, opens on your own project via Taste Roll, ends on the audit verdict. Icon master: `docs/hero/tastecheck-hermes-a1.png` in the repository (kept out of the plugin install).
 
 License: MIT (same as Tastecheck).

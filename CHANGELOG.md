@@ -5,6 +5,10 @@ All notable changes to the tastecheck skill pack. Format follows
 
 ## [Unreleased]
 
+### Changed — icon
+
+- New icon master `docs/hero/tastecheck-hermes-a1.png` (and a 512 px copy): the R21 loupe with a tiger's-eye handle, the rainbow lens sparkles removed and a darker gunmetal rim. The plugin README and demo script point at it. The design receipt is `docs/DESIGN-PREFLIGHT.md`.
+
 ### Fixed — CI: the Python jobs run on the Forgejo runners
 
 - `verify / plugin` and `verify / entry-point-contract` failed at setup on every run, because the runners use Debian `node:22` images and `actions/setup-python` has only Ubuntu builds. Both jobs now get CPython 3.11 and 3.14 from `astral-sh/setup-uv`. The tests themselves were already passing.
