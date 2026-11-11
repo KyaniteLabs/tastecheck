@@ -17,9 +17,15 @@ export const THEMES_AREA = 'themes'
 export const APPEARANCE_AREAS = { extra: 'appearance.extra' }
 export const Button = 'Button', ListRow = 'ListRow', ToggleRow = 'ToggleRow'
 export const Select = 'Select', SelectContent = 'SelectContent', SelectItem = 'SelectItem', SelectTrigger = 'SelectTrigger', SelectValue = 'SelectValue'
+/* Like Desktop: a switch only lands on a theme that resolves (built-ins plus
+ * whatever is registered right now), and the switched-to name is what useTheme
+ * reports. Starts on a non-Resonant-Field built-in so "back to Indigo" can't
+ * pass for "back to where you were". */
+export const BUILTINS = ['nous', 'everforest']
 export const requested = []
-export const requestTheme = n => (requested.push(n), true)
-export const useTheme = () => ({ themeName: 'resonant-field-indigo', resolvedMode: 'dark' })
+export const desk = { resolves: () => false, theme: 'everforest' }
+export const requestTheme = n => { if (!BUILTINS.includes(n) && !desk.resolves(n)) return false; requested.push(n); desk.theme = n; return true }
+export const useTheme = () => ({ themeName: desk.theme, resolvedMode: 'dark' })
 export const atom = v => { let x = v; return { get: () => x, set: n => { x = n } } }
 export const useValue = a => a.get()
 `)
@@ -46,7 +52,9 @@ function fakeCtx(store = {}) {
       set: (k, v) => { store[k] = JSON.parse(JSON.stringify(v)) },
       remove: (k) => { delete store[k] }
     },
-    register(c) { const key = ++seq; live.set(key, c); return () => live.delete(key) },
+    /* Like Desktop's registry: an (area, id) pair is one slot, re-registering
+     * replaces it, and a disposer removes whatever holds that slot now. */
+    register(c) { const key = c.id ? `${c.area}:${c.id}` : ++seq; live.set(key, c); return () => live.delete(key) },
     onDispose() {},
     setTimeout(fn) { timers.add(fn); return () => timers.delete(fn) },
     flush() { const due = [...timers]; timers.clear(); due.forEach((fn) => fn()) }
@@ -61,13 +69,15 @@ const walk = (node, fn) => {
   walk(node.children, fn)
 }
 
-async function boot(store) {
+async function boot(store, startTheme = 'everforest') {
   globalThis.__tc = { cwd: '', notifies: [], errors: [], workspaces: [] }
   mock.requested.length = 0
+  mock.desk.theme = startTheme
   const mod = await load()
   const ctx = fakeCtx(store)
-  mod.default.register(ctx)
   const themes = () => [...ctx.live.values()].filter((c) => c.area === 'themes').map((c) => c.data)
+  mock.desk.resolves = (n) => themes().some((x) => x.name === n)
+  mod.default.register(ctx)
   const card = () => [...ctx.live.values()].find((c) => c.area === 'appearance.extra').render()
   const button = (label) => { let f; walk(card(), (x) => x.type === 'Button' && x.props.children === label && (f = x)); return f }
   const range = (label) => { let f; walk(card(), (x) => typeof x.type === 'function' && x.type.name === 'Range' && x.props.label === label && (f = x)); return f }
@@ -198,21 +208,41 @@ test('two buttons: the page roll and the look roll both sit in the composer', as
   assert.equal(btnByLabel(bar, /Keep this look/), undefined, 'no Keep/Pass before a look is rolled')
 })
 
-test('rolling the look re-skins Desktop; Pass puts the previous theme back and teaches the field', async () => {
+const wait = (ms) => new Promise((r) => setTimeout(r, ms))
+const rolledTheme = (t) => t.themes().find((x) => x.name === 'resonant-field-rolled')
+
+test('rolling the look re-skins Desktop; Pass returns to the theme the user was on, not a default', async () => {
   const t = await boot()
-  lookBar(t) // records the theme on screen (stub: Indigo)
+  lookBar(t) // the composer render records what is on screen: everforest
   click(lookBar(t))
-  const rolled = t.themes().find((x) => x.label === 'Resonant Field · Rolled')
-  assert.ok(rolled, 'a rolled theme is registered')
-  assert.equal(mock.requested.at(-1), rolled.name, 'and switched to')
+  assert.ok(rolledTheme(t), 'a rolled theme is registered')
+  assert.equal(mock.desk.theme, 'resonant-field-rolled', 'and switched to (it resolved, so it was registered first)')
   const bar = lookBar(t)
   assert.ok(btnByLabel(bar, /Keep this look/) && btnByLabel(bar, /Pass on this look/), 'Keep and Pass appear')
-  const look = t.taste().lastLook.split('/')[0]
+  const field = t.taste().lastLook.split('/')[0]
   click(btnByLabel(bar, /Pass on this look/))
-  assert.equal(mock.requested.at(-1), 'resonant-field-indigo', 'Pass restores what was on screen')
-  assert.deepEqual(t.taste().post.field[look], [1, 2], 'and is a vote against that field')
+  assert.equal(mock.desk.theme, 'everforest', 'Pass restores what was on screen')
+  assert.deepEqual(t.taste().post.field[field], [1, 1.5], 'and is half a vote against that field')
   assert.equal(t.taste().lookLog.length, 1)
   assert.equal(btnByLabel(lookBar(t), /Keep this look/), undefined)
+  await wait(700)
+  assert.equal(rolledTheme(t), undefined, 'the rolled theme leaves the list after rating')
+})
+
+test('a roll left unrated survives a reload: same look, Keep/Pass still on offer, Pass still goes home', async () => {
+  const t = await boot()
+  lookBar(t)
+  click(lookBar(t))
+  const before = rolledTheme(t)
+  /* Desktop persisted the rolled name; the next load must resolve it. */
+  const again = await boot(t.ctx.store, 'resonant-field-rolled')
+  const after = rolledTheme(again)
+  assert.ok(after, 'the rolled theme is registered again on load, so Desktop does not fall back to its default')
+  assert.deepEqual(after.darkColors, before.darkColors, 'it is the same look')
+  click(btnByLabel(lookBar(again), /Pass on this look/))
+  assert.equal(mock.desk.theme, 'everforest', 'Pass still returns to the theme from before the roll')
+  assert.equal(again.taste().lookLog.length, 1)
+  assert.equal(again.ctx.store.pendingLook, undefined, 'nothing pending once rated')
 })
 
 test('Keep saves the look as a theme that survives a reload', async () => {
@@ -220,26 +250,51 @@ test('Keep saves the look as a theme that survives a reload', async () => {
   lookBar(t)
   click(lookBar(t))
   click(btnByLabel(lookBar(t), /Keep this look/))
-  assert.equal(mock.requested.at(-1), 'resonant-field-kept')
+  assert.equal(mock.desk.theme, 'resonant-field-kept')
   const kept = t.themes().find((x) => x.name === 'resonant-field-kept')
   assert.equal(kept.label, 'Resonant Field · Kept')
-  const again = await boot(t.ctx.store)
+  const again = await boot(t.ctx.store, 'resonant-field-kept')
   assert.ok(again.themes().find((x) => x.name === 'resonant-field-kept'), 'kept look is back after reload')
   assert.equal(again.taste().lookLog.length, 1, 'look ratings persist')
+  assert.equal(rolledTheme(again), undefined, 'no stale rolled theme after a rated roll')
 })
 
-test('rolling twice before rating alternates names and still returns to the starting theme', async () => {
+test('rolling twice before rating repaints in place and still returns to the starting theme', async () => {
   const t = await boot()
   lookBar(t)
   click(lookBar(t))
-  const first = mock.requested.at(-1)
+  const first = rolledTheme(t).darkColors
   click(btnByLabel(lookBar(t), /Roll another look/))
-  const second = mock.requested.at(-1)
-  assert.notEqual(first, second)
   assert.equal(t.themes().filter((x) => x.label === 'Resonant Field · Rolled').length, 1, 'only one rolled theme at a time')
+  assert.equal(mock.desk.theme, 'resonant-field-rolled')
+  assert.notDeepEqual(rolledTheme(t).darkColors, first, 'the second look paints differently')
   palette(t, 'taste-look-pass').run()
-  assert.equal(mock.requested.at(-1), 'resonant-field-indigo')
+  assert.equal(mock.desk.theme, 'everforest')
   assert.equal(t.taste().lookLog.length, 1, 'the unrated first roll carried no signal')
+})
+
+test('"put my theme back" undoes a roll with no vote at all', async () => {
+  const t = await boot()
+  lookBar(t)
+  click(lookBar(t))
+  const post = JSON.stringify(t.taste().post)
+  palette(t, 'taste-look-back').run()
+  assert.equal(mock.desk.theme, 'everforest')
+  assert.equal(JSON.stringify(t.taste().post), post, 'no posterior moved')
+  assert.equal(t.taste().lookLog.length, 0)
+  assert.equal(btnByLabel(lookBar(t), /Keep this look/), undefined)
+})
+
+test('Pass falls back to Indigo only when the old theme is gone', async () => {
+  const t = await boot()
+  lookBar(t)
+  click(lookBar(t))
+  mock.BUILTINS.splice(mock.BUILTINS.indexOf('everforest'), 1)
+  try {
+    click(btnByLabel(lookBar(t), /Pass on this look/))
+    assert.equal(mock.desk.theme, 'resonant-field-indigo')
+    assert.match(globalThis.__tc.notifies.at(-1) ?? '', /Indigo/)
+  } finally { mock.BUILTINS.push('everforest') }
 })
 
 test('every possible look keeps the contrast floors in light and dark', async () => {
@@ -290,4 +345,77 @@ test('saved taste from before the look roll loads cleanly', async () => {
   assert.equal(taste.stats().looks, 0)
   assert.ok(taste.chooseLook().look.field)
   assert.equal(mod.__look.cleanLook({ field: 'verdant', tint: 'x' }), null, 'a corrupt kept look is ignored')
+})
+
+const seeded = (a) => () => { a = (a + 0x6D2B79F5) >>> 0; let x = a; x = Math.imul(x ^ (x >>> 15), x | 1); x ^= x + Math.imul(x ^ (x >>> 7), x | 61); return ((x ^ (x >>> 14)) >>> 0) / 4294967296 }
+
+test('looks are canonical: a field with no texture of its own never teaches "show its texture"', async () => {
+  const { mod } = await boot()
+  const { canonLook } = mod.__look
+  assert.deepEqual(canonLook({ field: 'indigo', tint: 'base', shift: 'base', texture: 'own', presence: 'high' }),
+    { field: 'indigo', tint: 'base', shift: 'base', texture: 'bare', presence: 'mid' })
+  assert.equal(canonLook({ field: 'verdant', tint: 'base', shift: 'base', texture: 'own', presence: 'high' }).texture, 'own')
+  const taste = mod.createTaste(null, seeded(3))
+  taste.rateLook({ field: 'indigo', tint: 'base', shift: 'base', texture: 'own', presence: 'high' }, 'random', 1)
+  const st = taste._state().look
+  assert.deepEqual(st.texture.own, [1, 1], 'nothing credited to a texture that was not on screen')
+  assert.deepEqual(st.texture.bare, [2, 1])
+  assert.deepEqual(st.presence.high, [1, 1])
+})
+
+test('every distinct look paints a distinct theme, and no two consecutive rolls paint the same', async () => {
+  const { mod } = await boot()
+  const { LOOK, lookPrefs, canonLook, buildTheme, PLATES } = mod.__look
+  const paint = (l) => JSON.stringify(buildTheme('x', 'x', 'x', lookPrefs(l), PLATES, null))
+  const byKey = new Map()
+  for (const field of mod.__theme.FIELDS) for (const tint of LOOK.tint) for (const shift of LOOK.shift) for (const texture of LOOK.texture) for (const presence of LOOK.presence) {
+    const c = canonLook({ field, tint, shift, texture, presence })
+    byKey.set(JSON.stringify(c), paint(c))
+  }
+  const paints = new Set(byKey.values())
+  assert.equal(paints.size, byKey.size, 'canonical looks and painted themes are one-to-one')
+  const taste = mod.createTaste(null, seeded(5))
+  for (let i = 0; i < 10; i++) taste.rateLook({ field: 'walnut', tint: 'deep', shift: 'plus', texture: 'own', presence: 'high' }, 'random', 1)
+  let prev = null
+  for (let i = 0; i < 400; i++) {
+    const p = paint(taste.chooseLook().look)
+    assert.notEqual(p, prev, `roll ${i} repainted the same theme`)
+    prev = p
+  }
+  console.log(`# distinct looks: ${byKey.size}`)
+})
+
+test('every HOLDOUT-th look is plain random even with strong evidence', async () => {
+  const { mod } = await boot()
+  const taste = mod.createTaste(null, seeded(9))
+  for (let i = 0; i < 6; i++) taste.rateLook({ field: 'rosi', tint: 'soft', shift: 'minus', texture: 'alt', presence: 'low' }, 'random', 1)
+  for (let i = 1; i <= 50; i++) {
+    const { src } = taste.chooseLook()
+    if (i % 10 === 0) assert.equal(src, 'random', `look ${i} is a holdout`)
+  }
+})
+
+test('look honesty check: if learned looks lose to random ones, the look learning resets and says so', async () => {
+  const { mod } = await boot()
+  const taste = mod.createTaste(null, seeded(13))
+  const L = { field: 'daylight', tint: 'deep', shift: 'plus', texture: 'alt', presence: 'high' }
+  let msg = null
+  for (let i = 0; i < 5; i++) taste.rateLook(L, 'random', 1)
+  for (let i = 0; i < 5 && !msg; i++) msg = taste.rateLook(L, 'learned', 0)
+  assert.match(msg, /reset its look learning: learned looks were kept 0\/5, random ones 5\/5/)
+  assert.deepEqual(taste._state().look.tint.deep, [1, 1], 'look posteriors forgotten')
+  assert.ok(taste._state().post.field.daylight[0] > 1, 'the shared field posterior is kept')
+  assert.equal(taste.stats().lookLearned.n, 0)
+  assert.equal(taste.stats().lookRandom.n, 5)
+})
+
+test('older ratings fade: decay applies to look posteriors on each rating', async () => {
+  const { mod } = await boot()
+  const taste = mod.createTaste(null, seeded(17))
+  const A = { field: 'graphite', tint: 'soft', shift: 'base', texture: 'alt', presence: 'low' }
+  const B = { field: 'verdant', tint: 'deep', shift: 'plus', texture: 'own', presence: 'high' }
+  taste.rateLook(A, 'random', 1)
+  taste.rateLook(B, 'random', 1)
+  const [a] = taste._state().look.tint.soft
+  assert.ok(Math.abs(a - (1 + 0.97)) < 1e-9, `A's tint credit decayed once: ${a}`)
 })

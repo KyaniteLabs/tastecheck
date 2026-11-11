@@ -1384,7 +1384,7 @@ const REASONS = [
  * variation of a Resonant Field preset. The field comes from the same field
  * posterior the page rolls use, so a kept look, a kept column and a theme pick
  * all teach one taste. The other dimensions are small, curated moves around the
- * preset, never free colour: tint depth, a ±12° hue nudge, the texture plate
+ * preset, never free colour: tint depth, a ±20° hue nudge, the texture plate
  * and how strongly that texture shows. Contrast floors come from buildTheme. */
 const LOOK = {
   tint: ['soft', 'base', 'deep'],
@@ -1503,6 +1503,24 @@ export function createTaste(store, rng = Math.random, onChange = null) {
     return `Taste Roll rolled its taste back: learned rolls were kept ${L.kept}/${L.n}, random ones ${R.kept}/${R.n}.`
   }
 
+  const lookRate = (src) => {
+    const recent = t.lookLog.filter((e) => e.src === src).slice(-TASTE.WINDOW)
+    return { n: recent.length, kept: recent.filter((e) => e.y === 1).length }
+  }
+  /* The look roll's out-of-sample check: if learned looks are kept clearly
+   * less often than plain random ones, the look posteriors were learning
+   * noise. Forget them (the shared field posterior stays: theme picks and
+   * page rolls feed it too) and the learned window that triggered it. */
+  const checkLookRollback = () => {
+    const L = lookRate('learned')
+    const R = lookRate('random')
+    if (L.n < TASTE.MIN_N || R.n < TASTE.MIN_N) return null
+    if (L.kept / L.n + TASTE.GAP > R.kept / R.n) return null
+    t.look = freshLook()
+    t.lookLog = t.lookLog.filter((e) => e.src !== 'learned')
+    return `Taste Roll reset its look learning: learned looks were kept ${L.kept}/${L.n}, random ones ${R.kept}/${R.n}.`
+  }
+
   return {
     /** → { seed, roll, src } */
     choose(baseSeed) {
@@ -1574,8 +1592,11 @@ export function createTaste(store, rng = Math.random, onChange = null) {
     },
     /** → { look, src }: a whole-Desktop variation. Thompson sampling per
      *  dimension; a dimension with no evidence yet rolls plainly. Every
-     *  HOLDOUT-th look and EXPLORE of the rest are plain random. Never the same
-     *  look twice in a row. */
+     *  HOLDOUT-th look and EXPLORE of the rest are plain random, and their
+     *  keep rate is compared with the learned looks' (see rateLook). Looks are
+     *  canonical: two settings that paint the same theme are one look, so the
+     *  learner credits what was on screen and never shows the same paint twice
+     *  running. */
     chooseLook() {
       t.lookRolls += 1
       const plain = t.lookRolls % TASTE.HOLDOUT === 0 || rng() < TASTE.EXPLORE
@@ -1586,16 +1607,17 @@ export function createTaste(store, rng = Math.random, onChange = null) {
         for (const v of vals) { const x = betaSample(post[v][0], post[v][1], rng); if (x > bs) { bs = x; bv = v } }
         return [bv, true]
       }
-      const look = {}
+      let look = {}
       let leaned = false
       const fieldPick = pick(FACES.field, t.post.field)
       look.field = fieldPick[0]; leaned = leaned || fieldPick[1]
       for (const dim of Object.keys(LOOK)) { const r = pick(LOOK[dim], t.look[dim]); look[dim] = r[0]; leaned = leaned || r[1] }
-      if (lookKey(look) === t.lastLook) {
-        const dims = Object.keys(LOOK)
+      look = canonLook(look)
+      const dims = Object.keys(LOOK)
+      for (let i = 0; i < 24 && lookKey(look) === t.lastLook; i++) {
         const dim = dims[Math.floor(rng() * dims.length) % dims.length]
         const others = LOOK[dim].filter((v) => v !== look[dim])
-        look[dim] = others[Math.floor(rng() * others.length) % others.length]
+        look = canonLook({ ...look, [dim]: others[Math.floor(rng() * others.length) % others.length] })
       }
       t.lastLook = lookKey(look)
       save()
@@ -1603,18 +1625,24 @@ export function createTaste(store, rng = Math.random, onChange = null) {
     },
     /** y: 1 keep, 0 pass on a whole look. Decays only the look and field
      *  posteriors; logged apart from page ratings so neither honesty check
-     *  is polluted by the other. */
-    rateLook(look, src, y) {
-      if (!look || !FACES.field.includes(look.field)) return
+     *  is polluted by the other. A pass is half a vote against the colour
+     *  field: it is also how people say "put my theme back", and one of those
+     *  must not cancel two explicit preset picks. Returns a rollback message
+     *  or null. */
+    rateLook(raw, src, y) {
+      if (!raw || !FACES.field.includes(raw.field)) return null
+      const look = canonLook(raw)
       const fade = (post) => { for (const v of Object.keys(post)) { const ab = post[v]; ab[0] = 1 + (ab[0] - 1) * TASTE.DECAY; ab[1] = 1 + (ab[1] - 1) * TASTE.DECAY } }
       fade(t.post.field)
       for (const dim of Object.keys(LOOK)) fade(t.look[dim])
-      const bump = (ab) => { if (ab) { if (y) ab[0] += 1; else ab[1] += 1 } }
-      bump(t.post.field[look.field])
-      for (const dim of Object.keys(LOOK)) bump(t.look[dim][look[dim]])
+      const bump = (ab, w) => { if (ab) { if (y) ab[0] += w; else ab[1] += w } }
+      bump(t.post.field[look.field], y ? 1 : 0.5)
+      for (const dim of Object.keys(LOOK)) bump(t.look[dim][look[dim]], 1)
       t.lookLog.push({ src: src === 'learned' ? 'learned' : 'random', y: y ? 1 : 0 })
       t.lookLog = t.lookLog.slice(-TASTE.LOG_CAP)
+      const msg = checkLookRollback()
       save()
+      return msg
     },
     /** The gate held this column: a weak, non-logged negative. */
     gateHold(roll) { credit(roll, 0, 0.2, null); save() },
@@ -1633,7 +1661,7 @@ export function createTaste(store, rng = Math.random, onChange = null) {
         top[dim] = bv
       }
       const lk = t.lookLog.slice(-TASTE.WINDOW)
-      return { ratings: t.log.length, theme: t.themeN, looks: t.lookLog.length, lookKept: lk.filter((e) => e.y === 1).length, lookWindow: lk.length, learned: L, random: R, top }
+      return { ratings: t.log.length, theme: t.themeN, looks: t.lookLog.length, lookKept: lk.filter((e) => e.y === 1).length, lookWindow: lk.length, lookLearned: lookRate('learned'), lookRandom: lookRate('random'), learned: L, random: R, top }
     },
     reset() { t = cleanTaste(null); save() },
     _state: () => t
@@ -2522,7 +2550,8 @@ function LearningStrip() {
     ? Object.entries(st.top).filter(([, v]) => v).map(([dim, v]) => (dim === 'field' ? `${fieldLabel(v)} colours` : v))
     : []
   const themeNote = st.theme ? ` · ${st.theme} theme choice${st.theme === 1 ? '' : 's'}` : ''
-  const lookNote = st.looks ? ` · ${st.looks} rolled look${st.looks === 1 ? '' : 's'} (kept ${st.lookKept} of the last ${st.lookWindow})` : ''
+  const lookCheck = st.lookLearned.n && st.lookRandom.n ? `; tuned looks ${pct(st.lookLearned)}, random looks ${pct(st.lookRandom)}` : ''
+  const lookNote = st.looks ? ` · ${st.looks} rolled look${st.looks === 1 ? '' : 's'} (kept ${st.lookKept} of the last ${st.lookWindow}${lookCheck})` : ''
   const text = st.ratings || st.theme || st.looks
     ? `Learning from ${st.ratings} rating${st.ratings === 1 ? '' : 's'}${themeNote}${lookNote} · kept: tuned rolls ${pct(st.learned)}, random rolls ${pct(st.random)}${leaning.length ? ` · leaning ${leaning.join(' / ')}` : ''}`
     : 'Keep or pass each roll and the next ones lean your way. One roll in ten stays random to check it is working.'
@@ -2709,16 +2738,21 @@ function tasteThemeFollower(ctx) {
  * column, this one re-skins Desktop itself in a Resonant Field variation, live,
  * and asks Keep or Pass on what is on screen. Pass puts the previous theme
  * back; Keep saves the look as "Resonant Field · Kept" in the theme list.
- * Both teach the same taste the page rolls use. */
+ * Both teach the same taste the page rolls use.
+ *
+ * Desktop persists whatever theme is switched to, so an unrated roll is saved
+ * too (the look, the theme to return to) and re-registered on the next load:
+ * a quit or plugin reload mid-roll comes back to the same look with Keep and
+ * Pass still on offer, never to the Hermes default. */
 const LOOK_ON = RF_ON && typeof SDK.requestTheme === 'function' && typeof SDK.useTheme === 'function' && typeof SDK.useValue === 'function'
-const ROLLED_IDS = ['resonant-field-rolled', 'resonant-field-rolled-b']
+const ROLLED_ID = 'resonant-field-rolled'
 const KEPT_ID = 'resonant-field-kept'
 /* A second texture per field, chosen to sit in that field's own world. */
 const ALT_PLATE = { indigo: 'night', verdant: 'canopy-up', daylight: 'cloud-canopy-v2', graphite: 'hammered-metal', rosi: 'tide-v2', walnut: 'leather-grain' }
-const TINT = { soft: 0.6, base: 1, deep: 1.4 }
-const GREY_TINT = { soft: 0, base: 4, deep: 8 }
-const SHIFT = { minus: -12, base: 0, plus: 12 }
-const PRESENCE = { low: 0.6, mid: 0.8, high: 1 }
+const TINT = { soft: 0.5, base: 1, deep: 1.6 }
+const GREY_TINT = { soft: 0, base: 5, deep: 10 }
+const SHIFT = { minus: -20, base: 0, plus: 20 }
+const PRESENCE = { low: 0.55, mid: 0.8, high: 1 }
 const wrapHue = (x) => ((Math.round(x) % 360) + 360) % 360
 
 function cleanLook(raw) {
@@ -2731,7 +2765,7 @@ function cleanLook(raw) {
   return look
 }
 
-/** A look → Resonant Field prefs: small moves around the field's preset. */
+/** A look → Resonant Field prefs: moves around the field's preset. */
 function lookPrefs(look) {
   const q = fieldPreset(look.field).prefs
   const d = SHIFT[look.shift]
@@ -2740,6 +2774,23 @@ function lookPrefs(look) {
   const alt = RF.PLATES[ALT_PLATE[look.field]] ? ALT_PLATE[look.field] : own
   const plate = look.texture === 'bare' ? null : look.texture === 'alt' ? alt : own
   return { ...q, hue: wrapHue(q.hue + d), accent: wrapHue(q.accent + d), strength, plate, presence: PRESENCE[look.presence] }
+}
+
+/** The one spelling of a look that paints a given theme: a field with no
+ *  texture of its own makes "own" the same as "bare", an alternate that
+ *  resolves to the own plate is "own", and presence means nothing without a
+ *  texture. The learner keys, repeats and credits on this, never on the raw
+ *  pick, so keeping "Indigo, no texture" can't teach "show textures". */
+function canonLook(look) {
+  const c = { ...look }
+  const q = fieldPreset(c.field)
+  if (!q) return c
+  const own = q.prefs.plate || null
+  const alt = RF.PLATES[ALT_PLATE[c.field]] ? ALT_PLATE[c.field] : own
+  if (c.texture === 'own' && !own) c.texture = 'bare'
+  if (c.texture === 'alt' && alt === own) c.texture = own ? 'own' : 'bare'
+  if (c.texture === 'bare') c.presence = 'mid'
+  return c
 }
 
 function describeLook(look) {
@@ -2755,7 +2806,6 @@ function describeLook(look) {
 let lookAtom = null
 let shownTheme = null
 let disposeRolled = null
-let rolledFlip = 0
 let disposeKept = null
 
 function registerKept(look) {
@@ -2767,45 +2817,81 @@ function registerKept(look) {
   })
 }
 
+/* One rolled theme, replaced in place by contribution id: rolling again never
+ * removes the theme on screen first, so there is no frame of the default. */
+function registerRolled(look) {
+  disposeRolled = pluginCtx.register({
+    id: 'theme-rolled',
+    area: SDK.THEMES_AREA,
+    data: RF.buildTheme(ROLLED_ID, 'Resonant Field · Rolled', `A rolled look: ${describeLook(look)}.`, lookPrefs(look), RF.PLATES, RF.FONT_URL)
+  })
+}
+
+/* After a rating the rolled theme leaves the list, once Desktop has switched
+ * away from it (the switch lands on the host's next render). */
+function retireRolled() {
+  const dispose = disposeRolled
+  disposeRolled = null
+  if (dispose) setTimeout(() => { if (!disposeRolled) dispose() }, 600)
+}
+
+function setPending(p) {
+  lookAtom.set(p)
+  if (p) pluginCtx.storage.set('pendingLook', { look: p.look, src: p.src, prev: p.prev })
+  else if (pluginCtx.storage.remove) pluginCtx.storage.remove('pendingLook')
+  else pluginCtx.storage.set('pendingLook', null)
+}
+
 function rollLook() {
   if (!LOOK_ON || !taste || !pluginCtx) return
   const pending = lookAtom.get()
   /* Rolling again before rating carries no signal, and keeps the theme the
    * user started from as the one Pass returns to. */
-  const prev = pending ? pending.prev : (ROLLED_IDS.includes(shownTheme) ? null : shownTheme)
+  const prev = pending ? pending.prev : (shownTheme && shownTheme !== ROLLED_ID ? shownTheme : null)
   const { look, src } = taste.chooseLook()
-  /* Alternate names so the host sees a new theme each roll; the registry keeps
-   * the first theme of a name, so the old one goes before the new one comes. */
-  const name = ROLLED_IDS[rolledFlip++ % 2]
-  if (disposeRolled) { disposeRolled(); disposeRolled = null }
-  disposeRolled = pluginCtx.register({
-    id: 'theme-rolled',
-    area: SDK.THEMES_AREA,
-    data: RF.buildTheme(name, 'Resonant Field · Rolled', `A rolled look: ${describeLook(look)}.`, lookPrefs(look), RF.PLATES, RF.FONT_URL)
-  })
-  if (!SDK.requestTheme(name)) {
+  registerRolled(look)
+  if (!SDK.requestTheme(ROLLED_ID)) {
     host.notifyError('Could not switch to the rolled look. Reload desktop plugins (⌘K) and try again.')
     return
   }
-  lookAtom.set({ look, src, prev, name })
+  setPending({ look, src, prev })
   host.notify(`New look: ${describeLook(look)}. Keep it or pass.`)
+}
+
+/** Back to the theme the user started from. True if it was there to go to. */
+function restorePrev(prev) {
+  if (prev && prev !== ROLLED_ID && SDK.requestTheme(prev)) return true
+  SDK.requestTheme(RF.PRESETS[0].id)
+  return false
 }
 
 function rateLook(y) {
   const pending = lookAtom && lookAtom.get()
   if (!pending) { host.notify('No rolled look to rate yet. Roll the look first.'); return }
-  taste.rateLook(pending.look, pending.src, y)
-  lookAtom.set(null)
+  const msg = taste.rateLook(pending.look, pending.src, y)
+  setPending(null)
   if (y) {
+    const replaced = !!cleanLook(pluginCtx.storage.get('keptLook', null))
     pluginCtx.storage.set('keptLook', pending.look)
     registerKept(pending.look)
     SDK.requestTheme(KEPT_ID)
-    host.notify('Kept. It is in your theme list as Resonant Field · Kept, and the next looks lean this way.')
+    host.notify(`Kept${replaced ? ', in place of your earlier kept look' : ''}. It is in your theme list as Resonant Field · Kept, and the next looks lean this way.`)
   } else {
-    const back = pending.prev && SDK.requestTheme(pending.prev)
-    if (!back) SDK.requestTheme(RF.PRESETS[0].id)
+    const back = restorePrev(pending.prev)
     host.notify(back ? 'Passed. Your previous theme is back.' : 'Passed. Back to Resonant Field · Indigo.')
   }
+  retireRolled()
+  if (msg) host.notify(msg)
+}
+
+/** Put the starting theme back without a vote: "not now", not "not this". */
+function abandonLook() {
+  const pending = lookAtom && lookAtom.get()
+  if (!pending) { host.notify('No rolled look is on screen.'); return }
+  setPending(null)
+  const back = restorePrev(pending.prev)
+  retireRolled()
+  host.notify(back ? 'Your previous theme is back. That look was not counted.' : 'Back to Resonant Field · Indigo. That look was not counted.')
 }
 
 /* A blend of three swatches: the glyph for a whole-app look, distinct from the
@@ -2841,19 +2927,28 @@ function LookControls() {
   return h('span', { role: 'group', 'aria-label': `Rolled look: ${describeLook(pending.look)}`, style: { display: 'inline-flex', gap: '.1rem', alignItems: 'center' } },
     roll,
     iconBtn('Keep this look: more like it', () => rateLook(1), h(Glyph, { name: 'thumbsup' })),
-    iconBtn('Pass on this look: put my theme back', () => rateLook(0), h(Glyph, { name: 'thumbsdown' })))
+    iconBtn('Pass on this look: less like it, and put my theme back', () => rateLook(0), h(Glyph, { name: 'thumbsdown' })))
 }
 
 function registerLookRoll(ctx) {
   lookAtom = SDK.atom(null)
   const kept = cleanLook(ctx.storage.get('keptLook', null))
   if (kept) registerKept(kept)
+  /* A roll left unrated by a quit or reload: put the same look back in the
+   * theme list (Desktop saved its name) and offer Keep/Pass again. */
+  const saved = ctx.storage.get('pendingLook', null)
+  const look = saved && cleanLook(saved.look)
+  if (look) {
+    registerRolled(look)
+    lookAtom.set({ look, src: saved.src === 'learned' ? 'learned' : 'random', prev: typeof saved.prev === 'string' && saved.prev.length < 120 ? saved.prev : null })
+  }
   ctx.register({ area: COMPOSER_AREAS.actions, id: 'taste-look', title: 'Roll the look', render: () => h(LookControls) })
   if (!PALETTE_AREA) return
   for (const [id, label, run, words] of [
     ['taste-look-roll', 'Taste Roll: roll the whole look', rollLook, 'theme reskin look appearance colour'],
     ['taste-look-keep', 'Taste Roll: keep this look', () => rateLook(1), 'theme look keep like more'],
-    ['taste-look-pass', 'Taste Roll: pass on this look', () => rateLook(0), 'theme look pass dislike undo']
+    ['taste-look-pass', 'Taste Roll: pass on this look', () => rateLook(0), 'theme look pass dislike less'],
+    ['taste-look-back', 'Taste Roll: put my theme back (no vote)', abandonLook, 'theme look back undo revert restore']
   ]) ctx.register({ id, area: PALETTE_AREA, data: { id, label, keywords: words.split(' '), run } })
 }
 
@@ -2864,7 +2959,7 @@ export const __columnGate = Object.freeze({ GATE, GATE_MOVES, gateOf, newColumn,
 /* Test seam for the theme merge. */
 export const __theme = Object.freeze({ RF_ON, FIELDS: FACES.field, fieldCss, nearestField, fieldOfTasteEvent, buildRolledHtml, contrast: RF.contrast })
 /* Test seam for the look roll. */
-export const __look = Object.freeze({ LOOK_ON, LOOK, lookPrefs, describeLook, cleanLook, buildTheme: RF.buildTheme, PLATES: RF.PLATES, ALT_PLATE })
+export const __look = Object.freeze({ LOOK_ON, LOOK, lookPrefs, canonLook, describeLook, cleanLook, buildTheme: RF.buildTheme, PLATES: RF.PLATES, ALT_PLATE })
 
 export default {
   /* MUST equal the package folder name (`plugins/tastecheck-hermes/`): the
