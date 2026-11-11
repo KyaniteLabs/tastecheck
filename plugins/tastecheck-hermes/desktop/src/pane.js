@@ -187,6 +187,29 @@ const REASONS = [
   { id: 'mood', label: 'Mood', dims: ['vibe'] }
 ]
 
+/* The whole-look roll: Taste Roll's second button re-skins Desktop itself in a
+ * variation of a Resonant Field preset. The field comes from the same field
+ * posterior the page rolls use, so a kept look, a kept column and a theme pick
+ * all teach one taste. The other dimensions are small, curated moves around the
+ * preset, never free colour: tint depth, a ±12° hue nudge, the texture plate
+ * and how strongly that texture shows. Contrast floors come from buildTheme. */
+const LOOK = {
+  tint: ['soft', 'base', 'deep'],
+  shift: ['minus', 'base', 'plus'],
+  texture: ['own', 'bare', 'alt'],
+  presence: ['low', 'mid', 'high']
+}
+function freshLook() {
+  const p = {}
+  for (const dim of Object.keys(LOOK)) {
+    p[dim] = {}
+    for (const v of LOOK[dim]) p[dim][v] = [1, 1]
+  }
+  return p
+}
+function lookKey(l) { return [l.field, ...Object.keys(LOOK).map((d) => l[d])].join('/') }
+const goodAB = (ab) => Array.isArray(ab) && ab.length === 2 && ab.every((x) => Number.isFinite(x) && x > 0 && x < 1e6)
+
 function freshPosterior() {
   const p = {}
   for (const dim of Object.keys(FACES)) {
@@ -197,14 +220,24 @@ function freshPosterior() {
 }
 
 function cleanTaste(raw) {
-  const t = { v: 1, post: freshPosterior(), rolls: 0, log: [], snaps: [], since: 0, themeN: 0, lastTune: null }
+  const t = { v: 1, post: freshPosterior(), rolls: 0, log: [], snaps: [], since: 0, themeN: 0, lastTune: null, look: freshLook(), lookRolls: 0, lookLog: [], lastLook: null }
   if (!raw || typeof raw !== 'object' || raw.v !== 1) return t
   for (const dim of Object.keys(FACES)) {
     for (const v of FACES[dim]) {
       const ab = raw.post && raw.post[dim] && raw.post[dim][v]
-      if (Array.isArray(ab) && ab.length === 2 && ab.every((x) => Number.isFinite(x) && x > 0 && x < 1e6)) t.post[dim][v] = [ab[0], ab[1]]
+      if (goodAB(ab)) t.post[dim][v] = [ab[0], ab[1]]
     }
   }
+  /* Look state arrived after v1 shipped: older saves simply have none. */
+  for (const dim of Object.keys(LOOK)) {
+    for (const v of LOOK[dim]) {
+      const ab = raw.look && raw.look[dim] && raw.look[dim][v]
+      if (goodAB(ab)) t.look[dim][v] = [ab[0], ab[1]]
+    }
+  }
+  t.lookRolls = Number.isInteger(raw.lookRolls) && raw.lookRolls >= 0 ? raw.lookRolls : 0
+  t.lookLog = Array.isArray(raw.lookLog) ? raw.lookLog.filter((e) => e && (e.src === 'learned' || e.src === 'random') && (e.y === 0 || e.y === 1)).slice(-TASTE.LOG_CAP) : []
+  t.lastLook = typeof raw.lastLook === 'string' && raw.lastLook.length < 80 ? raw.lastLook : null
   t.rolls = Number.isInteger(raw.rolls) && raw.rolls >= 0 ? raw.rolls : 0
   t.since = Number.isInteger(raw.since) && raw.since >= 0 ? raw.since : 0
   t.themeN = Number.isInteger(raw.themeN) && raw.themeN >= 0 ? raw.themeN : 0
@@ -346,6 +379,50 @@ export function createTaste(store, rng = Math.random, onChange = null) {
       save()
       return true
     },
+    /** → { look, src }: a whole-Desktop variation. Thompson sampling per
+     *  dimension; a dimension with no evidence yet rolls plainly. Every
+     *  HOLDOUT-th look and EXPLORE of the rest are plain random. Never the same
+     *  look twice in a row. */
+    chooseLook() {
+      t.lookRolls += 1
+      const plain = t.lookRolls % TASTE.HOLDOUT === 0 || rng() < TASTE.EXPLORE
+      const pick = (vals, post) => {
+        const seen = vals.some((v) => post[v][0] + post[v][1] - 2 >= 0.5)
+        if (plain || !seen) return [vals[Math.floor(rng() * vals.length) % vals.length], false]
+        let bv = vals[0], bs = -1
+        for (const v of vals) { const x = betaSample(post[v][0], post[v][1], rng); if (x > bs) { bs = x; bv = v } }
+        return [bv, true]
+      }
+      const look = {}
+      let leaned = false
+      const fieldPick = pick(FACES.field, t.post.field)
+      look.field = fieldPick[0]; leaned = leaned || fieldPick[1]
+      for (const dim of Object.keys(LOOK)) { const r = pick(LOOK[dim], t.look[dim]); look[dim] = r[0]; leaned = leaned || r[1] }
+      if (lookKey(look) === t.lastLook) {
+        const dims = Object.keys(LOOK)
+        const dim = dims[Math.floor(rng() * dims.length) % dims.length]
+        const others = LOOK[dim].filter((v) => v !== look[dim])
+        look[dim] = others[Math.floor(rng() * others.length) % others.length]
+      }
+      t.lastLook = lookKey(look)
+      save()
+      return { look, src: leaned ? 'learned' : 'random' }
+    },
+    /** y: 1 keep, 0 pass on a whole look. Decays only the look and field
+     *  posteriors; logged apart from page ratings so neither honesty check
+     *  is polluted by the other. */
+    rateLook(look, src, y) {
+      if (!look || !FACES.field.includes(look.field)) return
+      const fade = (post) => { for (const v of Object.keys(post)) { const ab = post[v]; ab[0] = 1 + (ab[0] - 1) * TASTE.DECAY; ab[1] = 1 + (ab[1] - 1) * TASTE.DECAY } }
+      fade(t.post.field)
+      for (const dim of Object.keys(LOOK)) fade(t.look[dim])
+      const bump = (ab) => { if (ab) { if (y) ab[0] += 1; else ab[1] += 1 } }
+      bump(t.post.field[look.field])
+      for (const dim of Object.keys(LOOK)) bump(t.look[dim][look[dim]])
+      t.lookLog.push({ src: src === 'learned' ? 'learned' : 'random', y: y ? 1 : 0 })
+      t.lookLog = t.lookLog.slice(-TASTE.LOG_CAP)
+      save()
+    },
     /** The gate held this column: a weak, non-logged negative. */
     gateHold(roll) { credit(roll, 0, 0.2, null); save() },
     stats() {
@@ -362,7 +439,8 @@ export function createTaste(store, rng = Math.random, onChange = null) {
         }
         top[dim] = bv
       }
-      return { ratings: t.log.length, theme: t.themeN, learned: L, random: R, top }
+      const lk = t.lookLog.slice(-TASTE.WINDOW)
+      return { ratings: t.log.length, theme: t.themeN, looks: t.lookLog.length, lookKept: lk.filter((e) => e.y === 1).length, lookWindow: lk.length, learned: L, random: R, top }
     },
     reset() { t = cleanTaste(null); save() },
     _state: () => t
@@ -1247,16 +1325,17 @@ function LearningStrip() {
   const st = taste.stats()
   const pct = (x) => (x.n ? `${Math.round((100 * x.kept) / x.n)}% of ${x.n}` : 'none yet')
   /* Don't claim a direction from a handful of taps. */
-  const leaning = st.ratings + st.theme >= 5
+  const leaning = st.ratings + st.theme + st.looks >= 5
     ? Object.entries(st.top).filter(([, v]) => v).map(([dim, v]) => (dim === 'field' ? `${fieldLabel(v)} colours` : v))
     : []
   const themeNote = st.theme ? ` · ${st.theme} theme choice${st.theme === 1 ? '' : 's'}` : ''
-  const text = st.ratings || st.theme
-    ? `Learning from ${st.ratings} rating${st.ratings === 1 ? '' : 's'}${themeNote} · kept: tuned rolls ${pct(st.learned)}, random rolls ${pct(st.random)}${leaning.length ? ` · leaning ${leaning.join(' / ')}` : ''}`
+  const lookNote = st.looks ? ` · ${st.looks} rolled look${st.looks === 1 ? '' : 's'} (kept ${st.lookKept} of the last ${st.lookWindow})` : ''
+  const text = st.ratings || st.theme || st.looks
+    ? `Learning from ${st.ratings} rating${st.ratings === 1 ? '' : 's'}${themeNote}${lookNote} · kept: tuned rolls ${pct(st.learned)}, random rolls ${pct(st.random)}${leaning.length ? ` · leaning ${leaning.join(' / ')}` : ''}`
     : 'Keep or pass each roll and the next ones lean your way. One roll in ten stays random to check it is working.'
   return h('div', { style: { display: 'flex', gap: '.6rem', alignItems: 'center', flexWrap: 'wrap', padding: '.3rem .8rem', fontSize: '.72rem', borderBottom: '1px solid var(--line, #ddd)' } },
     h('span', { role: 'status', style: {} }, text),
-    st.ratings || st.theme
+    st.ratings || st.theme || st.looks
       ? h('button', {
           type: 'button',
           style: { ...CHIP, marginLeft: 'auto', borderStyle: 'solid' },
@@ -1431,12 +1510,168 @@ function tasteThemeFollower(ctx) {
   }
 }
 
+
+/* ---- Roll the look ----------------------------------------------------------
+ * The second button. Where Taste Roll restyles the user's page in a side
+ * column, this one re-skins Desktop itself in a Resonant Field variation, live,
+ * and asks Keep or Pass on what is on screen. Pass puts the previous theme
+ * back; Keep saves the look as "Resonant Field · Kept" in the theme list.
+ * Both teach the same taste the page rolls use. */
+const LOOK_ON = RF_ON && typeof SDK.requestTheme === 'function' && typeof SDK.useTheme === 'function' && typeof SDK.useValue === 'function'
+const ROLLED_IDS = ['resonant-field-rolled', 'resonant-field-rolled-b']
+const KEPT_ID = 'resonant-field-kept'
+/* A second texture per field, chosen to sit in that field's own world. */
+const ALT_PLATE = { indigo: 'night', verdant: 'canopy-up', daylight: 'cloud-canopy-v2', graphite: 'hammered-metal', rosi: 'tide-v2', walnut: 'leather-grain' }
+const TINT = { soft: 0.6, base: 1, deep: 1.4 }
+const GREY_TINT = { soft: 0, base: 4, deep: 8 }
+const SHIFT = { minus: -12, base: 0, plus: 12 }
+const PRESENCE = { low: 0.6, mid: 0.8, high: 1 }
+const wrapHue = (x) => ((Math.round(x) % 360) + 360) % 360
+
+function cleanLook(raw) {
+  if (!raw || typeof raw !== 'object' || !FACES.field.includes(raw.field)) return null
+  const look = { field: raw.field }
+  for (const dim of Object.keys(LOOK)) {
+    if (!LOOK[dim].includes(raw[dim])) return null
+    look[dim] = raw[dim]
+  }
+  return look
+}
+
+/** A look → Resonant Field prefs: small moves around the field's preset. */
+function lookPrefs(look) {
+  const q = fieldPreset(look.field).prefs
+  const d = SHIFT[look.shift]
+  const strength = q.strength ? Math.min(55, Math.round(q.strength * TINT[look.tint])) : GREY_TINT[look.tint]
+  const own = q.plate || null
+  const alt = RF.PLATES[ALT_PLATE[look.field]] ? ALT_PLATE[look.field] : own
+  const plate = look.texture === 'bare' ? null : look.texture === 'alt' ? alt : own
+  return { ...q, hue: wrapHue(q.hue + d), accent: wrapHue(q.accent + d), strength, plate, presence: PRESENCE[look.presence] }
+}
+
+function describeLook(look) {
+  const bits = [fieldLabel(look.field)]
+  if (look.tint !== 'base') bits.push(look.tint === 'soft' ? 'softer tint' : 'deeper tint')
+  if (look.shift !== 'base') bits.push(look.shift === 'minus' ? 'hue nudged down' : 'hue nudged up')
+  const plate = lookPrefs(look).plate
+  bits.push(!plate ? 'no texture' : look.texture === 'alt' ? 'alternate texture' : 'its own texture')
+  if (plate && look.presence !== 'mid') bits.push(look.presence === 'low' ? 'faint' : 'strong')
+  return bits.join(', ')
+}
+
+let lookAtom = null
+let shownTheme = null
+let disposeRolled = null
+let rolledFlip = 0
+let disposeKept = null
+
+function registerKept(look) {
+  if (disposeKept) { disposeKept(); disposeKept = null }
+  disposeKept = pluginCtx.register({
+    id: 'theme-kept',
+    area: SDK.THEMES_AREA,
+    data: RF.buildTheme(KEPT_ID, 'Resonant Field · Kept', `The look you kept from Taste Roll: ${describeLook(look)}.`, lookPrefs(look), RF.PLATES, RF.FONT_URL)
+  })
+}
+
+function rollLook() {
+  if (!LOOK_ON || !taste || !pluginCtx) return
+  const pending = lookAtom.get()
+  /* Rolling again before rating carries no signal, and keeps the theme the
+   * user started from as the one Pass returns to. */
+  const prev = pending ? pending.prev : (ROLLED_IDS.includes(shownTheme) ? null : shownTheme)
+  const { look, src } = taste.chooseLook()
+  /* Alternate names so the host sees a new theme each roll; the registry keeps
+   * the first theme of a name, so the old one goes before the new one comes. */
+  const name = ROLLED_IDS[rolledFlip++ % 2]
+  if (disposeRolled) { disposeRolled(); disposeRolled = null }
+  disposeRolled = pluginCtx.register({
+    id: 'theme-rolled',
+    area: SDK.THEMES_AREA,
+    data: RF.buildTheme(name, 'Resonant Field · Rolled', `A rolled look: ${describeLook(look)}.`, lookPrefs(look), RF.PLATES, RF.FONT_URL)
+  })
+  if (!SDK.requestTheme(name)) {
+    host.notifyError('Could not switch to the rolled look. Reload desktop plugins (⌘K) and try again.')
+    return
+  }
+  lookAtom.set({ look, src, prev, name })
+  host.notify(`New look: ${describeLook(look)}. Keep it or pass.`)
+}
+
+function rateLook(y) {
+  const pending = lookAtom && lookAtom.get()
+  if (!pending) { host.notify('No rolled look to rate yet. Roll the look first.'); return }
+  taste.rateLook(pending.look, pending.src, y)
+  lookAtom.set(null)
+  if (y) {
+    pluginCtx.storage.set('keptLook', pending.look)
+    registerKept(pending.look)
+    SDK.requestTheme(KEPT_ID)
+    host.notify('Kept. It is in your theme list as Resonant Field · Kept, and the next looks lean this way.')
+  } else {
+    const back = pending.prev && SDK.requestTheme(pending.prev)
+    if (!back) SDK.requestTheme(RF.PRESETS[0].id)
+    host.notify(back ? 'Passed. Your previous theme is back.' : 'Passed. Back to Resonant Field · Indigo.')
+  }
+}
+
+/* A blend of three swatches: the glyph for a whole-app look, distinct from the
+ * fanned sheets of the page roll. Functional UI glyph, not the product mark. */
+function LookGlyph() {
+  return h('svg', {
+    'aria-hidden': 'true', focusable: 'false', viewBox: '0 0 16 16', width: '0.875rem', height: '0.875rem',
+    fill: 'none', stroke: 'currentColor', strokeWidth: 1, style: { display: 'block' }
+  },
+  h('circle', { key: 'a', cx: 6, cy: 6, r: 3.6 }),
+  h('circle', { key: 'b', cx: 10, cy: 6, r: 3.6 }),
+  h('circle', { key: 'c', cx: 8, cy: 9.6, r: 3.6 }))
+}
+
+function tipped(label, button) {
+  return typeof SDK.Tip === 'function' ? h(SDK.Tip, { label, placement: 'control' }, button) : button
+}
+const iconBtn = (label, onClick, kid, extra) => tipped(label, h('button', {
+  type: 'button',
+  className: GHOST_ICON_BTN,
+  'aria-label': label,
+  style: { display: 'inline-grid', placeItems: 'center', padding: 0, ...extra },
+  onClick: (e) => { e.preventDefault(); onClick() },
+  title: typeof SDK.Tip === 'function' ? undefined : label
+}, kid))
+
+function LookControls() {
+  const pending = SDK.useValue(lookAtom)
+  const { themeName } = SDK.useTheme()
+  shownTheme = themeName
+  const roll = iconBtn(pending ? 'Roll another look' : 'Roll the look: re-skin Desktop in a Resonant Field variation', rollLook, h(LookGlyph))
+  if (!pending) return roll
+  return h('span', { role: 'group', 'aria-label': `Rolled look: ${describeLook(pending.look)}`, style: { display: 'inline-flex', gap: '.1rem', alignItems: 'center' } },
+    roll,
+    iconBtn('Keep this look: more like it', () => rateLook(1), h(Glyph, { name: 'thumbsup' })),
+    iconBtn('Pass on this look: put my theme back', () => rateLook(0), h(Glyph, { name: 'thumbsdown' })))
+}
+
+function registerLookRoll(ctx) {
+  lookAtom = SDK.atom(null)
+  const kept = cleanLook(ctx.storage.get('keptLook', null))
+  if (kept) registerKept(kept)
+  ctx.register({ area: COMPOSER_AREAS.actions, id: 'taste-look', title: 'Roll the look', render: () => h(LookControls) })
+  if (!PALETTE_AREA) return
+  for (const [id, label, run, words] of [
+    ['taste-look-roll', 'Taste Roll: roll the whole look', rollLook, 'theme reskin look appearance colour'],
+    ['taste-look-keep', 'Taste Roll: keep this look', () => rateLook(1), 'theme look keep like more'],
+    ['taste-look-pass', 'Taste Roll: pass on this look', () => rateLook(0), 'theme look pass dislike undo']
+  ]) ctx.register({ id, area: PALETTE_AREA, data: { id, label, keywords: words.split(' '), run } })
+}
+
 /* ---- registration --------------------------------------------------------- */
 
 /* Test seam for the column gate machine (the host only reads the default export). */
 export const __columnGate = Object.freeze({ GATE, GATE_MOVES, gateOf, newColumn, stampGate, markRestored, gateStampFor })
 /* Test seam for the theme merge. */
 export const __theme = Object.freeze({ RF_ON, FIELDS: FACES.field, fieldCss, nearestField, fieldOfTasteEvent, buildRolledHtml, contrast: RF.contrast })
+/* Test seam for the look roll. */
+export const __look = Object.freeze({ LOOK_ON, LOOK, lookPrefs, describeLook, cleanLook, buildTheme: RF.buildTheme, PLATES: RF.PLATES, ALT_PLATE })
 
 export default {
   /* MUST equal the package folder name (`plugins/tastecheck-hermes/`): the
@@ -1455,6 +1690,7 @@ export default {
         RF.plugin.register(ctx, { onTaste: (ev) => { if (taste) taste.observeTheme(ev) } })
         followTaste = tasteThemeFollower(ctx)
         followTaste()
+        if (LOOK_ON) registerLookRoll(ctx)
       } catch (err) {
         host.notifyError(`Resonant Field themes did not load: ${err && err.message ? err.message : err}`)
       }

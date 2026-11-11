@@ -176,3 +176,118 @@ test('a seed rolls the same ref/vibe/mode/sig it did before the field dimension 
   assert.deepEqual(rest, PINNED_4242)
 })
 const PINNED_4242 = { ref: 'clinical', vibe: 'decorative', mode: 'dark', sig: 'annotation' }
+
+/* ---- the second button: roll the whole look ---------------------------- */
+
+const lookBar = (t) => {
+  const reg = [...t.ctx.live.values()].find((c) => c.id === 'taste-look')
+  const el = reg.render()
+  return el.type(el.props)
+}
+const btnByLabel = (node, re) => { let f; walk(node, (x) => x.type === 'button' && re.test(x.props['aria-label'] || '') && (f = x)); return f }
+const click = (b) => b.props.onClick({ preventDefault() {} })
+const palette = (t, id) => [...t.ctx.live.values()].find((c) => c.area === 'palette' && c.id === id).data
+
+test('two buttons: the page roll and the look roll both sit in the composer', async () => {
+  const t = await boot()
+  assert.equal(t.mod.__look.LOOK_ON, true)
+  const ids = [...t.ctx.live.values()].filter((c) => c.area === 'composer.actions').map((c) => c.id)
+  assert.deepEqual(ids.sort(), ['taste-look', 'taste-roll'])
+  const bar = lookBar(t)
+  assert.match(bar.props['aria-label'], /Roll the look/)
+  assert.equal(btnByLabel(bar, /Keep this look/), undefined, 'no Keep/Pass before a look is rolled')
+})
+
+test('rolling the look re-skins Desktop; Pass puts the previous theme back and teaches the field', async () => {
+  const t = await boot()
+  lookBar(t) // records the theme on screen (stub: Indigo)
+  click(lookBar(t))
+  const rolled = t.themes().find((x) => x.label === 'Resonant Field · Rolled')
+  assert.ok(rolled, 'a rolled theme is registered')
+  assert.equal(mock.requested.at(-1), rolled.name, 'and switched to')
+  const bar = lookBar(t)
+  assert.ok(btnByLabel(bar, /Keep this look/) && btnByLabel(bar, /Pass on this look/), 'Keep and Pass appear')
+  const look = t.taste().lastLook.split('/')[0]
+  click(btnByLabel(bar, /Pass on this look/))
+  assert.equal(mock.requested.at(-1), 'resonant-field-indigo', 'Pass restores what was on screen')
+  assert.deepEqual(t.taste().post.field[look], [1, 2], 'and is a vote against that field')
+  assert.equal(t.taste().lookLog.length, 1)
+  assert.equal(btnByLabel(lookBar(t), /Keep this look/), undefined)
+})
+
+test('Keep saves the look as a theme that survives a reload', async () => {
+  const t = await boot()
+  lookBar(t)
+  click(lookBar(t))
+  click(btnByLabel(lookBar(t), /Keep this look/))
+  assert.equal(mock.requested.at(-1), 'resonant-field-kept')
+  const kept = t.themes().find((x) => x.name === 'resonant-field-kept')
+  assert.equal(kept.label, 'Resonant Field · Kept')
+  const again = await boot(t.ctx.store)
+  assert.ok(again.themes().find((x) => x.name === 'resonant-field-kept'), 'kept look is back after reload')
+  assert.equal(again.taste().lookLog.length, 1, 'look ratings persist')
+})
+
+test('rolling twice before rating alternates names and still returns to the starting theme', async () => {
+  const t = await boot()
+  lookBar(t)
+  click(lookBar(t))
+  const first = mock.requested.at(-1)
+  click(btnByLabel(lookBar(t), /Roll another look/))
+  const second = mock.requested.at(-1)
+  assert.notEqual(first, second)
+  assert.equal(t.themes().filter((x) => x.label === 'Resonant Field · Rolled').length, 1, 'only one rolled theme at a time')
+  palette(t, 'taste-look-pass').run()
+  assert.equal(mock.requested.at(-1), 'resonant-field-indigo')
+  assert.equal(t.taste().lookLog.length, 1, 'the unrated first roll carried no signal')
+})
+
+test('every possible look keeps the contrast floors in light and dark', async () => {
+  const { mod } = await boot()
+  const { LOOK, lookPrefs, buildTheme, PLATES } = mod.__look
+  const { FIELDS, contrast } = mod.__theme
+  let n = 0
+  for (const field of FIELDS) for (const tint of LOOK.tint) for (const shift of LOOK.shift) for (const texture of LOOK.texture) for (const presence of LOOK.presence) {
+    const th = buildTheme('x', 'x', 'x', lookPrefs({ field, tint, shift, texture, presence }), PLATES, null)
+    for (const c of [th.colors, th.darkColors]) {
+      for (const [fg, bg] of [['foreground', 'background'], ['foreground', 'card'], ['mutedForeground', 'background'], ['primaryForeground', 'primary']]) {
+        const r = contrast(c[fg], c[bg])
+        assert.ok(r >= 4.5, `${field}/${tint}/${shift}/${texture}/${presence}: ${fg} on ${bg} ${r.toFixed(2)}:1`)
+      }
+    }
+    n++
+  }
+  assert.equal(n, 6 * 81)
+})
+
+test('look learning leans: kept verdant looks make verdant come up more; no immediate repeats', async () => {
+  const { mod } = await boot()
+  let a = 11
+  const rng = () => { a = (a + 0x6D2B79F5) >>> 0; let x = a; x = Math.imul(x ^ (x >>> 15), x | 1); x ^= x + Math.imul(x ^ (x >>> 7), x | 61); return ((x ^ (x >>> 14)) >>> 0) / 4294967296 }
+  const taste = mod.createTaste(null, rng)
+  for (let i = 0; i < 4; i++) taste.rateLook({ field: 'verdant', tint: 'deep', shift: 'base', texture: 'own', presence: 'high' }, 'random', 1)
+  for (let i = 0; i < 4; i++) taste.rateLook({ field: 'graphite', tint: 'soft', shift: 'base', texture: 'bare', presence: 'low' }, 'random', 0)
+  let verdant = 0, learned = 0, prev = null
+  for (let i = 0; i < 200; i++) {
+    const { look, src } = taste.chooseLook()
+    const key = JSON.stringify(look)
+    assert.notEqual(key, prev, 'never the same look twice running')
+    prev = key
+    if (src !== 'learned') continue
+    learned++
+    if (look.field === 'verdant') verdant++
+  }
+  assert.ok(verdant / learned > 2 / 6, `verdant leans learned looks past double chance (${verdant}/${learned}, chance is 1/6)`)
+  assert.ok(learned > 100, 'most looks are learned once there is evidence')
+  assert.equal(taste.stats().learned.n + taste.stats().random.n, 0, 'look ratings stay out of the page honesty check')
+})
+
+test('saved taste from before the look roll loads cleanly', async () => {
+  const { mod } = await boot()
+  const s = { taste: { v: 1, post: {}, rolls: 3, log: [{ src: 'random', y: 1 }], snaps: [], since: 1, themeN: 2, lastTune: null } }
+  const store = { get: (k, d) => (k in s ? s[k] : d), set: (k, v) => { s[k] = v } }
+  const taste = mod.createTaste(store, Math.random)
+  assert.equal(taste.stats().looks, 0)
+  assert.ok(taste.chooseLook().look.field)
+  assert.equal(mod.__look.cleanLook({ field: 'verdant', tint: 'x' }), null, 'a corrupt kept look is ignored')
+})
