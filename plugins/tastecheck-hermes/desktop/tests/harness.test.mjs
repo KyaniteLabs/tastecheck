@@ -812,7 +812,7 @@ test('restored columns show "not audited this session"; a stray stored verdict n
   await click(first.registered.find((c) => c.id === 'taste-roll').render())
   const stored = JSON.parse(JSON.stringify(first._store.comparisons))
   const key = `roll:${root}`
-  assert.deepEqual(Object.keys(stored[key].columns[0]).sort(), ['roll', 'seed'], 'no gate is persisted')
+  assert.deepEqual(Object.keys(stored[key].columns[0]).sort(), ['rating', 'reason', 'roll', 'seed', 'src'], 'no gate is persisted; only roll identity and the user\'s own rating')
 
   for (const stray of [{}, { verdict: 'SHIP' }, { gate: 'SHIP', reasons: [] }, { verdict: 'SHIP', restored: false }]) {
     freshGlobals({ cwd: root })
@@ -852,4 +852,131 @@ test('restored history under a WIDER grant rebases to the same absolute file, ne
   const docs = paneColumns(pane).map((c) => frameProps(c).srcDoc || '').join(' ')
   assert.ok(docs.includes('the app page'), 'rolled the same absolute file')
   assert.ok(!docs.includes('sibling root page'), 'the sibling at the old relative path is never read')
+})
+
+/* ---- taste learner + one-tap feedback ------------------------------------ */
+
+function memStore(init = {}) {
+  const s = { ...init }
+  return { get: (k, fb) => (k in s ? JSON.parse(JSON.stringify(s[k])) : fb), set: (k, v) => { s[k] = JSON.parse(JSON.stringify(v)) }, _s: s }
+}
+function seededRng(seed) {
+  let a = seed >>> 0
+  return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296 }
+}
+
+test('learner: keeps on one look and passes on another steer later rolls', async () => {
+  const mod = await importFresh()
+  const t = mod.createTaste(memStore(), seededRng(7))
+  for (let i = 0; i < 12; i++) {
+    t.rate({ ref: 'mineral', vibe: 'warm', mode: 'dark', sig: 'rule' }, 'learned', 1)
+    t.rate({ ref: 'brutalist', vibe: 'stark', mode: 'light', sig: 'bento' }, 'learned', 0)
+  }
+  let mineral = 0, brutalist = 0, learned = 0
+  for (let i = 0; i < 200; i++) {
+    const p = t.choose(1000 + i * 7919)
+    if (p.src !== 'learned') continue
+    learned++
+    if (p.roll.ref === 'mineral') mineral++
+    if (p.roll.ref === 'brutalist') brutalist++
+  }
+  assert.ok(learned > 120, `most rolls are learned (got ${learned}/200)`)
+  assert.ok(mineral / learned > 0.5, `kept look dominates learned rolls (mineral ${mineral}/${learned}, chance is 1/8)`)
+  assert.ok(brutalist / learned < 0.05, `passed look is avoided (brutalist ${brutalist}/${learned})`)
+})
+
+test('learner: every 10th roll is a random holdout and ~15% explore; nothing learned → plain seed', async () => {
+  const mod = await importFresh()
+  const fresh = mod.createTaste(memStore(), seededRng(1))
+  const p0 = fresh.choose(4242)
+  assert.equal(p0.src, 'random')
+  assert.equal(p0.seed, 4242, 'no ratings yet → the plain seed, unchanged')
+  const t = mod.createTaste(memStore(), seededRng(3))
+  t.rate({ ref: 'Swiss', vibe: 'serious', mode: 'light', sig: 'rule' }, 'random', 1)
+  const srcs = []
+  for (let i = 1; i <= 100; i++) srcs.push(t.choose(i * 31).src)
+  for (let i = 9; i < 100; i += 10) assert.equal(srcs[i], 'random', `roll ${i + 1} is a holdout`)
+  const random = srcs.filter((s) => s === 'random').length
+  assert.ok(random >= 15 && random <= 40, `holdout + exploration share is sane (${random}/100)`)
+})
+
+test('learner: rolls back to the last snapshot when tuned rolls lose to random ones', async () => {
+  const mod = await importFresh()
+  const store = memStore()
+  const t = mod.createTaste(store, seededRng(5))
+  const good = { ref: 'folio', vibe: 'refined', mode: 'light', sig: 'rule' }
+  for (let i = 0; i < 10; i++) t.rate(good, 'learned', 1) /* snapshot taken here */
+  const snap = JSON.stringify(store._s.taste.snaps.at(-1))
+  for (let i = 0; i < 5; i++) assert.equal(t.rate(good, 'random', 1), null)
+  let msg = null
+  const bad = { ref: 'maximalist', vibe: 'decorative', mode: 'dual', sig: 'sixling' }
+  for (let i = 0; i < 25 && !msg; i++) msg = t.rate(bad, 'learned', 0)
+  assert.match(msg || '', /rolled its taste back/)
+  assert.equal(JSON.stringify(store._s.taste.post), snap, 'posterior restored from the snapshot')
+})
+
+test('learner: hostile stored taste is sanitized, never trusted', async () => {
+  const mod = await importFresh()
+  const t = mod.createTaste(memStore({ taste: { v: 1, post: { ref: { mineral: [NaN, -1], Swiss: [1e9, 1] } }, rolls: -4, log: [{ src: 'evil', y: 7 }, 'x'], snaps: 'no' } }))
+  const st = t.stats()
+  assert.equal(st.ratings, 0)
+  assert.deepEqual(Object.values(st.top), [null, null, null, null])
+  assert.equal(t.choose(99).seed, 99)
+})
+
+test('feedback: Keep / Pass on a column, reason chips, toggle off, palette commands, Reset taste', async () => {
+  const root = fixtureProject()
+  freshGlobals({ cwd: root })
+  const mod = await importFresh()
+  const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip, okHold))
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  const render = () => globalThis.__tc.workspaces.at(-1).options.render()
+  const buttons = (node, out = []) => {
+    if (node && typeof node === 'object') {
+      if (typeof node.type === 'function') buttons(node.type(node.props), out)
+      else {
+        if (node.type === 'button') out.push(node)
+        if (typeof node.children !== 'undefined') [].concat(node.children).forEach((c) => buttons(c, out))
+      }
+    }
+    return out
+  }
+  const colButtons = () => buttons(paneColumns(render())[1])
+  const byText = (list, t) => list.find((b) => [].concat(b.children).join('').includes(t) || (t === 'Keep' && /^Keep roll/.test(b.props['aria-label'] || '')) || (t === 'Pass' && /^Pass on roll/.test(b.props['aria-label'] || '')))
+
+  let keep = byText(colButtons(), 'Keep')
+  assert.ok(keep && byText(colButtons(), 'Pass'), 'every rolled column offers Keep and Pass')
+  assert.equal(keep.props['aria-pressed'], false)
+  assert.match(keep.props['aria-label'], /Keep roll 1/)
+  assert.match(allText(render()).join(' '), /Keep or pass each roll/, 'first-run hint explains the learner')
+
+  await click(keep)
+  keep = byText(colButtons(), 'Keep')
+  assert.equal(keep.props['aria-pressed'], true)
+  assert.match([].concat(keep.children).join(''), /Kept/, 'pressed state is spelled out, not colour alone')
+  assert.equal(ctx._store.taste.log.length, 1, 'one rating logged')
+  assert.equal(ctx._store.comparisons[Object.keys(ctx._store.comparisons)[0]].columns[0].rating, 1, 'rating persists with the column')
+  const chip = byText(colButtons(), 'Colour')
+  assert.ok(chip && byText(colButtons(), 'Layout'), 'one-tap reason chips appear after rating')
+  await click(chip)
+  assert.match(allText(paneColumns(render())[1]).join(' '), /Kept for the colour/)
+  assert.equal(byText(colButtons(), 'Type'), undefined, 'chips go away once a reason is given')
+  assert.match(allText(render()).join(' '), /Learning from 1 rating/)
+
+  await click(byText(colButtons(), 'Keep'))
+  assert.equal(byText(colButtons(), 'Keep').props['aria-pressed'], false, 'tapping again clears the rating')
+  assert.equal(ctx._store.taste.log.length, 0)
+
+  const passCmd = ctx.registered.find((c) => c.id === 'taste-roll-pass')
+  assert.ok(passCmd && ctx.registered.find((c) => c.id === 'taste-roll-keep'), 'keep/pass are in the command palette')
+  passCmd.data.run()
+  assert.equal(byText(colButtons(), 'Pass').props['aria-pressed'], true, 'palette Pass rates the latest column')
+
+  const reset = buttons(render()).find((b) => [].concat(b.children).join('') === 'Reset taste')
+  assert.ok(reset)
+  await click(reset)
+  assert.equal(ctx._store.taste.log.length, 0, 'Reset taste forgets everything')
+  assert.equal(byText(colButtons(), 'Pass').props['aria-pressed'], false)
 })

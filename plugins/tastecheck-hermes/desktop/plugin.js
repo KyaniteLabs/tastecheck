@@ -120,6 +120,196 @@ const FACES = {
   sig: ['needle', 'rule', 'display-word', 'color-block', 'bento', 'timeline', 'annotation', 'sixling']
 }
 
+/* ---- taste learner --------------------------------------------------------
+ * Every column takes one tap of feedback: Keep (+) or Pass (−), with an
+ * optional one-tap reason (Colour / Type / Layout / Mood) that aims the signal
+ * at the dimensions it names. The gate's own HOLD adds a weak negative.
+ *
+ * Model: one Beta(a, b) posterior per face value. Before each update every
+ * posterior decays toward the Beta(1, 1) prior, so old taste fades. Rolls are
+ * chosen by Thompson sampling: draw a preference for every face value, then
+ * pick the seed (of SEARCH candidates) whose roll scores highest. The seeded
+ * engine above is untouched, so every column stays replayable from its seed.
+ *
+ * Honesty checks, like a trading desk's out-of-sample book:
+ *  - EXPLORE of learned rolls are plain random seeds, so taste can't collapse.
+ *  - Every HOLDOUT-th roll is random and its ratings are scored separately;
+ *    the pane shows learned vs random keep rates side by side.
+ *  - Every SNAP_EVERY ratings the posterior is snapshotted. If learned rolls
+ *    are kept clearly less often than random ones (≥ MIN_N each, gap ≥ GAP),
+ *    the learner rolls back to the previous snapshot and says so.
+ * Nothing here touches contrast floors or the gate: it only picks seeds. */
+const TASTE = { DECAY: 0.97, EXPLORE: 0.15, HOLDOUT: 10, SEARCH: 192, SNAP_EVERY: 10, MIN_N: 5, GAP: 0.2, WINDOW: 20, LOG_CAP: 400 }
+const REASONS = [
+  { id: 'colour', label: 'Colour', dims: ['ref', 'mode'] },
+  { id: 'type', label: 'Type', dims: ['ref'] },
+  { id: 'layout', label: 'Layout', dims: ['sig'] },
+  { id: 'mood', label: 'Mood', dims: ['vibe'] }
+]
+
+function freshPosterior() {
+  const p = {}
+  for (const dim of Object.keys(FACES)) {
+    p[dim] = {}
+    for (const v of FACES[dim]) p[dim][v] = [1, 1]
+  }
+  return p
+}
+
+function cleanTaste(raw) {
+  const t = { v: 1, post: freshPosterior(), rolls: 0, log: [], snaps: [], since: 0 }
+  if (!raw || typeof raw !== 'object' || raw.v !== 1) return t
+  for (const dim of Object.keys(FACES)) {
+    for (const v of FACES[dim]) {
+      const ab = raw.post && raw.post[dim] && raw.post[dim][v]
+      if (Array.isArray(ab) && ab.length === 2 && ab.every((x) => Number.isFinite(x) && x > 0 && x < 1e6)) t.post[dim][v] = [ab[0], ab[1]]
+    }
+  }
+  t.rolls = Number.isInteger(raw.rolls) && raw.rolls >= 0 ? raw.rolls : 0
+  t.since = Number.isInteger(raw.since) && raw.since >= 0 ? raw.since : 0
+  t.log = Array.isArray(raw.log) ? raw.log.filter((e) => e && (e.src === 'learned' || e.src === 'random') && (e.y === 0 || e.y === 1)).slice(-TASTE.LOG_CAP) : []
+  t.snaps = Array.isArray(raw.snaps) ? raw.snaps.slice(-3).map((s) => cleanTaste({ v: 1, post: s }).post) : []
+  return t
+}
+
+/* Gamma(k, 1) for k ≥ 1 (Marsaglia–Tsang), k < 1 boosted; Beta from two Gammas. */
+function gammaSample(k, rng) {
+  if (k < 1) return gammaSample(k + 1, rng) * Math.pow(rng() || 1e-12, 1 / k)
+  const d = k - 1 / 3
+  const c = 1 / Math.sqrt(9 * d)
+  for (;;) {
+    let x, v
+    do {
+      const u1 = rng() || 1e-12
+      const u2 = rng()
+      x = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2)
+      v = 1 + c * x
+    } while (v <= 0)
+    v = v * v * v
+    const u = rng() || 1e-12
+    if (Math.log(u) < 0.5 * x * x + d - d * v + d * Math.log(v)) return d * v
+  }
+}
+function betaSample(a, b, rng) {
+  const x = gammaSample(a, rng)
+  return x / (x + gammaSample(b, rng))
+}
+
+/** Pure learner over a storage-like { get, set } (or none). */
+export function createTaste(store, rng = Math.random) {
+  let t = cleanTaste(store ? store.get('taste', null) : null)
+  const save = () => { if (store) store.set('taste', t) }
+
+  const decay = () => {
+    for (const dim of Object.keys(t.post)) {
+      for (const v of Object.keys(t.post[dim])) {
+        const ab = t.post[dim][v]
+        ab[0] = 1 + (ab[0] - 1) * TASTE.DECAY
+        ab[1] = 1 + (ab[1] - 1) * TASTE.DECAY
+      }
+    }
+  }
+  const credit = (roll, y, weight, dims) => {
+    decay()
+    for (const dim of Object.keys(FACES)) {
+      const ab = t.post[dim][roll[dim]]
+      if (!ab) continue
+      const w = dims && dims.indexOf(dim) === -1 ? weight * 0.25 : weight
+      if (y) ab[0] += w
+      else ab[1] += w
+    }
+  }
+  const rate = (src) => {
+    const recent = t.log.filter((e) => e.src === src).slice(-TASTE.WINDOW)
+    return { n: recent.length, kept: recent.filter((e) => e.y === 1).length }
+  }
+  const checkRollback = () => {
+    const L = rate('learned')
+    const R = rate('random')
+    if (L.n < TASTE.MIN_N || R.n < TASTE.MIN_N || !t.snaps.length) return null
+    if (L.kept / L.n + TASTE.GAP > R.kept / R.n) return null
+    t.post = JSON.parse(JSON.stringify(t.snaps.pop()))
+    /* Forget the learned window that triggered it so one bad run can't loop. */
+    t.log = t.log.filter((e) => e.src !== 'learned')
+    return `Taste Roll rolled its taste back: learned rolls were kept ${L.kept}/${L.n}, random ones ${R.kept}/${R.n}.`
+  }
+
+  return {
+    /** → { seed, roll, src } */
+    choose(baseSeed) {
+      t.rolls += 1
+      const holdout = t.rolls % TASTE.HOLDOUT === 0
+      const explore = !holdout && rng() < TASTE.EXPLORE
+      let seed = baseSeed >>> 0 || 1
+      /* Nothing rated yet: there is no taste to lean on, so roll plainly. */
+      let src = holdout || explore || !t.log.length ? 'random' : 'learned'
+      if (src === 'learned') {
+        const theta = {}
+        for (const dim of Object.keys(FACES)) {
+          theta[dim] = {}
+          for (const v of FACES[dim]) theta[dim][v] = betaSample(t.post[dim][v][0], t.post[dim][v][1], rng)
+        }
+        let best = -1
+        for (let i = 0; i < TASTE.SEARCH; i++) {
+          const s = (seed + Math.imul(i, 0x9E3779B1)) >>> 0 || 1
+          const r = tasteroll(s).roll(FACES)
+          let score = 0
+          for (const dim of Object.keys(FACES)) score += theta[dim][r[dim]]
+          if (score > best) { best = score; seed = s }
+        }
+      }
+      save()
+      return { seed, roll: tasteroll(seed).roll(FACES), src }
+    },
+    /** y: 1 keep, 0 pass. Returns a rollback message or null. */
+    rate(roll, src, y) {
+      credit(roll, y, 1, null)
+      t.log.push({ src: src === 'learned' ? 'learned' : 'random', y: y ? 1 : 0 })
+      t.log = t.log.slice(-TASTE.LOG_CAP)
+      t.since += 1
+      if (t.since >= TASTE.SNAP_EVERY) {
+        t.snaps.push(JSON.parse(JSON.stringify(t.post)))
+        t.snaps = t.snaps.slice(-3)
+        t.since = 0
+      }
+      const msg = checkRollback()
+      save()
+      return msg
+    },
+    /** A one-tap reason aims extra signal at the dimensions it names. */
+    aim(roll, y, reasonId) {
+      const reason = REASONS.find((r) => r.id === reasonId)
+      if (!reason) return
+      credit(roll, y, 1, reason.dims)
+      save()
+    },
+    /** Undo a rating's direction (user changed their mind): opposite credit. */
+    unrate(roll, y) { credit(roll, y ? 0 : 1, 1, null); t.log.pop(); save() },
+    /** The gate held this column: a weak, non-logged negative. */
+    gateHold(roll) { credit(roll, 0, 0.2, null); save() },
+    stats() {
+      const L = rate('learned')
+      const R = rate('random')
+      const top = {}
+      for (const dim of Object.keys(FACES)) {
+        let bv = null, bm = -1
+        for (const v of FACES[dim]) {
+          const [a, b] = t.post[dim][v]
+          const n = a + b - 2
+          const m = a / (a + b)
+          if (n >= 1.5 && m > bm) { bm = m; bv = v }
+        }
+        top[dim] = bv
+      }
+      return { ratings: t.log.length, learned: L, random: R, top }
+    },
+    reset() { t = cleanTaste(null); save() },
+    _state: () => t
+  }
+}
+
+let taste = null
+
 /* Token system from tasteroll.html @ 5168f89 (values verbatim), plus a generic
    application layer so the tokens restyle ARBITRARY user markup. Applied only
    inside rolled columns, driven by the same html[data-ref][data-vibe][data-mode]
@@ -453,7 +643,7 @@ function persistComparison() {
     pinned: comparison.pinned === true,
     seamAbsent: comparison.seamAbsent === true,
     candidates: Array.isArray(comparison.candidates) ? comparison.candidates.slice(0, 10) : undefined,
-    columns: (comparison.columns || []).map((c) => ({ seed: c.seed, roll: c.roll }))
+    columns: (comparison.columns || []).map((c) => ({ seed: c.seed, roll: c.roll, src: c.src, rating: c.rating == null ? null : c.rating, reason: c.reason || null }))
   }
   const all = pluginCtx.storage.get('comparisons', {})
   all[storageKey(comparison.cwd)] = slim
@@ -658,6 +848,9 @@ async function auditColumn(col, fileLabel) {
       timeoutMs: 300000
     })
     stamp = gateStampFor(res)
+    /* A real HOLD verdict (not a transport or fail-closed HOLD) is weak
+     * negative taste signal for this roll's faces. */
+    if (taste && res && res.verdict === GATE.HOLD) taste.gateHold(col.roll)
   } catch (err) {
     stamp = [GATE.HOLD, [`gate unreachable: ${(err && err.message) || err}`]]
   }
@@ -739,8 +932,10 @@ async function runRoll() {
       return
     }
     const html = read.text
-    const seed = (((Date.now() / 1000) >>> 0) ^ ((current ? current.columns.length : 0) + 1) * 2654435761) >>> 0
-    const roll = tasteroll(seed).roll(FACES)
+    const baseSeed = (((Date.now() / 1000) >>> 0) ^ ((current ? current.columns.length : 0) + 1) * 2654435761) >>> 0
+    const pick = taste ? taste.choose(baseSeed) : { seed: baseSeed, roll: tasteroll(baseSeed).roll(FACES), src: 'random' }
+    const seed = pick.seed
+    const roll = pick.roll
     if (!current) {
       current = { cwd, file: target.rel, filePath: `${folder.path}/${target.rel}`, why: target.why, columns: [] }
     } else {
@@ -758,6 +953,7 @@ async function runRoll() {
     }
     current.originalHtml = html
     const col = newColumn(seed, roll, buildRolledHtml(html, roll, seed))
+    Object.assign(col, { src: pick.src, rating: null, reason: null })
     current.columns.push(col)
     comparison = current
     try {
@@ -849,6 +1045,115 @@ const STAMP_STYLE = {
   PENDING: { background: '#555', color: '#fff', padding: '.1rem .45rem', borderRadius: '.35rem', fontWeight: 600, fontSize: '.72rem', letterSpacing: '.04em' }
 }
 
+/* ---- feedback ------------------------------------------------------------- */
+
+function rateColumn(col, y) {
+  if (!taste || !col) return
+  if (col.rating === y) {
+    /* Tapping the pressed button again clears the rating. */
+    taste.unrate(col.roll, y)
+    col.rating = null
+    col.reason = null
+  } else {
+    if (col.rating === 0 || col.rating === 1) taste.unrate(col.roll, col.rating)
+    col.rating = y
+    col.reason = null
+    const rollback = taste.rate(col.roll, col.src, y)
+    if (rollback) host.notify(rollback)
+  }
+  persistComparison()
+  openPane()
+}
+
+function aimColumn(col, reasonId) {
+  if (!taste || !col || (col.rating !== 0 && col.rating !== 1) || col.reason) return
+  col.reason = reasonId
+  taste.aim(col.roll, col.rating, reasonId)
+  persistComparison()
+  openPane()
+}
+
+function latestColumn() {
+  const cols = comparison && Array.isArray(comparison.columns) ? comparison.columns : []
+  return cols.length ? cols[cols.length - 1] : null
+}
+
+const FEEDBACK_BTN = {
+  border: '1px solid var(--line-strong, #999)',
+  background: 'transparent',
+  color: 'inherit',
+  borderRadius: '.4rem',
+  padding: '.2rem .6rem',
+  minHeight: '1.75rem',
+  font: 'inherit',
+  fontSize: '.75rem',
+  fontWeight: 600,
+  cursor: 'pointer'
+}
+const PRESSED = { background: 'var(--s2, #e9e9e9)', borderColor: 'currentColor', boxShadow: 'inset 0 0 0 1px currentColor' }
+const CHIP = { ...FEEDBACK_BTN, fontWeight: 500, padding: '.1rem .5rem', minHeight: '1.5rem', fontSize: '.7rem', borderStyle: 'dashed' }
+
+function FeedbackRow(props) {
+  const { col, index } = props
+  const kept = col.rating === 1
+  const passed = col.rating === 0
+  const kids = [
+    h('button', {
+      key: 'keep', type: 'button', 'aria-pressed': kept,
+      'aria-label': `Keep roll ${index + 1}: more like this`,
+      style: kept ? { ...FEEDBACK_BTN, ...PRESSED } : FEEDBACK_BTN,
+      onClick: (e) => { e.preventDefault(); rateColumn(col, 1) }
+    }, kept ? '\u{1F44D} Kept' : '\u{1F44D} Keep'),
+    h('button', {
+      key: 'pass', type: 'button', 'aria-pressed': passed,
+      'aria-label': `Pass on roll ${index + 1}: less like this`,
+      style: passed ? { ...FEEDBACK_BTN, ...PRESSED } : FEEDBACK_BTN,
+      onClick: (e) => { e.preventDefault(); rateColumn(col, 0) }
+    }, passed ? '\u{1F44E} Passed' : '\u{1F44E} Pass')
+  ]
+  if ((kept || passed) && !col.reason) {
+    kids.push(h('span', { key: 'why', style: { opacity: .75, fontSize: '.7rem' } }, kept ? 'What made it?' : 'What was off?'))
+    REASONS.forEach((r) => kids.push(h('button', {
+      key: `r-${r.id}`, type: 'button',
+      'aria-label': `${kept ? 'Kept' : 'Passed'} mostly for the ${r.label.toLowerCase()}`,
+      style: CHIP,
+      onClick: (e) => { e.preventDefault(); aimColumn(col, r.id) }
+    }, r.label)))
+  } else if (col.reason) {
+    const r = REASONS.find((x) => x.id === col.reason)
+    kids.push(h('span', { key: 'why', role: 'status', style: { opacity: .8, fontSize: '.7rem' } },
+      `${kept ? 'Kept' : 'Passed'} for the ${r ? r.label.toLowerCase() : 'look'} — noted.`))
+  }
+  return h('div', { role: 'group', 'aria-label': `Feedback on roll ${index + 1}`, style: { display: 'flex', gap: '.35rem', alignItems: 'center', flexWrap: 'wrap', marginTop: '.35rem' } }, kids)
+}
+
+function LearningStrip() {
+  if (!taste) return null
+  const st = taste.stats()
+  const pct = (x) => (x.n ? `${Math.round((100 * x.kept) / x.n)}% of ${x.n}` : 'none yet')
+  /* Don't claim a direction from a handful of taps. */
+  const leaning = st.ratings >= 5 ? Object.values(st.top).filter(Boolean) : []
+  const text = st.ratings
+    ? `Learning from ${st.ratings} rating${st.ratings === 1 ? '' : 's'} · kept: tuned rolls ${pct(st.learned)}, random rolls ${pct(st.random)}${leaning.length ? ` · leaning ${leaning.join(' / ')}` : ''}`
+    : 'Keep or pass each roll and the next ones lean your way. One roll in ten stays random to check it is working.'
+  return h('div', { style: { display: 'flex', gap: '.6rem', alignItems: 'center', flexWrap: 'wrap', padding: '.3rem .8rem', fontSize: '.72rem', borderBottom: '1px solid var(--line, #ddd)' } },
+    h('span', { role: 'status', style: { opacity: .8 } }, text),
+    st.ratings
+      ? h('button', {
+          type: 'button',
+          style: { ...CHIP, marginLeft: 'auto', borderStyle: 'solid' },
+          onClick: (e) => {
+            e.preventDefault()
+            taste.reset()
+            if (comparison) comparison.columns.forEach((c) => { c.rating = null; c.reason = null })
+            persistComparison()
+            host.notify('Taste Roll forgot your taste. Rolls are random again until you rate some.')
+            openPane()
+          }
+        }, 'Reset taste')
+      : null)
+}
+
 function ColumnHeader(props) {
   const { col, index } = props
   const kids = [
@@ -875,6 +1180,7 @@ function ColumnHeader(props) {
       h('span', { style: STAMP_STYLE.PENDING }, 'GATE…'),
       h('span', { style: { opacity: .7, fontSize: '.7rem' } }, 'auditing this column')))
   }
+  kids.push(h(FeedbackRow, { key: 'feedback', col, index }))
   return h('div', { style: { padding: '.45rem .7rem', fontSize: '.78rem', fontWeight: 600, borderBottom: '1px solid var(--line, #ddd)' } }, kids)
 }
 
@@ -949,6 +1255,7 @@ function renderPane() {
     cur.seamAbsent === true && cur.pinned !== true && Array.isArray(cur.candidates) && cur.candidates.length > 1
       ? h(SurfacePicker, { key: 'surface-picker', files: cur.candidates, current: cur.file })
       : null,
+    h(LearningStrip, { key: 'learning' }),
     h('div', { style: { display: 'flex', flex: '1 1 auto', overflowX: 'auto', height: '100%' } }, kids))
 }
 
@@ -994,6 +1301,7 @@ export default {
   description: 'Taste Roll: restyle your own page in gated comparison columns; the frontend ship gate lives in the Hermes-side tastecheck plugin.',
   register(ctx) {
     pluginCtx = ctx
+    taste = createTaste(ctx.storage)
     ctx.register({
       area: COMPOSER_AREAS.actions,
       id: 'taste-roll',
@@ -1019,6 +1327,18 @@ export default {
           run: () => { void runRoll() }
         }
       })
+      for (const [cmd, y, label] of [['taste-roll-keep', 1, 'Taste Roll: keep the latest roll'], ['taste-roll-pass', 0, 'Taste Roll: pass on the latest roll']]) {
+        ctx.register({
+          id: cmd,
+          area: PALETTE_AREA,
+          data: {
+            id: cmd,
+            label,
+            keywords: ['taste', 'roll', y ? 'keep like more' : 'pass dislike less', 'feedback'],
+            run: () => { const col = latestColumn(); if (col) rateColumn(col, y); else host.notify('No Taste Roll column to rate yet.') }
+          }
+        })
+      }
     }
     /* Restore the current workspace's roll history lazily: the next click
      * re-reads the file and rebuilds srcdocs (we never read user files
