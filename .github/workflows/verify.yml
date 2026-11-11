@@ -56,8 +56,14 @@ jobs:
           uv run --no-project --python 3.11 --with pytest --with ruamel.yaml \
             --with-editable "$src" \
             python -m pytest plugins/tastecheck-hermes/tests/test_gate_dispatch.py -q
+      - name: Desktop plugin.js is built from src/pane.js + the pinned Resonant Field theme
+        run: node build.mjs --check
+        working-directory: plugins/tastecheck-hermes/desktop
       - name: Desktop half clean-room harness (stubbed SDK/react)
         run: node --import ./tests/register.mjs --test tests/harness.test.mjs tests/column-gate.test.mjs
+        working-directory: plugins/tastecheck-hermes/desktop
+      - name: Desktop theme merge (SDK with the themes area)
+        run: node --test tests/unified.test.mjs
         working-directory: plugins/tastecheck-hermes/desktop
   structural:
     runs-on: ubuntu-latest

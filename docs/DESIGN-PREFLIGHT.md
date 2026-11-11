@@ -70,4 +70,15 @@ The lockup follows family law: Chakra Petch Bold700 product name, plus the "by K
 
 Take accents from the stone: honey gold (about #C08A2E) and deep brown (about #4A2E14) over the family gunmetal. **Assumption:** this stays unchanged until the mark is approved.
 
+### 8a. Resonant Field is TasteCheck's face (2026-11-11)
+
+Simon confirmed the merge: TasteRoll and the Resonant Field theme share one taste engine.
+
+- **Inputs:** Keep/Pass on rolled columns (and the gate's SHIP/HOLD), plus Resonant Field preset picks and settled custom tunes.
+- **Colour comes from the theme, not the stone.** Rolled columns are painted from Resonant Field's six presets (Indigo, Verdant, Daylight, Graphite, ROSI, Walnut) through the same `palette()` that builds the theme. These are the user's page colours, not TasteCheck identity, so the stone accents above still govern the mark.
+- **Both ways:** theme picks lean the next rolls; kept rolls (and two or more picks) offer a "Resonant Field · Your taste" theme. It is only offered; the learner never switches the theme.
+- **Floors are never learnable.** Every rolled pair is held to 4.5:1 text and 3:1 control borders in every preset and mode, tested in CI.
+- **The theme still works alone.** With the gate off, the themes and the Appearance card behave exactly as the standalone theme did.
+- **Assumption:** the six preset fields are the whole colour space for now; adding one appends to the end so old seeds replay.
+
 Approval: Simon's eye-gate only.
