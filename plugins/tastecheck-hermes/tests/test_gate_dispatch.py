@@ -36,6 +36,12 @@ except Exception as exc:  # pragma: no cover - environment-dependent
     HAS_RUNTIME = False
     _RUNTIME_IMPORT_ERROR = exc
 
+import os as _os
+
+if not HAS_RUNTIME and _os.environ.get("TASTECHECK_REQUIRE_RUNTIME") == "1":
+    # CI's pinned-runtime job: a missing runtime is a failure, never a silent skip.
+    raise RuntimeError(f"TASTECHECK_REQUIRE_RUNTIME=1 but Hermes is not importable: {_RUNTIME_IMPORT_ERROR}")
+
 if pytest is not None:
     pytestmark = pytest.mark.skipif(
         not HAS_RUNTIME,
@@ -69,7 +75,10 @@ def _setup_disp(tmp_path, monkeypatch):
     mod._data_dir = lambda: data
     mod._agent_cwd = lambda: tmp_path
 
-    from hermes_cli.plugins_context import PluginContext
+    try:  # newer Hermes split PluginContext into its own module
+        from hermes_cli.plugins_context import PluginContext
+    except ImportError:  # v0.21.6 (the pinned minimum) keeps it in hermes_cli.plugins
+        PluginContext = runtime.PluginContext
     from hermes_cli.plugins_manifest import PluginManifest
 
     manager = runtime.PluginManager(scope_key=str(home))

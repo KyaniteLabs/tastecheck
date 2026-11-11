@@ -47,3 +47,7 @@ config_schema:
     type: int
     default: 1800
     description: "How recent a SHIP of an http(s) URL must be (default 30 min). A URL's content cannot be hashed, so URL SHIPs are also bound to the workspace they were recorded in."
+  fetch_links:
+    type: bool
+    default: false
+    description: "When true, the audit GETs up to 25 same-origin links on the page to find broken ones. Off by default: following links can trigger side effects on the audited origin (logout, delete, one-time tokens). Off means those links are counted as not fetched."
