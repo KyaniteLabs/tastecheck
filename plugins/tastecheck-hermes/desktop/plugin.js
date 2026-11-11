@@ -2609,20 +2609,20 @@ function ColumnHeader(props) {
   ]
   const gate = gateOf(col)
   if (gate === GATE.SHIP) {
-    kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
+    kids.push(h('div', { key: 'stamp', role: 'status', 'aria-live': 'polite', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
       h('span', { style: STAMP_STYLE.SHIP }, 'SHIP'),
       h('span', { style: { fontSize: '.78rem' } }, 'gate passed')))
   } else if (gate === GATE.HOLD) {
-    kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'baseline', marginTop: '.15rem', flexWrap: 'wrap' } },
+    kids.push(h('div', { key: 'stamp', role: 'status', 'aria-live': 'polite', style: { display: 'flex', gap: '.45rem', alignItems: 'baseline', marginTop: '.15rem', flexWrap: 'wrap' } },
       h('span', { style: STAMP_STYLE.HOLD }, 'HOLD'),
       h('span', { style: { fontSize: '.78rem' } }, (col.reasons || []).slice(0, 2).join(' · ') || 'held')))
   } else if (gate === GATE.RESTORED) {
-    kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
+    kids.push(h('div', { key: 'stamp', role: 'status', 'aria-live': 'polite', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
       h('span', { style: STAMP_STYLE.PENDING }, 'GATE —'),
       h('span', { style: { fontSize: '.78rem' } }, 'not audited this session (click Taste Roll to re-roll + gate)')))
   } else {
     /* PENDING — and, fail closed, any unknown gate value: never a SHIP stamp. */
-    kids.push(h('div', { key: 'stamp', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
+    kids.push(h('div', { key: 'stamp', role: 'status', 'aria-live': 'polite', style: { display: 'flex', gap: '.45rem', alignItems: 'center', marginTop: '.15rem' } },
       h('span', { style: STAMP_STYLE.PENDING }, 'GATE…'),
       h('span', { style: { fontSize: '.78rem' } }, 'auditing this column')))
   }
@@ -2639,6 +2639,8 @@ function SurfacePicker(props) {
     kids.push(h('button', {
       key: rel,
       type: 'button',
+      'aria-label': `Roll ${rel}`,
+      'aria-pressed': rel === current,
       onClick: (e) => { e.preventDefault(); void switchSurface(rel) },
       style: {
         border: '1px solid var(--line, #ddd)',

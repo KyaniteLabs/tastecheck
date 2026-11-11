@@ -1028,3 +1028,29 @@ test('feedback: Keep, Pass and reason chips are 44px touch targets with full-ink
   assert.match(btn, /PRESSED = \{[^}]*border: '2px solid currentColor'/, 'pressed state shows by shape, not tint alone')
   assert.doesNotMatch(src, /opacity:/, 'no faded text: contrast stays the theme pair')
 })
+
+/* F25: stamps are announced politely; icon/file buttons carry accessible names. */
+function findAll(node, pred, out = []) {
+  if (!node || typeof node !== 'object') return out
+  if (typeof node.type === 'function') return findAll(node.type(node.props), pred, out)
+  if (pred(node)) out.push(node)
+  if (typeof node.children !== 'undefined') [].concat(node.children).forEach((c) => findAll(c, pred, out))
+  return out
+}
+
+test('F25: every gate stamp is a polite live status region; buttons are named', async () => {
+  const root = fixtureProject()
+  freshGlobals({ cwd: root })
+  const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip, okHold))
+  ;(await importFresh()).default.register(ctx)
+  const button = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  assert.ok(button.props['aria-label'], 'composer button has an aria-label')
+  await click(button)
+  await click(ctx.registered.find((c) => c.id === 'taste-roll').render())
+  const cols = paneColumns(globalThis.__tc.workspaces.at(-1).options.render())
+  const stamps = cols.slice(1).flatMap((c) => findAll(c.children[0], (n) => n.props && n.props.role === 'status'))
+  assert.equal(stamps.length, cols.length - 1, 'one status region per rolled column')
+  stamps.forEach((s) => assert.equal(s.props['aria-live'], 'polite'))
+  assert.ok(stamps.some((s) => /SHIP/.test(allText(s).join(''))))
+  assert.ok(stamps.some((s) => /HOLD/.test(allText(s).join(''))))
+})
