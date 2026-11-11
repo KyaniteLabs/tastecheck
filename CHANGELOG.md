@@ -21,7 +21,7 @@ All notable changes to the tastecheck skill pack. Format follows
 
 ### Fixed — CI: the Python jobs run on the Forgejo runners
 
-- `verify / plugin` and `verify / entry-point-contract` failed at setup on every run, because the runners use Debian `node:22` images and `actions/setup-python` has only Ubuntu builds. Both jobs now get CPython 3.11 and 3.14 from `astral-sh/setup-uv`. The tests themselves were already passing.
+- `verify / plugin` and `verify / entry-point-contract` failed at setup on every run, because the runners use Debian `node:22` images and `actions/setup-python` has only Ubuntu builds. The runners can't use `setup-uv` either, so both jobs now download a pinned uv 0.11.22 release, check its sha256, and let uv fetch CPython 3.11 and 3.14. The tests themselves were already passing.
 
 ### Fixed — Hermes plugin 0.2.0: the completion gate binds evidence, not vocabulary
 
