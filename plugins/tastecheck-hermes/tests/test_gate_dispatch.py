@@ -36,6 +36,12 @@ except Exception as exc:  # pragma: no cover - environment-dependent
     HAS_RUNTIME = False
     _RUNTIME_IMPORT_ERROR = exc
 
+import os as _os
+
+if not HAS_RUNTIME and _os.environ.get("TASTECHECK_REQUIRE_RUNTIME") == "1":
+    # CI's pinned-runtime job: a missing runtime is a failure, never a silent skip.
+    raise RuntimeError(f"TASTECHECK_REQUIRE_RUNTIME=1 but Hermes is not importable: {_RUNTIME_IMPORT_ERROR}")
+
 if pytest is not None:
     pytestmark = pytest.mark.skipif(
         not HAS_RUNTIME,
