@@ -136,6 +136,35 @@ fetch("/own").then(r=>r.text()).then(t=>{document.body.dataset.own=t});</script>
   check(ev && ev.probes.resources.status === "fail" && /ERR_ACCESS_DENIED/.test(ev.probes.resources.evidence), `blocked request is reported (${ev && String(ev.probes.resources.evidence).slice(0, 120)})`);
 }
 
+// F29 follow-up: CDP Fetch does not pause WebSocket handshakes, so a ws:// connection from
+// the audited page to a second loopback port must be stopped or at least force a HOLD.
+{
+  const { createServer } = await import("node:http");
+  const { spawn } = await import("node:child_process");
+  const upgrades = [];
+  const secret = createServer((req, res) => { res.end("secret"); });
+  secret.on("upgrade", (req, socket) => { upgrades.push(req.url); socket.destroy(); });
+  await new Promise((r) => secret.listen(0, "127.0.0.1", r));
+  const secretPort = secret.address().port;
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>ws</title></head><body><main><h1>Hello</h1>
+<script>try { new WebSocket("ws://127.0.0.1:${secretPort}/ws-steal"); } catch (e) {}
+try { new WebSocket("ws://localhost:${secretPort}/ws-steal2"); } catch (e) {}</script></main></body></html>`;
+  const site = createServer((req, res) => { res.writeHead(200, { "content-type": "text/html" }); res.end(html); });
+  await new Promise((r) => site.listen(0, "127.0.0.1", r));
+  const out = mkdtempSync(join(tmpdir(), "cdp-qa-ws-"));
+  outs.push(out);
+  const child = spawn(process.execPath, [script, `http://127.0.0.1:${site.address().port}/`, out, "--no-profile", "--no-link-fetch"], { stdio: ["ignore", "pipe", "pipe"] });
+  let stderr = ""; child.stderr.on("data", (d) => { stderr += d; });
+  const code = await new Promise((r) => child.on("close", r));
+  site.close(); secret.close();
+  const evPath = join(out, "evidence.json");
+  const ev = existsSync(evPath) ? JSON.parse(readFileSync(evPath, "utf8")) : null;
+  check(ev !== null, `ws fixture ran to evidence (exit ${code}) ${stderr.slice(0, 160)}`);
+  // CDP cannot stop the handshake itself (Fetch skips WebSockets, setBlockedURLs is ignored): the guarantee is HOLD.
+  console.log(`info ws upgrades seen by the second server: ${upgrades.length}`);
+  check(ev && ev.verdict === "HOLD" && ev.probes.resources.status === "fail" && /ws-steal|websocket/i.test(ev.probes.resources.evidence), `blocked WebSocket forces HOLD (${ev && ev.verdict}: ${ev && String(ev.probes.resources.evidence).slice(0, 140)})`);
+}
+
 for (const o of outs) rmSync(o, { recursive: true, force: true });
 if (failed) { console.error(`${failed} check(s) failed`); process.exit(1); }
 console.log("cdp-qa tests passed");

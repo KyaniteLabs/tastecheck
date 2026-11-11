@@ -13,8 +13,11 @@
             trigger side effects (logout, delete, one-time tokens) on the audited origin.
    Network: requests from the audited page to loopback, link-local and private-network hosts
             are FAILED (CDP Fetch), except the origin being served; they show up in the
-            resources probe as net::ERR_ACCESS_DENIED. A hostname that only DNS-resolves
-            to a private address is not caught.
+            resources probe as net::ERR_ACCESS_DENIED. WebSocket handshakes are NOT paused by
+            CDP Fetch: a ws(s):// connection to such a host is not prevented (the target may
+            still see the handshake) but is recorded as "blocked WebSocket <url>", which fails
+            the resources probe and forces HOLD. Web Workers and other non-page targets are not
+            covered. A hostname that only DNS-resolves to a private address is not caught.
    Dialogs: alert/confirm/prompt/beforeunload are DISMISSED (confirm/prompt answer cancel).
    Sandbox: Chrome's sandbox is disabled (--no-sandbox) only when running as root or with
             CI set, because Chrome refuses to start sandboxed there; evidence.json records it.
@@ -656,6 +659,13 @@ async function main() {
       act.catch(() => {}); // request already gone (navigated away, aborted)
     });
     await send("Fetch.enable", { patterns: [{ urlPattern: "*" }] });
+    /* CDP Fetch never pauses WebSocket handshakes, and Network.setBlockedURLs does not stop them
+       either (verified with real Chrome). So a ws(s):// connection the guard would refuse cannot be
+       prevented here: it is recorded as a violation that fails the resources probe and forces HOLD.
+       The target server may still see the handshake. */
+    on("Network.webSocketCreated", (p) => {
+      if (isBlockedRequest(p.url, servedOrigin)) bad.push(`blocked WebSocket ${p.url}`);
+    });
     await send("Emulation.setFocusEmulationEnabled", { enabled: true }).catch(() => {});
     await setMedia("light", "no-preference");
     await viewport(1440, 900);
