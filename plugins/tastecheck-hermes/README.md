@@ -35,8 +35,17 @@ Release rules (fail closed):
 ## Install
 
 ```bash
-hermes plugins install KyaniteLabs/tastecheck --subdir plugins/tastecheck-hermes
+hermes plugins install KyaniteLabs/tastecheck/plugins/tastecheck-hermes
 hermes plugins enable tastecheck-hermes
+```
+
+The subdirectory travels **inside the identifier** (`owner/repo/subdir`). `hermes plugins
+install` has no `--subdir` flag in the supported range (`>=0.21.6`): passing one exits 2
+with `unrecognized arguments`. For a reproducible install, pin the commit — `--ref`
+takes one immutable 40-character SHA:
+
+```bash
+hermes plugins install KyaniteLabs/tastecheck/plugins/tastecheck-hermes --ref <40-char-commit-sha>
 ```
 
 The plugin has **one identity everywhere** — folder, `plugin.yaml` name, dashboard
