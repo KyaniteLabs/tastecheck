@@ -593,6 +593,13 @@ def _resolve_target(target: str, root: Optional[Path] = None) -> str:
     return str(page)
 
 
+def _is_implicit_favicon(raw: str) -> bool:
+    try:
+        return urlsplit(raw).path == "/favicon.ico"
+    except Exception:
+        return False
+
+
 class _ConfinedServer:
     """Read-only HTTP server on 127.0.0.1:<random> serving ONE root directory for the
     duration of one audit. Refuses hidden path components, traversal, symlinks that
@@ -624,6 +631,11 @@ class _ConfinedServer:
                 if host not in {f"127.0.0.1:{server.port}", f"localhost:{server.port}"}:
                     return self._deny(403)
                 path = server.lookup(self.path)
+                if path is None and _is_implicit_favicon(self.path):
+                    # Browsers fetch /favicon.ico on their own, even when the page
+                    # declares no icon. A 404 here would be the server's miss, not the
+                    # page's, and the resources probe would HOLD every column for it.
+                    return self._deny(204)
                 if path is None:
                     return self._deny(404)
                 try:

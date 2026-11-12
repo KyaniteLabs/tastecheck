@@ -216,6 +216,29 @@ def test_data_files_serve_only_from_the_page_directory(plugin, ws):
     assert srv.lookup("/shared.css") is not None, "web assets elsewhere in the workspace still serve"
 
 
+def test_implicit_favicon_is_no_content_not_404(plugin, ws):
+    """Chrome requests /favicon.ico by itself. A self-contained page must not HOLD
+    on "resources failed" because the audit server had no icon to give."""
+    import http.client
+    page(ws, "index.html")
+    with plugin._ConfinedServer(ws) as srv:
+        def status(path):
+            conn = http.client.HTTPConnection("127.0.0.1", srv.port, timeout=5)
+            conn.request("GET", path, headers={"Host": f"127.0.0.1:{srv.port}"})
+            code = conn.getresponse().status
+            conn.close()
+            return code
+        assert status("/favicon.ico") == 204
+        assert status("/missing.png") == 404, "other misses still fail"
+        assert status("/sub/favicon.ico") == 404, "only the root implicit request is excused"
+    (ws / "favicon.ico").write_bytes(b"\x00\x00\x01\x00")
+    with plugin._ConfinedServer(ws) as srv:
+        conn = http.client.HTTPConnection("127.0.0.1", srv.port, timeout=5)
+        conn.request("GET", "/favicon.ico", headers={"Host": f"127.0.0.1:{srv.port}"})
+        assert conn.getresponse().status == 200, "a real icon is served normally"
+        conn.close()
+
+
 # --- dashboard roll audit -----------------------------------------------------
 
 def _api(monkeypatch):
