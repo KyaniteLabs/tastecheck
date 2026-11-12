@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "skill": "improve-existing-website",
+  "class": "repair",
+  "trigger": {
+    "positive": [
+      "An existing site or codebase needs improvement while preserving its intended identity",
+      "A redesign request has inspectable rendered or source evidence"
+    ],
+    "negative": [
+      "A greenfield project needs direction before anything exists to inspect",
+      "A request is only a single specialist repair with no site-level diagnosis"
+    ],
+    "adjacent_skills": [
+      "design-system-interview",
+      "deslop-ui",
+      "a11y-pass"
+    ]
+  },
+  "exclusions": [
+    "Do not prescribe or edit before inspecting evidence",
+    "Do not perform a material redesign without explicit approval"
+  ],
+  "inputs": {
+    "required": [
+      "Rendered site or source files",
+      "Scope and available evidence"
+    ],
+    "optional": [
+      "Analytics",
+      "Brand guidance",
+      "User feedback",
+      "Browser audit results"
+    ]
+  },
+  "outputs": {
+    "primary": "An evidence-labelled inferred system, readiness decision, and scoped repair plan or implementation report",
+    "artifacts": [
+      "INFERRED-SYSTEM.md",
+      "preserved-signal ledger",
+      "repair evidence report"
+    ],
+    "handoff_fields": [
+      "observations",
+      "inferences",
+      "readiness",
+      "questions",
+      "approval",
+      "preserved_signals",
+      "drift",
+      "verification"
+    ]
+  },
+  "stop_conditions": [
+    "Pause when evidence is insufficient for a safe inference",
+    "Pause for explicit approval before a material redesign",
+    "Ask no more than three questions that each change implementation"
+  ],
+  "handoff": {
+    "receives_from": [],
+    "sends_to": [
+      "a11y-pass",
+      "art-direction",
+      "cognitive-a11y",
+      "color-system",
+      "component-states",
+      "data-viz",
+      "deslop-ui",
+      "empty-states",
+      "humanize-copy",
+      "i18n-ready",
+      "responsive-layout",
+      "spacing-system",
+      "tasteroll",
+      "theming",
+      "web-typography"
+    ]
+  },
+  "self_check_shape": "table_with_evidence",
+  "required_evidence_fields": [
+    "status",
+    "reason",
+    "remediation",
+    "evidence",
+    "provenance"
+  ],
+  "context_budget": {
+    "skill_md_max_tokens": 5000,
+    "resource_max_tokens": 6000
+  }
+}

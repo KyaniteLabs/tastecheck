@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "skill": "empty-states",
+  "class": "generative",
+  "trigger": {
+    "positive": [
+      "A data region needs first-use, no-results, loading, permission, or error states."
+    ],
+    "negative": [
+      "The issue is only a button or field state."
+    ],
+    "adjacent_skills": [
+      "component-states",
+      "form-ux",
+      "a11y-pass"
+    ]
+  },
+  "exclusions": [
+    "Do not use a spinner as the only loading communication.",
+    "Do not collapse no-results, no-permission, and outage into one empty message."
+  ],
+  "inputs": {
+    "required": [
+      "data region purpose",
+      "known empty/loading/error causes",
+      "next useful action"
+    ],
+    "optional": [
+      "API states",
+      "permission model",
+      "content tone"
+    ]
+  },
+  "outputs": {
+    "primary": "domain-specific data-region state plan",
+    "artifacts": [
+      "state matrix",
+      "recovery copy and actions",
+      "evidence-backed self-check"
+    ],
+    "handoff_fields": [
+      "region",
+      "state",
+      "cause",
+      "message",
+      "action",
+      "evidence"
+    ]
+  },
+  "stop_conditions": [
+    "Stop when the cause of absence cannot be distinguished.",
+    "Hand off control-level loading or focus behavior to component-states."
+  ],
+  "handoff": {
+    "receives_from": [
+      "component-states",
+      "data-viz",
+      "design-system-interview",
+      "deslop-ui",
+      "improve-existing-website",
+      "tasteroll"
+    ],
+    "sends_to": [
+      "component-states",
+      "a11y-pass",
+      "humanize-copy",
+      "tastecheck-pass",
+      "cognitive-a11y"
+    ]
+  },
+  "self_check_shape": "table_with_evidence",
+  "required_evidence_fields": [
+    "status",
+    "reason",
+    "remediation",
+    "evidence",
+    "provenance"
+  ],
+  "context_budget": {
+    "skill_md_max_tokens": 5000,
+    "resource_max_tokens": 6000
+  }
+}

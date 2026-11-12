@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "skill": "form-ux",
+  "class": "generative",
+  "trigger": {
+    "positive": [
+      "A form has completion, validation, recovery, autofill, or interruption problems."
+    ],
+    "negative": [
+      "The issue is only a control's visual interaction state."
+    ],
+    "adjacent_skills": [
+      "component-states",
+      "a11y-pass",
+      "i18n-ready"
+    ]
+  },
+  "exclusions": [
+    "Do not hide errors or validate only on blur without a recovery path.",
+    "Do not change business rules or invent fields."
+  ],
+  "inputs": {
+    "required": [
+      "form goal and fields",
+      "validation rules",
+      "success and failure outcomes"
+    ],
+    "optional": [
+      "existing markup",
+      "analytics",
+      "locale constraints"
+    ]
+  },
+  "outputs": {
+    "primary": "completion-oriented form flow and evidence table",
+    "artifacts": [
+      "field/state matrix",
+      "error and recovery copy",
+      "evidence-backed self-check"
+    ],
+    "handoff_fields": [
+      "field",
+      "state",
+      "trigger",
+      "message",
+      "recovery",
+      "evidence"
+    ]
+  },
+  "stop_conditions": [
+    "Stop when validation rules or data ownership are unknown.",
+    "Hand off visual control states to component-states."
+  ],
+  "handoff": {
+    "receives_from": [
+      "component-states",
+      "design-system-interview",
+      "deslop-ui",
+      "humanize-copy",
+      "responsive-layout",
+      "spacing-system",
+      "tasteroll"
+    ],
+    "sends_to": [
+      "a11y-pass",
+      "i18n-ready",
+      "tastecheck-pass",
+      "cognitive-a11y"
+    ]
+  },
+  "self_check_shape": "table_with_evidence",
+  "required_evidence_fields": [
+    "status",
+    "reason",
+    "remediation",
+    "evidence",
+    "provenance"
+  ],
+  "context_budget": {
+    "skill_md_max_tokens": 5000,
+    "resource_max_tokens": 6000
+  }
+}
