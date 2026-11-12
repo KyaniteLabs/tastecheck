@@ -188,6 +188,17 @@ Object.assign(lightOnLightPair, { ratio: 21, foreground: "#e8e8ea", background: 
 lightOnLightRow.evidence.sha256 = hashEvidence(lightOnLightRow.evidence);
 const lightOnLightReport = evaluateReleaseGate({ ...validLedger, rows: lightOnLightRows }, gateOptions);
 assert.equal(lightOnLightReport.verdict, "HOLD", "computed foreground/background contrast rejects light grey on white despite a forged reported ratio");
+assert(lightOnLightReport.validation.errors.some((error) => /computed contrast 1\.22:1 is below the WCAG AA minimum 4\.5:1/.test(error)), "light grey on white fails on the computed AA ratio, not the forged 21:1");
+
+const themeContrastRows = structuredClone(validRows);
+const themeContrastRow = themeContrastRows.find((row) => row.check_id === "browser:theme-contrast");
+const themeContrastPair = themeContrastRow.evidence.details.observations[0].pairs[0];
+Object.assign(themeContrastPair, { ratio: 21, foreground: "#e8e8ea", background: "#ffffff", theme: "light" });
+themeContrastRow.evidence.sha256 = hashEvidence(themeContrastRow.evidence);
+const themeContrastReport = evaluateReleaseGate({ ...validLedger, rows: themeContrastRows }, gateOptions);
+assert.equal(themeContrastReport.verdict, "HOLD", "browser:theme-contrast rejects #e8e8ea on white despite a forged reported ratio");
+assert(themeContrastReport.blockers.includes("browser:theme-contrast"));
+assert(themeContrastReport.validation.errors.some((error) => /browser:theme-contrast:[\s\S]*computed contrast 1\.22:1 is below the WCAG AA minimum 4\.5:1/.test(error)));
 
 const contrastControlRows = structuredClone(validRows);
 const contrastControlRow = contrastControlRows.find((row) => row.check_id === contrastCheck.id);
@@ -195,6 +206,14 @@ const contrastControlPair = contrastControlRow.evidence.details.observations[0].
 Object.assign(contrastControlPair, { ratio: 7.2, foreground: "#111111", background: "#ffffff", theme: "light" });
 contrastControlRow.evidence.sha256 = hashEvidence(contrastControlRow.evidence);
 assert.equal(evaluateReleaseGate({ ...validLedger, rows: contrastControlRows }, gateOptions).verdict, "SHIP", "dark text on white passes computed contrast control");
+
+const themeContrastPassRows = structuredClone(validRows);
+const themeContrastPassRow = themeContrastPassRows.find((row) => row.check_id === "browser:theme-contrast");
+for (const observation of themeContrastPassRow.evidence.details.observations) {
+  Object.assign(observation.pairs[0], { ratio: 7.2, foreground: "#111111", background: "#ffffff", theme: "light" });
+}
+themeContrastPassRow.evidence.sha256 = hashEvidence(themeContrastPassRow.evidence);
+assert.equal(evaluateReleaseGate({ ...validLedger, rows: themeContrastPassRows }, gateOptions).verdict, "SHIP", "dark text on white passes browser:theme-contrast");
 
 const transparentTextRows = structuredClone(validRows);
 const transparentTextRow = transparentTextRows.find((row) => row.check_id === contrastCheck.id);
