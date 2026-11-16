@@ -695,7 +695,10 @@ function observationItemStatus(item, check, label, errors) {
       const [lighter, darker] = [luminance(foreground), luminance(background)].sort((a, b) => b - a);
       const computedRatio = (lighter + 0.05) / (darker + 0.05);
       const minimum = pair.kind === "body" ? 4.5 : 3;
-      if (computedRatio < minimum) passed = false;
+      if (computedRatio < minimum) {
+        errors.push(`${pairLabel} computed contrast ${computedRatio.toFixed(2)}:1 is below the WCAG AA minimum ${minimum}:1`);
+        passed = false;
+      }
     }
     return passed;
   }
