@@ -285,7 +285,10 @@ def test_explicit_url_target_binds_by_identity(plugin):
     put_entry(plugin, "http://127.0.0.1:5173/project-a")
     _blocked(_gate(plugin, _done(metadata={"target": "http://127.0.0.1:5173/project-b"})),
              "no ledger verdict is bound")
-    assert _gate(plugin, _done(metadata={"target": "http://127.0.0.1:5173/project-a/"})) is None
+    assert _gate(plugin, _done(metadata={"target": "http://127.0.0.1:5173/project-a"})) is None
+    # A trailing slash is a different URL (it can resolve to a different page): no carry-over.
+    _blocked(_gate(plugin, _done(metadata={"target": "http://127.0.0.1:5173/project-a/"})),
+             "no ledger verdict is bound")
 
 
 def test_url_ship_has_short_ttl(plugin):

@@ -59,6 +59,9 @@ DEFAULTS: Dict[str, Any] = {
     "gate_completions": True,
     "gate_ship_ttl_seconds": 21600,
     "gate_url_ship_ttl_seconds": 1800,
+    # Off by default: following same-origin links (GET) can trigger side effects on the
+    # audited origin (logout, delete, one-time tokens). Broken links are then not checked.
+    "fetch_links": False,
 }
 LEDGER_MAX = 200
 AUDITS_KEEP = 20
@@ -67,13 +70,13 @@ SERVED_MAX = 400  # files recorded per audit (the page plus its subresources)
 
 # Advisory brief only (pre_llm_call). The completion gate never keys on vocabulary.
 _UI_RE = re.compile(
-    r"\b(?:ui|frontend|front-end|landing ?page|website|web ?page|page|site|design|css|layout|"
-    r"component|dashboard|screen)\b",
+    r"\b(?:ui|frontend|front-end|landing ?page|website|web ?page|css|stylesheet|layout|"
+    r"component|dashboard)\b",
     re.IGNORECASE,
 )
 _SHIP_RE = re.compile(
-    r"\b(?:done|finished|complete(?:d)?|ship(?:ped|ping)?|launch(?:ed|ing)?|ready to "
-    r"(?:ship|launch|merge|deploy|go)|looks good|lgtm|polish(?:ed)?|deslop|taste ?check)\b",
+    r"\b(?:done|ship(?:ped|ping)?|launch(?:ed|ing)?|ready to "
+    r"(?:ship|launch|merge|deploy|go)|lgtm|deslop|taste ?check)\b",
     re.IGNORECASE,
 )
 
@@ -251,7 +254,8 @@ def _ledger_key() -> bytes:
             pass
     raw = path.read_bytes().strip()
     if len(raw) < 64:
-        raise RuntimeError("tastecheck ledger key is unreadable")
+        raise RuntimeError(f"tastecheck ledger key {path.name} in the plugin data dir is truncated or "
+                           "unreadable; move it aside so a new key is created (old verdicts then stop counting)")
     return raw
 
 
@@ -405,18 +409,32 @@ def _verified_cli() -> List[str]:
     return ["node", str(root / "bin" / "tastecheck.mjs")]
 
 
+def _audit_args(cli_target: str, out_dir: Path) -> List[str]:
+    args = ["audit", cli_target, str(out_dir), "--json"]
+    if not _cfg("fetch_links"):
+        args.append("--no-link-fetch")
+    return args
+
+
 def _ok_codes(args: List[str]) -> Tuple[int, ...]:
     """`audit` exits 0 SHIP / 1 HOLD / 2 tool error; every other command exits 0 on success."""
     return (0, 1) if args and args[0] == "audit" else (0,)
 
 
 def run_tastecheck(args: List[str], timeout: Optional[float] = None) -> Dict[str, Any]:
+    run_tmp = ""
     try:
         override = str(_cfg("tastecheck_command") or "").strip()
         cmd = (shlex.split(override) if override else _verified_cli()) + args
     except Exception as exc:
         logger.debug("tastecheck: CLI setup failed", exc_info=True)
         return {"ok": False, "error": f"tastecheck CLI unavailable: {exc}"}
+    # The CLI's throwaway Chrome profile and output dirs go under a TMPDIR this process
+    # owns and removes after the run, so a timeout kill never strands them.
+    run_tmp = tempfile.mkdtemp(prefix="tc-")
+    env = _scrubbed_env()
+    for var in ("TMPDIR", "TMP", "TEMP"):
+        env[var] = run_tmp
     popen_kw: Dict[str, Any] = {}
     if os.name == "nt":
         popen_kw["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
@@ -425,9 +443,10 @@ def run_tastecheck(args: List[str], timeout: Optional[float] = None) -> Dict[str
     try:
         proc = subprocess.Popen(
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.DEVNULL,
-            text=True, env=_scrubbed_env(), cwd=str(_data_dir()), **popen_kw,
+            text=True, env=env, cwd=str(_data_dir()), **popen_kw,
         )
     except FileNotFoundError as exc:
+        shutil.rmtree(run_tmp, ignore_errors=True)
         return {"ok": False, "error": f"tastecheck not runnable (needs Node >=22 on PATH): {exc}"}
     limit = float(timeout) if timeout is not None else float(_cfg("timeout_seconds"))
     try:
@@ -448,6 +467,7 @@ def run_tastecheck(args: List[str], timeout: Optional[float] = None) -> Dict[str
                 os.killpg(proc.pid, signal.SIGKILL)
             except (ProcessLookupError, PermissionError):
                 pass
+        shutil.rmtree(run_tmp, ignore_errors=True)
     out = (stdout or "").strip()
     err = (stderr or "").strip()
     ok_codes = _ok_codes(args)
@@ -485,7 +505,12 @@ _SERVE_TYPES = {
     ".txt": "text/plain; charset=utf-8", ".xml": "application/xml", ".wasm": "application/wasm",
     ".mp4": "video/mp4", ".webm": "video/webm", ".mp3": "audio/mpeg", ".wav": "audio/wav",
 }
+# Data-shaped files (config.json, notes.txt, sitemap.xml, source maps) are where a
+# workspace keeps things that are not the page. They are served only from inside
+# the audited page's own directory tree, never from elsewhere in the workspace.
+_DATA_SUFFIXES = frozenset({".json", ".map", ".webmanifest", ".txt", ".xml"})
 _SERVE_MAX_BYTES = 64 * 1024 * 1024
+_TARGET_MAX = 2048
 
 
 def _is_url(s: Any) -> bool:
@@ -530,6 +555,8 @@ def _resolve_target(target: str, root: Optional[Path] = None) -> str:
     t = str(target or "").strip()
     if not t:
         raise ValueError("target is required (http(s) URL or an HTML file/dir in the workspace)")
+    if len(t) > _TARGET_MAX:
+        raise ValueError(f"target is longer than {_TARGET_MAX} characters")
     if _is_url(t):
         return t
     if re.match(r"^[a-z][a-z0-9+.-]*:", t, re.IGNORECASE) and not re.match(r"^[a-zA-Z]:[\\/]", t):
@@ -537,11 +564,12 @@ def _resolve_target(target: str, root: Optional[Path] = None) -> str:
     base = (root or _agent_cwd()).resolve()
     p = Path(t).expanduser()
     p = (base / p).resolve() if not p.is_absolute() else p.resolve()
-    if not p.exists():
-        raise ValueError(f"path does not exist: {p.name}")
+    # Confinement first: never reveal whether a path outside the workspace exists.
     if not _inside(p, base) or _has_hidden_part(p, base):
         raise ValueError("local targets must live inside the session workspace (no hidden "
                          "paths); serve anything else yourself and audit its http URL")
+    if not p.exists():
+        raise ValueError(f"path does not exist: {p.name}")
     page = _page_of(p)
     if not page.is_file():
         raise ValueError(f"no index.html in directory {p.name}")
@@ -557,9 +585,13 @@ class _ConfinedServer:
     sha256 of every byte string it serves (the exact bytes sent), so the ledger binds
     the page AND its subresources."""
 
-    def __init__(self, root: Path):
+    def __init__(self, root: Path, data_root: Optional[Path] = None):
         self.root = root.resolve()
+        # Data-shaped files are served only from here (the page's directory).
+        self.data_root = (data_root or root).resolve()
         self.served: Dict[str, str] = {}
+        self.overflow = False   # more distinct files than SERVED_MAX: binding incomplete
+        self.conflict = False   # one path served with different bytes: binding ambiguous
         self._lock = threading.Lock()
         server = self
 
@@ -632,12 +664,25 @@ class _ConfinedServer:
             return None
         if not cand.is_file() or cand.suffix.lower() not in _SERVE_TYPES:
             return None
+        if cand.suffix.lower() in _DATA_SUFFIXES and not _inside(cand, self.data_root):
+            return None
         return cand
 
     def record(self, path: Path, data: bytes) -> None:
+        """Keep the FIRST digest per path. A different digest for the same path, or more
+        files than SERVED_MAX, marks the binding untrustworthy (the audit then cannot SHIP)."""
+        digest = hashlib.sha256(data).hexdigest()
         with self._lock:
-            if len(self.served) < SERVED_MAX or str(path) in self.served:
-                self.served[str(path)] = hashlib.sha256(data).hexdigest()
+            key = str(path)
+            prior = self.served.get(key)
+            if prior is not None:
+                if prior != digest:
+                    self.conflict = True
+                return
+            if len(self.served) >= SERVED_MAX:
+                self.overflow = True
+                return
+            self.served[key] = digest
 
     def url_for(self, page: Path) -> str:
         rel = page.resolve().relative_to(self.root).as_posix()
@@ -789,18 +834,22 @@ def audit(target: str, source: str = "tool", serve_root: Optional[Path] = None) 
     page = Path(tgt) if local else None
     before = _file_sha256(page) if page else None
     served: Dict[str, str] = {}
+    binding_problem = ""
     res: Dict[str, Any] = {}
     for attempt in (0, 1):
         out_dir = Path(tempfile.mkdtemp(prefix=time.strftime("%Y%m%d-%H%M%S") + "-", dir=str(root)))
         remaining = deadline - time.monotonic()
         if page is not None:
-            with _ConfinedServer(serve_root or _agent_cwd()) as srv:
+            with _ConfinedServer(serve_root or _agent_cwd(), data_root=page.parent) as srv:
                 cli_target = srv.url_for(page)
-                res = run_tastecheck(["audit", cli_target, str(out_dir), "--json"], timeout=remaining)
+                res = run_tastecheck(_audit_args(cli_target, out_dir), timeout=remaining)
                 served = dict(srv.served)
+                binding_problem = ("more files were served than the ledger can bind" if srv.overflow
+                                   else "a file changed while it was being served" if srv.conflict
+                                   else "")
         else:
             cli_target = tgt
-            res = run_tastecheck(["audit", cli_target, str(out_dir), "--json"], timeout=remaining)
+            res = run_tastecheck(_audit_args(cli_target, out_dir), timeout=remaining)
         res["evidence_dir"] = str(out_dir)
         exit_code = res.get("exit")
         cold_start = "DevToolsActivePort" in str(res.get("error") or "") + str(res.get("stderr") or "")
@@ -810,6 +859,9 @@ def audit(target: str, source: str = "tool", serve_root: Optional[Path] = None) 
             continue
         break
     res = _finish_audit(res, cli_target, out_dir, root, res.get("exit"))
+    if page is not None and binding_problem and audit_outcome(res) is AuditOutcome.SHIP:
+        res.pop("data", None)
+        _error(res, f"{binding_problem}; the SHIP cannot be bound to exact bytes, re-run the audit")
     if page is not None and audit_outcome(res) is AuditOutcome.SHIP:
         after = _file_sha256(page)
         if before is None or after != before or served.get(str(page)) != before:
@@ -821,6 +873,10 @@ def audit(target: str, source: str = "tool", serve_root: Optional[Path] = None) 
     except Exception as exc:  # the verdict stands; a ledger failure must be visible
         logger.warning("tastecheck: recording the verdict failed: %s", exc)
         res["ledger_error"] = f"{type(exc).__name__}: {exc}"
+        if source != "roll-audit":
+            # A lost verdict (above all a lost HOLD) must not let an older SHIP release
+            # the gate: latch a veto for this target until a later audit records.
+            _latch(tgt)
     return res
 
 
@@ -880,14 +936,14 @@ def _file_sha256(path: Optional[Path]) -> Optional[str]:
 
 def _norm_target(t: Any) -> str:
     """Normalize a ledger target / payload path for matching: http(s) URLs keep their
-    identity (trailing slashes dropped); everything else resolves to an absolute path
+    exact identity; everything else resolves to an absolute path
     against the AGENT cwd (strict=False, so a since-deleted file still compares equal),
     and a directory means its index.html. Record and consumption share this rule."""
     s = str(t or "").strip()
     if not s:
         return ""
     if _is_url(s):
-        return re.sub(r"/+$", "", s)
+        return s  # exact identity: /app and /app/ can be different pages
     try:
         p = Path(s).expanduser()
         if not p.is_absolute():
@@ -935,8 +991,8 @@ def record_verdict(target: str, payload: Dict[str, Any], source: str = "tool", *
     file the loopback server sent). The ledger stores no page content."""
     data = payload.get("data") if isinstance(payload.get("data"), dict) else {}
     verdict = _payload_verdict(payload)
-    tgt_raw = str(target)[:300]
-    tgt = _norm_target(tgt_raw)
+    tgt = _norm_target(str(target))
+    tgt_raw = str(target)[:300]  # display copy only; identity is the full ``target``
     now = int(time.time())
     entry: Dict[str, Any] = {
         "ts": now,
@@ -976,8 +1032,76 @@ def record_verdict(target: str, payload: Dict[str, Any], source: str = "tool", *
                            exc, backup.name)
             ledger = []
         ledger.append(_sign_entry(entry))
-        _save_json(path, ledger[-LEDGER_MAX:])
+        _save_json(path, _evict(ledger))
+    if source != "roll-audit":
+        _unlatch(tgt)
     return entry
+
+
+def _evict(ledger: List[Any]) -> List[Any]:
+    """Cap the ledger at LEDGER_MAX, evicting what the gate never reads first (malformed
+    rows, roll-audit and ERROR verdicts), then the oldest gate verdicts."""
+    extra = len(ledger) - LEDGER_MAX
+    if extra <= 0:
+        return ledger
+
+    def inert(e: Any) -> bool:
+        return (not isinstance(e, dict) or e.get("source") == "roll-audit"
+                or e.get("verdict") not in GATE_VERDICTS)
+
+    drop = set()
+    for i, e in enumerate(ledger[:-1]):  # never evict the entry just appended
+        if len(drop) >= extra:
+            break
+        if inert(e):
+            drop.add(i)
+    kept = [e for i, e in enumerate(ledger) if i not in drop]
+    return kept[-LEDGER_MAX:]
+
+
+# --- gate latch ---------------------------------------------------------------
+# When a verdict cannot be written, the gate must not fall back to an older SHIP for
+# the same target. The latch lives in memory (this process) AND on disk (best effort,
+# for other processes), keyed by target with the workspace it was audited from.
+
+_LATCH: Dict[str, str] = {}
+
+
+def _latch_path() -> Path:
+    return _data_dir() / "gate_latch.json"
+
+
+def _latch(target: str) -> None:
+    ws = str(_agent_cwd().resolve())
+    _LATCH[target] = ws
+    try:
+        data = _load_json(_latch_path(), {})
+        data = data if isinstance(data, dict) else {}
+        data[target] = ws
+        _save_json(_latch_path(), data)
+    except Exception:
+        logger.warning("tastecheck: could not persist the gate latch; it holds for this process only")
+
+
+def _unlatch(target: str) -> None:
+    _LATCH.pop(target, None)
+    try:
+        path = _latch_path()
+        data = _load_json(path, {})
+        if isinstance(data, dict) and target in data:
+            data.pop(target, None)
+            _save_json(path, data)
+    except Exception:
+        logger.debug("tastecheck: could not clear the gate latch", exc_info=True)
+
+
+def _latched_targets(workspace: str) -> List[str]:
+    merged: Dict[str, str] = {}
+    disk = _load_json(_latch_path(), {})
+    if isinstance(disk, dict):
+        merged.update({str(k): str(v) for k, v in disk.items()})
+    merged.update(_LATCH)
+    return [t for t, ws in merged.items() if ws == workspace]
 
 
 # --- hooks ------------------------------------------------------------------
@@ -991,11 +1115,27 @@ _BRIEF = (
 )
 
 
-def _on_pre_llm(user_message: str = "", **_: Any) -> Optional[Dict[str, str]]:
+def _message_text(msg: Any) -> str:
+    """Plain text of a user message: a string, or the text parts of a multimodal list."""
+    if isinstance(msg, str):
+        return msg
+    if isinstance(msg, list):
+        parts = []
+        for part in msg:
+            if isinstance(part, str):
+                parts.append(part)
+            elif isinstance(part, dict) and isinstance(part.get("text"), str):
+                parts.append(part["text"])
+        return "\n".join(parts)
+    return ""
+
+
+def _on_pre_llm(user_message: Any = "", **_: Any) -> Optional[Dict[str, str]]:
     """Advisory only: vocabulary may add a brief, it never blocks anything."""
     try:
-        if (_cfg("inject_on_ship") and user_message
-                and _SHIP_RE.search(user_message) and _UI_RE.search(user_message)):
+        text = _message_text(user_message)[:20000]
+        if (_cfg("inject_on_ship") and text
+                and _SHIP_RE.search(text) and _UI_RE.search(text)):
             return {"context": _BRIEF}
     except Exception:
         logger.debug("tastecheck: pre_llm_call failed", exc_info=True)
@@ -1019,11 +1159,33 @@ _KANBAN_TASK_ID_RE = re.compile(r"^t_[a-z0-9]+$")
 # Card opt-in: a skill named tastecheck / tastecheck-pass, or a body line "tastecheck: required".
 _CARD_MARKER_RE = re.compile(r"^\s*tastecheck\s*:\s*(?:required|gate|on|yes|true)\s*$",
                              re.IGNORECASE | re.MULTILINE)
-_CARD_MARKER_SKILLS = frozenset({"tastecheck", "tastecheck-pass", "tastecheck:tastecheck"})
+_CARD_MARKER_SKILLS = frozenset({"tastecheck", "tastecheck-pass", "tastecheck:tastecheck",
+                                 "tastecheck-hermes:tastecheck"})
 # Structured places a completion names its artifacts. Free text (summary/result) is
 # never scanned, and dict KEYS are never scanned.
 _ARG_TARGET_KEYS = ("target", "targets", "artifacts", "paths")
 _META_TARGET_KEYS = ("target", "targets", "artifacts", "paths", "changed_files", "files")
+
+
+def _env_task_is_ours() -> bool:
+    """Would the kanban tool itself default to ``HERMES_KANBAN_TASK`` here? It does not in
+    a delegated child or a cron run beside a worker; mirror that so the gate never
+    blocks on a card this session does not own. Runtimes without those helpers keep
+    the env default (the stricter, fail-closed reading)."""
+    try:
+        from tools import kanban_tools as kt  # type: ignore
+    except Exception:
+        return True
+    try:
+        child = getattr(kt, "_is_delegated_child_context", None)
+        owned = getattr(kt, "_is_dispatcher_owned_worker", None)
+        if callable(child) and child():
+            return False
+        if callable(owned) and not owned():
+            return False
+    except Exception:
+        logger.debug("tastecheck: kanban ownership check failed; keeping env task", exc_info=True)
+    return True
 
 
 def _resolve_kanban_task_id(args: Optional[Dict[str, Any]], hook_kw: Optional[Dict[str, Any]]) -> str:
@@ -1041,7 +1203,7 @@ def _resolve_kanban_task_id(args: Optional[Dict[str, Any]], hook_kw: Optional[Di
         if isinstance(h, str):
             candidates.append(h.strip())
     env = os.environ.get("HERMES_KANBAN_TASK")
-    if env:
+    if env and _env_task_is_ours():
         candidates.append(env.strip())
     for c in candidates:
         if c and _KANBAN_TASK_ID_RE.match(c):
@@ -1109,6 +1271,9 @@ def _task_marker(task_id: str, board: Optional[str]) -> Optional[str]:
         import sqlite3
 
         from hermes_cli import kanban_db
+    except ImportError:
+        return None  # no kanban in this runtime: nothing to read, nothing to veto
+    try:
         db_path = Path(kanban_db.kanban_db_path(board or None)).resolve()
         if not db_path.is_file():
             return None
@@ -1119,8 +1284,10 @@ def _task_marker(task_id: str, board: Optional[str]) -> Optional[str]:
         finally:
             conn.close()
     except Exception:
+        # An unreadable board must not silently release a gated card: treat the
+        # completion as frontend work, so it needs a fresh SHIP (fail closed).
         logger.debug("tastecheck: kanban card lookup failed", exc_info=True)
-        return None
+        return f"card {tid} could not be read from its board (fail closed)"
     if task is None:
         return None
     skills = getattr(task, "skills", None) or []
@@ -1276,12 +1443,19 @@ def _workspace_ships(entries: List[Dict[str, Any]], workspace: str) -> Tuple[Lis
     return ships, ""
 
 
-def _sources_covered(sources: List[str], ships: List[Dict[str, Any]]) -> Tuple[bool, str]:
+def _sources_covered(sources: List[str], ships: List[Dict[str, Any]],
+                     workspace: Optional[str] = None) -> Tuple[bool, str]:
     """Each declared frontend source must be covered by a valid SHIP: served during that
     audit with the same bytes, or (not served — e.g. compiled .tsx) last modified no
-    later than the audit started."""
+    later than the audit started. A source that is missing, or that lives outside the
+    session workspace, is never covered (fail closed)."""
+    ws = Path(workspace or str(_agent_cwd().resolve()))
     for s in sources:
         p = Path(s)
+        if not p.is_file():
+            return False, f"{_target_label(s)}: declared source is missing or not a file (fail closed)"
+        if not _inside(p, ws):
+            return False, f"{_target_label(s)}: declared source is outside this workspace (fail closed)"
         served_by = [e for e in ships if isinstance(e.get("served"), dict) and s in e["served"]]
         if served_by:
             current = _file_sha256(p)
@@ -1290,24 +1464,27 @@ def _sources_covered(sources: List[str], ships: List[Dict[str, Any]]) -> Tuple[b
             continue
         if not ships:
             return False, f"{_target_label(s)}: no fresh SHIP in this workspace covers it"
-        if p.exists():
-            try:
-                mtime = p.stat().st_mtime
-            except OSError:
-                return False, f"{_target_label(s)}: unreadable (fail closed)"
-            newest_audit = max(float(e.get("started_at") or e["ts"]) for e in ships)
-            if mtime > newest_audit + 1:
-                return False, f"{_target_label(s)}: edited after the latest SHIP audit"
+        try:
+            mtime = p.stat().st_mtime
+        except OSError:
+            return False, f"{_target_label(s)}: unreadable (fail closed)"
+        newest_audit = max(float(e.get("started_at") or e["ts"]) for e in ships)
+        if mtime > newest_audit + 1:
+            return False, f"{_target_label(s)}: edited after the latest SHIP audit"
     return True, ""
 
 
 def _eligible_ship(args: Dict[str, Any], _ttl: Any = None) -> Tuple[bool, str]:
     """Release only when every declared surface is covered. Fail closed."""
+    workspace = str(_agent_cwd().resolve())
+    latched = _latched_targets(workspace)
+    if latched:
+        return False, (f"{_target_label(latched[0])}: an audit verdict could not be written to the "
+                       "ledger; re-run the audit so it records (fail closed)")
     try:
         entries = _gate_entries()
     except LedgerUnreadable:
         return False, "the verdict ledger is unreadable (fail closed)"
-    workspace = str(_agent_cwd().resolve())
     renderable, sources = _declared_targets(args)
     if renderable:
         ships = []
@@ -1316,12 +1493,12 @@ def _eligible_ship(args: Dict[str, Any], _ttl: Any = None) -> Tuple[bool, str]:
             if not ok:
                 return False, f"{_target_label(t)}: {why}"
             ships.append(entry)
-        return _sources_covered(sources, [e for e in ships if e is not None])
+        return _sources_covered(sources, [e for e in ships if e is not None], workspace)
     ships, why = _workspace_ships(entries, workspace)
     if sources:
         if not ships:
             return False, why or "no fresh SHIP in this workspace covers the declared sources"
-        return _sources_covered(sources, ships)
+        return _sources_covered(sources, ships, workspace)
     if not ships:
         return False, why
     return True, ""
@@ -1361,7 +1538,8 @@ AUDIT_SCHEMA = {
         "Run the Tastecheck browser ship gate against a rendered page: an http(s) URL, or an "
         "HTML file/dir inside the session workspace (served read-only over loopback for the "
         "audit). Returns SHIP/HOLD, hold reasons and probe evidence, and records the verdict "
-        "for the completion gate. Needs Node >=22 and Chrome/Chromium."
+        "for the completion gate. Read `verdict`, not `ok`: ok:true means the audit ran and "
+        "comes with HOLD as often as SHIP. Needs Node >=22 and Chrome/Chromium."
     ),
     "parameters": {
         "type": "object",
@@ -1493,20 +1671,54 @@ def _display_path(p: Any, redact: bool) -> Any:
     return "…/" + Path(p).name
 
 
+# An absolute POSIX or Windows path (not the path part of a URL): keep the last component.
+_ABS_PATH_RE = re.compile(r"(?<![\w:/.~-])(?:/|[A-Za-z]:[\\/])(?:[^\s'\"`<>|/\\]+[/\\])+([^\s'\"`<>|/\\]*)")
+
+
+def _redact_text(text: Any) -> str:
+    """Scrub local identity from text bound for a messaging surface: the user's home,
+    HERMES_HOME, the session workspace and any other absolute path."""
+    s = str(text)
+    roots = set()
+    for r in (os.environ.get("HERMES_HOME"), str(Path.home())):
+        if r:
+            roots.add(r)
+    try:
+        roots.add(str(_agent_cwd().resolve()))
+    except Exception:
+        pass
+    for r in sorted((r.rstrip("/\\") for r in roots if len(r.rstrip("/\\")) > 1), key=len, reverse=True):
+        s = s.replace(r, "…")
+    return _ABS_PATH_RE.sub(lambda m: "…/" + m.group(1), s)
+
+
+def _redactor(redact: bool):
+    return _redact_text if redact else str
+
+
 def _fmt(res: Dict[str, Any], redact: bool = False) -> str:
+    r = _redactor(redact)
     if res.get("verdict"):
         data = res.get("data") if isinstance(res.get("data"), dict) else {}
         reasons = data.get("holdReasons") or []
-        lines = [str(res["verdict"])] + [f"- {r}" for r in reasons[:10]]
+        lines = [str(res["verdict"])] + [f"- {r(x)}" for x in reasons[:10]]
+        probes = data.get("probes") if isinstance(data.get("probes"), dict) else {}
+        failed = [(n, p) for n, p in probes.items()
+                  if isinstance(p, dict) and p.get("status") in {"fail", "not_run"}]
+        for name, probe in failed[:8]:
+            lines.append(f"  {name} ({probe.get('status')}): {r(str(probe.get('evidence') or '')[:240])}")
         if res.get("error"):
-            lines.append(f"- Tastecheck failed: {res['error']}")
+            lines.append(f"- Tastecheck failed: {r(res['error'])}")
+        if res.get("ledger_error"):
+            lines.append(f"- Verdict NOT recorded in the ledger ({r(res['ledger_error'])}); the completion gate stays "
+                         "closed for this target until an audit records")
         lines.append(f"evidence: {_display_path(res.get('evidence_dir'), redact)}")
         return "\n".join(lines)
     if res.get("error") and "data" not in res:
-        return f"Tastecheck failed: {res['error']}"
+        return f"Tastecheck failed: {r(res['error'])}"
     if "data" in res:
-        return json.dumps(res["data"], indent=2, ensure_ascii=False)[:3500]
-    return str(res.get("text", ""))[:3500]
+        return r(json.dumps(res["data"], indent=2, ensure_ascii=False)[:3500])
+    return r(str(res.get("text", ""))[:3500])
 
 
 def _status(redact: bool) -> str:
@@ -1523,42 +1735,83 @@ def _status(redact: bool) -> str:
             "target": _display_path(e.get("target"), redact),
             "workspace": _display_path(e.get("workspace"), redact),
             "evidence_dir": _display_path(e.get("evidence_dir"), redact),
-            "hold_reasons": e.get("hold_reasons") or [],
+            "hold_reasons": [_redact_text(x) if redact else x for x in (e.get("hold_reasons") or [])],
+            **({"error": _redact_text(e["error"]) if redact else e["error"]} if e.get("error") else {}),
         })
     return json.dumps(rows, indent=2, ensure_ascii=False)
 
 
-def _slash(raw_args: str) -> str:
+class _ArgError(ValueError):
+    pass
+
+
+def _one_arg(rest: str) -> Optional[str]:
+    """At most ONE argument. Backslashes are literal (Windows paths survive); a path with
+    spaces must be wrapped in matching quotes. Anything else is an error, never ignored."""
+    rest = rest.strip()
+    if not rest:
+        return None
+    q = rest[0]
+    if q in "\"'":
+        if len(rest) >= 2 and rest.endswith(q) and q not in rest[1:-1]:
+            return rest[1:-1]
+        raise _ArgError("unbalanced quotes")
+    if re.search(r"\s", rest):
+        raise _ArgError('one argument only; quote a path with spaces, e.g. /tastecheck audit "site/my page.html"')
+    return rest
+
+
+def _messaging(platform: Any = None, source: Any = None) -> bool:
+    """Is this slash call on a human messaging surface? The dispatcher's own platform /
+    source kwargs win; otherwise the session identity decides (default-deny)."""
+    given = [str(v).strip().lower() for v in (platform, source) if isinstance(v, str) and v.strip()]
+    if given:
+        return any(v not in _NON_MESSAGING for v in given)
+    return _on_gateway()
+
+
+def _slash(raw_args: str = "", platform: Any = None, source: Any = None, **_: Any) -> str:
     try:
-        parts = shlex.split((raw_args or "").strip())
-    except ValueError as exc:
-        return f"Could not parse arguments ({exc}).\n\n{_HELP}"
-    cmd = parts[0].lower() if parts else "help"
-    rest = parts[1:]
+        gateway = _messaging(platform, source)
+    except Exception:
+        gateway = True
+    try:
+        return _slash_inner(raw_args, gateway)
+    except Exception as exc:
+        logger.debug("tastecheck slash failed", exc_info=True)
+        return f"Tastecheck hit an unexpected {type(exc).__name__}; see the Hermes log."
+
+
+def _slash_inner(raw_args: str, gateway: bool) -> str:
+    head = re.split(r"\s+", str(raw_args or "").strip(), maxsplit=1)
+    cmd = head[0].lower() if head and head[0] else "help"
+    rest = head[1] if len(head) > 1 else ""
     if cmd in {"help", "-h", "--help"}:
         return _HELP
     if cmd not in _SAFE_SLASH:
-        return f"Unknown or blocked subcommand `{cmd}`. Allowed: {', '.join(sorted(_SAFE_SLASH))}."
-    gateway = _on_gateway()
+        return f"Unknown or blocked subcommand `{cmd[:40]}`. Allowed: {', '.join(sorted(_SAFE_SLASH))}."
     if cmd == "audit" and gateway and not _cfg("allow_audit_slash_on_gateway"):
         return ("/tastecheck audit is disabled on gateway platforms (opens local files/URLs). "
                 "Ask the agent to use the tool instead, or set allow_audit_slash_on_gateway: true.")
     try:
+        if cmd in {"status", "version"} and rest.strip():
+            raise _ArgError(f"/tastecheck {cmd} takes no arguments")
         if cmd == "status":
             return _status(redact=gateway)
         if cmd == "version":
             return _fmt(version(), redact=gateway)
         if cmd == "profile":
-            return _fmt(profile(rest[0] if rest else "show"), redact=gateway)
+            return _fmt(profile(_one_arg(rest) or "show"), redact=gateway)
         if cmd == "audit":
-            if not rest:
-                return "Usage: /tastecheck audit <url-or-path>"
-            return _fmt(audit(rest[0], source="slash"), redact=gateway)
+            target = _one_arg(rest)
+            if not target:
+                return 'Usage: /tastecheck audit <url-or-path>  (quote paths with spaces: "site/my page.html")'
+            return _fmt(audit(target, source="slash"), redact=gateway)
+    except _ArgError as exc:
+        return f"Could not parse arguments ({exc}).\n\n{_HELP}"
     except ValueError as exc:
-        return f"{exc}\n\n{_HELP}"
-    except Exception as exc:
-        logger.debug("tastecheck slash failed", exc_info=True)
-        return f"Tastecheck error: {type(exc).__name__}: {exc}"
+        msg = _redact_text(exc) if gateway else str(exc)
+        return f"{msg}\n\n{_HELP}"
     return _HELP
 
 

@@ -830,3 +830,26 @@ test('restored columns show "not audited this session"; a stray stored verdict n
     assert.match(allText(cols[2].children[0]).join(' '), /HOLD/)
   }
 })
+
+test('restored history under a WIDER grant rebases to the same absolute file, never a sibling', async () => {
+  const wsRoot = mkdtempSync(join(tmpdir(), 'tasteroll-rebase-'))
+  const app = join(wsRoot, 'app')
+  mkdirSync(app)
+  writeFileSync(join(app, 'index.html'), '<html><body><h1>the app page</h1></body></html>')
+  writeFileSync(join(wsRoot, 'index.html'), '<html><body>sibling root page — never this</body></html>')
+  /* Session 1: grant == the app folder; the comparison is saved on app/index.html. */
+  freshGlobals({ cwd: app })
+  const first = makeCtx(makeFiles(app), {}, restQueue(okShip))
+  ;(await importFresh()).default.register(first)
+  await click(first.registered.find((c) => c.id === 'taste-roll').render())
+  const stored = JSON.parse(JSON.stringify(first._store.comparisons))
+  /* Session 2: same cwd, but the grant is now the PARENT folder. */
+  freshGlobals({ cwd: app })
+  const ctx = makeCtx(makeFiles(wsRoot), { comparisons: stored }, restQueue(okShip))
+  ;(await importFresh()).default.register(ctx)
+  await click(ctx.registered.find((c) => c.id === 'taste-roll').render())
+  const pane = globalThis.__tc.workspaces.at(-1).options.render()
+  const docs = paneColumns(pane).map((c) => frameProps(c).srcDoc || '').join(' ')
+  assert.ok(docs.includes('the app page'), 'rolled the same absolute file')
+  assert.ok(!docs.includes('sibling root page'), 'the sibling at the old relative path is never read')
+})
