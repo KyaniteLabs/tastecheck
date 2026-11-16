@@ -1,0 +1,13 @@
+{
+  "name": "tastecheck",
+  "version": "1.7.0",
+  "displayName": "TasteCheck",
+  "description": "Use when an agent has just shipped a UI change and needs a ship-vs-hold check with evidence.",
+  "author": "Kyanite Labs",
+  "category": "Design & UX",
+  "skills": [
+    "skills/tastecheck-pass/SKILL.md",
+    "skills/deslop-ui/SKILL.md",
+    "skills/design-system-interview/SKILL.md"
+  ]
+}
