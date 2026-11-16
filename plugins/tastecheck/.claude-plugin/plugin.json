@@ -1,0 +1,12 @@
+{
+  "name": "tastecheck",
+  "displayName": "TasteCheck",
+  "version": "1.7.0",
+  "description": "Design and verify frontend work with 20 evidence-oriented skills, contracts and browser scripts. Requires a host with filesystem and execution access.",
+  "author": {
+    "name": "Kyanite Labs",
+    "url": "https://github.com/KyaniteLabs"
+  },
+  "repository": "https://github.com/KyaniteLabs/tastecheck",
+  "license": "MIT"
+}

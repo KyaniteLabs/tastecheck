@@ -1,0 +1,69 @@
+/* ============================================================================
+   micro-motion — tokens + ready patterns. Transform/opacity only. Reduced-motion
+   contract included. Pair with empty-states (skeletons) and deslop-ui.
+   ========================================================================== */
+
+:root {
+  --dur-fast: 150ms;
+  --dur-base: 220ms;
+  --dur-slow: 320ms;
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);    /* entrances */
+  --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);     /* exits */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);    /* moves */
+}
+
+/* Press feedback */
+.btn { transition: transform var(--dur-fast) var(--ease-out),
+                   background-color var(--dur-fast) var(--ease-out); }
+.btn:active { transform: scale(0.97); }
+
+/* Popover/menu: scale+fade from its origin */
+.popover { transform-origin: top center; opacity: 0; transform: scale(0.96);
+           transition: opacity var(--dur-base) var(--ease-out),
+                       transform var(--dur-base) var(--ease-out); }
+.popover[data-open="true"] { opacity: 1; transform: scale(1); }
+
+/* Scroll/load reveal — JS adds data-reveal="pending" to offscreen elements only.
+   Content is visible by default; JS hides it AFTER the observer is ready. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal="pending"] { opacity: 0; transform: translateY(12px);
+            transition: opacity var(--dur-base) var(--ease-out),
+                        transform var(--dur-base) var(--ease-out); }
+  [data-reveal="pending"].in,
+  [data-reveal="shown"] { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal="pending"] { opacity: 1; transform: none; }
+}
+/* bfcache restore: add this JS alongside the observer:
+   window.addEventListener('pageshow', function(e) {
+     if (e.persisted) document.querySelectorAll('[data-reveal="pending"]').forEach(function(el) {
+       el.removeAttribute('data-reveal');
+     });
+   }); */
+
+/* Staggered hero load — same pattern: JS adds data-stagger to trigger */
+@media (prefers-reduced-motion: no-preference) {
+  [data-stagger] > * { opacity: 0; transform: translateY(10px);
+                 animation: rise var(--dur-base) var(--ease-out) forwards; }
+  [data-stagger] > *:nth-child(1){ animation-delay: 0ms; }
+  [data-stagger] > *:nth-child(2){ animation-delay: 60ms; }
+  [data-stagger] > *:nth-child(3){ animation-delay: 120ms; }
+  [data-stagger] > *:nth-child(4){ animation-delay: 180ms; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+}
+
+/* Skeleton shimmer (the one place linear is correct) */
+.skeleton { background: linear-gradient(90deg,
+              var(--color-surface-1,#eee) 25%, var(--color-surface-2,#f5f5f5) 37%, var(--color-surface-1,#eee) 63%);
+            background-size: 400% 100%; animation: shimmer 1.4s linear infinite; }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
+@media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }
+
+/* Global safety net */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important; scroll-behavior: auto !important;
+  }
+}

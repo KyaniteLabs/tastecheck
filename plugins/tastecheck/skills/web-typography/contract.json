@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "skill": "web-typography",
+  "class": "generative",
+  "trigger": {
+    "positive": [
+      "A web interface needs a contextual type stance, scale, readable measure, or font-loading plan",
+      "Text wrapping, font CLS, or multilingual glyph coverage needs repair"
+    ],
+    "negative": [
+      "The request is to write or rewrite product copy",
+      "The request is only color, spacing, or responsive structure"
+    ],
+    "adjacent_skills": [
+      "humanize-copy",
+      "spacing-system",
+      "responsive-layout",
+      "i18n-ready"
+    ]
+  },
+  "exclusions": [
+    "Do not choose a font from examples instead of the brief",
+    "Do not claim font performance or accessibility without loading and wrap evidence"
+  ],
+  "inputs": {
+    "required": [
+      "Content roles and interface context",
+      "Brand direction or existing type evidence"
+    ],
+    "optional": [
+      "Available fonts",
+      "Target languages",
+      "Performance budget",
+      "Existing CSS tokens"
+    ]
+  },
+  "outputs": {
+    "primary": "A contextual type system with tokens, loading plan, and tested reading constraints",
+    "artifacts": [
+      "type token map",
+      "font-loading plan",
+      "wrap and measure evidence"
+    ],
+    "handoff_fields": [
+      "font_roles",
+      "type_scale",
+      "measure",
+      "line_height",
+      "loading_strategy",
+      "language_coverage"
+    ]
+  },
+  "stop_conditions": [
+    "Pause when a requested font lacks required language coverage and no fallback is agreed",
+    "Do not claim zero layout shift without measurement"
+  ],
+  "handoff": {
+    "receives_from": [
+      "design-system-interview",
+      "deslop-ui",
+      "improve-existing-website",
+      "tasteroll"
+    ],
+    "sends_to": [
+      "responsive-layout",
+      "i18n-ready",
+      "a11y-pass",
+      "spacing-system"
+    ]
+  },
+  "self_check_shape": "table_with_evidence",
+  "required_evidence_fields": [
+    "status",
+    "reason",
+    "remediation",
+    "evidence",
+    "provenance"
+  ],
+  "context_budget": {
+    "skill_md_max_tokens": 5000,
+    "resource_max_tokens": 6000
+  }
+}

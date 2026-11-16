@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "skill": "responsive-layout",
+  "class": "generative",
+  "trigger": {
+    "positive": [
+      "A layout needs intrinsic reflow, responsive hierarchy, container behavior, or overflow repair",
+      "A site must survive narrow widths, zoom, or long content"
+    ],
+    "negative": [
+      "The request is only to choose a spacing scale or type system",
+      "The request is for a visual redesign without concrete layout constraints"
+    ],
+    "adjacent_skills": [
+      "spacing-system",
+      "web-typography",
+      "component-states",
+      "a11y-pass"
+    ]
+  },
+  "exclusions": [
+    "Do not choose breakpoints from device names",
+    "Do not claim responsive success without tested narrow, zoom, and long-content evidence"
+  ],
+  "inputs": {
+    "required": [
+      "Content hierarchy and layout context",
+      "Viewport, container, or zoom constraints"
+    ],
+    "optional": [
+      "Design-system tokens",
+      "Long-content cases",
+      "Existing breakpoints",
+      "Component reuse contexts"
+    ]
+  },
+  "outputs": {
+    "primary": "An intrinsic layout strategy with justified breakpoints and responsive verification evidence",
+    "artifacts": [
+      "layout rules",
+      "breakpoint rationale",
+      "viewport and zoom evidence"
+    ],
+    "handoff_fields": [
+      "hierarchy",
+      "intrinsic_patterns",
+      "breakpoints",
+      "container_rules",
+      "verification"
+    ]
+  },
+  "stop_conditions": [
+    "Pause when content priority is unknown and reflow would silently hide required information",
+    "Do not claim completion with unresolved overflow or clipping"
+  ],
+  "handoff": {
+    "receives_from": [
+      "art-direction",
+      "design-system-interview",
+      "improve-existing-website",
+      "spacing-system",
+      "tasteroll",
+      "theming",
+      "web-typography"
+    ],
+    "sends_to": [
+      "component-states",
+      "form-ux",
+      "a11y-pass",
+      "deslop-ui",
+      "i18n-ready"
+    ]
+  },
+  "self_check_shape": "table_with_evidence",
+  "required_evidence_fields": [
+    "status",
+    "reason",
+    "remediation",
+    "evidence",
+    "provenance"
+  ],
+  "context_budget": {
+    "skill_md_max_tokens": 5000,
+    "resource_max_tokens": 6000
+  }
+}

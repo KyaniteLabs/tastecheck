@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "skill": "design-system-interview",
+  "class": "generative",
+  "trigger": {
+    "positive": [
+      "A new interface or redesign lacks a committed visual direction",
+      "A user needs a reusable design-system artifact before frontend implementation"
+    ],
+    "negative": [
+      "An existing site has sufficient evidence to improve without a new direction interview",
+      "A request is limited to one foundation decision such as color or typography"
+    ],
+    "adjacent_skills": [
+      "improve-existing-website",
+      "color-system",
+      "web-typography"
+    ]
+  },
+  "exclusions": [
+    "Do not begin implementation before direction is resolved or explicitly assumed",
+    "Do not use worked examples as a menu or silently overwrite an existing canonical direction"
+  ],
+  "inputs": {
+    "required": [
+      "Product, audience, and interface scope",
+      "Any existing brand or design-direction evidence"
+    ],
+    "optional": [
+      "References",
+      "Accessibility, localization, motion, or delivery constraints"
+    ]
+  },
+  "outputs": {
+    "primary": "A decision-complete design-system artifact with explicit assumptions and readiness state",
+    "artifacts": [
+      "DESIGN-SYSTEM.md",
+      "semantic token handoff"
+    ],
+    "handoff_fields": [
+      "reference",
+      "personality",
+      "aesthetic",
+      "type",
+      "color_mode",
+      "density_shape",
+      "structure_rhythm",
+      "signature",
+      "imagery_iconography",
+      "motion",
+      "readiness"
+    ]
+  },
+  "stop_conditions": [
+    "Pause when contradictory or trust-critical direction is unresolved",
+    "Do not continue from multiple candidate systems without identifying the canonical one"
+  ],
+  "handoff": {
+    "receives_from": [],
+    "sends_to": [
+      "art-direction",
+      "color-system",
+      "component-states",
+      "data-viz",
+      "deslop-ui",
+      "empty-states",
+      "form-ux",
+      "humanize-copy",
+      "micro-motion",
+      "responsive-layout",
+      "spacing-system",
+      "tasteroll",
+      "theming",
+      "web-typography"
+    ]
+  },
+  "self_check_shape": "table_with_evidence",
+  "required_evidence_fields": [
+    "status",
+    "reason",
+    "remediation",
+    "evidence",
+    "provenance"
+  ],
+  "context_budget": {
+    "skill_md_max_tokens": 5000,
+    "resource_max_tokens": 6000
+  }
+}
