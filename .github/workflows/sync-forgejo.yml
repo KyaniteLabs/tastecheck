@@ -2,9 +2,10 @@ name: Sync Forgejo mirror
 
 # GitHub is this repo's trunk; the Forgejo copy (KyaniteLabs/tastecheck) is a read-only
 # mirror. After trunk CI passes on main, the shared workflow fast-forwards
-# the mirror to that exact commit (fleet GIT-CI-STRATEGY-20261123). Off until
-# the repo variable FORGEJO_SYNC_ACTIVE is 'true'; dry-run until a mirror
-# token is set. See KyaniteLabs/.github docs/sync-forgejo.md.
+# the mirror to that exact commit (fleet GIT-CI-STRATEGY-20261123). Runs when
+# the repo variable FORGEJO_SYNC_ACTIVE is 'true' and pushes as the
+# kyanite-mirror bot from the forgejo-mirror environment (armed 2026-11-23).
+# See KyaniteLabs/.github docs/sync-forgejo.md.
 on:
   workflow_run:
     workflows: ["verify"]
@@ -32,6 +33,6 @@ jobs:
         294808218:.github/workflows/verify.yml
       forgejo-repository: KyaniteLabs/tastecheck
       downstream-workflow: none
-      dry-run: true
+      dry-run: false
       toolkit-ref: a9070204d393afce800230b4eefc809569b45a4a
     secrets: inherit
