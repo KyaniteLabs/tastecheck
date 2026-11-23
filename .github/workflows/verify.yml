@@ -4,35 +4,83 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+permissions:
+  contents: read
 jobs:
   plugin:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
-      - uses: actions/setup-python@v5
-        with:
-          python-version: |
-            3.11
-            3.14
+      # The Forgejo runners are Debian node:22 images that cannot use
+      # setup-python or setup-uv. Install a pinned, hash-checked uv instead;
+      # uv then fetches portable CPython builds for each version under test.
+      - name: Install uv 0.11.22 (pinned, sha256-checked)
+        run: |
+          set -eu
+          case "$(uname -m)" in
+            x86_64) arch=x86_64; sum=30075b14624a62021198319f22e08f1651a97d4026a8c84dab6abcbfaba0d81c ;;
+            aarch64|arm64) arch=aarch64; sum=54b22e9f5570f3643cdf85a33bbc8e9feb3fc6e836a7c660c05378434ef44fe2 ;;
+            *) echo "unsupported runner arch $(uname -m)" >&2; exit 1 ;;
+          esac
+          tgz="uv-${arch}-unknown-linux-gnu.tar.gz"
+          curl -fsSL -o "$RUNNER_TEMP/$tgz" "https://github.com/astral-sh/uv/releases/download/0.11.22/$tgz"
+          echo "$sum  $RUNNER_TEMP/$tgz" | sha256sum -c -
+          mkdir -p "$HOME/.local/bin"
+          tar -xzf "$RUNNER_TEMP/$tgz" -C "$HOME/.local/bin" --strip-components=1
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/uv" --version
       - name: Vendored CLI matches the repository sources
         run: node tools/hermes/sync-plugin-vendor.mjs --check
       - name: Plugin tests (Python 3.11 and 3.14)
         run: |
-          for py in python3.11 python3.14; do
-            $py -m pip install --quiet pytest fastapi pydantic hypothesis
-            $py -m pytest plugins/tastecheck-hermes/tests -q
+          set -e
+          for py in 3.11 3.14; do
+            uv run --no-project --python "$py" --with pytest==9.2.0 --with fastapi --with pydantic --with hypothesis \
+              python -m pytest plugins/tastecheck-hermes/tests -q
           done
+      - name: Full plugin suite against real Hermes (floor v0.21.6 and current v0.23.1, no skips)
+        env:
+          TASTECHECK_REQUIRE_RUNTIME: "1"
+        run: |
+          set -e
+          # Each runtime is pinned by the commit its tag points at. Hermes
+          # refuses wheel builds by design, so check out that exact commit and
+          # install it editable, as its own docs say to. The floor is the
+          # minimum supported runtime; the current release is the newest one
+          # this plugin has been verified against. Bump both together with
+          # plugin.yaml requires_hermes and the README.
+          for spec in \
+            "v0.21.6 818c13be1dc4fd28987e1e881a9408224afd4535" \
+            "v0.23.1 3b421578588243f920886e6fe79a6faa87ea026e"; do
+            set -- $spec
+            tag="$1"; pin="$2"
+            src="$RUNNER_TEMP/hermes-agent-$tag"
+            git init -q "$src"
+            git -C "$src" fetch -q --depth 1 https://github.com/NousResearch/hermes-agent "$pin"
+            git -C "$src" checkout -q FETCH_HEAD
+            test "$(git -C "$src" rev-parse HEAD)" = "$pin"
+            echo "== Hermes $tag ($pin)"
+            uv run --no-project --python 3.11 --with pytest==9.2.0 --with fastapi --with pydantic --with hypothesis --with ruamel.yaml \
+              --with-editable "$src" \
+              python -m pytest plugins/tastecheck-hermes/tests -q
+          done
+      - name: Desktop plugin.js is built from src/pane.js + the pinned Resonant Field theme
+        run: node build.mjs --check
+        working-directory: plugins/tastecheck-hermes/desktop
       - name: Desktop half clean-room harness (stubbed SDK/react)
         run: node --import ./tests/register.mjs --test tests/harness.test.mjs tests/column-gate.test.mjs
+        working-directory: plugins/tastecheck-hermes/desktop
+      - name: Desktop theme merge (SDK with the themes area)
+        run: node --test tests/unified.test.mjs
         working-directory: plugins/tastecheck-hermes/desktop
   structural:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: npm
@@ -46,8 +94,8 @@ jobs:
   oracle:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: npm
@@ -56,6 +104,8 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run preflight:browser
       - run: npm run test:oracle
+      - run: npm run test:request-guard
+      - run: npm run test:egress-proxy
       - run: npm run test:cdp-qa
       - run: npm run test:profile
       - run: npm run calibrate:taste:check
@@ -65,14 +115,29 @@ jobs:
   entry-point-contract:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: npm
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+      # The Forgejo runners are Debian node:22 images that cannot use
+      # setup-python or setup-uv. Install a pinned, hash-checked uv instead;
+      # uv then fetches portable CPython builds for each version under test.
+      - name: Install uv 0.11.22 (pinned, sha256-checked)
+        run: |
+          set -eu
+          case "$(uname -m)" in
+            x86_64) arch=x86_64; sum=30075b14624a62021198319f22e08f1651a97d4026a8c84dab6abcbfaba0d81c ;;
+            aarch64|arm64) arch=aarch64; sum=54b22e9f5570f3643cdf85a33bbc8e9feb3fc6e836a7c660c05378434ef44fe2 ;;
+            *) echo "unsupported runner arch $(uname -m)" >&2; exit 1 ;;
+          esac
+          tgz="uv-${arch}-unknown-linux-gnu.tar.gz"
+          curl -fsSL -o "$RUNNER_TEMP/$tgz" "https://github.com/astral-sh/uv/releases/download/0.11.22/$tgz"
+          echo "$sum  $RUNNER_TEMP/$tgz" | sha256sum -c -
+          mkdir -p "$HOME/.local/bin"
+          tar -xzf "$RUNNER_TEMP/$tgz" -C "$HOME/.local/bin" --strip-components=1
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/uv" --version
       - run: npm ci
-      - run: python3 tools/quality/fail_closed_check.py --self-test
-      - run: python3 tools/quality/fail_closed_check.py --discover .
+      - run: uv run --no-project --python 3.11 python tools/quality/fail_closed_check.py --self-test
+      - run: uv run --no-project --python 3.11 python tools/quality/fail_closed_check.py --discover .

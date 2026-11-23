@@ -104,6 +104,9 @@ function restQueue(...responses) {
   const queue = [...responses]
   const calls = []
   const fn = async (path, opts) => {
+    /* The gateway file seam is not part of the audit queue: this stand-in is
+     * an agent half without it, so the local grant flow runs as before. */
+    if (path.startsWith('/files/')) return { ok: false, error: 'unavailable', message: 'no gateway files' }
     calls.push({ path, opts })
     const r = queue.shift()
     if (r instanceof Error) throw r
@@ -268,7 +271,11 @@ test('register contributes composer action AND palette entry; id matches backend
   assert.ok(action, 'composer action registered')
   const btn = action.render()
   assert.equal(btn.type, 'button')
-  assert.match(btn.children.join(' '), /Taste Roll/)
+  assert.match(btn.props['aria-label'], /^Taste Roll/, 'icon-only button keeps an accessible name')
+  assert.equal(btn.children.length, 1, 'one glyph child, no text label')
+  assert.equal(typeof btn.children[0].type, 'function', 'inline line glyph, not an emoji string')
+  assert.doesNotMatch(JSON.stringify(btn), /\p{Extended_Pictographic}/u, 'no emoji anywhere on the button')
+  assert.equal(btn.props.title, btn.props['aria-label'], 'native tooltip only because this host stub has no Tip')
   assert.equal(typeof btn.props.onClick, 'function')
   const palette = ctx.registered.find((c) => c.area === 'palette')
   assert.ok(palette, 'palette contribution registered (R5)')
@@ -785,6 +792,58 @@ test('folder grant is requested when cwd is not covered', async () => {
   assert.ok(globalThis.__tc.workspaces.length >= 1)
 })
 
+test('remote gateway: a workspace no local grant covers is read through the agent half, no picker', async () => {
+  const root = fixtureProject()
+  freshGlobals({ cwd: root })
+  const mod = await importFresh()
+  let asked = 0
+  const files = makeFiles(root, { folders: [], requestFolder: async () => { asked += 1; return { ok: true, folder: null } } })
+  const local = makeFiles(root)
+  const seen = []
+  const audits = restQueue(okShip)
+  const rest = async (path, opts) => {
+    if (!path.startsWith('/files/')) return audits(path, opts)
+    seen.push([path, opts.body.path])
+    assert.equal(opts.method, 'POST')
+    assert.equal(opts.body.cwd, root, 'every file call is scoped to the session cwd')
+    const op = path.slice('/files/'.length)
+    if (op === 'root') return { ok: true, path: root }
+    if (op === 'list') return local.list('f1', opts.body.path)
+    if (op === 'stat') return local.stat('f1', opts.body.path)
+    if (op === 'read') return local.readText('f1', opts.body.path)
+    return { ok: false, error: 'bad-op', message: op }
+  }
+  const ctx = makeCtx(files, {}, rest)
+  mod.default.register(ctx)
+  await click(ctx.registered.find((c) => c.id === 'taste-roll').render())
+  assert.equal(asked, 0, 'no local folder picker for a remote workspace')
+  assert.ok(seen.some(([p, rel]) => p === '/files/read' && rel === 'app.html'), JSON.stringify(seen))
+  assert.equal(globalThis.__tc.errors.length, 0, globalThis.__tc.errors.join(' | '))
+  assert.equal(paneColumns(globalThis.__tc.workspaces.at(-1).options.render()).length, 2, 'original + one roll')
+  assert.equal(audits.calls.length, 1, 'the rolled column still goes to the gate')
+})
+
+for (const code of ['outside-home', 'protected']) {
+  test(`remote gateway refuses the cwd (${code}) → says why, no picker, no pane`, async () => {
+    const root = fixtureProject()
+    freshGlobals({ cwd: root })
+    const mod = await importFresh()
+    let asked = 0
+    const files = makeFiles(root, { folders: [], requestFolder: async () => { asked += 1; return { ok: true, folder: null } } })
+    const audits = restQueue(okShip)
+    const rest = async (path, opts) => {
+      if (!path.startsWith('/files/')) return audits(path, opts)
+      return { ok: false, error: code, message: 'refused' }
+    }
+    const ctx = makeCtx(files, {}, rest)
+    mod.default.register(ctx)
+    await click(ctx.registered.find((c) => c.id === 'taste-roll').render())
+    assert.equal(asked, 0, 'a local picker cannot fix a refused gateway workspace')
+    assert.equal(globalThis.__tc.workspaces.length, 0)
+    assert.ok(globalThis.__tc.notifies.some((n) => /project folder/i.test(n) && n.includes(root)), JSON.stringify(globalThis.__tc.notifies))
+  })
+}
+
 test('cancelled grant → polite notify, no pane, no read', async () => {
   const root = fixtureProject()
   freshGlobals({ cwd: root })
@@ -812,7 +871,7 @@ test('restored columns show "not audited this session"; a stray stored verdict n
   await click(first.registered.find((c) => c.id === 'taste-roll').render())
   const stored = JSON.parse(JSON.stringify(first._store.comparisons))
   const key = `roll:${root}`
-  assert.deepEqual(Object.keys(stored[key].columns[0]).sort(), ['roll', 'seed'], 'no gate is persisted')
+  assert.deepEqual(Object.keys(stored[key].columns[0]).sort(), ['rating', 'reason', 'roll', 'seed', 'src'], 'no gate is persisted; only roll identity and the user\'s own rating')
 
   for (const stray of [{}, { verdict: 'SHIP' }, { gate: 'SHIP', reasons: [] }, { verdict: 'SHIP', restored: false }]) {
     freshGlobals({ cwd: root })
@@ -829,4 +888,213 @@ test('restored columns show "not audited this session"; a stray stored verdict n
     assert.doesNotMatch(restored, /SHIP|gate passed/, `stored ${JSON.stringify(stray)} must not stamp SHIP`)
     assert.match(allText(cols[2].children[0]).join(' '), /HOLD/)
   }
+})
+
+test('corrupt or oversized stored comparisons never break a roll, and history stays capped', async () => {
+  const root = fixtureProject()
+  for (const bad of [null, 'junk', 7, ['x'], true]) {
+    freshGlobals({ cwd: root })
+    const ctx = makeCtx(makeFiles(root), { comparisons: bad }, restQueue(okShip))
+    ;(await importFresh()).default.register(ctx)
+    await click(ctx.registered.find((c) => c.id === 'taste-roll').render())
+    const saved = ctx._store.comparisons
+    assert.ok(saved && typeof saved === 'object' && !Array.isArray(saved), `comparisons repaired from ${JSON.stringify(bad)}`)
+    assert.ok(saved[`roll:${root}`], 'this click was saved')
+  }
+  /* One entry per workspace folder ever used: bounded, newest kept. */
+  const many = {}
+  for (let i = 0; i < 80; i++) many[`roll:/old/${i}`] = { columns: [{ seed: 1, roll: {} }] }
+  freshGlobals({ cwd: root })
+  const ctx = makeCtx(makeFiles(root), { comparisons: many }, restQueue(okShip))
+  ;(await importFresh()).default.register(ctx)
+  await click(ctx.registered.find((c) => c.id === 'taste-roll').render())
+  const keys = Object.keys(ctx._store.comparisons)
+  assert.ok(keys.length <= 40, `capped at 40 workspaces, got ${keys.length}`)
+  assert.ok(keys.includes(`roll:${root}`), 'the current workspace survives the cap')
+})
+
+test('restored history under a WIDER grant rebases to the same absolute file, never a sibling', async () => {
+  const wsRoot = mkdtempSync(join(tmpdir(), 'tasteroll-rebase-'))
+  const app = join(wsRoot, 'app')
+  mkdirSync(app)
+  writeFileSync(join(app, 'index.html'), '<html><body><h1>the app page</h1></body></html>')
+  writeFileSync(join(wsRoot, 'index.html'), '<html><body>sibling root page — never this</body></html>')
+  /* Session 1: grant == the app folder; the comparison is saved on app/index.html. */
+  freshGlobals({ cwd: app })
+  const first = makeCtx(makeFiles(app), {}, restQueue(okShip))
+  ;(await importFresh()).default.register(first)
+  await click(first.registered.find((c) => c.id === 'taste-roll').render())
+  const stored = JSON.parse(JSON.stringify(first._store.comparisons))
+  /* Session 2: same cwd, but the grant is now the PARENT folder. */
+  freshGlobals({ cwd: app })
+  const ctx = makeCtx(makeFiles(wsRoot), { comparisons: stored }, restQueue(okShip))
+  ;(await importFresh()).default.register(ctx)
+  await click(ctx.registered.find((c) => c.id === 'taste-roll').render())
+  const pane = globalThis.__tc.workspaces.at(-1).options.render()
+  const docs = paneColumns(pane).map((c) => frameProps(c).srcDoc || '').join(' ')
+  assert.ok(docs.includes('the app page'), 'rolled the same absolute file')
+  assert.ok(!docs.includes('sibling root page'), 'the sibling at the old relative path is never read')
+})
+
+/* ---- taste learner + one-tap feedback ------------------------------------ */
+
+function memStore(init = {}) {
+  const s = { ...init }
+  return { get: (k, fb) => (k in s ? JSON.parse(JSON.stringify(s[k])) : fb), set: (k, v) => { s[k] = JSON.parse(JSON.stringify(v)) }, _s: s }
+}
+function seededRng(seed) {
+  let a = seed >>> 0
+  return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296 }
+}
+
+test('learner: keeps on one look and passes on another steer later rolls', async () => {
+  const mod = await importFresh()
+  const t = mod.createTaste(memStore(), seededRng(7))
+  for (let i = 0; i < 12; i++) {
+    t.rate({ ref: 'mineral', vibe: 'warm', mode: 'dark', sig: 'rule' }, 'learned', 1)
+    t.rate({ ref: 'brutalist', vibe: 'stark', mode: 'light', sig: 'bento' }, 'learned', 0)
+  }
+  let mineral = 0, brutalist = 0, learned = 0
+  for (let i = 0; i < 200; i++) {
+    const p = t.choose(1000 + i * 7919)
+    if (p.src !== 'learned') continue
+    learned++
+    if (p.roll.ref === 'mineral') mineral++
+    if (p.roll.ref === 'brutalist') brutalist++
+  }
+  assert.ok(learned > 120, `most rolls are learned (got ${learned}/200)`)
+  assert.ok(mineral / learned > 0.5, `kept look dominates learned rolls (mineral ${mineral}/${learned}, chance is 1/8)`)
+  assert.ok(brutalist / learned < 0.05, `passed look is avoided (brutalist ${brutalist}/${learned})`)
+})
+
+test('learner: every 10th roll is a random holdout and ~15% explore; nothing learned → plain seed', async () => {
+  const mod = await importFresh()
+  const fresh = mod.createTaste(memStore(), seededRng(1))
+  const p0 = fresh.choose(4242)
+  assert.equal(p0.src, 'random')
+  assert.equal(p0.seed, 4242, 'no ratings yet → the plain seed, unchanged')
+  const t = mod.createTaste(memStore(), seededRng(3))
+  t.rate({ ref: 'Swiss', vibe: 'serious', mode: 'light', sig: 'rule' }, 'random', 1)
+  const srcs = []
+  for (let i = 1; i <= 100; i++) srcs.push(t.choose(i * 31).src)
+  for (let i = 9; i < 100; i += 10) assert.equal(srcs[i], 'random', `roll ${i + 1} is a holdout`)
+  const random = srcs.filter((s) => s === 'random').length
+  assert.ok(random >= 15 && random <= 40, `holdout + exploration share is sane (${random}/100)`)
+})
+
+test('learner: rolls back to the last snapshot when tuned rolls lose to random ones', async () => {
+  const mod = await importFresh()
+  const store = memStore()
+  const t = mod.createTaste(store, seededRng(5))
+  const good = { ref: 'folio', vibe: 'refined', mode: 'light', sig: 'rule' }
+  for (let i = 0; i < 10; i++) t.rate(good, 'learned', 1) /* snapshot taken here */
+  const snap = JSON.stringify(store._s.taste.snaps.at(-1))
+  for (let i = 0; i < 5; i++) assert.equal(t.rate(good, 'random', 1), null)
+  let msg = null
+  const bad = { ref: 'maximalist', vibe: 'decorative', mode: 'dual', sig: 'sixling' }
+  for (let i = 0; i < 25 && !msg; i++) msg = t.rate(bad, 'learned', 0)
+  assert.match(msg || '', /rolled its taste back/)
+  assert.equal(JSON.stringify(store._s.taste.post), snap, 'posterior restored from the snapshot')
+})
+
+test('learner: hostile stored taste is sanitized, never trusted', async () => {
+  const mod = await importFresh()
+  const t = mod.createTaste(memStore({ taste: { v: 1, post: { ref: { mineral: [NaN, -1], Swiss: [1e9, 1] } }, rolls: -4, log: [{ src: 'evil', y: 7 }, 'x'], snaps: 'no' } }))
+  const st = t.stats()
+  assert.equal(st.ratings, 0)
+  assert.deepEqual(Object.values(st.top), [null, null, null, null, null])
+  assert.equal(t.choose(99).seed, 99)
+})
+
+test('feedback: Keep / Pass on a column, reason chips, toggle off, palette commands, Reset taste', async () => {
+  const root = fixtureProject()
+  freshGlobals({ cwd: root })
+  const mod = await importFresh()
+  const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip, okHold))
+  mod.default.register(ctx)
+  const btn = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  await click(btn)
+  const render = () => globalThis.__tc.workspaces.at(-1).options.render()
+  const buttons = (node, out = []) => {
+    if (node && typeof node === 'object') {
+      if (typeof node.type === 'function') buttons(node.type(node.props), out)
+      else {
+        if (node.type === 'button') out.push(node)
+        if (typeof node.children !== 'undefined') [].concat(node.children).forEach((c) => buttons(c, out))
+      }
+    }
+    return out
+  }
+  const colButtons = () => buttons(paneColumns(render())[1])
+  const byText = (list, t) => list.find((b) => [].concat(b.children).join('').includes(t) || (t === 'Keep' && /^Keep roll/.test(b.props['aria-label'] || '')) || (t === 'Pass' && /^Pass on roll/.test(b.props['aria-label'] || '')))
+
+  let keep = byText(colButtons(), 'Keep')
+  assert.ok(keep && byText(colButtons(), 'Pass'), 'every rolled column offers Keep and Pass')
+  assert.equal(keep.props['aria-pressed'], false)
+  assert.match(keep.props['aria-label'], /Keep roll 1/)
+  assert.match(allText(render()).join(' '), /Keep or pass each roll/, 'first-run hint explains the learner')
+
+  await click(keep)
+  keep = byText(colButtons(), 'Keep')
+  assert.equal(keep.props['aria-pressed'], true)
+  assert.match([].concat(keep.children).join(''), /Kept/, 'pressed state is spelled out, not colour alone')
+  assert.equal(ctx._store.taste.log.length, 1, 'one rating logged')
+  assert.equal(ctx._store.comparisons[Object.keys(ctx._store.comparisons)[0]].columns[0].rating, 1, 'rating persists with the column')
+  const chip = byText(colButtons(), 'Colour')
+  assert.ok(chip && byText(colButtons(), 'Layout'), 'one-tap reason chips appear after rating')
+  await click(chip)
+  assert.match(allText(paneColumns(render())[1]).join(' '), /Kept for the colour/)
+  assert.equal(byText(colButtons(), 'Type'), undefined, 'chips go away once a reason is given')
+  assert.match(allText(render()).join(' '), /Learning from 1 rating/)
+
+  await click(byText(colButtons(), 'Keep'))
+  assert.equal(byText(colButtons(), 'Keep').props['aria-pressed'], false, 'tapping again clears the rating')
+  assert.equal(ctx._store.taste.log.length, 0)
+
+  const passCmd = ctx.registered.find((c) => c.id === 'taste-roll-pass')
+  assert.ok(passCmd && ctx.registered.find((c) => c.id === 'taste-roll-keep'), 'keep/pass are in the command palette')
+  passCmd.data.run()
+  assert.equal(byText(colButtons(), 'Pass').props['aria-pressed'], true, 'palette Pass rates the latest column')
+
+  const reset = buttons(render()).find((b) => [].concat(b.children).join('') === 'Reset taste')
+  assert.ok(reset)
+  await click(reset)
+  assert.equal(ctx._store.taste.log.length, 0, 'Reset taste forgets everything')
+  assert.equal(byText(colButtons(), 'Pass').props['aria-pressed'], false)
+})
+
+test('feedback: Keep, Pass and reason chips are 44px touch targets with full-ink text', () => {
+  /* The pane's own source: the vendored theme below it has its own floors. */
+  const src = readFileSync(new URL('../src/pane.js', import.meta.url), 'utf8')
+  const btn = src.slice(src.indexOf('const FEEDBACK_BTN'), src.indexOf('function FeedbackRow'))
+  assert.match(btn, /minHeight: '2\.75rem',\n  minWidth: '2\.75rem'/, 'Keep/Pass are at least 44px')
+  assert.match(btn, /const CHIP = \{[^}]*minHeight: '2\.75rem'/, 'reason chips are at least 44px')
+  assert.match(btn, /PRESSED = \{[^}]*border: '2px solid currentColor'/, 'pressed state shows by shape, not tint alone')
+  assert.doesNotMatch(src, /opacity:/, 'no faded text: contrast stays the theme pair')
+})
+
+/* F25: stamps are announced politely; icon/file buttons carry accessible names. */
+function findAll(node, pred, out = []) {
+  if (!node || typeof node !== 'object') return out
+  if (typeof node.type === 'function') return findAll(node.type(node.props), pred, out)
+  if (pred(node)) out.push(node)
+  if (typeof node.children !== 'undefined') [].concat(node.children).forEach((c) => findAll(c, pred, out))
+  return out
+}
+
+test('F25: every gate stamp is a polite live status region; buttons are named', async () => {
+  const root = fixtureProject()
+  freshGlobals({ cwd: root })
+  const ctx = makeCtx(makeFiles(root), {}, restQueue(okShip, okHold))
+  ;(await importFresh()).default.register(ctx)
+  const button = ctx.registered.find((c) => c.id === 'taste-roll').render()
+  assert.ok(button.props['aria-label'], 'composer button has an aria-label')
+  await click(button)
+  await click(ctx.registered.find((c) => c.id === 'taste-roll').render())
+  const cols = paneColumns(globalThis.__tc.workspaces.at(-1).options.render())
+  const stamps = cols.slice(1).flatMap((c) => findAll(c.children[0], (n) => n.props && n.props.role === 'status'))
+  assert.equal(stamps.length, cols.length - 1, 'one status region per rolled column')
+  stamps.forEach((s) => assert.equal(s.props['aria-live'], 'polite'))
+  assert.ok(stamps.some((s) => /SHIP/.test(allText(s).join(''))))
+  assert.ok(stamps.some((s) => /HOLD/.test(allText(s).join(''))))
 })

@@ -5,6 +5,24 @@ All notable changes to the tastecheck skill pack. Format follows
 
 ## [Unreleased]
 
+### Fixed — Hermes plugin 0.2.0: roast pass (every finding from the Opus, Sol and GLM reviews)
+
+- **The completion gate fails closed in the paths that used to fail open.** It now recognises the plugin's own skill name (`tastecheck-hermes:tastecheck`) as a card marker. A card that can't be read blocks. A declared source file that is missing or outside the workspace blocks. Served-file overflow or conflicting bytes stop a SHIP. A verdict that can't be written to the ledger keeps its target blocked. URL targets keep their exact identity, and long targets are no longer truncated into a shared key.
+- **The env kanban task counts only where the kanban tool would use it,** so a delegated child or a cron run beside a worker is not blocked on a card it doesn't own.
+- **Less reach by default.** Link checks (25 same-origin GETs) are off unless `fetch_links: true`. JavaScript dialogs are dismissed. Data files (`.json .map .webmanifest .txt .xml`) are served only from the audited page's directory. Each run gets its own temp directory, removed afterwards. The evidence records the Chrome sandbox state and whether links were fetched.
+- **Messaging surfaces see no local paths.** Slash replies scrub home, workspace and other absolute paths. Slash arguments take one target: Windows paths are kept as typed, a path with spaces needs quotes, and extra words are an error.
+- **Taste Roll:** restored history is stored as an absolute path and re-checked against the workspace before any read, so a wider folder grant can't pull in a sibling project. A failed surface switch no longer re-opens the folder picker. The dashboard refuses columns with relative subresources, returns "busy" immediately instead of waiting up to 240 s, prunes under the lock without touching the active audit, and `/health` never 500s.
+- **CI runs the full plugin suite against real Hermes** (the floor v0.21.6 and the current v0.23.1, each pinned by commit) with `TASTECHECK_REQUIRE_RUNTIME=1`, so they can't silently skip.
+- **Docs:** README discloses the defaults above, the profile-edit workflow and the test dependencies. The demo script has an honest HOLD branch and no longer promises the pane opens beside the chat.
+
+### Changed — icon
+
+- New icon master `docs/hero/tastecheck-hermes-a1.png` (and a 512 px copy): the R21 loupe with a tiger's-eye handle, the rainbow lens sparkles removed and a darker gunmetal rim. The plugin README and demo script point at it. The design receipt is `docs/DESIGN-PREFLIGHT.md`.
+
+### Fixed — CI: the Python jobs run on the Forgejo runners
+
+- `verify / plugin` and `verify / entry-point-contract` failed at setup on every run, because the runners use Debian `node:22` images and `actions/setup-python` has only Ubuntu builds. The runners can't use `setup-uv` either, so both jobs now download a pinned uv 0.11.22 release, check its sha256, and let uv fetch CPython 3.11 and 3.14. The tests themselves were already passing.
+
 ### Fixed — Hermes plugin 0.2.0: the completion gate binds evidence, not vocabulary
 
 - **Gate triggers on declared frontend work only** (named `.html` artifacts or frontend sources, `metadata.tastecheck`, or a `tastecheck: required` card marker), never on summary words; every declared artifact needs its own fresh SHIP, bound to its content digest and to every file the audit served.
