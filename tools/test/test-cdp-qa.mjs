@@ -102,6 +102,110 @@ check(parsed && parsed.probes && parsed.verdict, "--json prints evidence JSON to
 const missing = spawnSync(process.execPath, [script, join(root, "no-such-file.html")], { encoding: "utf8" });
 check(missing.status === 2, "missing target is a tool error (exit 2)");
 
+// F29: the audited page is untrusted. A page served from one loopback origin must not
+// be able to reach a second loopback service (here a "secret" server on another port),
+// while its own origin keeps working.
+{
+  const { createServer } = await import("node:http");
+  const { spawn } = await import("node:child_process");
+  const secretHits = [];
+  const secret = createServer((req, res) => { secretHits.push(req.url); res.writeHead(200, { "access-control-allow-origin": "*" }); res.end("secret"); });
+  await new Promise((r) => secret.listen(0, "127.0.0.1", r));
+  const secretPort = secret.address().port;
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>ssrf</title></head><body><main><h1>Hello</h1>
+<script>fetch("http://127.0.0.1:${secretPort}/steal").catch(()=>{}); new Image().src="http://localhost:${secretPort}/img.png";
+fetch("/own").then(r=>r.text()).then(t=>{document.body.dataset.own=t});</script></main></body></html>`;
+  const ownHits = [];
+  const site = createServer((req, res) => {
+    ownHits.push(req.url);
+    if (req.url === "/own") { res.writeHead(200, { "content-type": "text/plain" }); res.end("own-ok"); return; }
+    res.writeHead(200, { "content-type": "text/html" }); res.end(html);
+  });
+  await new Promise((r) => site.listen(0, "127.0.0.1", r));
+  const out = mkdtempSync(join(tmpdir(), "cdp-qa-ssrf-"));
+  outs.push(out);
+  const child = spawn(process.execPath, [script, `http://127.0.0.1:${site.address().port}/`, out, "--no-profile", "--no-link-fetch"], { stdio: ["ignore", "pipe", "pipe"] });
+  let stderr = ""; child.stderr.on("data", (d) => { stderr += d; });
+  const code = await new Promise((r) => child.on("close", r));
+  site.close(); secret.close();
+  const evPath = join(out, "evidence.json");
+  const ev = existsSync(evPath) ? JSON.parse(readFileSync(evPath, "utf8")) : null;
+  check(ev !== null, `loopback-ssrf fixture ran to evidence (exit ${code}) ${stderr.slice(0, 160)}`);
+  check(secretHits.length === 0, `page cannot reach another loopback service (secret server saw ${JSON.stringify(secretHits)})`);
+  check(ownHits.includes("/own"), "the served origin itself still works");
+  check(ev && ev.probes.resources.status === "fail" && /ERR_ACCESS_DENIED/.test(ev.probes.resources.evidence), `blocked request is reported (${ev && String(ev.probes.resources.evidence).slice(0, 120)})`);
+}
+
+// F29 follow-up: CDP Fetch does not pause WebSocket handshakes, so a ws:// connection from
+// the audited page to a second loopback port is stopped some other way. Every route a page
+// can take is tried: direct, via host name, via prototype.constructor, from an iframe,
+// from a dynamically created iframe, and from a Web Worker. The second server must log
+// ZERO upgrades, and the audit must still HOLD.
+{
+  const { createServer } = await import("node:http");
+  const { spawn } = await import("node:child_process");
+  const upgrades = [];
+  const secret = createServer((req, res) => { res.end("secret"); });
+  secret.on("upgrade", (req, socket) => { upgrades.push(req.url); socket.destroy(); });
+  await new Promise((r) => secret.listen(0, "127.0.0.1", r));
+  const P = secret.address().port;
+  const target = (n) => `ws://127.0.0.1:${P}/${n}`;
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>ws</title></head><body><main><h1>Hello</h1>
+<iframe id="f" srcdoc="&lt;script&gt;try{new WebSocket('${target("iframe")}')}catch(e){}&lt;/script&gt;"></iframe>
+<script>
+try { new WebSocket("${target("direct")}"); } catch (e) {}
+try { new WebSocket("ws://localhost:${P}/hostname"); } catch (e) {}
+try { new (WebSocket.prototype.constructor)("${target("proto")}"); } catch (e) {}
+try { const f = document.createElement("iframe"); document.body.appendChild(f); new f.contentWindow.WebSocket("${target("fresh-iframe")}"); } catch (e) {}
+try { const w = new Worker(URL.createObjectURL(new Blob(['try{new WebSocket("${target("worker")}")}catch(e){}'], { type: "text/javascript" }))); } catch (e) {}
+</script></main></body></html>`;
+  const site = createServer((req, res) => { res.writeHead(200, { "content-type": "text/html" }); res.end(html); });
+  await new Promise((r) => site.listen(0, "127.0.0.1", r));
+  const out = mkdtempSync(join(tmpdir(), "cdp-qa-ws-"));
+  outs.push(out);
+  const child = spawn(process.execPath, [script, `http://127.0.0.1:${site.address().port}/`, out, "--no-profile", "--no-link-fetch"], { stdio: ["ignore", "pipe", "pipe"] });
+  let stderr = ""; child.stderr.on("data", (d) => { stderr += d; });
+  const code = await new Promise((r) => child.on("close", r));
+  await new Promise((r) => setTimeout(r, 500));
+  site.close(); secret.close();
+  const evPath = join(out, "evidence.json");
+  const ev = existsSync(evPath) ? JSON.parse(readFileSync(evPath, "utf8")) : null;
+  check(ev !== null, `ws fixture ran to evidence (exit ${code}) ${stderr.slice(0, 160)}`);
+  check(upgrades.length === 0, `ws handshake to another loopback port never reaches it: upgrades == 0 (server saw ${JSON.stringify(upgrades)})`);
+  check(ev && ev.verdict === "HOLD", `ws attempt still HOLDs (${ev && ev.verdict}: ${ev && String(ev.probes.resources.evidence).slice(0, 140)})`);
+}
+
+// Egress proxy: public traffic keeps working through it, and a public NAME that resolves to
+// loopback (localtest.me -> 127.0.0.1) is refused by address. Online checks are skipped when
+// this machine cannot resolve the public names.
+{
+  const { createServer } = await import("node:http");
+  const { spawn } = await import("node:child_process");
+  const { lookup } = await import("node:dns/promises");
+  const online = await lookup("example.com").then(() => true, () => false);
+  const hits = [];
+  const secret = createServer((req, res) => { hits.push(req.url); res.end("secret"); });
+  await new Promise((r) => secret.listen(0, "127.0.0.1", r));
+  const P = secret.address().port;
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>egress</title></head><body><main><h1>Hello</h1>
+<img alt="" src="https://example.com/favicon.ico"><img alt="" src="http://example.com/favicon.ico">
+<script>fetch("http://localtest.me:${P}/rebind", { mode: "no-cors" }).catch(() => {});</script></main></body></html>`;
+  const site = createServer((req, res) => { res.writeHead(200, { "content-type": "text/html" }); res.end(html); });
+  await new Promise((r) => site.listen(0, "127.0.0.1", r));
+  const out = mkdtempSync(join(tmpdir(), "cdp-qa-egress-"));
+  outs.push(out);
+  const child = spawn(process.execPath, [script, `http://127.0.0.1:${site.address().port}/`, out, "--no-profile", "--no-link-fetch"], { stdio: ["ignore", "pipe", "pipe"] });
+  await new Promise((r) => child.on("close", r));
+  await new Promise((r) => setTimeout(r, 500));
+  site.close(); secret.close();
+  const evPath = join(out, "evidence.json");
+  const ev = existsSync(evPath) ? JSON.parse(readFileSync(evPath, "utf8")) : null;
+  const evidence = ev ? String(ev.probes.resources.evidence) : "";
+  check(hits.length === 0, `a public name resolving to loopback never reaches the loopback server (saw ${JSON.stringify(hits)})`);
+  if (online) check(ev !== null && !/(ERR_PROXY|ERR_TUNNEL|ERR_ACCESS_DENIED|ERR_NAME_NOT_RESOLVED|ERR_CONNECTION|\b403\b)[^;]*example\.com/.test(evidence), `public https/http subresources still reach example.com through the egress proxy (an ORB block is Chrome judging a real response) (${evidence.slice(0, 160)})`);
+  else console.log("skip public-subresource check: example.com does not resolve here");
+}
+
 for (const o of outs) rmSync(o, { recursive: true, force: true });
 if (failed) { console.error(`${failed} check(s) failed`); process.exit(1); }
 console.log("cdp-qa tests passed");

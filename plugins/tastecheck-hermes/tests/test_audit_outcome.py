@@ -7,9 +7,12 @@ from __future__ import annotations
 import json
 
 import pytest
-from hypothesis import settings
-from hypothesis import strategies as st
-from hypothesis.stateful import RuleBasedStateMachine, invariant, precondition, rule
+
+pytest.importorskip("hypothesis", reason="hypothesis is not installed; the AuditOutcome state-machine tests need it")
+
+from hypothesis import settings  # noqa: E402
+from hypothesis import strategies as st  # noqa: E402
+from hypothesis.stateful import RuleBasedStateMachine, invariant, precondition, rule  # noqa: E402
 
 # The full derived state table. Adding a state to AuditOutcome without a row here
 # fails test_state_table_is_exhaustive.

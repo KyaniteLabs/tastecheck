@@ -7,6 +7,23 @@
    promises, writes evidence.json + screenshots, and prints a verdict-first summary.
 
    Usage:   node cdp-qa.mjs <url | file path | file://url> [out-dir] [--json] [--profile <file> | --no-profile]
+                                [--no-link-fetch]
+            --no-link-fetch: do not GET same-origin <a href> targets (up to 25) to check
+            them; they are counted as not fetched. Use it when following links could
+            trigger side effects (logout, delete, one-time tokens) on the audited origin.
+   Network: the audited page is untrusted. Chrome is launched through a local filtering proxy
+            (egress-proxy.mjs; --proxy-server plus "<-loopback>", so loopback is not exempt)
+            and every request the page makes, including WebSockets, Web Workers, iframes and
+            redirects, to a loopback, link-local or private-network host is refused, except the
+            origin being served (bypassed directly). The proxy also refuses a public name whose
+            DNS answer is private. Public hosts go through untouched. CDP Fetch adds a second
+            layer for plain requests (net::ERR_ACCESS_DENIED), and any WebSocket the guard would
+            refuse is recorded as "blocked WebSocket <url>", which fails the resources probe and
+            forces HOLD. Not covered: traffic a page sends to the served origin itself, and an
+            audited page that is itself served from a private address can reach that one origin.
+   Dialogs: alert/confirm/prompt/beforeunload are DISMISSED (confirm/prompt answer cancel).
+   Sandbox: Chrome's sandbox is disabled (--no-sandbox) only when running as root or with
+            CI set, because Chrome refuses to start sandboxed there; evidence.json records it.
             Taste profile (optional, local): $TASTECHECK_PROFILE or ~/.tastecheck/profile.json is read
             if present; it only changes how templateSlop counts individual tells.
    Output:  <out-dir>/evidence.json, shot-light.png, shot-dark.png, shot-narrow-390.png
@@ -27,6 +44,8 @@ import { tmpdir, homedir } from "node:os";
 import { join, delimiter, resolve, isAbsolute } from "node:path";
 import { pathToFileURL, fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
+import { isBlockedRequest, proxyBypassEntry } from "./request-guard.mjs";
+import { startEgressProxy } from "./egress-proxy.mjs";
 
 const TOOL_VERSION = "2.0.0";
 const TIMEOUT_MS = Number(process.env.TASTECHECK_TIMEOUT_MS) || 90_000;
@@ -57,7 +76,7 @@ function parseArgs(argv) {
   }
   const flags = new Set(rest.filter((a) => a.startsWith("--")));
   const pos = rest.filter((a) => !a.startsWith("--"));
-  return { json: flags.has("--json"), help: flags.has("--help"), noProfile: flags.has("--no-profile"), profile, target: pos[0], out: pos[1] };
+  return { json: flags.has("--json"), help: flags.has("--help"), noProfile: flags.has("--no-profile"), noLinkFetch: flags.has("--no-link-fetch"), profile, target: pos[0], out: pos[1] };
 }
 
 /* ------------------------------------------------- taste profile (optional)
@@ -185,13 +204,17 @@ async function findBrowser() {
 }
 
 /* ------------------------------------------------------------ CDP session */
-function launch(browserPath, profileDir) {
+const SANDBOX_OFF = Boolean((process.getuid && process.getuid() === 0) || process.env.CI);
+function launch(browserPath, profileDir, servedHost = null, proxyPort = 0) {
   const args = [
     "--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
     "--disable-dev-shm-usage", "--disable-background-networking", "--mute-audio",
     "--remote-debugging-port=0", `--user-data-dir=${profileDir}`, "--window-size=1440,900",
   ];
-  if ((process.getuid && process.getuid() === 0) || process.env.CI) args.push("--no-sandbox");
+  if (SANDBOX_OFF) args.push("--no-sandbox");
+  /* Network-level fence: all page traffic goes through the filtering egress proxy; only the
+     served origin is bypassed. "<-loopback>" removes Chrome's implicit loopback bypass. */
+  if (proxyPort) args.push(`--proxy-server=http://127.0.0.1:${proxyPort}`, `--proxy-bypass-list=<-loopback>${servedHost ? `;${servedHost}` : ""}`);
   args.push("about:blank");
   return spawn(browserPath, args, { stdio: "ignore", windowsHide: true });
 }
@@ -560,7 +583,7 @@ const page = (fn, ...args) => `(${fn})((${helpers})(), ...${JSON.stringify(args)
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help || !args.target) {
-    process.stderr.write("usage: node cdp-qa.mjs <url | file path | file://url> [out-dir] [--json] [--profile <file> | --no-profile]\n");
+    process.stderr.write("usage: node cdp-qa.mjs <url | file path | file://url> [out-dir] [--json] [--profile <file> | --no-profile] [--no-link-fetch]\n");
     return args.help ? 0 : 2;
   }
   if (typeof WebSocket === "undefined") {
@@ -583,12 +606,14 @@ async function main() {
   const auditSrc = existsSync(auditPath) ? readFileSync(auditPath, "utf8") : null;
 
   const profile = mkdtempSync(join(tmpdir(), "tastecheck-profile-"));
-  const child = launch(found.path, profile);
+  const egress = await startEgressProxy();
+  const child = launch(found.path, profile, /^https?:/i.test(url) ? proxyBypassEntry(url) : null, egress.port);
   let cleaned = false;
   let cdp = null;
   const cleanup = async () => {
     if (cleaned) return; cleaned = true;
     try { if (cdp) cdp.ws.close(); } catch { /* already closed */ }
+    try { await egress.close(); } catch { /* best effort */ }
     try {
       if (child.exitCode === null) {
         if (process.platform === "win32") spawnSync("taskkill", ["/pid", String(child.pid), "/T", "/F"], { stdio: "ignore" });
@@ -626,12 +651,29 @@ async function main() {
       if (!r || /^(data|blob|chrome-extension):/.test(r.url) || p.errorText === "net::ERR_ABORTED" || p.canceled) return;
       bad.push(`${p.errorText} ${r.url}`);
     });
-    on("Page.javascriptDialogOpening", () => { send("Page.handleJavaScriptDialog", { accept: true }).catch(() => {}); });
+    on("Page.javascriptDialogOpening", () => { send("Page.handleJavaScriptDialog", { accept: false }).catch(() => {}); });
 
     const setMedia = (scheme = "light", motion = "no-preference") => send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: scheme }, { name: "prefers-reduced-motion", value: motion }] });
     const viewport = (w, h, dsf = 1) => send("Emulation.setDeviceMetricsOverride", { width: w, height: h, deviceScaleFactor: dsf, mobile: false });
 
     await Promise.all(["Page.enable", "Runtime.enable", "Network.enable", "Log.enable"].map((m) => send(m)));
+    /* The audited page is untrusted: fail any request to loopback, link-local or private
+       addresses, except the single origin being served (see request-guard.mjs). Redirect
+       hops are paused and judged again. Enabled before navigation so nothing slips past. */
+    const servedOrigin = /^https?:/i.test(url) ? new URL(url).origin : null;
+    on("Fetch.requestPaused", (p) => {
+      const act = isBlockedRequest(p.request.url, servedOrigin)
+        ? send("Fetch.failRequest", { requestId: p.requestId, errorReason: "AccessDenied" })
+        : send("Fetch.continueRequest", { requestId: p.requestId });
+      act.catch(() => {}); // request already gone (navigated away, aborted)
+    });
+    await send("Fetch.enable", { patterns: [{ urlPattern: "*" }] });
+    /* The egress proxy is what actually stops WebSocket handshakes (CDP Fetch never pauses them
+       and Network.setBlockedURLs ignores them). This listener is the audit trail: a refused
+       ws(s):// attempt fails the resources probe and forces HOLD, so it is never a quiet SHIP. */
+    on("Network.webSocketCreated", (p) => {
+      if (isBlockedRequest(p.url, servedOrigin)) bad.push(`blocked WebSocket ${p.url}`);
+    });
     await send("Emulation.setFocusEmulationEnabled", { enabled: true }).catch(() => {});
     await setMedia("light", "no-preference");
     await viewport(1440, 900);
@@ -824,7 +866,7 @@ async function main() {
         } else if (origin && u.origin === origin) todo.push(u.href);
         else external++;
       }
-      const slice = todo.slice(0, 25);
+      const slice = args.noLinkFetch ? [] : todo.slice(0, 25);
       for (let i = 0; i < slice.length; i += 5) {
         await Promise.all(slice.slice(i, i + 5).map(async (h) => {
           checked++;
@@ -835,7 +877,9 @@ async function main() {
           } catch (e) { brokenLinks.push(`unreachable ${trunc(h, 80)} (${e.cause?.code || e.name})`); }
         }));
       }
-      const skippedNote = todo.length > 25 ? `; ${todo.length - 25} same-origin links not fetched (cap 25)` : "";
+      const skippedNote = args.noLinkFetch
+        ? (todo.length ? `; ${todo.length} same-origin links not fetched (--no-link-fetch)` : "")
+        : todo.length > 25 ? `; ${todo.length - 25} same-origin links not fetched (cap 25)` : "";
       const summary = `${net.size} requests, ${failed.length} failed; ${checked + r.missing.length} links checked, ${external} external not fetched${skippedNote}`;
       const problems = [
         ...failed.slice(0, 4).map((f) => `request ${tail(f, 90)}`),
@@ -903,7 +947,8 @@ async function main() {
     const evidence = {
       tool: "tastecheck cdp-qa", version: TOOL_VERSION, verdict, holdReasons,
       target: args.target, url, generatedAt: new Date().toISOString(),
-      browser: { product: browserVersion, found: found.via }, node: process.version,
+      browser: { product: browserVersion, found: found.via, sandbox: !SANDBOX_OFF },
+      linkFetch: !args.noLinkFetch, node: process.version,
       outDir: OUT, screenshots: shots, probes,
       ...(profileBlock ? { profile: profileBlock } : {}),
     };
