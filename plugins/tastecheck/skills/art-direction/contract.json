@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "skill": "art-direction",
+  "class": "generative",
+  "trigger": {
+    "positive": [
+      "A product needs a committed imagery, illustration, or iconography system with source and rights decisions."
+    ],
+    "negative": [
+      "The request is only a color, type, or layout decision."
+    ],
+    "adjacent_skills": [
+      "deslop-ui",
+      "data-viz",
+      "humanize-copy"
+    ]
+  },
+  "exclusions": [
+    "Do not use placeholder imagery when the brief requires a real asset plan.",
+    "Do not ignore source, licensing, alt text, or crop behavior."
+  ],
+  "inputs": {
+    "required": [
+      "audience and brief",
+      "available asset sources",
+      "content and rights constraints"
+    ],
+    "optional": [
+      "existing brand signals",
+      "image inventory",
+      "responsive breakpoints"
+    ]
+  },
+  "outputs": {
+    "primary": "source-aware visual treatment and asset plan",
+    "artifacts": [
+      "treatment direction",
+      "asset/source ledger",
+      "icon and alt-text rules",
+      "evidence-backed self-check"
+    ],
+    "handoff_fields": [
+      "asset_role",
+      "treatment",
+      "source",
+      "rights",
+      "alt_text",
+      "evidence"
+    ]
+  },
+  "stop_conditions": [
+    "Stop when source or rights constraints cannot be verified.",
+    "Hand off chart visuals to data-viz and prose tone to humanize-copy."
+  ],
+  "handoff": {
+    "receives_from": [
+      "design-system-interview",
+      "improve-existing-website",
+      "tasteroll"
+    ],
+    "sends_to": [
+      "responsive-layout",
+      "a11y-pass",
+      "deslop-ui",
+      "tastecheck-pass"
+    ]
+  },
+  "self_check_shape": "table_with_evidence",
+  "required_evidence_fields": [
+    "status",
+    "reason",
+    "remediation",
+    "evidence",
+    "provenance"
+  ],
+  "context_budget": {
+    "skill_md_max_tokens": 5000,
+    "resource_max_tokens": 6000
+  }
+}

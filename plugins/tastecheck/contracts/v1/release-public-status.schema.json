@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tastecheck.dev/contracts/v1/release-public-status.schema.json",
+  "title": "TasteCheck public release status v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "target_release",
+    "source_tree_sha256",
+    "manifest",
+    "claims",
+    "overall_status"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "kind": { "const": "tastecheck-public-release-status" },
+    "target_release": { "type": "string", "minLength": 1 },
+    "source_tree_sha256": { "$ref": "#/$defs/sha256" },
+    "manifest": { "$ref": "#/$defs/evidence" },
+    "claims": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": { "$ref": "#/$defs/claim" }
+    },
+    "overall_status": { "enum": ["pass", "hold", "unverified"] }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "path", "sha256"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)[A-Za-z0-9._/-]+$"
+        },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "evidence", "reasons"],
+      "properties": {
+        "id": {
+          "enum": ["engineering", "browser", "accessibility", "effectiveness"]
+        },
+        "status": {
+          "enum": ["pass", "hold", "unverified", "blocked"]
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/evidence" }
+        },
+        "reasons": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 240 }
+        }
+      }
+    }
+  }
+}
