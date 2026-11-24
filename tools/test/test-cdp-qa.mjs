@@ -80,6 +80,15 @@ check(lowPaint.ev && lowPaint.ev.probes.contrast.status === "fail", `low-contras
 check(lowPaint.ev && /p\.stroke-low/.test(lowPaint.ev.probes.contrast.evidence), "low-contrast aria-hidden stroke remains in failure evidence");
 check(lowPaint.ev && /p\.ordinary-low/.test(lowPaint.ev.probes.contrast.evidence), "ordinary low-contrast aria-hidden text remains in failure evidence");
 
+const lightGrey = run(fx("light-grey-on-white.html"));
+outs.push(lightGrey.out);
+check(lightGrey.ev && lightGrey.ev.probes.contrast.status === "fail", `#e8e8ea on white fails measured contrast (exit ${lightGrey.r.status}) ${lightGrey.ev ? lightGrey.ev.probes.contrast.evidence : lightGrey.r.stderr.slice(0, 160)}`);
+check(lightGrey.ev && /p\.copy 1\.22:1 \(needs 4\.5\)/.test(lightGrey.ev.probes.contrast.evidence), "light-grey fixture reports the computed 1.22:1 ratio against the white background");
+
+const darkOnWhite = run(fx("dark-on-white.html"));
+outs.push(darkOnWhite.out);
+check(darkOnWhite.ev && darkOnWhite.ev.probes.contrast.status === "pass", `dark on white passes measured contrast (exit ${darkOnWhite.r.status}) ${darkOnWhite.ev ? darkOnWhite.ev.probes.contrast.evidence : darkOnWhite.r.stderr.slice(0, 160)}`);
+
 const sourcePage = readFileSync(join(root, "tasteroll.html"), "utf8");
 const sourceMarker = "</body>";
 check(sourcePage.includes(sourceMarker), "source page has a closing body marker for a derived deterministic probe fixture");
