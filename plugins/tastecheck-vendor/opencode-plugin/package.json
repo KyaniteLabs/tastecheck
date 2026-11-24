@@ -1,0 +1,9 @@
+{
+  "name": "@kyanitelabs/opencode-tastecheck",
+  "version": "1.7.0",
+  "private": true,
+  "description": "Staged OpenCode plugin wrapper for TasteCheck skills. Not published.",
+  "license": "MIT",
+  "type": "module",
+  "main": "index.js"
+}
