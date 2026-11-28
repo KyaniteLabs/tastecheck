@@ -1,6 +1,6 @@
 {
   "name": "@kyanitelabs/tastecheck",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "Frontend taste and ship-gate toolkit for AI coding agents and frontend engineers who want evidence-backed UI quality.",
   "keywords": [
     "tastecheck",
@@ -40,6 +40,9 @@
   ],
   "engines": {
     "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "test": "npm run preflight:all && npm run test:structural && npm run test:oracle",

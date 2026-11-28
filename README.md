@@ -5,7 +5,7 @@
 **Your AI-built UI stops looking AI-built.** TasteCheck is a set of skills for coding agents. A short design interview and a deslop pass fix the generic look. A ship gate then checks the result and says SHIP or HOLD, with evidence.
 
 <!-- release-facts:v1:start -->
-Release inventory: v1.7.0 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
+Release inventory: v1.7.1 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
 <!-- release-facts:v1:end -->
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)

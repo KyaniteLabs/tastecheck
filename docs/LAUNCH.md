@@ -1,7 +1,7 @@
 # Launch kit: TasteCheck
 
 <!-- release-facts:v1:start -->
-Release inventory: v1.7.0 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
+Release inventory: v1.7.1 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
 <!-- release-facts:v1:end -->
 
 Public copy for launch. One promise runs through every post: **your AI-built UI

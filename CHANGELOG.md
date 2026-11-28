@@ -3,7 +3,7 @@
 All notable changes to the tastecheck skill pack. Format follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow semver.
 
-## [Unreleased]
+## [1.7.1] — 2026-11-27
 
 ### Fixed — Hermes plugin 0.2.0: roast pass (every finding from the Opus, Sol and GLM reviews)
 
@@ -31,6 +31,10 @@ All notable changes to the tastecheck skill pack. Format follows
 - **Local audits are confined** to the session workspace and served read-only over a loopback server; `cdp-qa` no longer passes `--allow-file-access-from-files`.
 - Settings live under `plugins.entries.tastecheck-hermes.settings` (the dashboard half now reads them too); data moved to `plugin-data/tastecheck-hermes/` (profile copied over).
 - Removed internal operations files and internal names from the public tree; unreferenced `site/img` PNGs removed; landing HTML validated in CI without `|| true`.
+
+### Changed — npm release 1.7.1
+
+- **`package.json` now carries `publishConfig.access: "public"`,** so `npm publish` makes the package public without a flag. The npm package is `@kyanitelabs/tastecheck`: `1.7.0` has been on the public registry since 2026-11-25 and matches commit `efc101f` file for file. That supersedes the "no new npm scope" note directly below, which was true when it was written.
 
 ### Changed — public install is git clone (no new npm scope)
 
