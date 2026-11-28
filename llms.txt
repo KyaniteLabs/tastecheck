@@ -3,7 +3,7 @@
 TasteCheck is a set of skills for AI coding agents that stops AI-built UI from looking AI-built. A design interview and a deslop pass fix the generic look; a ship gate checks the result and returns SHIP or HOLD with evidence.
 
 <!-- release-facts:v1:start -->
-Release inventory: v1.7.0 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
+Release inventory: v1.7.1 · 20 skills · 20 canonical commands · 1 alias · 21 command files · 8 gallery systems.
 <!-- release-facts:v1:end -->
 
 ## Use it

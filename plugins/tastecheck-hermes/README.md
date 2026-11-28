@@ -1,6 +1,6 @@
 # Tastecheck for Hermes (native plugin)
 
-**Frontend ship gate** — before UI work is called done, audit the real rendered page in headless Chrome and get a fail-closed **SHIP / HOLD** verdict with evidence. Runs the Tastecheck CLI (`v1.7.0`) from files vendored inside this plugin and verified against `vendor/MANIFEST.json` before every run.
+**Frontend ship gate** — before UI work is called done, audit the real rendered page in headless Chrome and get a fail-closed **SHIP / HOLD** verdict with evidence. Runs the Tastecheck CLI (`v1.7.1`) from files vendored inside this plugin and verified against `vendor/MANIFEST.json` before every run.
 
 | Surface | What it does |
 |---|---|
